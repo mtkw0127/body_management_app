@@ -12,7 +12,7 @@ import com.app.calendar.util.DateUtil
 import java.time.LocalDate
 import java.time.temporal.ChronoField
 
-class CalendarAdapter(localDate: LocalDate, private val context: Context): BaseAdapter() {
+class CalendarAdapter(var localDate: LocalDate, context: Context): BaseAdapter() {
     // その月の日付一覧
     private var dateList = Array<CellInfo?>(42){null}
 
@@ -25,6 +25,28 @@ class CalendarAdapter(localDate: LocalDate, private val context: Context): BaseA
      * カレンダーの6*7のArrayを生成.
      */
     init {
+        createDateList()
+        // inflater初期化
+        inflater = LayoutInflater.from(context)
+    }
+
+    /**
+     * 先月のカレンダー構築
+     */
+    fun createPrevMonthCalendar() {
+        localDate = localDate.minusMonths(1)
+        createDateList()
+    }
+
+    /**
+     * 翌月のカレンダー構築
+     */
+    fun createNextMonthCalendar() {
+        localDate = localDate.plusMonths(1)
+        createDateList()
+    }
+
+    private fun createDateList() {
         // 当該月の最初の曜日を取得
         val firstDateOfThisMonth = LocalDate.of(localDate.year, localDate.monthValue, 1)
 
@@ -54,9 +76,7 @@ class CalendarAdapter(localDate: LocalDate, private val context: Context): BaseA
         for((cnt, dateIndex) in (lastIndexOfThisMonth until dateList.size).withIndex()) {
             dateList[dateIndex] = CellInfo(firstDateOfNextMonth.plusDays(cnt.toLong()))
         }
-
-        // inflater初期化
-        inflater = LayoutInflater.from(context)
+        notifyDataSetInvalidated()
     }
 
     /**

@@ -18,6 +18,16 @@ class DateUtil {
     }
 
     companion object {
+        /**
+         * 引数のLocalDateをYYYY年MM月のフォーマットに変換して返却.
+         */
+        fun localDateConvertJapaneseFormatYearMonth(localDate: LocalDate): String {
+            return "${localDate.year}年${localDate.monthValue}月"
+        }
+
+        /**
+         * 引数の年月日が祝日か判定する.
+         */
         fun isHoliday(localDate: LocalDate): DateType {
             when(localDate.dayOfWeek) {
                 DayOfWeek.SATURDAY, DayOfWeek.SUNDAY -> return DateType.HOLIDAY
