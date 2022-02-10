@@ -1,20 +1,28 @@
 package com.app.calendar.adapter
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.ColorSpace
+import android.graphics.Paint
+import android.graphics.drawable.BitmapDrawable
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.app.calendar.R
 import com.app.calendar.util.DateUtil
 import java.time.LocalDate
 import java.time.temporal.ChronoField
 
-class CalendarAdapter(var localDate: LocalDate, context: Context): BaseAdapter() {
+class CalendarAdapter(var localDate: LocalDate, private val context: Context): BaseAdapter() {
     // その月の日付一覧
-    private var dateList = Array<CellInfo?>(42){null}
+    private var dateList = Array(42){CellInfo(LocalDate.now())}
 
     private var inflater:LayoutInflater
 
@@ -87,7 +95,7 @@ class CalendarAdapter(var localDate: LocalDate, context: Context): BaseAdapter()
     /**
      * アイテム取得
      */
-    override fun getItem(p0: Int): CellInfo? = dateList[p0]
+    override fun getItem(p0: Int): CellInfo = dateList[p0]
 
     /**
      * ItemId取得
@@ -104,15 +112,20 @@ class CalendarAdapter(var localDate: LocalDate, context: Context): BaseAdapter()
 
         // 日付の設定
         val dateTextView = view.findViewById<TextView>(R.id.date)
-        dateTextView.text = cellInfo?.localDate?.dayOfMonth.toString()
+        dateTextView.text = cellInfo.localDate.dayOfMonth.toString()
 
         // 文字色設定
-        when(cellInfo?.localDate?.let { DateUtil.isHoliday(it) }) {
+        when(cellInfo.localDate.let { DateUtil.isHoliday(it) }) {
             // 休日
             DateUtil.DateType.HOLIDAY, DateUtil.DateType.COMPENSATION -> dateTextView.setTextColor(Color.RED)
             // 平日
             DateUtil.DateType.WEEKDAY -> dateTextView.setTextColor(Color.BLACK)
-            else -> {}
+        }
+        // 当日の場合背景に丸を表示
+        if(cellInfo.localDate.isEqual(LocalDate.now())) {
+            // TextViewと同じ高さのBitmap作成
+            val color = ContextCompat.getColor(parent.context, R.color.teal_200)
+            dateTextView.setBackgroundColor(color)
         }
         return view
     }

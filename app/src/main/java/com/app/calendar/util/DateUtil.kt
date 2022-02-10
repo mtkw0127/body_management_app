@@ -31,6 +31,7 @@ class DateUtil {
         fun isHoliday(localDate: LocalDate): DateType {
             when(localDate.dayOfWeek) {
                 DayOfWeek.SATURDAY, DayOfWeek.SUNDAY -> return DateType.HOLIDAY
+                else -> {}
             }
             // 1月
             if(localDate.month == Month.JANUARY) {
