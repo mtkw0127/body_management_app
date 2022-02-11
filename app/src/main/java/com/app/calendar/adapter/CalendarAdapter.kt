@@ -1,18 +1,12 @@
 package com.app.calendar.adapter
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.ColorSpace
-import android.graphics.Paint
-import android.graphics.drawable.BitmapDrawable
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.app.calendar.R
@@ -22,12 +16,16 @@ import java.time.temporal.ChronoField
 
 class CalendarAdapter(var localDate: LocalDate, private val context: Context): BaseAdapter() {
     // その月の日付一覧
-    private var dateList = Array(42){CellInfo(LocalDate.now())}
+    private var dateList = Array(42){CellInfo(LocalDate.now(),MonthType.NONE)}
 
     private var inflater:LayoutInflater
 
+    enum class MonthType {
+        PREV,CURRENT,NEXT,NONE
+    }
+
     // セル情報格納Obj
-    class CellInfo(val localDate: LocalDate)
+    class CellInfo(val localDate: LocalDate, val monthType: MonthType)
 
     /**
      * カレンダーの6*7のArrayを生成.
@@ -69,7 +67,8 @@ class CalendarAdapter(var localDate: LocalDate, private val context: Context): B
 
         // 前月
         for((cnt, dateIndex) in (0 until firstIndexOfThisMonth).withIndex()) {
-            dateList[dateIndex] = CellInfo(lastDateOfPrevMonth.minusDays((firstIndexOfThisMonth - cnt -1).toLong()))
+            val prevMonthDate = lastDateOfPrevMonth.minusDays((firstIndexOfThisMonth - cnt -1).toLong())
+            dateList[dateIndex] = CellInfo(prevMonthDate, MonthType.PREV)
         }
 
         // 当月
@@ -77,12 +76,14 @@ class CalendarAdapter(var localDate: LocalDate, private val context: Context): B
         val lastDayOfThisMonth = localDate.range(ChronoField.DAY_OF_MONTH).maximum.toInt()
         val lastIndexOfThisMonth = firstIndexOfThisMonth+lastDayOfThisMonth
         for((cnt, dateIndex) in (firstIndexOfThisMonth until lastIndexOfThisMonth).withIndex()) {
-            dateList[dateIndex] = CellInfo(firstDateOfThisMonth.plusDays(cnt.toLong()))
+            val currentDate = firstDateOfThisMonth.plusDays(cnt.toLong())
+            dateList[dateIndex] = CellInfo(currentDate, MonthType.CURRENT)
         }
 
         // 翌月
         for((cnt, dateIndex) in (lastIndexOfThisMonth until dateList.size).withIndex()) {
-            dateList[dateIndex] = CellInfo(firstDateOfNextMonth.plusDays(cnt.toLong()))
+            val nextMonthDate = firstDateOfNextMonth.plusDays(cnt.toLong())
+            dateList[dateIndex] = CellInfo(nextMonthDate, MonthType.NEXT)
         }
         notifyDataSetInvalidated()
     }
@@ -108,10 +109,10 @@ class CalendarAdapter(var localDate: LocalDate, private val context: Context): B
     override fun getView(pos: Int, convertView: View?, parent: ViewGroup): View {
         // cellInfoからView情報を定義する
         val cellInfo = getItem(pos)
-        val view = inflater.inflate(R.layout.calendar_cell, null)
+        val calendarCellView = checkNotNull(inflater.inflate(R.layout.calendar_cell, null))
 
         // 日付の設定
-        val dateTextView = view.findViewById<TextView>(R.id.date)
+        val dateTextView = calendarCellView.findViewById<TextView>(R.id.date)
         dateTextView.text = cellInfo.localDate.dayOfMonth.toString()
 
         // 文字色設定
@@ -127,6 +128,15 @@ class CalendarAdapter(var localDate: LocalDate, private val context: Context): B
             val color = ContextCompat.getColor(parent.context, R.color.teal_200)
             dateTextView.setBackgroundColor(color)
         }
-        return view
+        // 先月・翌月の背景は灰色に変更
+        when(cellInfo.monthType) {
+            MonthType.PREV,MonthType.NEXT -> {
+                val color = ContextCompat.getColor(parent.context, R.color.grey)
+                val cellBackground = calendarCellView.findViewById<FrameLayout>(R.id.calendar_cell_background)
+                cellBackground.setBackgroundColor(color)
+            }
+            else -> {}
+        }
+        return calendarCellView
     }
 }
