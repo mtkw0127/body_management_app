@@ -46,7 +46,7 @@
     <GridView
         android:id="@+id/calendarGridView"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="600dp"
         android:numColumns="7"
         android:background="@drawable/border"
         app:layout_constraintLeft_toLeftOf="parent"
