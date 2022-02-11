@@ -3,8 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/blueOval.xml" value="0.194" />
         <entry key="app/src/main/res/drawable/border.xml" value="0.228125" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/calendar_cell.xml" value="0.22" />
       </map>
     </option>

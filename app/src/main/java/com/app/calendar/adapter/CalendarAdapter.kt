@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.FrameLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.app.calendar.R
 import com.app.calendar.util.DateUtil
@@ -136,6 +137,15 @@ class CalendarAdapter(var localDate: LocalDate, private val context: Context): B
                 cellBackground.setBackgroundColor(color)
             }
             else -> {}
+        }
+
+        // セルタッチ時のイベント
+        calendarCellView.setOnClickListener {
+            Toast.makeText(
+                parent.context,
+                cellInfo.localDate.toString(),
+                Toast.LENGTH_SHORT
+            ).show()
         }
         return calendarCellView
     }
