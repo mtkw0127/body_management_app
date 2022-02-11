@@ -1,5 +1,6 @@
 package com.app.calendar
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -12,10 +13,12 @@ import android.widget.GridView
 import android.widget.TextView
 import com.app.calendar.adapter.CalendarAdapter
 import com.app.calendar.util.DateUtil
+import com.app.calendar.util.OnSwipeTouchListener
 import java.time.LocalDate
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -40,5 +43,16 @@ class MainActivity : AppCompatActivity() {
             adapter.createNextMonthCalendar()
             findViewById<TextView>(R.id.year_month_txt).text = DateUtil.localDateConvertJapaneseFormatYearMonth(adapter.localDate)
         }
+
+        calendarView.setOnTouchListener(object : OnSwipeTouchListener(this.applicationContext) {
+            override fun up() {}
+            override fun down() {}
+            override fun right() {
+                prevMonthBtn.callOnClick()
+            }
+            override fun left() {
+                nextMonthBtn.callOnClick()
+            }
+        })
     }
 }
