@@ -14,9 +14,10 @@
         <TextView
             android:id="@+id/date_text"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="center_horizontal"
             android:textColor="@color/color_label"
-            android:textSize="@dimen/size_label_sp"
+            android:textSize="@dimen/size_top_label_sp"
             android:text="2022年2月12日(土)"/>
     </FrameLayout>
 
@@ -24,12 +25,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/time_field"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/height_label_input_container_sp"
         app:layout_constraintTop_toBottomOf="@id/date_field"
         app:layout_constraintLeft_toLeftOf="parent">
         <TextView
             android:id="@+id/time_label"
-            android:layout_width="120sp"
+            android:layout_width="@dimen/width_label_sp"
             android:layout_height="wrap_content"
             android:text="計測時刻"
             android:textSize="@dimen/size_label_sp"
@@ -39,9 +40,9 @@
             app:layout_constraintTop_toTopOf="parent" />
         <EditText
             android:id="@+id/training_time"
-            android:layout_width="160sp"
+            android:layout_width="@dimen/width_input_sp"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
+            android:textSize="@dimen/size_input_sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@id/time_label"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -50,12 +51,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/weight_field"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/height_label_input_container_sp"
         app:layout_constraintTop_toBottomOf="@id/time_field"
         app:layout_constraintLeft_toLeftOf="parent">
         <TextView
             android:id="@+id/weight_label"
-            android:layout_width="120sp"
+            android:layout_width="@dimen/width_label_sp"
             android:layout_height="wrap_content"
             android:textSize="@dimen/size_label_sp"
             android:textColor="@color/color_label"
@@ -65,8 +66,8 @@
             android:text="体重"/>
         <EditText
             android:id="@+id/weight"
-            android:textSize="24sp"
-            android:layout_width="160sp"
+            android:textSize="@dimen/size_input_sp"
+            android:layout_width="@dimen/width_input_sp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@id/weight_label"/>
@@ -76,13 +77,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/fat_field"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/height_label_input_container_sp"
         app:layout_constraintTop_toBottomOf="@id/weight_field"
         app:layout_constraintLeft_toLeftOf="parent">
         <TextView
             android:id="@+id/fat_label"
+            android:layout_width="@dimen/width_label_sp"
             android:layout_height="wrap_content"
-            android:layout_width="120sp"
             android:textSize="@dimen/size_label_sp"
             android:textColor="@color/color_label"
             android:text="体脂肪率"
@@ -91,8 +92,8 @@
             app:layout_constraintLeft_toLeftOf="parent"/>
         <EditText
             android:id="@+id/fat"
-            android:textSize="32sp"
-            android:layout_width="160sp"
+            android:textSize="@dimen/size_input_sp"
+            android:layout_width="@dimen/width_input_sp"
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toRightOf="@id/fat_label"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -108,17 +109,18 @@
         <TextView
             android:id="@+id/photo_label"
             android:textSize="@dimen/size_label_sp"
-            android:layout_height="wrap_content"
-            android:layout_width="120sp"
+            android:gravity="center_vertical"
+            android:layout_height="@dimen/height_label_input_container_sp"
+            android:layout_width="@dimen/width_label_sp"
             android:textColor="@color/color_label"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:text="写真"/>
+            android:text="写真" />
 
         <ImageView
             android:id="@+id/prev_img"
-            android:layout_width="240sp"
-            android:layout_height="240sp"
+            android:layout_width="match_parent"
+            android:layout_height="500sp"
             android:background="@drawable/border"
             app:layout_constraintTop_toBottomOf="@id/photo_label"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -131,6 +133,20 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/prev_img"
             android:text="写真を撮る"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/save_container"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/save_btn"
+            android:layout_width="match_parent"
+            android:layout_height="50sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="記録する"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.app.calendar
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,6 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -37,6 +39,7 @@ class CameraActivity: AppCompatActivity() {
         private const val REQUEST_CODE_PERMISSIONS = 10
         private const val PHOTO_EXTENSION = ".jpg"
         private const val FILE_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSSS"
+        const val INTENT_KEY_PHOTO_URI = "PHOTO_URI"
         fun createCameraActivityIntent(context: Context): Intent {
             return Intent(context.applicationContext, CameraActivity::class.java)
         }
@@ -64,6 +67,19 @@ class CameraActivity: AppCompatActivity() {
             startCamera()
         } else {
             permissionCheck()
+        }
+        val nextButton = findViewById<Button>(R.id.next_btn)
+        nextButton.setOnClickListener {
+            // 撮影した結果を返却
+            if(this@CameraActivity::photoUri.isInitialized) {
+                intent.putExtra(INTENT_KEY_PHOTO_URI, photoUri)
+                setResult(Activity.RESULT_OK, intent)
+            }
+            finish()
+        }
+        val backButton = findViewById<Button>(R.id.back_from_camera_btn)
+        backButton.setOnClickListener {
+            finish()
         }
         val switchCameraButton = findViewById<Button>(R.id.switch_camera)
         switchCameraButton.setOnClickListener {
@@ -107,7 +123,6 @@ class CameraActivity: AppCompatActivity() {
                     }
                 }
             }
-
             imageCapture.takePicture(outputOptions, cameraExecutor, imageSavedCapture)
         }
     }
