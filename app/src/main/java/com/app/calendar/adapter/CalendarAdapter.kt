@@ -1,6 +1,7 @@
 package com.app.calendar.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +10,19 @@ import android.widget.BaseAdapter
 import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.ContextCompat
 import com.app.calendar.R
+import com.app.calendar.TrainingDetailActivity
 import com.app.calendar.util.DateUtil
 import java.time.LocalDate
 import java.time.temporal.ChronoField
 
-class CalendarAdapter(var localDate: LocalDate, private val context: Context): BaseAdapter() {
+class CalendarAdapter(
+    var localDate: LocalDate,
+    private val context: Context,
+    private val trainingDetailActivityLauncher: ActivityResultLauncher<Intent>
+): BaseAdapter() {
     // その月の日付一覧
     private var dateList = Array(42){CellInfo(LocalDate.now(),MonthType.NONE)}
 
@@ -141,12 +148,10 @@ class CalendarAdapter(var localDate: LocalDate, private val context: Context): B
 
         // セルタッチ時のイベント
         calendarCellView.setOnClickListener {
-            Toast.makeText(
-                parent.context,
-                cellInfo.localDate.toString(),
-                Toast.LENGTH_SHORT
-            ).show()
+            val intent = TrainingDetailActivity.createTrainingDetailActivityIntent(it.context, cellInfo.localDate)
+            trainingDetailActivityLauncher.launch(intent)
         }
         return calendarCellView
     }
+
 }
