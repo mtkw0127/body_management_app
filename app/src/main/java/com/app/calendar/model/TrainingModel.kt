@@ -10,4 +10,5 @@ data class TrainingModel(
     val capturedTime: LocalDateTime,
     val weight:Float,
     val fatRate:Float,
-    val photoUris:List<Uri>): Serializable
+    val photoUris:String?
+    ): Serializable

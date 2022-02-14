@@ -9,7 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.result.ActivityResult
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
 import com.app.calendar.model.TrainingModel
@@ -29,15 +29,15 @@ class TrainingDetailActivity: AppCompatActivity() {
     }
 
     // 写真へのUri
-    private var photoUris: MutableList<Uri> = mutableListOf()
+    private var photoUri: Uri? = null
 
     // カメラ撮影結果コールバック
     private val cameraActivityLauncher = registerForActivityResult(StartActivityForResult()) {
         if(it.resultCode == Activity.RESULT_OK) {
             val activityResult = it.data?.extras?.get(CameraActivity.INTENT_KEY_PHOTO_URI)
             if(activityResult != null) {
-                photoUris.add(activityResult as Uri)
-                findViewById<ImageView>(R.id.prev_img).setImageURI(photoUris[0])
+                photoUri = activityResult as Uri
+                findViewById<ImageView>(R.id.prev_img).setImageURI(photoUri)
             }
         }
     }
@@ -49,27 +49,44 @@ class TrainingDetailActivity: AppCompatActivity() {
         val localDate = intent.getSerializableExtra(INTENT_KEY) as LocalDate
         findViewById<TextView>(R.id.date_text).text = localDate.toString()
 
-        val cameraStartButton = findViewById<Button>(R.id.camera_button)
+        // カメラフィールド
+        val cameraStartButton = findViewById<ImageView>(R.id.prev_img)
         cameraStartButton.setOnClickListener {
             val intent = CameraActivity.createCameraActivityIntent(applicationContext)
             cameraActivityLauncher.launch(intent)
         }
 
+        // 戻るボタン
+        val backBtn = findViewById<Button>(R.id.back_btn)
+        backBtn.setOnClickListener {
+            finish()
+        }
+
+        // 保存ボタン
         val saveBtn = findViewById<Button>(R.id.save_btn)
         saveBtn.setOnClickListener {
             // TODO: テキストではないくスピナー
             val trainingTime = findViewById<EditText>(R.id.training_time)
-            val weight = findViewById<EditText>(R.id.weight).toString().toFloat()
-            val fatRate = findViewById<EditText>(R.id.fat).text.toString().toFloat()
+            val weight = findViewById<EditText>(R.id.weight).text
+            val fatRate = findViewById<EditText>(R.id.fat).text
+
+            var savedWeight = 0.0F
+            var savedFatRate = 0.0F
+            if(weight.isNotEmpty()) {
+                savedWeight = weight.toString().toFloat()
+            }
+            if(fatRate.isNotEmpty()) {
+                savedFatRate = fatRate.toString().toFloat()
+            }
+
             val saveModel = TrainingModel(
                 localDate,
                 LocalDateTime.now(),
-                weight,
-                fatRate,
-                photoUris
+                savedWeight,
+                savedFatRate,
+                photoUri?.path
             )
             // TODO: DBに保存
-
             intent.putExtra(INTENT_RESULT_KEY, saveModel)
             setResult(Activity.RESULT_OK, intent)
             finish()
