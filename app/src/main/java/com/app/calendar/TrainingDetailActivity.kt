@@ -73,7 +73,9 @@ class TrainingDetailActivity: AppCompatActivity() {
         val measureTime = findViewById<TextView>(R.id.training_time)
         measureTime.setOnClickListener {
             val timePickerFragment = TimePickerDialog.createTimePickerDialog(1,1) {hour, minute ->
-                val time = "${hour}時${minute}分"
+                val hourStr = String.format("%02d", hour)
+                val minuteStr =String.format("%02d", minute)
+                val time = "${hourStr}時${minuteStr}分"
                 (it as TextView).text = time
             }
             timePickerFragment.show(supportFragmentManager, "TimePicker")
