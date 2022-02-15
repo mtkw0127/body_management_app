@@ -1,20 +1,27 @@
 package com.app.calendar
 
 import android.app.Activity
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
+import android.widget.TimePicker
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
+import com.app.calendar.dialog.TimePickerDialog
 import com.app.calendar.model.TrainingModel
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.*
 
 class TrainingDetailActivity: AppCompatActivity() {
 
@@ -62,11 +69,21 @@ class TrainingDetailActivity: AppCompatActivity() {
             finish()
         }
 
+        // 計測時刻
+        val measureTime = findViewById<TextView>(R.id.training_time)
+        measureTime.setOnClickListener {
+            val timePickerFragment = TimePickerDialog.createTimePickerDialog(1,1) {hour, minute ->
+                val time = "${hour}時${minute}分"
+                (it as TextView).text = time
+            }
+            timePickerFragment.show(supportFragmentManager, "TimePicker")
+        }
+
         // 保存ボタン
         val saveBtn = findViewById<Button>(R.id.save_btn)
         saveBtn.setOnClickListener {
             // TODO: テキストではないくスピナー
-            val trainingTime = findViewById<EditText>(R.id.training_time)
+            val trainingTime = measureTime
             val weight = findViewById<EditText>(R.id.weight).text
             val fatRate = findViewById<EditText>(R.id.fat).text
 
@@ -92,4 +109,5 @@ class TrainingDetailActivity: AppCompatActivity() {
             finish()
         }
     }
+
 }
