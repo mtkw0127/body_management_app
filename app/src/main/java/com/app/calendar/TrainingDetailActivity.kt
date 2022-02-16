@@ -29,7 +29,11 @@ class TrainingDetailActivity: AppCompatActivity() {
         }
     }
 
-    // 写真へのUri
+
+    private val measureTimeView: TextView = findViewById(R.id.training_time)
+    private val weightField: TextView = findViewById(R.id.weight)
+    private val fatField: TextView = findViewById(R.id.fat)
+
     private var photoUri: Uri? = null
     private var measureTime = LocalDateTime.now()
     private var measureWeight = 50F
@@ -67,7 +71,6 @@ class TrainingDetailActivity: AppCompatActivity() {
         }
 
         // 計測時刻
-        val measureTimeView = findViewById<TextView>(R.id.training_time)
         measureTimeView.setOnClickListener {
             val timePickerFragment = TimePickerDialog.createTimePickerDialog(measureTime.hour,measureTime.minute) {hour, minute ->
                 val hourStr = String.format("%02d", hour)
@@ -81,7 +84,6 @@ class TrainingDetailActivity: AppCompatActivity() {
         }
 
         // 体重
-        val weightField = findViewById<TextView>(R.id.weight)
         weightField.setOnClickListener {
             val weightPickerFragment = FloatNumberPickerDialog.createDialog(measureWeight, "kg") { weight ->
                 (it as TextView).text = "${weight}kg"
@@ -91,12 +93,11 @@ class TrainingDetailActivity: AppCompatActivity() {
         }
 
         // 体脂肪率
-        val fatField = findViewById<TextView>(R.id.fat)
         fatField.setOnClickListener {
             val fatPickerFragment =
-                FloatNumberPickerDialog.createDialog(measureFat, "%") { weight ->
-                    (it as TextView).text = "${weight}kg"
-                    measureFat = weight
+                FloatNumberPickerDialog.createDialog(measureFat, "%") { fat ->
+                    (it as TextView).text = "${fat}kg"
+                    measureFat = fat
                 }
             fatPickerFragment.show(supportFragmentManager, "FatPicker")
         }
@@ -104,25 +105,11 @@ class TrainingDetailActivity: AppCompatActivity() {
         // 保存ボタン
         val saveBtn = findViewById<Button>(R.id.save_btn)
         saveBtn.setOnClickListener {
-            // TODO: テキストではないくスピナー
-            val trainingTime = measureTime
-            val weight = findViewById<EditText>(R.id.weight).text
-            val fatRate = findViewById<EditText>(R.id.fat).text
-
-            var savedWeight = 0.0F
-            var savedFatRate = 0.0F
-            if(weight.isNotEmpty()) {
-                savedWeight = weight.toString().toFloat()
-            }
-            if(fatRate.isNotEmpty()) {
-                savedFatRate = fatRate.toString().toFloat()
-            }
-
             val saveModel = TrainingModel(
                 localDate,
-                LocalDateTime.now(),
-                savedWeight,
-                savedFatRate,
+                measureTime,
+                measureWeight,
+                measureFat,
                 photoUri?.path
             )
             // TODO: DBに保存
