@@ -1,30 +1,30 @@
 package com.app.calendar
 
 import android.annotation.SuppressLint
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.drawable.BitmapDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.GridView
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import com.app.calendar.adapter.CalendarAdapter
 import com.app.calendar.util.DateUtil
 import com.app.calendar.util.OnSwipeTouchListener
 import java.time.LocalDate
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
+
+    private val trainingDetailActivityLauncher = registerForActivityResult(StartActivityForResult()) {
+        // 当日のトレーニング詳細画面 -> 一覧に戻ってきた場合の処理
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val calendarView = findViewById<GridView>(R.id.calendarGridView)
-        val calendarAdapter = CalendarAdapter(LocalDate.now(), this.applicationContext)
+        val calendarAdapter = CalendarAdapter(LocalDate.now(), this.applicationContext, trainingDetailActivityLauncher)
         calendarView.adapter = calendarAdapter
 
         // 初期画面の年月設定
