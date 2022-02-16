@@ -42,7 +42,7 @@ class TimePickerDialog: DialogFragment(){
             hour = extras.getInt(HOUR, -1)
             minute = extras.getInt(MINUTE, -1)
 
-            if(hour in 1..24 && minute in 0..59) {
+            if(hour in 0..23 && minute in 0..59) {
                 return
             }
             throw RuntimeException("Illegal Argument")

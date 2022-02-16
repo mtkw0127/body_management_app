@@ -1,27 +1,21 @@
 package com.app.calendar
 
 import android.app.Activity
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.TimePicker
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.DialogFragment
 import com.app.calendar.dialog.TimePickerDialog
+import com.app.calendar.dialog.FloatNumberPickerDialog
 import com.app.calendar.model.TrainingModel
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.*
 
 class TrainingDetailActivity: AppCompatActivity() {
 
@@ -37,6 +31,9 @@ class TrainingDetailActivity: AppCompatActivity() {
 
     // 写真へのUri
     private var photoUri: Uri? = null
+    private var measureTime = LocalDateTime.now()
+    private var measureWeight = 50F
+    private var measureFat = 20.0F
 
     // カメラ撮影結果コールバック
     private val cameraActivityLauncher = registerForActivityResult(StartActivityForResult()) {
@@ -70,15 +67,38 @@ class TrainingDetailActivity: AppCompatActivity() {
         }
 
         // 計測時刻
-        val measureTime = findViewById<TextView>(R.id.training_time)
-        measureTime.setOnClickListener {
-            val timePickerFragment = TimePickerDialog.createTimePickerDialog(1,1) {hour, minute ->
+        val measureTimeView = findViewById<TextView>(R.id.training_time)
+        measureTimeView.setOnClickListener {
+            val timePickerFragment = TimePickerDialog.createTimePickerDialog(measureTime.hour,measureTime.minute) {hour, minute ->
                 val hourStr = String.format("%02d", hour)
                 val minuteStr =String.format("%02d", minute)
                 val time = "${hourStr}時${minuteStr}分"
                 (it as TextView).text = time
+                // 計測時刻更新
+                measureTime = LocalDateTime.of(measureTime.year,measureTime.monthValue,measureTime.dayOfMonth,hour,minute)
             }
             timePickerFragment.show(supportFragmentManager, "TimePicker")
+        }
+
+        // 体重
+        val weightField = findViewById<TextView>(R.id.weight)
+        weightField.setOnClickListener {
+            val weightPickerFragment = FloatNumberPickerDialog.createDialog(measureWeight, "kg") { weight ->
+                (it as TextView).text = "${weight}kg"
+                measureWeight = weight
+            }
+            weightPickerFragment.show(supportFragmentManager, "WeightPicker")
+        }
+
+        // 体脂肪率
+        val fatField = findViewById<TextView>(R.id.fat)
+        fatField.setOnClickListener {
+            val fatPickerFragment =
+                FloatNumberPickerDialog.createDialog(measureFat, "%") { weight ->
+                    (it as TextView).text = "${weight}kg"
+                    measureFat = weight
+                }
+            fatPickerFragment.show(supportFragmentManager, "FatPicker")
         }
 
         // 保存ボタン
