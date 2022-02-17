@@ -6,18 +6,28 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
+import androidx.room.Room
+import com.app.calendar.database.AppDatabase
 import com.app.calendar.dialog.TimePickerDialog
 import com.app.calendar.dialog.FloatNumberPickerDialog
-import com.app.calendar.model.TrainingModel
+import com.app.calendar.model.TrainingEntity
+import com.app.calendar.repository.TrainingRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 class TrainingDetailActivity: AppCompatActivity() {
+
+    private val trainingRepository: TrainingRepository by lazy {
+        (application as TrainingApplication).repository
+    }
 
     companion object {
         const val INTENT_KEY = "DATE"
@@ -30,9 +40,9 @@ class TrainingDetailActivity: AppCompatActivity() {
     }
 
 
-    private val measureTimeView: TextView = findViewById(R.id.training_time)
-    private val weightField: TextView = findViewById(R.id.weight)
-    private val fatField: TextView = findViewById(R.id.fat)
+    private lateinit var measureTimeView: TextView
+    private lateinit var weightField: TextView
+    private lateinit var fatField: TextView
 
     private var photoUri: Uri? = null
     private var measureTime = LocalDateTime.now()
@@ -53,6 +63,10 @@ class TrainingDetailActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.training_detail)
+
+        measureTimeView = findViewById(R.id.training_time)
+        weightField = findViewById(R.id.weight)
+        fatField = findViewById(R.id.fat)
 
         val localDate = intent.getSerializableExtra(INTENT_KEY) as LocalDate
         findViewById<TextView>(R.id.date_text).text = localDate.toString()
@@ -105,14 +119,21 @@ class TrainingDetailActivity: AppCompatActivity() {
         // 保存ボタン
         val saveBtn = findViewById<Button>(R.id.save_btn)
         saveBtn.setOnClickListener {
-            val saveModel = TrainingModel(
+            val saveModel = TrainingEntity(
+                0,
                 localDate,
                 measureTime,
                 measureWeight,
                 measureFat,
                 photoUri?.path
             )
-            // TODO: DBに保存
+            CoroutineScope(Dispatchers.Main).launch {
+                trainingRepository.insert(saveModel)
+                trainingRepository.getAll().collect {
+                    println(it.size)
+                }
+            }
+
             intent.putExtra(INTENT_RESULT_KEY, saveModel)
             setResult(Activity.RESULT_OK, intent)
             finish()
