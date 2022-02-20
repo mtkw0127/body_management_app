@@ -176,6 +176,7 @@ class CalendarAdapter(
                     }
                     val measureCntView = calendarCellView.findViewById<TextView>(R.id.measure_cnt)
                     measureCntView.text = it.size.toString()
+                    measureCntView.background = context.resources.getDrawable(R.drawable.label, null)
                 }
             }
         }
