@@ -105,7 +105,6 @@ class CameraActivity: AppCompatActivity() {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     // TODO: シャッター音をならす
                     Handler(Looper.getMainLooper()).post {
-                        Toast.makeText(applicationContext, "captured!!", Toast.LENGTH_SHORT).show()
                         // 古い写真を削除
                         if(this@CameraActivity::photoUri.isInitialized)photoUri.toFile().delete()
                         photoUri = checkNotNull(outputFileResults.savedUri)
@@ -172,7 +171,15 @@ class CameraActivity: AppCompatActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
+        if(requestCode == REQUEST_CODE_PERMISSIONS) {
+            for(i in grantResults.indices) {
+                val checkResult = grantResults[i] == PackageManager.PERMISSION_GRANTED
+                if(!checkResult) {
+                    finish()
+                }
+            }
+            startCamera()
+        }
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
