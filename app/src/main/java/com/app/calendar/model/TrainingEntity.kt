@@ -10,6 +10,7 @@ import java.time.LocalDateTime
 @Entity
 data class TrainingEntity(
     @PrimaryKey(autoGenerate = true) val ui: Int,
+    @ColumnInfo(name = "calendar_date") val calendarDate: LocalDate,
     @ColumnInfo(name = "capture_date") val capturedDate: LocalDate,
     @ColumnInfo(name = "capture_time") val capturedTime: LocalDateTime,
     @ColumnInfo(name = "weight") val weight:Float,

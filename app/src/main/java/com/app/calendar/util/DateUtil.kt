@@ -2,6 +2,7 @@ package com.app.calendar.util
 
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.Month
 import java.util.*
 
@@ -14,7 +15,6 @@ class DateUtil {
         COMPENSATION{},
         // 平日
         WEEKDAY{},
-
     }
 
     companion object {
@@ -23,6 +23,12 @@ class DateUtil {
          */
         fun localDateConvertJapaneseFormatYearMonth(localDate: LocalDate): String {
             return "${localDate.year}年${localDate.monthValue}月"
+        }
+
+        fun localDateConvertLocalTimeDateToTime(localDateTime: LocalDateTime): String{
+            val hour = String.format("%02d", localDateTime.hour)
+            val minute = String.format("%02d", localDateTime.minute)
+            return "${hour}時${minute}分"
         }
 
         /**

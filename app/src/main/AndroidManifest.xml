@@ -21,7 +21,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".TrainingDetailActivity"
+            android:name=".TrainingFormActivity"
+            android:exported="true"/>
+        <activity
+            android:name=".TrainingMeasureListActivity"
             android:exported="true"/>
         <activity
             android:name=".CameraActivity"

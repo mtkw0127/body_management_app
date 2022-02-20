@@ -12,6 +12,8 @@
         <entry key="app/src/main/res/layout/fat_picker_dialog.xml" value="0.21770833333333334" />
         <entry key="app/src/main/res/layout/time_picker_dialog.xml" value="0.33" />
         <entry key="app/src/main/res/layout/training_detail.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/training_measure_list.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/layout/training_measure_list_cell.xml" value="0.33" />
         <entry key="app/src/main/res/layout/weight_picker_dialog.xml" value="0.45" />
       </map>
     </option>

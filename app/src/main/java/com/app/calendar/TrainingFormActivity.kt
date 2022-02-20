@@ -10,8 +10,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
-import androidx.room.Room
-import com.app.calendar.database.AppDatabase
 import com.app.calendar.dialog.TimePickerDialog
 import com.app.calendar.dialog.FloatNumberPickerDialog
 import com.app.calendar.model.TrainingEntity
@@ -19,11 +17,14 @@ import com.app.calendar.repository.TrainingRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.selects.select
+import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-class TrainingDetailActivity: AppCompatActivity() {
+class TrainingFormActivity: AppCompatActivity() {
 
     private val trainingRepository: TrainingRepository by lazy {
         (application as TrainingApplication).repository
@@ -32,8 +33,8 @@ class TrainingDetailActivity: AppCompatActivity() {
     companion object {
         const val INTENT_KEY = "DATE"
         const val INTENT_RESULT_KEY = "INTENT_RESULT_KEY"
-        fun createTrainingDetailActivityIntent(context: Context, localDate: LocalDate): Intent {
-            val intent = Intent(context.applicationContext, TrainingDetailActivity::class.java)
+        fun createTrainingMeasureFormIntent(context: Context, localDate: LocalDate): Intent {
+            val intent = Intent(context.applicationContext, TrainingFormActivity::class.java)
             intent.putExtra(INTENT_KEY, localDate)
             return intent
         }
@@ -48,6 +49,9 @@ class TrainingDetailActivity: AppCompatActivity() {
     private var measureTime = LocalDateTime.now()
     private var measureWeight = 50F
     private var measureFat = 20.0F
+
+    // coroutineによるローディング取得
+    private var loadingEntity = true
 
     // カメラ撮影結果コールバック
     private val cameraActivityLauncher = registerForActivityResult(StartActivityForResult()) {
@@ -69,7 +73,15 @@ class TrainingDetailActivity: AppCompatActivity() {
         fatField = findViewById(R.id.fat)
 
         val localDate = intent.getSerializableExtra(INTENT_KEY) as LocalDate
-        findViewById<TextView>(R.id.date_text).text = localDate.toString()
+
+        // 対象の日付に紐づくデータが存在すれば取得する.
+        CoroutineScope(Dispatchers.Main).launch {
+            findViewById<TextView>(R.id.date_text).text = localDate.toString()
+            val trainingEntityList = trainingRepository.getEntityListByDate(localDate)
+
+            // ロード中終了
+            loadingEntity = false
+        }
 
         // カメラフィールド
         val cameraStartButton = findViewById<ImageView>(R.id.prev_img)
@@ -119,25 +131,24 @@ class TrainingDetailActivity: AppCompatActivity() {
         // 保存ボタン
         val saveBtn = findViewById<Button>(R.id.save_btn)
         saveBtn.setOnClickListener {
-            val saveModel = TrainingEntity(
-                0,
-                localDate,
-                measureTime,
-                measureWeight,
-                measureFat,
-                photoUri?.path
-            )
-            CoroutineScope(Dispatchers.Main).launch {
-                trainingRepository.insert(saveModel)
-                trainingRepository.getAll().collect {
-                    println(it.size)
+            if(!loadingEntity) {
+                val saveModel = TrainingEntity(
+                    0,
+                    localDate,// カレンダー日付
+                    localDate,// キャプチャ日付
+                    measureTime,
+                    measureWeight,
+                    measureFat,
+                    photoUri?.path
+                )
+                CoroutineScope(Dispatchers.Main).launch {
+                    trainingRepository.insert(saveModel)
                 }
-            }
 
-            intent.putExtra(INTENT_RESULT_KEY, saveModel)
-            setResult(Activity.RESULT_OK, intent)
-            finish()
+                intent.putExtra(INTENT_RESULT_KEY, saveModel)
+                setResult(Activity.RESULT_OK, intent)
+                finish()
+            }
         }
     }
-
 }

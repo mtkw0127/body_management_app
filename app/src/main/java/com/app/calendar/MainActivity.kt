@@ -14,8 +14,12 @@ import java.time.LocalDate
 
 class MainActivity : AppCompatActivity() {
 
-    private val trainingDetailActivityLauncher = registerForActivityResult(StartActivityForResult()) {
+    private val trainingMeasureFormActivityLauncher = registerForActivityResult(StartActivityForResult()) {
         // 当日のトレーニング詳細画面 -> 一覧に戻ってきた場合の処理
+    }
+
+    private val trainingMeasureListActivityLauncher = registerForActivityResult(StartActivityForResult()) {
+        // 当日のトレーニング一覧画面
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -24,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val calendarView = findViewById<GridView>(R.id.calendarGridView)
-        val calendarAdapter = CalendarAdapter(LocalDate.now(), this.applicationContext, trainingDetailActivityLauncher)
+        val calendarAdapter = CalendarAdapter(LocalDate.now(), this.applicationContext, trainingMeasureFormActivityLauncher, trainingMeasureListActivityLauncher)
         calendarView.adapter = calendarAdapter
 
         // 初期画面の年月設定

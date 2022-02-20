@@ -9,24 +9,38 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.FrameLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.app.calendar.R
-import com.app.calendar.TrainingDetailActivity
+import com.app.calendar.TrainingApplication
+import com.app.calendar.TrainingFormActivity
+import com.app.calendar.TrainingMeasureListActivity
+import com.app.calendar.repository.TrainingRepository
 import com.app.calendar.util.DateUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.temporal.ChronoField
 
 class CalendarAdapter(
     var localDate: LocalDate,
     private val context: Context,
-    private val trainingDetailActivityLauncher: ActivityResultLauncher<Intent>
+    private val trainingMeasureFormLauncher: ActivityResultLauncher<Intent>,
+    private val trainingMeasureListLauncher: ActivityResultLauncher<Intent>,
 ): BaseAdapter() {
     // その月の日付一覧
     private var dateList = Array(42){CellInfo(LocalDate.now(),MonthType.NONE)}
 
     private var inflater:LayoutInflater
+
+    private val trainingRepository: TrainingRepository by lazy {
+        (context.applicationContext as TrainingApplication).repository
+    }
 
     enum class MonthType {
         PREV,CURRENT,NEXT,NONE
@@ -140,17 +154,32 @@ class CalendarAdapter(
         when(cellInfo.monthType) {
             MonthType.PREV,MonthType.NEXT -> {
                 val color = ContextCompat.getColor(parent.context, R.color.grey)
-                val cellBackground = calendarCellView.findViewById<FrameLayout>(R.id.calendar_cell_background)
-                cellBackground.setBackgroundColor(color)
+                val dateTextView = calendarCellView.findViewById<TextView>(R.id.date)
+                dateTextView.setBackgroundColor(color)
             }
             else -> {}
         }
 
-        // セルタッチ時のイベント
-        calendarCellView.setOnClickListener {
-            val intent = TrainingDetailActivity.createTrainingDetailActivityIntent(it.context, cellInfo.localDate)
-            trainingDetailActivityLauncher.launch(intent)
+        CoroutineScope(Dispatchers.Main).launch {
+            trainingRepository.getEntityListByDate(cellInfo.localDate).collect { it ->
+                if(it.isEmpty()) {
+                    // セルタッチ時のイベント
+                    calendarCellView.setOnClickListener {
+                        val intent = TrainingFormActivity.createTrainingMeasureFormIntent(it.context, cellInfo.localDate)
+                        trainingMeasureFormLauncher.launch(intent)
+                    }
+                } else {
+                    // セルタッチ時のイベント
+                    calendarCellView.setOnClickListener {
+                        val intent = TrainingMeasureListActivity.createTrainingMeasureListIntent(it.context, cellInfo.localDate)
+                        trainingMeasureListLauncher.launch(intent)
+                    }
+                    val measureCntView = calendarCellView.findViewById<TextView>(R.id.measure_cnt)
+                    measureCntView.text = it.size.toString()
+                }
+            }
         }
+
         return calendarCellView
     }
 
