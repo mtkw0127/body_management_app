@@ -12,7 +12,7 @@ interface TrainingDao {
     @Query("SELECT * FROM trainingEntity")
     fun getAll(): Flow<List<TrainingEntity>>
 
-    @Query("SELECT * FROM trainingEntity WHERE calendar_date = :calendarDate")
+    @Query("SELECT * FROM trainingEntity WHERE calendar_date = :calendarDate ORDER BY capture_time ASC")
     fun getTrainingEntityListByDate(calendarDate: LocalDate): Flow<List<TrainingEntity>>
 
     @Insert

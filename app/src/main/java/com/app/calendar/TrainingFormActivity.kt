@@ -14,6 +14,7 @@ import com.app.calendar.dialog.TimePickerDialog
 import com.app.calendar.dialog.FloatNumberPickerDialog
 import com.app.calendar.model.TrainingEntity
 import com.app.calendar.repository.TrainingRepository
+import com.app.calendar.util.DateUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -40,13 +41,14 @@ class TrainingFormActivity: AppCompatActivity() {
         }
     }
 
-
+    private lateinit var localDate: LocalDate
     private lateinit var measureTimeView: TextView
     private lateinit var weightField: TextView
     private lateinit var fatField: TextView
 
+
     private var photoUri: Uri? = null
-    private var measureTime = LocalDateTime.now()
+    private var measureTime: LocalDateTime = LocalDateTime.now()
     private var measureWeight = 50F
     private var measureFat = 20.0F
 
@@ -72,7 +74,12 @@ class TrainingFormActivity: AppCompatActivity() {
         weightField = findViewById(R.id.weight)
         fatField = findViewById(R.id.fat)
 
-        val localDate = intent.getSerializableExtra(INTENT_KEY) as LocalDate
+        localDate = intent.getSerializableExtra(INTENT_KEY) as LocalDate
+        // 当該日のLocalDateTime.nowを取得
+        measureTime = LocalDateTime.now()
+            .withYear(localDate.year)
+            .withMonth(localDate.monthValue)
+            .withDayOfYear(localDate.dayOfMonth)
 
         // 対象の日付に紐づくデータが存在すれば取得する.
         CoroutineScope(Dispatchers.Main).launch {
@@ -95,6 +102,9 @@ class TrainingFormActivity: AppCompatActivity() {
         backBtn.setOnClickListener {
             finish()
         }
+
+        // 計測時刻初期値
+        measureTimeView.text = DateUtil.localDateConvertLocalTimeDateToTime(LocalDateTime.now())
 
         // 計測時刻
         measureTimeView.setOnClickListener {
