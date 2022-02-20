@@ -11,11 +11,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.app.calendar.model.TrainingEntity
 import com.app.calendar.repository.TrainingRepository
 import com.app.calendar.util.DateUtil
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -43,8 +47,11 @@ class TrainingMeasureListActivity: AppCompatActivity() {
 
     private lateinit var dateTextView: TextView
     private lateinit var trainingMeasureRecyclerView : RecyclerView
-    private lateinit var addBtn: Button
-    private lateinit var backBtn: Button
+    private lateinit var fab: FloatingActionButton
+    private var fabMenuVisibility = View.GONE
+    private lateinit var bodyFabBtn: MaterialButton
+    private lateinit var exerciseFabBtn: MaterialButton
+    private lateinit var foodFabBtn: MaterialButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,8 +59,6 @@ class TrainingMeasureListActivity: AppCompatActivity() {
 
         dateTextView = findViewById(R.id.date_text)
         trainingMeasureRecyclerView = findViewById(R.id.training_measure_list)
-        addBtn = findViewById(R.id.save_btn)
-        backBtn = findViewById(R.id.back_btn)
 
         val localDate = intent.getSerializableExtra(INTENT_KEY) as LocalDate
         dateTextView.text = localDate.toString()
@@ -67,12 +72,18 @@ class TrainingMeasureListActivity: AppCompatActivity() {
                 (trainingMeasureRecyclerView.adapter as RecyclerView.Adapter).notifyDataSetChanged()
             }
         }
-        addBtn.setOnClickListener {
+        fab = findViewById(R.id.floating_action_button)
+        fab.setOnClickListener {
+            fabMenuVisibility = if(fabMenuVisibility == View.GONE)View.VISIBLE else View.GONE
+            findViewById<ConstraintLayout>(R.id.end_card).visibility = fabMenuVisibility
+        }
+
+        bodyFabBtn = findViewById(R.id.body_btn)
+        exerciseFabBtn = findViewById(R.id.exercise_btn)
+        foodFabBtn = findViewById(R.id.food_btn)
+        bodyFabBtn.setOnClickListener {
             val intent = TrainingFormActivity.createTrainingMeasureFormIntent(this, localDate)
             trainingFormActivityLauncher.launch(intent)
-        }
-        backBtn.setOnClickListener {
-            finish()
         }
     }
 
