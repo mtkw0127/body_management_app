@@ -20,6 +20,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import org.w3c.dom.Text
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.ChronoField
 
@@ -30,6 +32,7 @@ class CalendarAdapter(
     private val trainingMeasureListLauncher: ActivityResultLauncher<Intent>,
 ): BaseAdapter() {
     // その月の日付一覧
+    private var dayOfWeek = arrayListOf("日", "月", "火", "水", "木", "金", "土")
     private var dateList = Array(42){CellInfo(LocalDate.now(),MonthType.NONE)}
 
     private var inflater:LayoutInflater
@@ -103,13 +106,15 @@ class CalendarAdapter(
             val nextMonthDate = firstDateOfNextMonth.plusDays(cnt.toLong())
             dateList[dateIndex] = CellInfo(nextMonthDate, MonthType.NEXT)
         }
+
+
         notifyDataSetInvalidated()
     }
 
     /**
      * ViewHolderの数を返却
      */
-    override fun getCount(): Int = dateList.size
+    override fun getCount(): Int = dateList.size+ dayOfWeek.size
 
     /**
      * アイテム取得
@@ -125,9 +130,17 @@ class CalendarAdapter(
      * ViewHolder生成
      */
     override fun getView(pos: Int, convertView: View?, parent: ViewGroup): View {
-        // cellInfoからView情報を定義する
-        val cellInfo = getItem(pos)
+        val dayOfWeekCellView = checkNotNull(inflater.inflate(R.layout.calendar_cell_day_of_week, null))
+        //  曜日設定
+        if(pos < 7) {
+            dayOfWeekCellView.findViewById<TextView>(R.id.day_of_week).text = dayOfWeek[pos]
+            return dayOfWeekCellView
+        }
+
         val calendarCellView = checkNotNull(inflater.inflate(R.layout.calendar_cell, null))
+        // 日付設定
+        // cellInfoからView情報を定義する
+        val cellInfo = getItem(pos - 7)
 
         // 日付の設定
         val dateTextView = calendarCellView.findViewById<TextView>(R.id.date)
@@ -140,6 +153,9 @@ class CalendarAdapter(
             // 平日
             DateUtil.DateType.WEEKDAY -> dateTextView.setTextColor(Color.BLACK)
         }
+        // 土曜日は青色にする
+        if(cellInfo.localDate.dayOfWeek == DayOfWeek.SATURDAY)dateTextView.setTextColor(Color.BLUE)
+
         // 当日の場合背景に丸を表示
         if(cellInfo.localDate.isEqual(LocalDate.now())) {
             // TextViewと同じ高さのBitmap作成
