@@ -7,21 +7,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.app.calendar.R
 import com.app.calendar.TrainingApplication
-import com.app.calendar.TrainingFormActivity
-import com.app.calendar.TrainingMeasureListActivity
-import com.app.calendar.repository.TrainingRepository
+import com.app.calendar.BodyMeasureFormActivity
+import com.app.calendar.MeasureListActivity
+import com.app.calendar.repository.BodyMeasureRepository
 import com.app.calendar.util.DateUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -38,7 +34,7 @@ class CalendarAdapter(
 
     private var inflater:LayoutInflater
 
-    private val trainingRepository: TrainingRepository by lazy {
+    private val bodyMeasureRepository: BodyMeasureRepository by lazy {
         (context.applicationContext as TrainingApplication).repository
     }
 
@@ -161,17 +157,17 @@ class CalendarAdapter(
         }
 
         CoroutineScope(Dispatchers.Main).launch {
-            trainingRepository.getEntityListByDate(cellInfo.localDate).collect { it ->
+            bodyMeasureRepository.getEntityListByDate(cellInfo.localDate).collect { it ->
                 if(it.isEmpty()) {
                     // セルタッチ時のイベント
                     calendarCellView.setOnClickListener {
-                        val intent = TrainingFormActivity.createTrainingMeasureFormIntent(it.context, cellInfo.localDate)
+                        val intent = BodyMeasureFormActivity.createTrainingMeasureFormIntent(it.context, cellInfo.localDate)
                         trainingMeasureFormLauncher.launch(intent)
                     }
                 } else {
                     // セルタッチ時のイベント
                     calendarCellView.setOnClickListener {
-                        val intent = TrainingMeasureListActivity.createTrainingMeasureListIntent(it.context, cellInfo.localDate)
+                        val intent = MeasureListActivity.createTrainingMeasureListIntent(it.context, cellInfo.localDate)
                         trainingMeasureListLauncher.launch(intent)
                     }
                     val measureCntView = calendarCellView.findViewById<TextView>(R.id.measure_cnt)

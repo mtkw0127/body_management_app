@@ -8,7 +8,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Entity
-data class TrainingEntity(
+data class BodyMeasureEntity(
     @PrimaryKey(autoGenerate = true) val ui: Int,
     @ColumnInfo(name = "calendar_date") val calendarDate: LocalDate,
     @ColumnInfo(name = "capture_date") val capturedDate: LocalDate,

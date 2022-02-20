@@ -6,10 +6,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.app.calendar.converter.LocalDateConverter
-import com.app.calendar.dao.TrainingDao
-import com.app.calendar.model.TrainingEntity
+import com.app.calendar.dao.BodyMeasureDao
+import com.app.calendar.model.BodyMeasureEntity
 
-@Database(entities = [TrainingEntity::class], version = 1, exportSchema = false)
+@Database(entities = [BodyMeasureEntity::class], version = 1, exportSchema = false)
 @TypeConverters(LocalDateConverter::class)
 abstract class AppDatabase: RoomDatabase() {
 
@@ -25,5 +25,5 @@ abstract class AppDatabase: RoomDatabase() {
             }
         }
     }
-    abstract fun trainingDao(): TrainingDao
+    abstract fun bodyMeasureDao(): BodyMeasureDao
 }

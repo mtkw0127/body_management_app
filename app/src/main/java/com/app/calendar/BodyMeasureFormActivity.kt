@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -13,24 +12,18 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.appcompat.app.AppCompatActivity
 import com.app.calendar.dialog.TimePickerDialog
 import com.app.calendar.dialog.FloatNumberPickerDialog
-import com.app.calendar.model.TrainingEntity
-import com.app.calendar.repository.TrainingRepository
+import com.app.calendar.model.BodyMeasureEntity
+import com.app.calendar.repository.BodyMeasureRepository
 import com.app.calendar.util.DateUtil
-import com.google.android.material.card.MaterialCardView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.count
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.selects.select
-import timber.log.Timber
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-class TrainingFormActivity: AppCompatActivity() {
+class BodyMeasureFormActivity: AppCompatActivity() {
 
-    private val trainingRepository: TrainingRepository by lazy {
+    private val bodyMeasureRepository: BodyMeasureRepository by lazy {
         (application as TrainingApplication).repository
     }
 
@@ -38,7 +31,7 @@ class TrainingFormActivity: AppCompatActivity() {
         const val INTENT_KEY = "DATE"
         const val INTENT_RESULT_KEY = "INTENT_RESULT_KEY"
         fun createTrainingMeasureFormIntent(context: Context, localDate: LocalDate): Intent {
-            val intent = Intent(context.applicationContext, TrainingFormActivity::class.java)
+            val intent = Intent(context.applicationContext, BodyMeasureFormActivity::class.java)
             intent.putExtra(INTENT_KEY, localDate)
             return intent
         }
@@ -87,7 +80,7 @@ class TrainingFormActivity: AppCompatActivity() {
         // 対象の日付に紐づくデータが存在すれば取得する.
         CoroutineScope(Dispatchers.Main).launch {
             findViewById<TextView>(R.id.date_text).text = localDate.toString()
-            val trainingEntityList = trainingRepository.getEntityListByDate(localDate)
+            val trainingEntityList = bodyMeasureRepository.getEntityListByDate(localDate)
 
             // ロード中終了
             loadingEntity = false
@@ -145,7 +138,7 @@ class TrainingFormActivity: AppCompatActivity() {
         val saveBtn = findViewById<Button>(R.id.save_btn)
         saveBtn.setOnClickListener {
             if(!loadingEntity) {
-                val saveModel = TrainingEntity(
+                val saveModel = BodyMeasureEntity(
                     0,
                     localDate,// カレンダー日付
                     localDate,// キャプチャ日付
@@ -155,7 +148,7 @@ class TrainingFormActivity: AppCompatActivity() {
                     photoUri?.path
                 )
                 CoroutineScope(Dispatchers.Main).launch {
-                    trainingRepository.insert(saveModel)
+                    bodyMeasureRepository.insert(saveModel)
                 }
 
                 intent.putExtra(INTENT_RESULT_KEY, saveModel)
