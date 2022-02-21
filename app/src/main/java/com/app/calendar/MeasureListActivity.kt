@@ -68,9 +68,16 @@ class MeasureListActivity: AppCompatActivity() {
             dateTextView.text = localDate.toString()
             val trainingEntityList = bodyMeasureRepository.getEntityListByDate(localDate)
             trainingEntityList.collect {
-                val adapter = TrainingMeasureListAdapter(it)
-                trainingMeasureRecyclerView.adapter = adapter
-                (trainingMeasureRecyclerView.adapter as RecyclerView.Adapter).notifyDataSetChanged()
+                val isEmptyMessage = findViewById<TextView>(R.id.is_empty_message)
+                isEmptyMessage.text = this@MeasureListActivity.resources.getString(R.string.not_yet_measure_message)
+                if(it.isEmpty()) {
+                    isEmptyMessage.visibility = View.VISIBLE
+                } else {
+                    isEmptyMessage.visibility = View.GONE
+                    val adapter = TrainingMeasureListAdapter(it)
+                    trainingMeasureRecyclerView.adapter = adapter
+                    (trainingMeasureRecyclerView.adapter as RecyclerView.Adapter).notifyDataSetChanged()
+                }
             }
         }
         fab = findViewById(R.id.floating_action_button)

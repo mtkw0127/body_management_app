@@ -28,7 +28,6 @@ import java.time.temporal.ChronoField
 class CalendarAdapter(
     var localDate: LocalDate,
     private val context: Context,
-    private val trainingMeasureFormLauncher: ActivityResultLauncher<Intent>,
     private val trainingMeasureListLauncher: ActivityResultLauncher<Intent>,
 ): BaseAdapter() {
     // その月の日付一覧
@@ -174,18 +173,12 @@ class CalendarAdapter(
 
         CoroutineScope(Dispatchers.Main).launch {
             bodyMeasureRepository.getEntityListByDate(cellInfo.localDate).collect { it ->
-                if(it.isEmpty()) {
-                    // セルタッチ時のイベント
-                    calendarCellView.setOnClickListener {
-                        val intent = BodyMeasureFormActivity.createTrainingMeasureFormIntent(it.context, cellInfo.localDate)
-                        trainingMeasureFormLauncher.launch(intent)
-                    }
-                } else {
-                    // セルタッチ時のイベント
-                    calendarCellView.setOnClickListener {
-                        val intent = MeasureListActivity.createTrainingMeasureListIntent(it.context, cellInfo.localDate)
-                        trainingMeasureListLauncher.launch(intent)
-                    }
+                // セルタッチ時のイベント
+                calendarCellView.setOnClickListener {
+                    val intent = MeasureListActivity.createTrainingMeasureListIntent(it.context, cellInfo.localDate)
+                    trainingMeasureListLauncher.launch(intent)
+                }
+                if(it.isNotEmpty()) {
                     val measureCntView = calendarCellView.findViewById<TextView>(R.id.measure_cnt)
                     measureCntView.text = it.size.toString()
                     measureCntView.background = context.resources.getDrawable(R.drawable.label, null)

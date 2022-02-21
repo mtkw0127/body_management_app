@@ -28,7 +28,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val calendarView = findViewById<GridView>(R.id.calendarGridView)
-        val calendarAdapter = CalendarAdapter(LocalDate.now(), this.applicationContext, trainingMeasureFormActivityLauncher, trainingMeasureListActivityLauncher)
+        val calendarAdapter = CalendarAdapter(
+            LocalDate.now(),
+            this.applicationContext,
+            trainingMeasureListActivityLauncher
+        )
         calendarView.adapter = calendarAdapter
 
         // 初期画面の年月設定
