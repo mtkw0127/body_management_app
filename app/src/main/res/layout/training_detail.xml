@@ -120,43 +120,12 @@
                     app:layout_constraintBottom_toBottomOf="parent"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- 日記-->
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/text_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/fat_field"
-                app:layout_constraintLeft_toLeftOf="parent">
-                <TextView
-                    android:id="@+id/text_label"
-                    android:layout_height="@dimen/height_label_input_container_sp"
-                    android:layout_width="@dimen/width_label_sp"
-                    android:textSize="@dimen/size_label_sp"
-                    android:textColor="@color/color_label"
-                    android:text="日記"
-                    android:gravity="center_vertical"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"/>
-                <EditText
-                    android:id="@+id/text_area"
-                    android:textSize="@dimen/size_input_sp"
-                    android:layout_width="match_parent"
-                    android:background="@drawable/border"
-                    android:inputType="text|textMultiLine"
-                    android:gravity="top"
-                    android:layout_height="300dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/text_label"/>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <!-- 写真-->
+            <!-- 体の写真-->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/photo_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/text_container"
+                app:layout_constraintTop_toBottomOf="@id/fat_field"
                 app:layout_constraintLeft_toLeftOf="parent">
                 <TextView
                     android:id="@+id/photo_label"
@@ -167,12 +136,12 @@
                     android:textColor="@color/color_label"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:text="写真" />
+                    android:text="体の写真" />
 
                 <ImageView
                     android:id="@+id/prev_img"
                     android:layout_width="match_parent"
-                    android:layout_height="300sp"
+                    android:layout_height="200sp"
                     android:background="@drawable/border"
                     app:layout_constraintTop_toBottomOf="@id/photo_label"
                     app:layout_constraintLeft_toLeftOf="parent"
