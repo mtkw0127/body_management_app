@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -31,6 +32,10 @@ class MeasureListActivity: AppCompatActivity() {
     }
 
     private val trainingFormActivityLauncher = registerForActivityResult(StartActivityForResult()) {
+
+    }
+
+    private val bodyMeasureEditFormActivityLauncher = registerForActivityResult(StartActivityForResult()) {
 
     }
 
@@ -74,7 +79,11 @@ class MeasureListActivity: AppCompatActivity() {
                     isEmptyMessage.visibility = View.VISIBLE
                 } else {
                     isEmptyMessage.visibility = View.GONE
-                    val adapter = TrainingMeasureListAdapter(it)
+                    val adapter = TrainingMeasureListAdapter(
+                        it,
+                        this@MeasureListActivity,
+                        bodyMeasureEditFormActivityLauncher
+                    )
                     trainingMeasureRecyclerView.adapter = adapter
                     (trainingMeasureRecyclerView.adapter as RecyclerView.Adapter).notifyDataSetChanged()
                 }
@@ -98,7 +107,11 @@ class MeasureListActivity: AppCompatActivity() {
     }
 
 
-    class TrainingMeasureListAdapter(private val bodyMeasureMeasureList: List<BodyMeasureEntity>):
+    class TrainingMeasureListAdapter(
+        private val bodyMeasureMeasureList: List<BodyMeasureEntity>,
+        private val context: Context,
+        private val bodyMeasureEditFormActivityLauncher: ActivityResultLauncher<Intent>
+        ):
         RecyclerView.Adapter<TrainingMeasureListAdapter.ViewHolder>() {
 
         class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -121,6 +134,10 @@ class MeasureListActivity: AppCompatActivity() {
             holder.measureFatTextView.text = "体脂肪率：${trainingEntity.fatRate}%"
             holder.captureImageView.setImageURI(trainingEntity.photoUri?.toUri())
 
+            holder.itemView.setOnClickListener {
+                val intent = BodyMeasureEditFormActivity.createMeasureFormEditIntent(context, trainingEntity.capturedTime)
+                bodyMeasureEditFormActivityLauncher.launch(intent)
+            }
         }
 
         override fun getItemCount(): Int = bodyMeasureMeasureList.size

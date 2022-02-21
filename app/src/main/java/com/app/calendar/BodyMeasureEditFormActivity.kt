@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import com.app.calendar.dialog.TimePickerDialog
 import com.app.calendar.dialog.FloatNumberPickerDialog
 import com.app.calendar.model.BodyMeasureEntity
@@ -17,30 +18,34 @@ import com.app.calendar.repository.BodyMeasureRepository
 import com.app.calendar.util.DateUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import java.time.LocalDateTime
 
-class BodyMeasureFormActivity: AppCompatActivity() {
+class BodyMeasureEditFormActivity: AppCompatActivity() {
 
     private val bodyMeasureRepository: BodyMeasureRepository by lazy {
         (application as TrainingApplication).repository
     }
 
     companion object {
-        const val INTENT_KEY = "DATE"
+        const val INTENT_KEY = "CAPTURE_DATE_TIME"
         const val INTENT_RESULT_KEY = "INTENT_RESULT_KEY"
-        fun createTrainingMeasureFormIntent(context: Context, localDate: LocalDate): Intent {
-            val intent = Intent(context.applicationContext, BodyMeasureFormActivity::class.java)
-            intent.putExtra(INTENT_KEY, localDate)
+        fun createMeasureFormEditIntent(
+            context: Context,
+            captureTime: LocalDateTime
+        ): Intent {
+            val intent = Intent(context.applicationContext, BodyMeasureEditFormActivity::class.java)
+            intent.putExtra(INTENT_KEY, captureTime)
             return intent
         }
     }
 
-    private lateinit var localDate: LocalDate
+    private lateinit var localDateTime: LocalDateTime
     private lateinit var measureTimeView: TextView
     private lateinit var weightField: TextView
     private lateinit var fatField: TextView
+    private lateinit var photoRield: ImageView
 
 
     private var photoUri: Uri? = null
@@ -50,6 +55,8 @@ class BodyMeasureFormActivity: AppCompatActivity() {
 
     // coroutineによるローディング取得
     private var loadingEntity = true
+
+    private lateinit var bodyMeasureEntity: BodyMeasureEntity
 
     // カメラ撮影結果コールバック
     private val cameraActivityLauncher = registerForActivityResult(StartActivityForResult()) {
@@ -70,20 +77,20 @@ class BodyMeasureFormActivity: AppCompatActivity() {
         weightField = findViewById(R.id.weight)
         fatField = findViewById(R.id.fat)
 
-        localDate = intent.getSerializableExtra(INTENT_KEY) as LocalDate
-        // 当該日のLocalDateTime.nowを取得
-        measureTime = LocalDateTime.now()
-            .withYear(localDate.year)
-            .withMonth(localDate.month.value)
-            .withDayOfMonth(localDate.dayOfMonth)
+        localDateTime = intent.getSerializableExtra(INTENT_KEY) as LocalDateTime
 
         // 対象の日付に紐づくデータが存在すれば取得する.
         CoroutineScope(Dispatchers.Main).launch {
-            findViewById<TextView>(R.id.date_text).text = localDate.toString()
-            val trainingEntityList = bodyMeasureRepository.getEntityListByDate(localDate)
-
-            // ロード中終了
-            loadingEntity = false
+            findViewById<TextView>(R.id.date_text).text = localDateTime.toLocalDate().toString()
+            bodyMeasureRepository.getEntityByCaptureTime(localDateTime).collect {
+                bodyMeasureEntity = it
+                measureTimeView.text = DateUtil.localDateConvertLocalTimeDateToTime(it.capturedTime)
+                weightField.text = "${it.weight}kg"
+                fatField.text = "${it.fatRate}%"
+                findViewById<ImageView>(R.id.prev_img).setImageURI(it.photoUri?.toUri())
+                // ロード中終了
+                this@BodyMeasureEditFormActivity.loadingEntity = false
+            }
         }
 
         // カメラフィールド
@@ -99,9 +106,6 @@ class BodyMeasureFormActivity: AppCompatActivity() {
             finish()
         }
 
-        // 計測時刻初期値
-        measureTimeView.text = DateUtil.localDateConvertLocalTimeDateToTime(LocalDateTime.now())
-
         // 計測時刻
         measureTimeView.setOnClickListener {
             val timePickerFragment = TimePickerDialog.createTimePickerDialog(measureTime.hour,measureTime.minute) {hour, minute ->
@@ -110,13 +114,7 @@ class BodyMeasureFormActivity: AppCompatActivity() {
                 val time = "${hourStr}時${minuteStr}分"
                 (it as TextView).text = time
                 // 計測時刻更新
-                 measureTime = LocalDateTime.of(
-                     measureTime.year,
-                     measureTime.month.value,
-                     measureTime.dayOfMonth,
-                     hour,
-                     minute
-                 )
+                measureTime = LocalDateTime.of(measureTime.year,measureTime.monthValue,measureTime.dayOfMonth,hour,minute)
             }
             timePickerFragment.show(supportFragmentManager, "TimePicker")
         }
@@ -143,22 +141,19 @@ class BodyMeasureFormActivity: AppCompatActivity() {
         // 保存ボタン
         val saveBtn = findViewById<Button>(R.id.save_btn)
         saveBtn.setOnClickListener {
-            if(!loadingEntity) {
-                 val saveModel = BodyMeasureEntity(
-                    0,
-                    localDate,// カレンダー日付
-                    localDate,// キャプチャ日付
+            if(this.loadingEntity.not()) {
+                val saveModel = BodyMeasureEntity(
+                    bodyMeasureEntity.ui,
+                    localDateTime.toLocalDate(),// カレンダー日付
+                    localDateTime.toLocalDate(),// キャプチャ日付
                     measureTime,
                     measureWeight,
                     measureFat,
                     photoUri?.path
                 )
                 CoroutineScope(Dispatchers.Main).launch {
-                    bodyMeasureRepository.insert(saveModel)
+                    bodyMeasureRepository.update(saveModel)
                 }
-
-                intent.putExtra(INTENT_RESULT_KEY, saveModel)
-                setResult(Activity.RESULT_OK, intent)
                 finish()
             }
         }
