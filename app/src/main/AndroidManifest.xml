@@ -24,6 +24,9 @@
             android:name=".BodyMeasureFormActivity"
             android:exported="true"/>
         <activity
+            android:name=".BodyMeasureEditFormActivity"
+            android:exported="true"/>
+        <activity
             android:name=".MeasureListActivity"
             android:exported="true"/>
         <activity

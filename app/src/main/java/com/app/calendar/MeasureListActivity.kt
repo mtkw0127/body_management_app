@@ -8,10 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
 import com.app.calendar.model.BodyMeasureEntity
 import com.app.calendar.repository.BodyMeasureRepository
@@ -31,6 +33,10 @@ class MeasureListActivity: AppCompatActivity() {
     }
 
     private val trainingFormActivityLauncher = registerForActivityResult(StartActivityForResult()) {
+
+    }
+
+    private val bodyMeasureEditFormActivityLauncher = registerForActivityResult(StartActivityForResult()) {
 
     }
 
@@ -54,6 +60,10 @@ class MeasureListActivity: AppCompatActivity() {
     // 戻るボタン
     private lateinit var backBtn: MaterialButton
 
+    private var loading = MutableLiveData(false)
+
+    private var entityList:List<BodyMeasureEntity> = mutableListOf()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.training_measure_list)
@@ -64,22 +74,39 @@ class MeasureListActivity: AppCompatActivity() {
         val localDate = intent.getSerializableExtra(INTENT_KEY) as LocalDate
         dateTextView.text = localDate.toString()
         // 対象の日付に紐づくデータが存在すれば取得する.
-        CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.IO).launch {
+            loading.postValue(true)
             dateTextView.text = localDate.toString()
             val trainingEntityList = bodyMeasureRepository.getEntityListByDate(localDate)
-            trainingEntityList.collect {
-                val isEmptyMessage = findViewById<TextView>(R.id.is_empty_message)
-                isEmptyMessage.text = this@MeasureListActivity.resources.getString(R.string.not_yet_measure_message)
-                if(it.isEmpty()) {
-                    isEmptyMessage.visibility = View.VISIBLE
-                } else {
-                    isEmptyMessage.visibility = View.GONE
-                    val adapter = TrainingMeasureListAdapter(it)
-                    trainingMeasureRecyclerView.adapter = adapter
-                    (trainingMeasureRecyclerView.adapter as RecyclerView.Adapter).notifyDataSetChanged()
+            try {
+                trainingEntityList.collect {
+                    val isEmptyMessage = findViewById<TextView>(R.id.is_empty_message)
+                    isEmptyMessage.text = this@MeasureListActivity.resources.getString(R.string.not_yet_measure_message)
+                    if(it.isEmpty()) {
+                        isEmptyMessage.visibility = View.VISIBLE
+                    } else {
+                        isEmptyMessage.visibility = View.GONE
+                        this@MeasureListActivity.entityList = it
+                        loading.postValue(false)
+                    }
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
+
+        loading.observe(this) { loading ->
+            if(loading.not()) {
+                val adapter = TrainingMeasureListAdapter(
+                    entityList,
+                    this@MeasureListActivity,
+                    bodyMeasureEditFormActivityLauncher
+                )
+                trainingMeasureRecyclerView.adapter = adapter
+                (trainingMeasureRecyclerView.adapter as RecyclerView.Adapter).notifyDataSetChanged()
+            }
+        }
+
         fab = findViewById(R.id.floating_action_button)
         fab.setOnClickListener {
             fabMenuVisibility = if(fabMenuVisibility == View.GONE)View.VISIBLE else View.GONE
@@ -98,7 +125,11 @@ class MeasureListActivity: AppCompatActivity() {
     }
 
 
-    class TrainingMeasureListAdapter(private val bodyMeasureMeasureList: List<BodyMeasureEntity>):
+    class TrainingMeasureListAdapter(
+        private val bodyMeasureMeasureList: List<BodyMeasureEntity>,
+        private val context: Context,
+        private val bodyMeasureEditFormActivityLauncher: ActivityResultLauncher<Intent>
+        ):
         RecyclerView.Adapter<TrainingMeasureListAdapter.ViewHolder>() {
 
         class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -121,6 +152,10 @@ class MeasureListActivity: AppCompatActivity() {
             holder.measureFatTextView.text = "体脂肪率：${trainingEntity.fatRate}%"
             holder.captureImageView.setImageURI(trainingEntity.photoUri?.toUri())
 
+            holder.itemView.setOnClickListener {
+                val intent = BodyMeasureEditFormActivity.createMeasureFormEditIntent(context, trainingEntity.capturedTime)
+                bodyMeasureEditFormActivityLauncher.launch(intent)
+            }
         }
 
         override fun getItemCount(): Int = bodyMeasureMeasureList.size
