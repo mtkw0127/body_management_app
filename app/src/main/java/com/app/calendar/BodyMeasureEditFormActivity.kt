@@ -82,14 +82,25 @@ class BodyMeasureEditFormActivity: AppCompatActivity() {
         // 対象の日付に紐づくデータが存在すれば取得する.
         CoroutineScope(Dispatchers.Main).launch {
             findViewById<TextView>(R.id.date_text).text = localDateTime.toLocalDate().toString()
-            bodyMeasureRepository.getEntityByCaptureTime(localDateTime).collect {
-                bodyMeasureEntity = it
-                measureTimeView.text = DateUtil.localDateConvertLocalTimeDateToTime(it.capturedTime)
-                weightField.text = "${it.weight}kg"
-                fatField.text = "${it.fatRate}%"
-                findViewById<ImageView>(R.id.prev_img).setImageURI(it.photoUri?.toUri())
-                // ロード中終了
-                this@BodyMeasureEditFormActivity.loadingEntity = false
+            try {
+                val flow = bodyMeasureRepository.getEntityByCaptureTime(localDateTime)
+                flow.collect {
+                    bodyMeasureEntity = it
+                    measureTimeView.text = DateUtil.localDateConvertLocalTimeDateToTime(it.capturedTime)
+                    weightField.text = "${it.weight}kg"
+                    fatField.text = "${it.fatRate}%"
+
+                    measureTime = it.capturedTime
+                    measureWeight = it.weight
+                    measureFat = it.fatRate
+                    photoUri = it.photoUri?.toUri()
+
+                    findViewById<ImageView>(R.id.prev_img).setImageURI(it.photoUri?.toUri())
+                    // ロード中終了
+                    this@BodyMeasureEditFormActivity.loadingEntity = false
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
 
