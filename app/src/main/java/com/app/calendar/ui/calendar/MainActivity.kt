@@ -1,12 +1,12 @@
 package com.app.calendar.ui.calendar
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.GridView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.appcompat.app.AppCompatActivity
 import com.app.calendar.R
 import com.app.calendar.util.DateUtil
 import com.app.calendar.util.OnSwipeTouchListener
@@ -15,10 +15,12 @@ import java.time.LocalDate
 class MainActivity : AppCompatActivity() {
 
     // 当日のトレーニング詳細画面 -> 一覧に戻ってきた場合の処理
-    private val trainingMeasureFormActivityLauncher = registerForActivityResult(StartActivityForResult()) {}
+    private val trainingMeasureFormActivityLauncher =
+        registerForActivityResult(StartActivityForResult()) {}
 
     // 当日のトレーニング一覧画面
-    private val trainingMeasureListActivityLauncher = registerForActivityResult(StartActivityForResult()) {}
+    private val trainingMeasureListActivityLauncher =
+        registerForActivityResult(StartActivityForResult()) {}
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +36,8 @@ class MainActivity : AppCompatActivity() {
         calendarView.adapter = calendarAdapter
 
         // 初期画面の年月設定
-        findViewById<TextView>(R.id.year_month_txt).text = DateUtil.localDateConvertJapaneseFormatYearMonth(calendarAdapter.localDate)
+        findViewById<TextView>(R.id.year_month_txt).text =
+            DateUtil.localDateConvertJapaneseFormatYearMonth(calendarAdapter.localDate)
 
         // 先月・翌月のリスナー登録
         val prevMonthBtn = findViewById<Button>(R.id.prev_month_btn)
@@ -42,12 +45,14 @@ class MainActivity : AppCompatActivity() {
         prevMonthBtn.setOnClickListener {
             val adapter = (calendarView.adapter as CalendarAdapter)
             adapter.createPrevMonthCalendar()
-            findViewById<TextView>(R.id.year_month_txt).text = DateUtil.localDateConvertJapaneseFormatYearMonth(adapter.localDate)
+            findViewById<TextView>(R.id.year_month_txt).text =
+                DateUtil.localDateConvertJapaneseFormatYearMonth(adapter.localDate)
         }
         nextMonthBtn.setOnClickListener {
             val adapter = (calendarView.adapter as CalendarAdapter)
             adapter.createNextMonthCalendar()
-            findViewById<TextView>(R.id.year_month_txt).text = DateUtil.localDateConvertJapaneseFormatYearMonth(adapter.localDate)
+            findViewById<TextView>(R.id.year_month_txt).text =
+                DateUtil.localDateConvertJapaneseFormatYearMonth(adapter.localDate)
         }
 
         calendarView.setOnTouchListener(object : OnSwipeTouchListener(this.applicationContext) {
@@ -56,6 +61,7 @@ class MainActivity : AppCompatActivity() {
             override fun right() {
                 prevMonthBtn.callOnClick()
             }
+
             override fun left() {
                 nextMonthBtn.callOnClick()
             }

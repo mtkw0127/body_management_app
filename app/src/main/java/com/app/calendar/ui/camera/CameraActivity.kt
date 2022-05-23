@@ -15,44 +15,29 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCapture.Metadata
+import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleOwner
-import java.nio.file.Path
-import java.text.SimpleDateFormat
-import java.util.*
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import androidx.camera.core.ImageCapture.Metadata
-import androidx.camera.core.ImageCaptureException
 import androidx.core.net.toFile
+import androidx.lifecycle.LifecycleOwner
 import com.app.calendar.R.id
 import com.app.calendar.R.layout
+import java.nio.file.Path
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 import timber.log.Timber
 
-class CameraActivity: AppCompatActivity() {
-    companion object {
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-        private const val REQUEST_CODE_PERMISSIONS = 10
-        private const val PHOTO_EXTENSION = ".jpg"
-        private const val FILE_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSSS"
-        const val INTENT_KEY_PHOTO_URI = "PHOTO_URI"
-        fun createCameraActivityIntent(context: Context): Intent {
-            return Intent(context.applicationContext, CameraActivity::class.java)
-        }
-        private fun createFile(context: Context): Path {
-            val fileName = SimpleDateFormat(FILE_FORMAT, Locale.JAPAN).format(System.currentTimeMillis()) + PHOTO_EXTENSION
-            return context.filesDir.toPath().resolve(fileName)
-        }
-    }
-
+class CameraActivity : AppCompatActivity() {
     private lateinit var imageCapture: ImageCapture
 
-    private var  lensFacing = CameraSelector.LENS_FACING_BACK
-    private lateinit var cameraSelector:CameraSelector
+    private var lensFacing = CameraSelector.LENS_FACING_BACK
+    private lateinit var cameraSelector: CameraSelector
 
     private lateinit var photoUri: Uri
     private lateinit var cameraExecutor: ExecutorService
@@ -63,7 +48,7 @@ class CameraActivity: AppCompatActivity() {
         initCamera()
         // バックグラウンドのエグゼキュータ
         cameraExecutor = Executors.newSingleThreadExecutor()
-        if(allPermissionsGranted()) {
+        if (allPermissionsGranted()) {
             startCamera()
         } else {
             permissionCheck()
@@ -71,7 +56,7 @@ class CameraActivity: AppCompatActivity() {
         val nextButton = findViewById<Button>(id.next_btn)
         nextButton.setOnClickListener {
             // 撮影した結果を返却
-            if(this@CameraActivity::photoUri.isInitialized) {
+            if (this@CameraActivity::photoUri.isInitialized) {
                 intent.putExtra(INTENT_KEY_PHOTO_URI, photoUri)
                 setResult(Activity.RESULT_OK, intent)
             }
@@ -83,7 +68,7 @@ class CameraActivity: AppCompatActivity() {
         }
         val switchCameraButton = findViewById<Button>(id.switch_camera)
         switchCameraButton.setOnClickListener {
-            lensFacing = when(lensFacing) {
+            lensFacing = when (lensFacing) {
                 CameraSelector.LENS_FACING_BACK -> CameraSelector.LENS_FACING_FRONT
                 CameraSelector.LENS_FACING_FRONT -> CameraSelector.LENS_FACING_BACK
                 else -> CameraSelector.LENS_FACING_BACK
@@ -103,25 +88,29 @@ class CameraActivity: AppCompatActivity() {
                 .setMetadata(metadata)
                 .build()
 
-            val imageSavedCapture: ImageCapture.OnImageSavedCallback = object: ImageCapture.OnImageSavedCallback {
-                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    // TODO: シャッター音をならす
-                    Handler(Looper.getMainLooper()).post {
-                        // 古い写真を削除
-                        if(this@CameraActivity::photoUri.isInitialized)photoUri.toFile().delete()
-                        photoUri = checkNotNull(outputFileResults.savedUri)
-                        val imageView = findViewById<ImageView>(id.captured_img)
-                        imageView?.setImageURI(photoUri)
+            val imageSavedCapture: ImageCapture.OnImageSavedCallback =
+                object : ImageCapture.OnImageSavedCallback {
+                    override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                        // TODO: シャッター音をならす
+                        Handler(Looper.getMainLooper()).post {
+                            // 古い写真を削除
+                            if (this@CameraActivity::photoUri.isInitialized) photoUri.toFile()
+                                .delete()
+                            photoUri = checkNotNull(outputFileResults.savedUri)
+                            val imageView = findViewById<ImageView>(id.captured_img)
+                            imageView?.setImageURI(photoUri)
+                        }
+                    }
+
+                    override fun onError(exception: ImageCaptureException) {
+                        // TODO: シャッター音をならす
+                        Handler(Looper.getMainLooper()).post {
+                            Timber.e(exception)
+                            Toast.makeText(applicationContext, "写真の撮影に失敗しました。", Toast.LENGTH_SHORT)
+                                .show()
+                        }
                     }
                 }
-                override fun onError(exception: ImageCaptureException) {
-                    // TODO: シャッター音をならす
-                    Handler(Looper.getMainLooper()).post {
-                        Timber.e(exception)
-                        Toast.makeText(applicationContext, "写真の撮影に失敗しました。", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
             imageCapture.takePicture(outputOptions, cameraExecutor, imageSavedCapture)
         }
     }
@@ -154,7 +143,8 @@ class CameraActivity: AppCompatActivity() {
 
             // Attach use cases to the camera with the same lifecycle owner
             cameraProvider.bindToLifecycle(
-                this as LifecycleOwner, cameraSelector, preview, imageCapture)
+                this as LifecycleOwner, cameraSelector, preview, imageCapture
+            )
 
             // Connect the preview use case to the previewView
             preview.setSurfaceProvider(
@@ -171,12 +161,16 @@ class CameraActivity: AppCompatActivity() {
         )
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(requestCode == REQUEST_CODE_PERMISSIONS) {
-            for(i in grantResults.indices) {
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            for (i in grantResults.indices) {
                 val checkResult = grantResults[i] == PackageManager.PERMISSION_GRANTED
-                if(!checkResult) {
+                if (!checkResult) {
                     finish()
                 }
             }
@@ -186,5 +180,24 @@ class CameraActivity: AppCompatActivity() {
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
+    }
+
+    companion object {
+        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
+        private const val REQUEST_CODE_PERMISSIONS = 10
+        private const val PHOTO_EXTENSION = ".jpg"
+        private const val FILE_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSSS"
+        const val INTENT_KEY_PHOTO_URI = "PHOTO_URI"
+        fun createCameraActivityIntent(context: Context): Intent {
+            return Intent(context.applicationContext, CameraActivity::class.java)
+        }
+
+        private fun createFile(context: Context): Path {
+            val fileName = SimpleDateFormat(
+                FILE_FORMAT,
+                Locale.JAPAN
+            ).format(System.currentTimeMillis()) + PHOTO_EXTENSION
+            return context.filesDir.toPath().resolve(fileName)
+        }
     }
 }

@@ -14,34 +14,22 @@ import androidx.core.net.toUri
 import com.app.calendar.R.id
 import com.app.calendar.R.layout
 import com.app.calendar.TrainingApplication
-import com.app.calendar.dialog.TimePickerDialog
 import com.app.calendar.dialog.FloatNumberPickerDialog
+import com.app.calendar.dialog.TimePickerDialog
 import com.app.calendar.model.BodyMeasureEntity
 import com.app.calendar.repository.BodyMeasureRepository
 import com.app.calendar.ui.camera.CameraActivity
 import com.app.calendar.util.DateUtil
+import java.time.LocalDateTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
 
-class BodyMeasureEditFormActivity: AppCompatActivity() {
+class BodyMeasureEditFormActivity : AppCompatActivity() {
 
     private val bodyMeasureRepository: BodyMeasureRepository by lazy {
         (application as TrainingApplication).repository
-    }
-
-    companion object {
-        const val INTENT_KEY = "CAPTURE_DATE_TIME"
-        fun createMeasureFormEditIntent(
-            context: Context,
-            captureTime: LocalDateTime
-        ): Intent {
-            val intent = Intent(context.applicationContext, BodyMeasureEditFormActivity::class.java)
-            intent.putExtra(INTENT_KEY, captureTime)
-            return intent
-        }
     }
 
     private lateinit var localDateTime: LocalDateTime
@@ -61,9 +49,9 @@ class BodyMeasureEditFormActivity: AppCompatActivity() {
 
     // カメラ撮影結果コールバック
     private val cameraActivityLauncher = registerForActivityResult(StartActivityForResult()) {
-        if(it.resultCode == Activity.RESULT_OK) {
+        if (it.resultCode == Activity.RESULT_OK) {
             val activityResult = it.data?.extras?.get(CameraActivity.INTENT_KEY_PHOTO_URI)
-            if(activityResult != null) {
+            if (activityResult != null) {
                 photoUri = activityResult as Uri
                 findViewById<ImageView>(id.prev_img).setImageURI(photoUri)
             }
@@ -87,7 +75,8 @@ class BodyMeasureEditFormActivity: AppCompatActivity() {
                 val flow = bodyMeasureRepository.getEntityByCaptureTime(localDateTime)
                 flow.collect {
                     bodyMeasureEntity = it
-                    measureTimeView.text = DateUtil.localDateConvertLocalTimeDateToTime(it.capturedTime)
+                    measureTimeView.text =
+                        DateUtil.localDateConvertLocalTimeDateToTime(it.capturedTime)
                     weightField.text = "${it.weight}kg"
                     fatField.text = "${it.fatRate}%"
 
@@ -120,23 +109,33 @@ class BodyMeasureEditFormActivity: AppCompatActivity() {
 
         // 計測時刻
         measureTimeView.setOnClickListener {
-            val timePickerFragment = TimePickerDialog.createTimePickerDialog(measureTime.hour,measureTime.minute) {hour, minute ->
+            val timePickerFragment = TimePickerDialog.createTimePickerDialog(
+                measureTime.hour,
+                measureTime.minute
+            ) { hour, minute ->
                 val hourStr = String.format("%02d", hour)
-                val minuteStr =String.format("%02d", minute)
+                val minuteStr = String.format("%02d", minute)
                 val time = "${hourStr}時${minuteStr}分"
                 (it as TextView).text = time
                 // 計測時刻更新
-                measureTime = LocalDateTime.of(measureTime.year,measureTime.monthValue,measureTime.dayOfMonth,hour,minute)
+                measureTime = LocalDateTime.of(
+                    measureTime.year,
+                    measureTime.monthValue,
+                    measureTime.dayOfMonth,
+                    hour,
+                    minute
+                )
             }
             timePickerFragment.show(supportFragmentManager, "TimePicker")
         }
 
         // 体重
         weightField.setOnClickListener {
-            val weightPickerFragment = FloatNumberPickerDialog.createDialog(measureWeight, "kg") { weight ->
-                (it as TextView).text = "${weight}kg"
-                measureWeight = weight
-            }
+            val weightPickerFragment =
+                FloatNumberPickerDialog.createDialog(measureWeight, "kg") { weight ->
+                    (it as TextView).text = "${weight}kg"
+                    measureWeight = weight
+                }
             weightPickerFragment.show(supportFragmentManager, "WeightPicker")
         }
 
@@ -153,7 +152,7 @@ class BodyMeasureEditFormActivity: AppCompatActivity() {
         // 保存ボタン
         val saveBtn = findViewById<Button>(id.save_btn)
         saveBtn.setOnClickListener {
-            if(this.loadingEntity.not()) {
+            if (this.loadingEntity.not()) {
                 val saveModel = BodyMeasureEntity(
                     bodyMeasureEntity.ui,
                     localDateTime.toLocalDate(),// カレンダー日付
@@ -168,6 +167,18 @@ class BodyMeasureEditFormActivity: AppCompatActivity() {
                 }
                 finish()
             }
+        }
+    }
+
+    companion object {
+        const val INTENT_KEY = "CAPTURE_DATE_TIME"
+        fun createMeasureFormEditIntent(
+            context: Context,
+            captureTime: LocalDateTime
+        ): Intent {
+            val intent = Intent(context.applicationContext, BodyMeasureEditFormActivity::class.java)
+            intent.putExtra(INTENT_KEY, captureTime)
+            return intent
         }
     }
 }

@@ -11,19 +11,22 @@ import com.app.calendar.model.BodyMeasureEntity
 
 @Database(entities = [BodyMeasureEntity::class], version = 1, exportSchema = false)
 @TypeConverters(LocalDateConverter::class)
-abstract class AppDatabase: RoomDatabase() {
+abstract class AppDatabase : RoomDatabase() {
 
     companion object {
-
-        private var db:AppDatabase? = null
+ 
+        private var db: AppDatabase? = null
 
         fun createDatabase(applicationContext: Context): AppDatabase {
             return db ?: synchronized(this) {
-                val instance = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "database").build()
+                val instance =
+                    Room.databaseBuilder(applicationContext, AppDatabase::class.java, "database")
+                        .build()
                 db = instance
                 instance
             }
         }
     }
+
     abstract fun bodyMeasureDao(): BodyMeasureDao
 }

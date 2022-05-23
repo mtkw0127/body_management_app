@@ -9,29 +9,13 @@ import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.app.calendar.R
 
-class FloatNumberPickerDialog: DialogFragment(){
+class FloatNumberPickerDialog : DialogFragment() {
     private var number: Float = 0.0F
     private var unit: String = ""
     private lateinit var bigPicker: NumberPicker
     private lateinit var smallPicker: NumberPicker
     private lateinit var unitTextView: TextView
-    private lateinit var callBack:(weight:Float)->Unit
-
-    companion object {
-        const val NUMBER = "NUMBER"
-        const val UNIT = "UNIT"
-
-        fun createDialog(number: Float,unit: String, callBack: (weight:Float)->Unit):FloatNumberPickerDialog {
-            val numberPickerDialog = FloatNumberPickerDialog()
-            val bundle = Bundle()
-            bundle.putFloat(NUMBER, number)
-            bundle.putString(UNIT, unit)
-            numberPickerDialog.arguments = bundle
-            numberPickerDialog.callBack = callBack
-            return numberPickerDialog
-        }
-
-    }
+    private lateinit var callBack: (weight: Float) -> Unit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +41,7 @@ class FloatNumberPickerDialog: DialogFragment(){
 
         smallPicker.minValue = 0
         smallPicker.maxValue = 99
-        smallPicker.value = ((number - number.toInt())*100).toInt()
+        smallPicker.value = ((number - number.toInt()) * 100).toInt()
 
         unitTextView = dialogLayout.findViewById(R.id.small_weight_txt)
         unitTextView.text = unit
@@ -70,5 +54,23 @@ class FloatNumberPickerDialog: DialogFragment(){
         }
 
         return dialogBuilder.setView(dialogLayout).create()
+    }
+
+    companion object {
+        const val NUMBER = "NUMBER"
+        const val UNIT = "UNIT"
+        fun createDialog(
+            number: Float,
+            unit: String,
+            callBack: (weight: Float) -> Unit
+        ): FloatNumberPickerDialog {
+            val numberPickerDialog = FloatNumberPickerDialog()
+            val bundle = Bundle()
+            bundle.putFloat(NUMBER, number)
+            bundle.putString(UNIT, unit)
+            numberPickerDialog.arguments = bundle
+            numberPickerDialog.callBack = callBack
+            return numberPickerDialog
+        }
     }
 }

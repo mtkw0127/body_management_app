@@ -13,32 +13,22 @@ import androidx.appcompat.app.AppCompatActivity
 import com.app.calendar.R.id
 import com.app.calendar.R.layout
 import com.app.calendar.TrainingApplication
-import com.app.calendar.dialog.TimePickerDialog
 import com.app.calendar.dialog.FloatNumberPickerDialog
+import com.app.calendar.dialog.TimePickerDialog
 import com.app.calendar.model.BodyMeasureEntity
 import com.app.calendar.repository.BodyMeasureRepository
 import com.app.calendar.ui.camera.CameraActivity
 import com.app.calendar.util.DateUtil
+import java.time.LocalDate
+import java.time.LocalDateTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.LocalDateTime
 
-class BodyMeasureFormActivity: AppCompatActivity() {
+class BodyMeasureFormActivity : AppCompatActivity() {
 
     private val bodyMeasureRepository: BodyMeasureRepository by lazy {
         (application as TrainingApplication).repository
-    }
-
-    companion object {
-        const val INTENT_KEY = "DATE"
-        const val INTENT_RESULT_KEY = "INTENT_RESULT_KEY"
-        fun createTrainingMeasureFormIntent(context: Context, localDate: LocalDate): Intent {
-            val intent = Intent(context.applicationContext, BodyMeasureFormActivity::class.java)
-            intent.putExtra(INTENT_KEY, localDate)
-            return intent
-        }
     }
 
     private lateinit var localDate: LocalDate
@@ -57,9 +47,9 @@ class BodyMeasureFormActivity: AppCompatActivity() {
 
     // カメラ撮影結果コールバック
     private val cameraActivityLauncher = registerForActivityResult(StartActivityForResult()) {
-        if(it.resultCode == Activity.RESULT_OK) {
+        if (it.resultCode == Activity.RESULT_OK) {
             val activityResult = it.data?.extras?.get(CameraActivity.INTENT_KEY_PHOTO_URI)
-            if(activityResult != null) {
+            if (activityResult != null) {
                 photoUri = activityResult as Uri
                 findViewById<ImageView>(id.prev_img).setImageURI(photoUri)
             }
@@ -108,29 +98,33 @@ class BodyMeasureFormActivity: AppCompatActivity() {
 
         // 計測時刻
         measureTimeView.setOnClickListener {
-            val timePickerFragment = TimePickerDialog.createTimePickerDialog(measureTime.hour,measureTime.minute) {hour, minute ->
+            val timePickerFragment = TimePickerDialog.createTimePickerDialog(
+                measureTime.hour,
+                measureTime.minute
+            ) { hour, minute ->
                 val hourStr = String.format("%02d", hour)
-                val minuteStr =String.format("%02d", minute)
+                val minuteStr = String.format("%02d", minute)
                 val time = "${hourStr}時${minuteStr}分"
                 (it as TextView).text = time
                 // 計測時刻更新
-                 measureTime = LocalDateTime.of(
-                     measureTime.year,
-                     measureTime.month.value,
-                     measureTime.dayOfMonth,
-                     hour,
-                     minute
-                 )
+                measureTime = LocalDateTime.of(
+                    measureTime.year,
+                    measureTime.month.value,
+                    measureTime.dayOfMonth,
+                    hour,
+                    minute
+                )
             }
             timePickerFragment.show(supportFragmentManager, "TimePicker")
         }
 
         // 体重
         weightField.setOnClickListener {
-            val weightPickerFragment = FloatNumberPickerDialog.createDialog(measureWeight, "kg") { weight ->
-                (it as TextView).text = "${weight}kg"
-                measureWeight = weight
-            }
+            val weightPickerFragment =
+                FloatNumberPickerDialog.createDialog(measureWeight, "kg") { weight ->
+                    (it as TextView).text = "${weight}kg"
+                    measureWeight = weight
+                }
             weightPickerFragment.show(supportFragmentManager, "WeightPicker")
         }
 
@@ -147,8 +141,8 @@ class BodyMeasureFormActivity: AppCompatActivity() {
         // 保存ボタン
         val saveBtn = findViewById<Button>(id.save_btn)
         saveBtn.setOnClickListener {
-            if(!loadingEntity) {
-                 val saveModel = BodyMeasureEntity(
+            if (!loadingEntity) {
+                val saveModel = BodyMeasureEntity(
                     0,
                     localDate,// カレンダー日付
                     localDate,// キャプチャ日付
@@ -165,6 +159,16 @@ class BodyMeasureFormActivity: AppCompatActivity() {
                 setResult(Activity.RESULT_OK, intent)
                 finish()
             }
+        }
+    }
+
+    companion object {
+        const val INTENT_KEY = "DATE"
+        const val INTENT_RESULT_KEY = "INTENT_RESULT_KEY"
+        fun createTrainingMeasureFormIntent(context: Context, localDate: LocalDate): Intent {
+            val intent = Intent(context.applicationContext, BodyMeasureFormActivity::class.java)
+            intent.putExtra(INTENT_KEY, localDate)
+            return intent
         }
     }
 }

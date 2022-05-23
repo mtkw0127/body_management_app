@@ -3,13 +3,11 @@ package com.app.calendar.repository
 import androidx.annotation.WorkerThread
 import com.app.calendar.dao.BodyMeasureDao
 import com.app.calendar.model.BodyMeasureEntity
-import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import java.time.LocalDateTime
+import kotlinx.coroutines.flow.Flow
 
 class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
-
-    fun getAll(): Flow<List<BodyMeasureEntity>> = trainingDao.getAll()
 
     @WorkerThread
     suspend fun insert(bodyMeasureEntity: BodyMeasureEntity) {

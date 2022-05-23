@@ -15,5 +15,6 @@ class LocalDateConverter {
     fun fromLocalDateTime(localDateTime: LocalDateTime): String = localDateTime.toString()
 
     @TypeConverter
-    fun toLocalDateTime(stringLocalDateTime: String): LocalDateTime = LocalDateTime.parse(stringLocalDateTime)
+    fun toLocalDateTime(stringLocalDateTime: String): LocalDateTime =
+        LocalDateTime.parse(stringLocalDateTime)
 }

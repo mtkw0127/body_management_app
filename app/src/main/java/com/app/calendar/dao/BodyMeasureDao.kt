@@ -5,9 +5,9 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.app.calendar.model.BodyMeasureEntity
-import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import java.time.LocalDateTime
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BodyMeasureDao {
@@ -24,5 +24,5 @@ interface BodyMeasureDao {
     suspend fun insert(bodyMeasureEntity: BodyMeasureEntity)
 
     @Update
-    suspend fun update(bodyMeasureEntity: BodyMeasureEntity):Int
+    suspend fun update(bodyMeasureEntity: BodyMeasureEntity): Int
 }
