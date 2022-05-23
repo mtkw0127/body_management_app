@@ -1,4 +1,4 @@
-package com.app.calendar.adapter
+package com.app.calendar.ui.calendar
 
 import android.content.Context
 import android.content.Intent
@@ -12,15 +12,17 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.ContextCompat
 import com.app.calendar.R
 import com.app.calendar.TrainingApplication
-import com.app.calendar.BodyMeasureFormActivity
-import com.app.calendar.MeasureListActivity
+import com.app.calendar.ui.measure.list.MeasureListActivity
 import com.app.calendar.repository.BodyMeasureRepository
+import com.app.calendar.ui.calendar.CalendarAdapter.MonthType.CURRENT
+import com.app.calendar.ui.calendar.CalendarAdapter.MonthType.NEXT
+import com.app.calendar.ui.calendar.CalendarAdapter.MonthType.NONE
+import com.app.calendar.ui.calendar.CalendarAdapter.MonthType.PREV
 import com.app.calendar.util.DateUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import org.w3c.dom.Text
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.ChronoField
@@ -32,7 +34,7 @@ class CalendarAdapter(
 ): BaseAdapter() {
     // その月の日付一覧
     private var dayOfWeek = arrayListOf("日", "月", "火", "水", "木", "金", "土")
-    private var dateList = Array(42){CellInfo(LocalDate.now(),MonthType.NONE)}
+    private var dateList = Array(42){ CellInfo(LocalDate.now(), NONE) }
 
     private var inflater:LayoutInflater
 
@@ -88,7 +90,7 @@ class CalendarAdapter(
         // 前月
         for((cnt, dateIndex) in (0 until firstIndexOfThisMonth).withIndex()) {
             val prevMonthDate = lastDateOfPrevMonth.minusDays((firstIndexOfThisMonth - cnt -1).toLong())
-            dateList[dateIndex] = CellInfo(prevMonthDate, MonthType.PREV)
+            dateList[dateIndex] = CellInfo(prevMonthDate, PREV)
         }
 
         // 当月
@@ -97,13 +99,13 @@ class CalendarAdapter(
         val lastIndexOfThisMonth = firstIndexOfThisMonth+lastDayOfThisMonth
         for((cnt, dateIndex) in (firstIndexOfThisMonth until lastIndexOfThisMonth).withIndex()) {
             val currentDate = firstDateOfThisMonth.plusDays(cnt.toLong())
-            dateList[dateIndex] = CellInfo(currentDate, MonthType.CURRENT)
+            dateList[dateIndex] = CellInfo(currentDate, CURRENT)
         }
 
         // 翌月
         for((cnt, dateIndex) in (lastIndexOfThisMonth until dateList.size).withIndex()) {
             val nextMonthDate = firstDateOfNextMonth.plusDays(cnt.toLong())
-            dateList[dateIndex] = CellInfo(nextMonthDate, MonthType.NEXT)
+            dateList[dateIndex] = CellInfo(nextMonthDate, NEXT)
         }
 
 
@@ -163,7 +165,7 @@ class CalendarAdapter(
         }
         // 先月・翌月の背景は灰色に変更
         when(cellInfo.monthType) {
-            MonthType.PREV,MonthType.NEXT -> {
+            PREV, NEXT -> {
                 val color = ContextCompat.getColor(parent.context, R.color.grey)
                 val dateTextView = calendarCellView.findViewById<TextView>(R.id.date)
                 dateTextView.setBackgroundColor(color)

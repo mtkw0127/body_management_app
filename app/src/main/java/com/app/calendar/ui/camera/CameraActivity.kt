@@ -1,4 +1,4 @@
-package com.app.calendar
+package com.app.calendar.ui.camera
 
 import android.Manifest
 import android.app.Activity
@@ -29,6 +29,8 @@ import java.util.concurrent.Executors
 import androidx.camera.core.ImageCapture.Metadata
 import androidx.camera.core.ImageCaptureException
 import androidx.core.net.toFile
+import com.app.calendar.R.id
+import com.app.calendar.R.layout
 import timber.log.Timber
 
 class CameraActivity: AppCompatActivity() {
@@ -57,7 +59,7 @@ class CameraActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.camera_preview)
+        setContentView(layout.camera_preview)
         initCamera()
         // バックグラウンドのエグゼキュータ
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -66,7 +68,7 @@ class CameraActivity: AppCompatActivity() {
         } else {
             permissionCheck()
         }
-        val nextButton = findViewById<Button>(R.id.next_btn)
+        val nextButton = findViewById<Button>(id.next_btn)
         nextButton.setOnClickListener {
             // 撮影した結果を返却
             if(this@CameraActivity::photoUri.isInitialized) {
@@ -75,11 +77,11 @@ class CameraActivity: AppCompatActivity() {
             }
             finish()
         }
-        val backButton = findViewById<Button>(R.id.back_from_camera_btn)
+        val backButton = findViewById<Button>(id.back_from_camera_btn)
         backButton.setOnClickListener {
             finish()
         }
-        val switchCameraButton = findViewById<Button>(R.id.switch_camera)
+        val switchCameraButton = findViewById<Button>(id.switch_camera)
         switchCameraButton.setOnClickListener {
             lensFacing = when(lensFacing) {
                 CameraSelector.LENS_FACING_BACK -> CameraSelector.LENS_FACING_FRONT
@@ -89,7 +91,7 @@ class CameraActivity: AppCompatActivity() {
             initCamera()
             startCamera()
         }
-        val takePhotoButton = findViewById<Button>(R.id.shutter_btn)
+        val takePhotoButton = findViewById<Button>(id.shutter_btn)
         takePhotoButton.setOnClickListener {
             val photoOutputFilePath = createFile(it.context)
             val metadata = Metadata().apply {
@@ -108,7 +110,7 @@ class CameraActivity: AppCompatActivity() {
                         // 古い写真を削除
                         if(this@CameraActivity::photoUri.isInitialized)photoUri.toFile().delete()
                         photoUri = checkNotNull(outputFileResults.savedUri)
-                        val imageView = findViewById<ImageView>(R.id.captured_img)
+                        val imageView = findViewById<ImageView>(id.captured_img)
                         imageView?.setImageURI(photoUri)
                     }
                 }
@@ -134,7 +136,7 @@ class CameraActivity: AppCompatActivity() {
      * カメラ起動
      */
     private fun startCamera() {
-        val previewView = findViewById<PreviewView>(R.id.camera_preview)
+        val previewView = findViewById<PreviewView>(id.camera_preview)
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener(Runnable {
             // Camera provider is now guaranteed to be available

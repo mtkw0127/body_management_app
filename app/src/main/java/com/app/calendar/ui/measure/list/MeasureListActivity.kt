@@ -1,4 +1,4 @@
-package com.app.calendar
+package com.app.calendar.ui.measure.list
 
 import android.content.Context
 import android.content.Intent
@@ -15,8 +15,15 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.net.toUri
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
+import com.app.calendar.ui.measure.body.edit.BodyMeasureEditFormActivity
+import com.app.calendar.ui.measure.body.form.BodyMeasureFormActivity
+import com.app.calendar.R.id
+import com.app.calendar.R.layout
+import com.app.calendar.R.string
+import com.app.calendar.TrainingApplication
 import com.app.calendar.model.BodyMeasureEntity
 import com.app.calendar.repository.BodyMeasureRepository
+import com.app.calendar.ui.measure.list.MeasureListActivity.TrainingMeasureListAdapter.ViewHolder
 import com.app.calendar.util.DateUtil
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -32,22 +39,9 @@ class MeasureListActivity: AppCompatActivity() {
         (application as TrainingApplication).repository
     }
 
-    private val trainingFormActivityLauncher = registerForActivityResult(StartActivityForResult()) {
+    private val trainingFormActivityLauncher = registerForActivityResult(StartActivityForResult()) {}
 
-    }
-
-    private val bodyMeasureEditFormActivityLauncher = registerForActivityResult(StartActivityForResult()) {
-
-    }
-
-    companion object {
-        private const val INTENT_KEY = "DATE"
-        fun createTrainingMeasureListIntent(context: Context, localDate: LocalDate): Intent{
-            val intent = Intent(context.applicationContext, MeasureListActivity::class.java)
-            intent.putExtra(INTENT_KEY, localDate)
-            return intent
-        }
-    }
+    private val bodyMeasureEditFormActivityLauncher = registerForActivityResult(StartActivityForResult()) {}
 
     private lateinit var dateTextView: TextView
     private lateinit var trainingMeasureRecyclerView : RecyclerView
@@ -66,10 +60,10 @@ class MeasureListActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.training_measure_list)
+        setContentView(layout.training_measure_list)
 
-        dateTextView = findViewById(R.id.date_text)
-        trainingMeasureRecyclerView = findViewById(R.id.training_measure_list)
+        dateTextView = findViewById(id.date_text)
+        trainingMeasureRecyclerView = findViewById(id.training_measure_list)
 
         val localDate = intent.getSerializableExtra(INTENT_KEY) as LocalDate
         dateTextView.text = localDate.toString()
@@ -80,8 +74,8 @@ class MeasureListActivity: AppCompatActivity() {
             val trainingEntityList = bodyMeasureRepository.getEntityListByDate(localDate)
             try {
                 trainingEntityList.collect {
-                    val isEmptyMessage = findViewById<TextView>(R.id.is_empty_message)
-                    isEmptyMessage.text = this@MeasureListActivity.resources.getString(R.string.not_yet_measure_message)
+                    val isEmptyMessage = findViewById<TextView>(id.is_empty_message)
+                    isEmptyMessage.text = this@MeasureListActivity.resources.getString(string.not_yet_measure_message)
                     if(it.isEmpty()) {
                         isEmptyMessage.visibility = View.VISIBLE
                     } else {
@@ -107,20 +101,20 @@ class MeasureListActivity: AppCompatActivity() {
             }
         }
 
-        fab = findViewById(R.id.floating_action_button)
+        fab = findViewById(id.floating_action_button)
         fab.setOnClickListener {
             fabMenuVisibility = if(fabMenuVisibility == View.GONE)View.VISIBLE else View.GONE
-            findViewById<ConstraintLayout>(R.id.end_card).visibility = fabMenuVisibility
+            findViewById<ConstraintLayout>(id.end_card).visibility = fabMenuVisibility
         }
 
-        bodyFabBtn = findViewById(R.id.body_btn)
-        exerciseFabBtn = findViewById(R.id.exercise_btn)
-        foodFabBtn = findViewById(R.id.food_btn)
+        bodyFabBtn = findViewById(id.body_btn)
+        exerciseFabBtn = findViewById(id.exercise_btn)
+        foodFabBtn = findViewById(id.food_btn)
         bodyFabBtn.setOnClickListener {
             val intent = BodyMeasureFormActivity.createTrainingMeasureFormIntent(this, localDate)
             trainingFormActivityLauncher.launch(intent)
         }
-        backBtn = findViewById(R.id.back_btn)
+        backBtn = findViewById(id.back_btn)
         backBtn.setOnClickListener{finish()}
     }
 
@@ -130,18 +124,18 @@ class MeasureListActivity: AppCompatActivity() {
         private val context: Context,
         private val bodyMeasureEditFormActivityLauncher: ActivityResultLauncher<Intent>
         ):
-        RecyclerView.Adapter<TrainingMeasureListAdapter.ViewHolder>() {
+        RecyclerView.Adapter<ViewHolder>() {
 
         class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
-            var measureTimeTextView: TextView = view.findViewById(R.id.measure_time)
-            var measureWeightTextView: TextView = view.findViewById(R.id.weight)
-            var measureFatTextView: TextView = view.findViewById(R.id.fat)
-            var captureImageView: ImageView = view.findViewById(R.id.image_view)
+            var measureTimeTextView: TextView = view.findViewById(id.measure_time)
+            var measureWeightTextView: TextView = view.findViewById(id.weight)
+            var measureFatTextView: TextView = view.findViewById(id.fat)
+            var captureImageView: ImageView = view.findViewById(id.image_view)
         }
 
         override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
             val layoutInflater = LayoutInflater.from(viewGroup.context)
-            val view = layoutInflater.inflate(R.layout.training_measure_list_cell, viewGroup, false)
+            val view = layoutInflater.inflate(layout.training_measure_list_cell, viewGroup, false)
             return ViewHolder(view)
         }
 
@@ -153,11 +147,23 @@ class MeasureListActivity: AppCompatActivity() {
             holder.captureImageView.setImageURI(trainingEntity.photoUri?.toUri())
 
             holder.itemView.setOnClickListener {
-                val intent = BodyMeasureEditFormActivity.createMeasureFormEditIntent(context, trainingEntity.capturedTime)
+                val intent = BodyMeasureEditFormActivity.createMeasureFormEditIntent(
+                    context,
+                    trainingEntity.capturedTime
+                )
                 bodyMeasureEditFormActivityLauncher.launch(intent)
             }
         }
 
         override fun getItemCount(): Int = bodyMeasureMeasureList.size
+    }
+
+    companion object {
+        private const val INTENT_KEY = "DATE"
+        fun createTrainingMeasureListIntent(context: Context, localDate: LocalDate): Intent{
+            val intent = Intent(context.applicationContext, MeasureListActivity::class.java)
+            intent.putExtra(INTENT_KEY, localDate)
+            return intent
+        }
     }
 }

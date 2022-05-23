@@ -1,4 +1,4 @@
-package com.app.calendar
+package com.app.calendar.ui.calendar
 
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
@@ -7,20 +7,18 @@ import android.widget.Button
 import android.widget.GridView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
-import com.app.calendar.adapter.CalendarAdapter
+import com.app.calendar.R
 import com.app.calendar.util.DateUtil
 import com.app.calendar.util.OnSwipeTouchListener
 import java.time.LocalDate
 
 class MainActivity : AppCompatActivity() {
 
-    private val trainingMeasureFormActivityLauncher = registerForActivityResult(StartActivityForResult()) {
-        // 当日のトレーニング詳細画面 -> 一覧に戻ってきた場合の処理
-    }
+    // 当日のトレーニング詳細画面 -> 一覧に戻ってきた場合の処理
+    private val trainingMeasureFormActivityLauncher = registerForActivityResult(StartActivityForResult()) {}
 
-    private val trainingMeasureListActivityLauncher = registerForActivityResult(StartActivityForResult()) {
-        // 当日のトレーニング一覧画面
-    }
+    // 当日のトレーニング一覧画面
+    private val trainingMeasureListActivityLauncher = registerForActivityResult(StartActivityForResult()) {}
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {

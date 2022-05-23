@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CalendarApp">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.calendar.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,16 +21,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".BodyMeasureFormActivity"
+            android:name="com.app.calendar.ui.measure.body.form.BodyMeasureFormActivity"
             android:exported="true"/>
         <activity
-            android:name=".BodyMeasureEditFormActivity"
+            android:name="com.app.calendar.ui.measure.body.edit.BodyMeasureEditFormActivity"
             android:exported="true"/>
         <activity
-            android:name=".MeasureListActivity"
+            android:name=".ui.measure.list.MeasureListActivity"
             android:exported="true"/>
         <activity
-            android:name=".CameraActivity"
+            android:name=".ui.camera.CameraActivity"
             android:exported="true"/>
     </application>
 
