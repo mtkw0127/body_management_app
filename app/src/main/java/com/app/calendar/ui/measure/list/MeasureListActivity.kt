@@ -21,6 +21,7 @@ import com.app.calendar.R.id
 import com.app.calendar.R.layout
 import com.app.calendar.R.string
 import com.app.calendar.TrainingApplication
+import com.app.calendar.databinding.TrainingMeasureListBinding
 import com.app.calendar.model.BodyMeasureEntity
 import com.app.calendar.repository.BodyMeasureRepository
 import com.app.calendar.ui.measure.list.MeasureListActivity.TrainingMeasureListAdapter.ViewHolder
@@ -43,34 +44,26 @@ class MeasureListActivity: AppCompatActivity() {
 
     private val bodyMeasureEditFormActivityLauncher = registerForActivityResult(StartActivityForResult()) {}
 
-    private lateinit var dateTextView: TextView
-    private lateinit var trainingMeasureRecyclerView : RecyclerView
-    private lateinit var fab: FloatingActionButton
     private var fabMenuVisibility = View.GONE
-    // Fabボタン
-    private lateinit var bodyFabBtn: MaterialButton
-    private lateinit var exerciseFabBtn: MaterialButton
-    private lateinit var foodFabBtn: MaterialButton
-    // 戻るボタン
-    private lateinit var backBtn: MaterialButton
 
     private var loading = MutableLiveData(false)
 
     private var entityList:List<BodyMeasureEntity> = mutableListOf()
 
+    private lateinit var binding: TrainingMeasureListBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(layout.training_measure_list)
+        binding = TrainingMeasureListBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        dateTextView = findViewById(id.date_text)
-        trainingMeasureRecyclerView = findViewById(id.training_measure_list)
 
         val localDate = intent.getSerializableExtra(INTENT_KEY) as LocalDate
-        dateTextView.text = localDate.toString()
+        binding.dateText.text = localDate.toString()
         // 対象の日付に紐づくデータが存在すれば取得する.
         CoroutineScope(Dispatchers.IO).launch {
             loading.postValue(true)
-            dateTextView.text = localDate.toString()
+            binding.dateText.text = localDate.toString()
             val trainingEntityList = bodyMeasureRepository.getEntityListByDate(localDate)
             try {
                 trainingEntityList.collect {
@@ -96,26 +89,21 @@ class MeasureListActivity: AppCompatActivity() {
                     this@MeasureListActivity,
                     bodyMeasureEditFormActivityLauncher
                 )
-                trainingMeasureRecyclerView.adapter = adapter
-                (trainingMeasureRecyclerView.adapter as RecyclerView.Adapter).notifyDataSetChanged()
+                binding.trainingMeasureList.adapter = adapter
+                adapter.notifyDataSetChanged()
             }
         }
 
-        fab = findViewById(id.floating_action_button)
-        fab.setOnClickListener {
+        binding.floatingActionButton.setOnClickListener {
             fabMenuVisibility = if(fabMenuVisibility == View.GONE)View.VISIBLE else View.GONE
             findViewById<ConstraintLayout>(id.end_card).visibility = fabMenuVisibility
         }
 
-        bodyFabBtn = findViewById(id.body_btn)
-        exerciseFabBtn = findViewById(id.exercise_btn)
-        foodFabBtn = findViewById(id.food_btn)
-        bodyFabBtn.setOnClickListener {
+        binding.bodyBtn.setOnClickListener {
             val intent = BodyMeasureFormActivity.createTrainingMeasureFormIntent(this, localDate)
             trainingFormActivityLauncher.launch(intent)
         }
-        backBtn = findViewById(id.back_btn)
-        backBtn.setOnClickListener{finish()}
+        binding.backBtn.setOnClickListener{finish()}
     }
 
 
