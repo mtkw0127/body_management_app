@@ -2,68 +2,77 @@ package com.app.calendar.ui.calendar
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.widget.Button
-import android.widget.GridView
-import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
-import com.app.calendar.R
+import com.app.calendar.databinding.ActivityMainBinding
 import com.app.calendar.util.DateUtil
 import com.app.calendar.util.OnSwipeTouchListener
 import java.time.LocalDate
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var adapter: CalendarAdapter
+
     // 当日のトレーニング詳細画面 -> 一覧に戻ってきた場合の処理
     private val trainingMeasureFormActivityLauncher =
-        registerForActivityResult(StartActivityForResult()) {}
+        registerForActivityResult(StartActivityForResult()) {
+            adapter.notifyDataSetChanged()
+        }
 
     // 当日のトレーニング一覧画面
     private val trainingMeasureListActivityLauncher =
-        registerForActivityResult(StartActivityForResult()) {}
+        registerForActivityResult(StartActivityForResult()) {
+            adapter.notifyDataSetChanged()
+        }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding.lifecycleOwner = this
+        setContentView(binding.root)
 
-        val calendarView = findViewById<GridView>(R.id.calendarGridView)
-        val calendarAdapter = CalendarAdapter(
+        adapter = CalendarAdapter(
             LocalDate.now(),
             this.applicationContext,
             trainingMeasureListActivityLauncher
         )
-        calendarView.adapter = calendarAdapter
+        binding.calendarGridView.adapter = adapter
 
         // 初期画面の年月設定
-        findViewById<TextView>(R.id.year_month_txt).text =
-            DateUtil.localDateConvertJapaneseFormatYearMonth(calendarAdapter.localDate)
+        binding.yearMonthTxt.text =
+            DateUtil.localDateConvertJapaneseFormatYearMonth(adapter.localDate)
 
+        initListener()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initListener() {
         // 先月・翌月のリスナー登録
-        val prevMonthBtn = findViewById<Button>(R.id.prev_month_btn)
-        val nextMonthBtn = findViewById<Button>(R.id.next_month_btn)
-        prevMonthBtn.setOnClickListener {
-            val adapter = (calendarView.adapter as CalendarAdapter)
+        binding.prevMonthBtn.setOnClickListener {
+            val adapter = (binding.calendarGridView.adapter as CalendarAdapter)
             adapter.createPrevMonthCalendar()
-            findViewById<TextView>(R.id.year_month_txt).text =
+            binding.yearMonthTxt.text =
                 DateUtil.localDateConvertJapaneseFormatYearMonth(adapter.localDate)
         }
-        nextMonthBtn.setOnClickListener {
-            val adapter = (calendarView.adapter as CalendarAdapter)
+        binding.nextMonthBtn.setOnClickListener {
+            val adapter = (binding.calendarGridView.adapter as CalendarAdapter)
             adapter.createNextMonthCalendar()
-            findViewById<TextView>(R.id.year_month_txt).text =
+            binding.yearMonthTxt.text =
                 DateUtil.localDateConvertJapaneseFormatYearMonth(adapter.localDate)
         }
 
-        calendarView.setOnTouchListener(object : OnSwipeTouchListener(this.applicationContext) {
+        binding.calendarGridView.setOnTouchListener(object :
+            OnSwipeTouchListener(this.applicationContext) {
             override fun up() {}
             override fun down() {}
             override fun right() {
-                prevMonthBtn.callOnClick()
+                binding.prevMonthBtn.callOnClick()
             }
 
             override fun left() {
-                nextMonthBtn.callOnClick()
+                binding.nextMonthBtn.callOnClick()
             }
         })
     }

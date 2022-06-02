@@ -21,7 +21,7 @@ class MeasureListActivity : AppCompatActivity() {
         registerForActivityResult(StartActivityForResult()) { viewModel.reload() }
 
     private val bodyMeasureEditFormActivityLauncher =
-        registerForActivityResult(StartActivityForResult()) {}
+        registerForActivityResult(StartActivityForResult()) { viewModel.reload() }
 
     private lateinit var binding: ActivityTrainingMeasureListBinding
 
