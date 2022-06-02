@@ -23,6 +23,8 @@ class MeasureListActivity : AppCompatActivity() {
     private val bodyMeasureEditFormActivityLauncher =
         registerForActivityResult(StartActivityForResult()) { viewModel.reload() }
 
+    private val localDate: LocalDate by lazy { intent.getSerializableExtra(INTENT_KEY) as LocalDate }
+
     private lateinit var binding: ActivityTrainingMeasureListBinding
 
     private lateinit var viewModel: MeasureListViewModel
@@ -32,11 +34,14 @@ class MeasureListActivity : AppCompatActivity() {
         binding = ActivityTrainingMeasureListBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
         setContentView(binding.root)
-        val localDate = intent.getSerializableExtra(INTENT_KEY) as LocalDate
         binding.dateText.text = localDate.toString()
         viewModel = MeasureListViewModel(localDate, bodyMeasureRepository)
         binding.vm = viewModel
 
+        setListener()
+    }
+
+    private fun setListener() {
         viewModel.measureList.observe(this) {
             val adapter = MeasureListAdapter(
                 it,
@@ -51,6 +56,7 @@ class MeasureListActivity : AppCompatActivity() {
             val intent = BodyMeasureFormActivity.createTrainingMeasureFormIntent(this, localDate)
             trainingFormActivityLauncher.launch(intent)
         }
+
         binding.backBtn.setOnClickListener { finish() }
     }
 
