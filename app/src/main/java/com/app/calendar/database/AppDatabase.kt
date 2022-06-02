@@ -5,7 +5,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.app.calendar.converter.LocalDateConverter
 import com.app.calendar.dao.BodyMeasureDao
 import com.app.calendar.model.BodyMeasureEntity
 
@@ -14,7 +13,7 @@ import com.app.calendar.model.BodyMeasureEntity
 abstract class AppDatabase : RoomDatabase() {
 
     companion object {
- 
+
         private var db: AppDatabase? = null
 
         fun createDatabase(applicationContext: Context): AppDatabase {

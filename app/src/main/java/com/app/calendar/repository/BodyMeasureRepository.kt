@@ -5,7 +5,6 @@ import com.app.calendar.dao.BodyMeasureDao
 import com.app.calendar.model.BodyMeasureEntity
 import java.time.LocalDate
 import java.time.LocalDateTime
-import kotlinx.coroutines.flow.Flow
 
 class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
 
@@ -14,11 +13,11 @@ class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
         trainingDao.insert(bodyMeasureEntity)
     }
 
-    fun getEntityListByDate(date: LocalDate): Flow<List<BodyMeasureEntity>> {
+    suspend fun getEntityListByDate(date: LocalDate): List<BodyMeasureEntity> {
         return trainingDao.getTrainingEntityListByDate(date)
     }
 
-    fun getEntityByCaptureTime(localDateTime: LocalDateTime): Flow<BodyMeasureEntity> {
+    suspend fun getEntityByCaptureTime(localDateTime: LocalDateTime): List<BodyMeasureEntity> {
         return trainingDao.getTrainingEntityByLocalDateTime(localDateTime)
     }
 

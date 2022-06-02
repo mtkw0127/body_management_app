@@ -3,21 +3,13 @@ package com.app.calendar.ui.measure.list
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.MutableLiveData
-import com.app.calendar.R.string
 import com.app.calendar.TrainingApplication
-import com.app.calendar.databinding.TrainingMeasureListBinding
-import com.app.calendar.model.BodyMeasureEntity
+import com.app.calendar.databinding.ActivityTrainingMeasureListBinding
 import com.app.calendar.repository.BodyMeasureRepository
 import com.app.calendar.ui.measure.body.form.BodyMeasureFormActivity
 import java.time.LocalDate
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 class MeasureListActivity : AppCompatActivity() {
 
@@ -26,61 +18,33 @@ class MeasureListActivity : AppCompatActivity() {
     }
 
     private val trainingFormActivityLauncher =
-        registerForActivityResult(StartActivityForResult()) {}
+        registerForActivityResult(StartActivityForResult()) { viewModel.reload() }
 
     private val bodyMeasureEditFormActivityLauncher =
         registerForActivityResult(StartActivityForResult()) {}
 
-    private var fabMenuVisibility = View.GONE
+    private lateinit var binding: ActivityTrainingMeasureListBinding
 
-    private var loading = MutableLiveData(false)
-
-    private var entityList: List<BodyMeasureEntity> = mutableListOf()
-
-    private lateinit var binding: TrainingMeasureListBinding
+    private lateinit var viewModel: MeasureListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = TrainingMeasureListBinding.inflate(layoutInflater)
+        binding = ActivityTrainingMeasureListBinding.inflate(layoutInflater)
+        binding.lifecycleOwner = this
         setContentView(binding.root)
-
         val localDate = intent.getSerializableExtra(INTENT_KEY) as LocalDate
         binding.dateText.text = localDate.toString()
-        // 対象の日付に紐づくデータが存在すれば取得する.
-        CoroutineScope(Dispatchers.IO).launch {
-            loading.postValue(true)
-            binding.dateText.text = localDate.toString()
-            val trainingEntityList = bodyMeasureRepository.getEntityListByDate(localDate)
-            runCatching {
-                trainingEntityList.collect {
-                    binding.isEmptyMessage.text =
-                        this@MeasureListActivity.resources.getString(string.not_yet_measure_message)
-                    if (it.isEmpty()) {
-                        binding.isEmptyMessage.visibility = View.VISIBLE
-                    } else {
-                        binding.isEmptyMessage.visibility = View.GONE
-                        this@MeasureListActivity.entityList = it
-                        loading.postValue(false)
-                    }
-                }
-            }.onFailure { e -> e.printStackTrace() }
-        }
+        viewModel = MeasureListViewModel(localDate, bodyMeasureRepository)
+        binding.vm = viewModel
 
-        loading.observe(this) { loading ->
-            if (loading.not()) {
-                val adapter = MeasureListAdapter(
-                    entityList,
-                    this@MeasureListActivity,
-                    bodyMeasureEditFormActivityLauncher
-                )
-                binding.trainingMeasureList.adapter = adapter
-                adapter.notifyDataSetChanged()
-            }
-        }
-
-        binding.floatingActionButton.setOnClickListener {
-            fabMenuVisibility = if (fabMenuVisibility == View.GONE) View.VISIBLE else View.GONE
-            binding.endCard.visibility = fabMenuVisibility
+        viewModel.measureList.observe(this) {
+            val adapter = MeasureListAdapter(
+                it,
+                this@MeasureListActivity,
+                bodyMeasureEditFormActivityLauncher
+            )
+            binding.trainingMeasureList.adapter = adapter
+            adapter.notifyDataSetChanged()
         }
 
         binding.bodyBtn.setOnClickListener {

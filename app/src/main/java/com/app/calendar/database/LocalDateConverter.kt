@@ -1,4 +1,4 @@
-package com.app.calendar.converter
+package com.app.calendar.database
 
 import androidx.room.TypeConverter
 import java.time.LocalDate

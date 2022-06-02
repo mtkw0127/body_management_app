@@ -24,7 +24,6 @@ import java.time.LocalDate
 import java.time.temporal.ChronoField
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class CalendarAdapter(
@@ -35,7 +34,7 @@ class CalendarAdapter(
     // その月の日付一覧
     private var dayOfWeek = arrayListOf("日", "月", "火", "水", "木", "金", "土")
     private var dateList = Array(42) { CellInfo(LocalDate.now(), NONE) }
- 
+
     private var inflater: LayoutInflater
 
     private val bodyMeasureRepository: BodyMeasureRepository by lazy {
@@ -178,22 +177,25 @@ class CalendarAdapter(
         }
 
         CoroutineScope(Dispatchers.Main).launch {
-            bodyMeasureRepository.getEntityListByDate(cellInfo.localDate).collect { it ->
-                // セルタッチ時のイベント
-                calendarCellView.setOnClickListener {
-                    val intent = MeasureListActivity.createTrainingMeasureListIntent(
-                        it.context,
-                        cellInfo.localDate
-                    )
-                    trainingMeasureListLauncher.launch(intent)
+            runCatching { bodyMeasureRepository.getEntityListByDate(cellInfo.localDate) }
+                .onFailure { e -> e.printStackTrace() }
+                .onSuccess { it ->
+                    // セルタッチ時のイベント
+                    calendarCellView.setOnClickListener {
+                        val intent = MeasureListActivity.createTrainingMeasureListIntent(
+                            it.context,
+                            cellInfo.localDate
+                        )
+                        trainingMeasureListLauncher.launch(intent)
+                    }
+                    if (it.isNotEmpty()) {
+                        val measureCntView =
+                            calendarCellView.findViewById<TextView>(R.id.measure_cnt)
+                        measureCntView.text = it.size.toString()
+                        measureCntView.background =
+                            context.resources.getDrawable(R.drawable.label, null)
+                    }
                 }
-                if (it.isNotEmpty()) {
-                    val measureCntView = calendarCellView.findViewById<TextView>(R.id.measure_cnt)
-                    measureCntView.text = it.size.toString()
-                    measureCntView.background =
-                        context.resources.getDrawable(R.drawable.label, null)
-                }
-            }
         }
 
         return calendarCellView

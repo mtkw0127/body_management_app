@@ -23,7 +23,6 @@ import com.app.calendar.util.DateUtil
 import java.time.LocalDateTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class BodyMeasureEditFormActivity : AppCompatActivity() {
@@ -72,23 +71,25 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.Main).launch {
             findViewById<TextView>(id.date_text).text = localDateTime.toLocalDate().toString()
             try {
-                val flow = bodyMeasureRepository.getEntityByCaptureTime(localDateTime)
-                flow.collect {
-                    bodyMeasureEntity = it
-                    measureTimeView.text =
-                        DateUtil.localDateConvertLocalTimeDateToTime(it.capturedTime)
-                    weightField.text = "${it.weight}kg"
-                    fatField.text = "${it.fatRate}%"
+                runCatching { bodyMeasureRepository.getEntityByCaptureTime(localDateTime) }
+                    .onFailure { e -> e.printStackTrace() }
+                    .onSuccess { res ->
+                        val it = res[0]
+                        bodyMeasureEntity = it
+                        measureTimeView.text =
+                            DateUtil.localDateConvertLocalTimeDateToTime(it.capturedTime)
+                        weightField.text = "${it.weight}kg"
+                        fatField.text = "${it.fatRate}%"
 
-                    measureTime = it.capturedTime
-                    measureWeight = it.weight
-                    measureFat = it.fatRate
-                    photoUri = it.photoUri?.toUri()
+                        measureTime = it.capturedTime
+                        measureWeight = it.weight
+                        measureFat = it.fatRate
+                        photoUri = it.photoUri?.toUri()
 
-                    findViewById<ImageView>(id.prev_img).setImageURI(it.photoUri?.toUri())
-                    // ロード中終了
-                    this@BodyMeasureEditFormActivity.loadingEntity = false
-                }
+                        findViewById<ImageView>(id.prev_img).setImageURI(it.photoUri?.toUri())
+                        // ロード中終了
+                        this@BodyMeasureEditFormActivity.loadingEntity = false
+                    }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
