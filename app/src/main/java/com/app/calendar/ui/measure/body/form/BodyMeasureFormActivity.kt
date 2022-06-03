@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
+import com.app.calendar.R
 import com.app.calendar.R.id
 import com.app.calendar.R.layout
 import com.app.calendar.TrainingApplication
@@ -18,6 +19,7 @@ import com.app.calendar.dialog.TimePickerDialog
 import com.app.calendar.model.BodyMeasureEntity
 import com.app.calendar.repository.BodyMeasureRepository
 import com.app.calendar.ui.camera.CameraActivity
+import com.app.calendar.ui.camera.MeasureCameraActivity
 import com.app.calendar.util.DateUtil
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -44,6 +46,12 @@ class BodyMeasureFormActivity : AppCompatActivity() {
 
     // coroutineによるローディング取得
     private var loadingEntity = true
+
+    // カメラで自動入力
+    private val measureCameraActivityLauncher =
+        registerForActivityResult(StartActivityForResult()) {
+
+        }
 
     // カメラ撮影結果コールバック
     private val cameraActivityLauncher = registerForActivityResult(StartActivityForResult()) {
@@ -159,6 +167,13 @@ class BodyMeasureFormActivity : AppCompatActivity() {
                 setResult(Activity.RESULT_OK, intent)
                 finish()
             }
+        }
+
+        // カメラ入力起動ボタン
+        val cameraInputBtn = findViewById<Button>(R.id.camera_input)
+        cameraInputBtn.setOnClickListener {
+            val intent = MeasureCameraActivity.createCameraActivityIntent(it.context)
+            measureCameraActivityLauncher.launch(intent)
         }
     }
 

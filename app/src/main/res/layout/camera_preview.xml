@@ -13,6 +13,16 @@
         android:paddingTop="20sp"
         android:paddingBottom="20sp"
         android:background="@drawable/border">
+
+        <TextView
+            android:id="@+id/recognized"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="未認識"
+            android:layout_marginLeft="20dp" />
+
         <ImageView
             android:id="@+id/captured_img"
             app:layout_constraintTop_toTopOf="parent"
@@ -20,7 +30,7 @@
             android:background="@drawable/border"
             android:layout_marginRight="20sp"
             android:layout_width="80sp"
-            android:layout_height="80sp"/>
+            android:layout_height="80sp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,10 +39,11 @@
         android:layout_height="600dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/preview_top_container">
+
         <androidx.camera.view.PreviewView
             android:id="@+id/camera_preview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,7 +53,7 @@
         app:layout_constraintTop_toBottomOf="@id/camera_preview_container"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
-<!--   TODO: アイコンにする     -->
+        <!--   TODO: アイコンにする     -->
         <Button
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -50,7 +61,7 @@
             android:id="@+id/back_from_camera_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="戻る"/>
+            android:text="戻る" />
 
         <Button
             app:layout_constraintTop_toTopOf="parent"
@@ -59,7 +70,7 @@
             android:id="@+id/switch_camera"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="カメラ切り替え"/>
+            android:text="カメラ切り替え" />
 
         <Button
             android:id="@+id/shutter_btn"
@@ -69,7 +80,7 @@
             app:layout_constraintRight_toLeftOf="@id/next_btn"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:text="写真を撮る"/>
+            android:text="写真を撮る" />
 
         <Button
             app:layout_constraintLeft_toRightOf="@id/shutter_btn"
@@ -78,7 +89,7 @@
             android:id="@+id/next_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="次へ"/>
+            android:text="次へ" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

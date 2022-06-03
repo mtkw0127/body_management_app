@@ -81,4 +81,7 @@ dependencies {
 
     // ロガー
     implementation 'com.jakewharton.timber:timber:5.0.1'
+
+    // Text feature
+    implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.0.0'
 }

@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.app.calendar">
-    <uses-feature android:name="android.hardware.camera"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28"/>
+
+    <uses-feature android:name="android.hardware.camera" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+
     <application
         android:name=".TrainingApplication"
         android:allowBackup="true"
@@ -22,16 +27,19 @@
         </activity>
         <activity
             android:name="com.app.calendar.ui.measure.body.form.BodyMeasureFormActivity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name="com.app.calendar.ui.measure.body.edit.BodyMeasureEditFormActivity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".ui.measure.list.MeasureListActivity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".ui.camera.CameraActivity"
-            android:exported="true"/>
+            android:exported="true" />
+        <activity
+            android:name=".ui.camera.MeasureCameraActivity"
+            android:exported="true" />
     </application>
 
 </manifest>
