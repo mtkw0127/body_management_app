@@ -8,7 +8,9 @@ import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.CompositePageTransformer
+import androidx.viewpager2.widget.MarginPageTransformer
 import com.app.calendar.TrainingApplication
 import com.app.calendar.databinding.TrainingDetailBinding
 import com.app.calendar.dialog.FloatNumberPickerDialog
@@ -22,6 +24,7 @@ import java.time.LocalDateTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 class BodyMeasureEditFormActivity : AppCompatActivity() {
 
@@ -38,7 +41,6 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
     private val captureDate: LocalDate by lazy { intent.getSerializableExtra(KEY_CAPTURE_DATE) as LocalDate }
     private val localDateTime: LocalDateTime by lazy { intent.getSerializableExtra(KEY_CAPTURED_TIME) as LocalDateTime }
 
-    private var photoUri: Uri? = null
     private var measureTime: LocalDateTime = LocalDateTime.now()
     private var measureWeight = 50F
     private var measureFat = 20.0F
@@ -50,13 +52,15 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
 
     private val formType: FormType by lazy { intent.getSerializableExtra(FORM_TYPE) as FormType }
 
+    private val imageList: MutableList<Uri> = mutableListOf()
+
     // カメラ撮影結果コールバック
     private val cameraActivityLauncher = registerForActivityResult(StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
             val activityResult = it.data?.extras?.get(CameraActivity.INTENT_KEY_PHOTO_URI)
             if (activityResult != null) {
-                photoUri = activityResult as Uri
-                binding.prevImg.setImageURI(photoUri)
+                imageList.add(activityResult as Uri)
+                binding.prevImg.adapter = SliderAdapter(imageList.toList())
             }
         }
     }
@@ -67,12 +71,31 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         setContentView(binding.root)
         binding.dateText.text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(captureDate)
         setListener()
+        initPagerAdapter()
         when (formType) {
             FormType.ADD -> {}
             FormType.EDIT -> {
                 loadBodyMeasure()
             }
         }
+    }
+
+    private fun initPagerAdapter() {
+        binding.prevImg.adapter = SliderAdapter(listOf())
+        binding.prevImg.clipToPadding = false
+        binding.prevImg.clipChildren = false
+        binding.prevImg.offscreenPageLimit = 3
+        binding.prevImg.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+
+
+        val compositePageTransformer = CompositePageTransformer()
+        compositePageTransformer.addTransformer(MarginPageTransformer(40))
+        compositePageTransformer.addTransformer { page, position ->
+            val r = 1 - abs(position)
+            page.scaleY = 0.85f + r * 0.15f
+        }
+        binding.prevImg.setPageTransformer(compositePageTransformer)
+
     }
 
     private fun loadBodyMeasure() {
@@ -92,9 +115,6 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                         measureTime = it.capturedTime
                         measureWeight = it.weight
                         measureFat = it.fatRate
-                        photoUri = it.photoUri?.toUri()
-
-                        binding.prevImg.setImageURI(it.photoUri?.toUri())
                     }.also {
                         // ロード中終了
                         this@BodyMeasureEditFormActivity.loadingEntity = false
@@ -169,7 +189,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                     measureTime,
                     measureWeight,
                     measureFat,
-                    photoUri?.path
+                    null
                 )
                 CoroutineScope(Dispatchers.IO).launch {
                     when (formType) {
