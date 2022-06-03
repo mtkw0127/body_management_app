@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.app.calendar.TrainingApplication
 import com.app.calendar.databinding.ActivityTrainingMeasureListBinding
 import com.app.calendar.repository.BodyMeasureRepository
-import com.app.calendar.ui.measure.body.form.BodyMeasureFormActivity
+import com.app.calendar.ui.measure.body.edit.BodyMeasureEditFormActivity
 import java.time.LocalDate
 
 class MeasureListActivity : AppCompatActivity() {
@@ -53,7 +53,10 @@ class MeasureListActivity : AppCompatActivity() {
         }
 
         binding.bodyBtn.setOnClickListener {
-            val intent = BodyMeasureFormActivity.createTrainingMeasureFormIntent(this, localDate)
+            val intent = BodyMeasureEditFormActivity.createMeasureFormIntent(
+                context = it.context,
+                formDate = localDate,
+            )
             trainingFormActivityLauncher.launch(intent)
         }
 

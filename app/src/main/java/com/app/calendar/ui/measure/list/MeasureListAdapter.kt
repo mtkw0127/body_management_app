@@ -21,9 +21,9 @@ class MeasureListAdapter(
     private val bodyMeasureMeasureList: List<BodyMeasureEntity>,
     private val context: Context,
     private val bodyMeasureEditFormActivityLauncher: ActivityResultLauncher<Intent>
-): RecyclerView.Adapter<ViewHolder>() {
+) : RecyclerView.Adapter<ViewHolder>() {
 
-    class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         var measureTimeTextView: TextView = view.findViewById(id.measure_time)
         var measureWeightTextView: TextView = view.findViewById(id.weight)
         var measureFatTextView: TextView = view.findViewById(id.fat)
@@ -38,15 +38,16 @@ class MeasureListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val trainingEntity = bodyMeasureMeasureList[position]
-        holder.measureTimeTextView.text = DateUtil.localDateConvertLocalTimeDateToTime(trainingEntity.capturedTime)
+        holder.measureTimeTextView.text =
+            DateUtil.localDateConvertLocalTimeDateToTime(trainingEntity.capturedTime)
         holder.measureWeightTextView.text = "体重：${trainingEntity.weight}kg"
         holder.measureFatTextView.text = "体脂肪率：${trainingEntity.fatRate}%"
         holder.captureImageView.setImageURI(trainingEntity.photoUri?.toUri())
 
         holder.itemView.setOnClickListener {
-            val intent = BodyMeasureEditFormActivity.createMeasureFormEditIntent(
-                context,
-                trainingEntity.capturedTime
+            val intent = BodyMeasureEditFormActivity.createMeasureEditIntent(
+                context = context,
+                captureTime = trainingEntity.capturedTime
             )
             bodyMeasureEditFormActivityLauncher.launch(intent)
         }

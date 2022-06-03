@@ -5,21 +5,19 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
-import com.app.calendar.R.id
-import com.app.calendar.R.layout
 import com.app.calendar.TrainingApplication
+import com.app.calendar.databinding.TrainingDetailBinding
 import com.app.calendar.dialog.FloatNumberPickerDialog
 import com.app.calendar.dialog.TimePickerDialog
 import com.app.calendar.model.BodyMeasureEntity
 import com.app.calendar.repository.BodyMeasureRepository
 import com.app.calendar.ui.camera.CameraActivity
 import com.app.calendar.util.DateUtil
+import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,14 +25,18 @@ import kotlinx.coroutines.launch
 
 class BodyMeasureEditFormActivity : AppCompatActivity() {
 
+    enum class FormType {
+        ADD, EDIT
+    }
+
     private val bodyMeasureRepository: BodyMeasureRepository by lazy {
         (application as TrainingApplication).repository
     }
 
-    private lateinit var localDateTime: LocalDateTime
-    private lateinit var measureTimeView: TextView
-    private lateinit var weightField: TextView
-    private lateinit var fatField: TextView
+    private lateinit var binding: TrainingDetailBinding
+
+    private val captureDate: LocalDate by lazy { intent.getSerializableExtra(KEY_CAPTURE_DATE) as LocalDate }
+    private val localDateTime: LocalDateTime by lazy { intent.getSerializableExtra(KEY_CAPTURED_TIME) as LocalDateTime }
 
     private var photoUri: Uri? = null
     private var measureTime: LocalDateTime = LocalDateTime.now()
@@ -42,9 +44,11 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
     private var measureFat = 20.0F
 
     // coroutineによるローディング取得
-    private var loadingEntity = true
+    private var loadingEntity = false
 
     private lateinit var bodyMeasureEntity: BodyMeasureEntity
+
+    private val formType: FormType by lazy { intent.getSerializableExtra(FORM_TYPE) as FormType }
 
     // カメラ撮影結果コールバック
     private val cameraActivityLauncher = registerForActivityResult(StartActivityForResult()) {
@@ -52,41 +56,46 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
             val activityResult = it.data?.extras?.get(CameraActivity.INTENT_KEY_PHOTO_URI)
             if (activityResult != null) {
                 photoUri = activityResult as Uri
-                findViewById<ImageView>(id.prev_img).setImageURI(photoUri)
+                binding.prevImg.setImageURI(photoUri)
             }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(layout.training_detail)
+        binding = TrainingDetailBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.dateText.text = captureDate.toString()
+        setListener()
+        when (formType) {
+            FormType.ADD -> {}
+            FormType.EDIT -> {
+                loadBodyMeasure()
+            }
+        }
+    }
 
-        measureTimeView = findViewById(id.training_time)
-        weightField = findViewById(id.weight)
-        fatField = findViewById(id.fat)
-
-        localDateTime = intent.getSerializableExtra(INTENT_KEY) as LocalDateTime
-
+    private fun loadBodyMeasure() {
+        loadingEntity = true
         // 対象の日付に紐づくデータが存在すれば取得する.
         CoroutineScope(Dispatchers.Main).launch {
-            findViewById<TextView>(id.date_text).text = localDateTime.toLocalDate().toString()
             try {
                 runCatching { bodyMeasureRepository.getEntityByCaptureTime(localDateTime) }
                     .onFailure { e -> e.printStackTrace() }
                     .onSuccess { res ->
                         val it = res[0]
                         bodyMeasureEntity = it
-                        measureTimeView.text =
+                        binding.trainingTime.text =
                             DateUtil.localDateConvertLocalTimeDateToTime(it.capturedTime)
-                        weightField.text = "${it.weight}kg"
-                        fatField.text = "${it.fatRate}%"
-
+                        binding.weight.text = "${it.weight}kg"
+                        binding.fat.text = "${it.fatRate}%"
                         measureTime = it.capturedTime
                         measureWeight = it.weight
                         measureFat = it.fatRate
                         photoUri = it.photoUri?.toUri()
 
-                        findViewById<ImageView>(id.prev_img).setImageURI(it.photoUri?.toUri())
+                        binding.prevImg.setImageURI(it.photoUri?.toUri())
+                    }.also {
                         // ロード中終了
                         this@BodyMeasureEditFormActivity.loadingEntity = false
                     }
@@ -94,22 +103,22 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
         }
+    }
 
+    private fun setListener() {
         // カメラフィールド
-        val cameraStartButton = findViewById<ImageView>(id.prev_img)
-        cameraStartButton.setOnClickListener {
+        binding.prevImg.setOnClickListener {
             val intent = CameraActivity.createCameraActivityIntent(applicationContext)
             cameraActivityLauncher.launch(intent)
         }
 
         // 戻るボタン
-        val backBtn = findViewById<Button>(id.back_btn)
-        backBtn.setOnClickListener {
+        binding.backBtn.setOnClickListener {
             finish()
         }
 
         // 計測時刻
-        measureTimeView.setOnClickListener {
+        binding.trainingTime.setOnClickListener {
             val timePickerFragment = TimePickerDialog.createTimePickerDialog(
                 measureTime.hour,
                 measureTime.minute
@@ -131,7 +140,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         }
 
         // 体重
-        weightField.setOnClickListener {
+        binding.weight.setOnClickListener {
             val weightPickerFragment =
                 FloatNumberPickerDialog.createDialog(measureWeight, "kg") { weight ->
                     (it as TextView).text = "${weight}kg"
@@ -141,7 +150,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         }
 
         // 体脂肪率
-        fatField.setOnClickListener {
+        binding.fat.setOnClickListener {
             val fatPickerFragment =
                 FloatNumberPickerDialog.createDialog(measureFat, "%") { fat ->
                     (it as TextView).text = "${fat}kg"
@@ -151,20 +160,27 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         }
 
         // 保存ボタン
-        val saveBtn = findViewById<Button>(id.save_btn)
-        saveBtn.setOnClickListener {
+        binding.saveBtn.setOnClickListener {
             if (this.loadingEntity.not()) {
                 val saveModel = BodyMeasureEntity(
-                    bodyMeasureEntity.ui,
-                    localDateTime.toLocalDate(),// カレンダー日付
-                    localDateTime.toLocalDate(),// キャプチャ日付
+                    0,
+                    captureDate,// カレンダー日付
+                    captureDate,// キャプチャ日付
                     measureTime,
                     measureWeight,
                     measureFat,
                     photoUri?.path
                 )
-                CoroutineScope(Dispatchers.Main).launch {
-                    bodyMeasureRepository.update(saveModel)
+                CoroutineScope(Dispatchers.IO).launch {
+                    when (formType) {
+                        FormType.ADD -> {
+                            bodyMeasureRepository.insert(saveModel)
+                        }
+                        FormType.EDIT -> {
+                            saveModel.ui = bodyMeasureEntity.ui
+                            bodyMeasureRepository.update(saveModel)
+                        }
+                    }
                 }
                 finish()
             }
@@ -172,13 +188,31 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val INTENT_KEY = "CAPTURE_DATE_TIME"
-        fun createMeasureFormEditIntent(
+        private const val KEY_CAPTURE_DATE = "CAPTURE_DATE_TIME"
+        private const val KEY_CAPTURED_TIME = "CAPTURED_TIME"
+        private const val FORM_TYPE = "FORM_TYPE"
+        fun createMeasureEditIntent(
             context: Context,
-            captureTime: LocalDateTime
+            formType: FormType = FormType.EDIT,
+            captureTime: LocalDateTime,
         ): Intent {
-            val intent = Intent(context.applicationContext, BodyMeasureEditFormActivity::class.java)
-            intent.putExtra(INTENT_KEY, captureTime)
+            val intent =
+                Intent(context.applicationContext, BodyMeasureEditFormActivity::class.java)
+            intent.putExtra(FORM_TYPE, formType)
+            intent.putExtra(KEY_CAPTURE_DATE, captureTime.toLocalDate())
+            intent.putExtra(KEY_CAPTURED_TIME, captureTime)
+            return intent
+        }
+
+        fun createMeasureFormIntent(
+            context: Context,
+            formType: FormType = FormType.ADD,
+            formDate: LocalDate,
+        ): Intent {
+            val intent =
+                Intent(context.applicationContext, BodyMeasureEditFormActivity::class.java)
+            intent.putExtra(FORM_TYPE, formType)
+            intent.putExtra(KEY_CAPTURE_DATE, formDate)
             return intent
         }
     }

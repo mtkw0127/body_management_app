@@ -54,7 +54,7 @@ class MeasureCameraActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(layout.camera_preview)
+        setContentView(layout.camera_preview_with_number)
         initCamera()
         // バックグラウンドのエグゼキュータ
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -207,7 +207,7 @@ class MeasureCameraActivity : AppCompatActivity() {
                                                 recognitionMap[it] = 1
                                             }
                                         }
-                                        
+
                                         val recognitionResultView =
                                             findViewById<TextView>(id.recognized)
                                         recognitionResultView.text =
