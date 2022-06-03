@@ -9,6 +9,7 @@ import com.app.calendar.TrainingApplication
 import com.app.calendar.databinding.ActivityTrainingMeasureListBinding
 import com.app.calendar.repository.BodyMeasureRepository
 import com.app.calendar.ui.measure.body.edit.BodyMeasureEditFormActivity
+import com.app.calendar.util.DateUtil
 import java.time.LocalDate
 
 class MeasureListActivity : AppCompatActivity() {
@@ -34,10 +35,9 @@ class MeasureListActivity : AppCompatActivity() {
         binding = ActivityTrainingMeasureListBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
         setContentView(binding.root)
-        binding.dateText.text = localDate.toString()
+        binding.dateText.text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(localDate)
         viewModel = MeasureListViewModel(localDate, bodyMeasureRepository)
         binding.vm = viewModel
-
         setListener()
     }
 

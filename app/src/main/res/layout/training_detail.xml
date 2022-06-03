@@ -11,6 +11,8 @@
             android:id="@+id/date_field"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/add_content"
             app:layout_constraintLeft_toLeftOf="parent">
@@ -54,6 +56,7 @@
                         android:id="@+id/time_label"
                         android:layout_width="@dimen/width_label_sp"
                         android:layout_height="wrap_content"
+                        android:textStyle="bold"
                         android:text="計測時刻"
                         android:textSize="@dimen/size_label_sp"
                         android:textColor="@color/color_label"
@@ -85,6 +88,7 @@
                         android:layout_width="@dimen/width_label_sp"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/size_label_sp"
+                        android:textStyle="bold"
                         android:textColor="@color/color_label"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -99,18 +103,7 @@
                         android:layout_height="wrap_content"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintLeft_toRightOf="@id/weight_label"
-                        app:layout_constraintRight_toLeftOf="@id/weight_from_image"
                         app:layout_constraintBottom_toBottomOf="parent" />
-
-                    <Button
-                        android:id="@+id/weight_from_image"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintLeft_toRightOf="@id/weight"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        android:text="画像入力" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <!-- 体脂肪率-->
@@ -128,6 +121,7 @@
                         android:textSize="@dimen/size_label_sp"
                         android:textColor="@color/color_label"
                         android:text="体脂肪率"
+                        android:textStyle="bold"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent" />
@@ -140,25 +134,14 @@
                         android:background="@drawable/bottom_only_border"
                         app:layout_constraintLeft_toRightOf="@id/fat_label"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintRight_toLeftOf="@id/fat_from_image"
                         app:layout_constraintBottom_toBottomOf="parent" />
-
-                    <Button
-                        android:id="@+id/fat_from_image"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintLeft_toRightOf="@id/fat"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        android:text="画像入力" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <!-- 体の写真-->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/photo_field"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/height_label_input_container_sp"
                     app:layout_constraintTop_toBottomOf="@id/fat_field"
                     app:layout_constraintLeft_toLeftOf="parent">
 
@@ -166,24 +149,36 @@
                         android:id="@+id/photo_label"
                         android:textSize="@dimen/size_label_sp"
                         android:gravity="center_vertical"
-                        android:layout_height="@dimen/height_label_input_container_sp"
+                        android:layout_height="wrap_content"
                         android:layout_width="@dimen/width_label_sp"
                         android:textColor="@color/color_label"
-                        app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        android:text="体の写真" />
-
-                    <ImageView
-                        android:id="@+id/prev_img"
-                        android:layout_width="match_parent"
-                        android:layout_height="300sp"
-                        android:background="@drawable/border"
-                        android:scaleType="fitCenter"
-                        app:layout_constraintTop_toBottomOf="@id/photo_label"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent" />
+                        android:textStyle="bold"
+                        android:text="写真" />
 
+                    <ImageButton
+                        android:id="@+id/camera"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toRightOf="@id/photo_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_baseline_photo_camera_24" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <ImageView
+                    android:id="@+id/prev_img"
+                    android:layout_width="match_parent"
+                    android:layout_height="300sp"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/border"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintTop_toBottomOf="@id/photo_field"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>
 

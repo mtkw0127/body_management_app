@@ -65,7 +65,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = TrainingDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.dateText.text = captureDate.toString()
+        binding.dateText.text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(captureDate)
         setListener()
         when (formType) {
             FormType.ADD -> {}
@@ -107,7 +107,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
 
     private fun setListener() {
         // カメラフィールド
-        binding.prevImg.setOnClickListener {
+        binding.camera.setOnClickListener {
             val intent = CameraActivity.createCameraActivityIntent(applicationContext)
             cameraActivityLauncher.launch(intent)
         }
