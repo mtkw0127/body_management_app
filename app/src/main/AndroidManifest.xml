@@ -26,9 +26,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.app.calendar.ui.measure.body.form.BodyMeasureFormActivity"
-            android:exported="true" />
-        <activity
             android:name="com.app.calendar.ui.measure.body.edit.BodyMeasureEditFormActivity"
             android:exported="true" />
         <activity
@@ -36,6 +33,7 @@
             android:exported="true" />
         <activity
             android:name=".ui.camera.CameraActivity"
+            android:theme="@style/Theme.Material3.Light.NoActionBar"
             android:exported="true" />
         <activity
             android:name=".ui.camera.MeasureCameraActivity"
