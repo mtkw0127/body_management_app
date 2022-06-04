@@ -10,14 +10,14 @@ import java.time.LocalDateTime
 
 @Dao
 interface BodyMeasureDao {
-    @Query("SELECT * FROM bodyMeasureEntity WHERE calendar_date = :calendarDate ORDER BY capture_time ASC")
+    @Query("SELECT * FROM bodyMeasures WHERE calendar_date = :calendarDate ORDER BY capture_time ASC")
     suspend fun getTrainingEntityListByDate(calendarDate: LocalDate): List<BodyMeasureEntity>
 
-    @Query("SELECT * FROM BodyMeasureEntity WHERE capture_time = :captureTime")
+    @Query("SELECT * FROM bodyMeasures WHERE capture_time = :captureTime")
     suspend fun getTrainingEntityByLocalDateTime(captureTime: LocalDateTime): List<BodyMeasureEntity>
 
     @Insert
-    suspend fun insert(bodyMeasureEntity: BodyMeasureEntity)
+    suspend fun insert(bodyMeasureEntity: BodyMeasureEntity): Long
 
     @Update
     suspend fun update(bodyMeasureEntity: BodyMeasureEntity): Int

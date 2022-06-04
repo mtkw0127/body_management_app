@@ -38,7 +38,7 @@ class CalendarAdapter(
     private var inflater: LayoutInflater
 
     private val bodyMeasureRepository: BodyMeasureRepository by lazy {
-        (context.applicationContext as TrainingApplication).repository
+        (context.applicationContext as TrainingApplication).bodyMeasureRepository
     }
 
     enum class MonthType {

@@ -9,8 +9,8 @@ import java.time.LocalDateTime
 class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
 
     @WorkerThread
-    suspend fun insert(bodyMeasureEntity: BodyMeasureEntity) {
-        trainingDao.insert(bodyMeasureEntity)
+    suspend fun insert(bodyMeasureEntity: BodyMeasureEntity): Long {
+        return trainingDao.insert(bodyMeasureEntity)
     }
 
     suspend fun getEntityListByDate(date: LocalDate): List<BodyMeasureEntity> {

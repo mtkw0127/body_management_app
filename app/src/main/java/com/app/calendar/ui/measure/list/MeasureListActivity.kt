@@ -15,7 +15,7 @@ import java.time.LocalDate
 class MeasureListActivity : AppCompatActivity() {
 
     private val bodyMeasureRepository: BodyMeasureRepository by lazy {
-        (application as TrainingApplication).repository
+        (application as TrainingApplication).bodyMeasureRepository
     }
 
     private val trainingFormActivityLauncher =

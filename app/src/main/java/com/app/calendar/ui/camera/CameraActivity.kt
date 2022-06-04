@@ -22,7 +22,6 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.net.toFile
 import androidx.lifecycle.LifecycleOwner
 import com.app.calendar.R.id
 import com.app.calendar.R.layout
@@ -39,7 +38,7 @@ class CameraActivity : AppCompatActivity() {
     private var lensFacing = CameraSelector.LENS_FACING_BACK
     private lateinit var cameraSelector: CameraSelector
 
-    private lateinit var photoUri: Uri
+    private var photoUri = mutableListOf<Uri>()
     private lateinit var cameraExecutor: ExecutorService
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,14 +55,13 @@ class CameraActivity : AppCompatActivity() {
         val nextButton = findViewById<Button>(id.next_btn)
         nextButton.setOnClickListener {
             // 撮影した結果を返却
-            if (this@CameraActivity::photoUri.isInitialized) {
-                intent.putExtra(INTENT_KEY_PHOTO_URI, photoUri)
-                setResult(Activity.RESULT_OK, intent)
-            }
+            setResult(Activity.RESULT_OK, intent)
             finish()
         }
+        // バックの場合、撮影した撮影した撮影を除去
         val backButton = findViewById<Button>(id.back_from_camera_btn)
         backButton.setOnClickListener {
+            photoList.clear()
             finish()
         }
         val switchCameraButton = findViewById<Button>(id.switch_camera)
@@ -93,12 +91,12 @@ class CameraActivity : AppCompatActivity() {
                     override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                         // TODO: シャッター音をならす
                         Handler(Looper.getMainLooper()).post {
-                            // 古い写真を削除
-                            if (this@CameraActivity::photoUri.isInitialized) photoUri.toFile()
-                                .delete()
-                            photoUri = checkNotNull(outputFileResults.savedUri)
+                            val photoUri = checkNotNull(outputFileResults.savedUri)
+                            // Prevに追加
                             val imageView = findViewById<ImageView>(id.captured_img)
                             imageView?.setImageURI(photoUri)
+                            // 一覧に追加
+                            photoList.add(photoUri)
                         }
                     }
 
@@ -188,6 +186,9 @@ class CameraActivity : AppCompatActivity() {
         private const val PHOTO_EXTENSION = ".jpg"
         private const val FILE_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSSS"
         const val INTENT_KEY_PHOTO_URI = "PHOTO_URI"
+
+        val photoList: MutableList<Uri> = mutableListOf()
+
         fun createCameraActivityIntent(context: Context): Intent {
             return Intent(context.applicationContext, CameraActivity::class.java)
         }

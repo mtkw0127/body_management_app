@@ -3,7 +3,6 @@ package com.app.calendar.ui.measure.body.edit
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
@@ -16,7 +15,9 @@ import com.app.calendar.databinding.TrainingDetailBinding
 import com.app.calendar.dialog.FloatNumberPickerDialog
 import com.app.calendar.dialog.TimePickerDialog
 import com.app.calendar.model.BodyMeasureEntity
+import com.app.calendar.model.PhotoEntity
 import com.app.calendar.repository.BodyMeasureRepository
+import com.app.calendar.repository.PhotoRepository
 import com.app.calendar.ui.camera.CameraActivity
 import com.app.calendar.util.DateUtil
 import java.time.LocalDate
@@ -33,7 +34,11 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
     }
 
     private val bodyMeasureRepository: BodyMeasureRepository by lazy {
-        (application as TrainingApplication).repository
+        (application as TrainingApplication).bodyMeasureRepository
+    }
+
+    private val photoRepository: PhotoRepository by lazy {
+        (application as TrainingApplication).photoRepository
     }
 
     private lateinit var binding: TrainingDetailBinding
@@ -52,16 +57,11 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
 
     private val formType: FormType by lazy { intent.getSerializableExtra(FORM_TYPE) as FormType }
 
-    private val imageList: MutableList<Uri> = mutableListOf()
-
     // カメラ撮影結果コールバック
     private val cameraActivityLauncher = registerForActivityResult(StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            val activityResult = it.data?.extras?.get(CameraActivity.INTENT_KEY_PHOTO_URI)
-            if (activityResult != null) {
-                imageList.add(activityResult as Uri)
-                binding.prevImg.adapter = SliderAdapter(imageList.toList())
-            }
+            val photoList = CameraActivity.photoList.toList()
+            binding.prevImg.adapter = SliderAdapter(photoList)
         }
     }
 
@@ -69,11 +69,15 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = TrainingDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        CameraActivity.photoList.clear()
         binding.dateText.text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(captureDate)
         setListener()
         initPagerAdapter()
         when (formType) {
-            FormType.ADD -> {}
+            FormType.ADD -> {
+                binding.trainingTime.text =
+                    DateUtil.localDateConvertLocalTimeDateToTime(LocalDateTime.now())
+            }
             FormType.EDIT -> {
                 loadBodyMeasure()
             }
@@ -191,10 +195,16 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                     measureFat,
                     null
                 )
+
                 CoroutineScope(Dispatchers.IO).launch {
                     when (formType) {
                         FormType.ADD -> {
-                            bodyMeasureRepository.insert(saveModel)
+                            val id = bodyMeasureRepository.insert(saveModel)
+                            if (CameraActivity.photoList.isNotEmpty()) {
+                                photoRepository.insert(
+                                    createPhotoModels(id.toInt())
+                                )
+                            }
                         }
                         FormType.EDIT -> {
                             saveModel.ui = bodyMeasureEntity.ui
@@ -204,6 +214,16 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                 }
                 finish()
             }
+        }
+    }
+
+    private fun createPhotoModels(id: Int): List<PhotoEntity> {
+        return CameraActivity.photoList.map {
+            PhotoEntity(
+                ui = 0,
+                bodyMeasureId = id,
+                photoUri = it.toString()
+            )
         }
     }
 
