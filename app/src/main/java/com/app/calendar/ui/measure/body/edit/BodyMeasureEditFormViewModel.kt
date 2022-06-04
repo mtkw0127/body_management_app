@@ -19,11 +19,7 @@ import java.time.LocalDateTime
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class BodyMeasureEditFormViewModel : ViewModel() {
-
-    var measureTime: LocalDateTime = LocalDateTime.now()
-    var measureWeight = 50F
-    var measureFat = 20.0F
+class BodyMeasureEditFormViewModel() : ViewModel() {
 
     // 撮影した写真データはここに保存する
     var photoList = MutableLiveData<MutableList<Uri>>(mutableListOf())
@@ -36,16 +32,17 @@ class BodyMeasureEditFormViewModel : ViewModel() {
         (application as TrainingApplication).photoRepository
     }
 
-    // 測定日時
     lateinit var intent: Intent
+
+    // 測定日時
     val captureDate: LocalDate by lazy {
         intent.getSerializableExtra(BodyMeasureEditFormActivity.KEY_CAPTURE_DATE) as LocalDate
     }
-    private val captureDateTime: LocalDateTime by lazy {
-        intent.getSerializableExtra(
-            BodyMeasureEditFormActivity.KEY_CAPTURED_TIME
-        ) as LocalDateTime
-    }
+
+    // 更新後の測定日時
+    lateinit var measureTime: LocalDateTime
+    var measureWeight = 50F
+    var measureFat = 20.0F
 
     // coroutineによるローディング取得
     lateinit var bodyMeasureEntity: BodyMeasureEntity
@@ -57,7 +54,7 @@ class BodyMeasureEditFormViewModel : ViewModel() {
         loadingBodyMeasure.value = true
         // 対象の日付に紐づくデータが存在すれば取得する.
         viewModelScope.launch {
-            runCatching { bodyMeasureRepository.getEntityByCaptureTime(captureDateTime) }
+            runCatching { bodyMeasureRepository.getEntityByCaptureTime(measureTime) }
                 .onFailure { e ->
                     Toast.makeText(
                         application,

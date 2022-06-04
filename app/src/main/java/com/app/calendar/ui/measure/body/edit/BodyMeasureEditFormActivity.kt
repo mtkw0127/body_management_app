@@ -28,6 +28,13 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
 
     private lateinit var binding: TrainingDetailBinding
 
+    // 更新前の測定日時
+    private val captureDateTime: LocalDateTime by lazy {
+        intent.getSerializableExtra(
+            KEY_CAPTURE_TIME
+        ) as LocalDateTime
+    }
+
     private val formType: FormType by lazy {
         intent.getSerializableExtra(FORM_TYPE) as FormType
     }
@@ -41,7 +48,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         }
     }
 
-    private var vm = BodyMeasureEditFormViewModel()
+    private lateinit var vm: BodyMeasureEditFormViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,8 +57,10 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         // カメラ内部のキャッシュをクリア
         CameraActivity.photoList.clear()
         // ViewModelにapplication設定
-        vm.application = application
+        vm = BodyMeasureEditFormViewModel()
         vm.intent = intent
+        vm.application = application
+        vm.measureTime = captureDateTime
         // 日付設定
         binding.dateText.text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(vm.captureDate)
 
@@ -191,7 +200,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
 
     companion object {
         const val KEY_CAPTURE_DATE = "CAPTURE_DATE_TIME"
-        const val KEY_CAPTURED_TIME = "CAPTURED_TIME"
+        const val KEY_CAPTURE_TIME = "CAPTURED_TIME"
         private const val FORM_TYPE = "FORM_TYPE"
         fun createMeasureEditIntent(
             context: Context,
@@ -202,7 +211,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                 Intent(context.applicationContext, BodyMeasureEditFormActivity::class.java)
             intent.putExtra(FORM_TYPE, formType)
             intent.putExtra(KEY_CAPTURE_DATE, captureTime.toLocalDate())
-            intent.putExtra(KEY_CAPTURED_TIME, captureTime)
+            intent.putExtra(KEY_CAPTURE_TIME, captureTime)
             return intent
         }
 
@@ -215,6 +224,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                 Intent(context.applicationContext, BodyMeasureEditFormActivity::class.java)
             intent.putExtra(FORM_TYPE, formType)
             intent.putExtra(KEY_CAPTURE_DATE, formDate)
+            intent.putExtra(KEY_CAPTURE_TIME, LocalDateTime.now())
             return intent
         }
     }
