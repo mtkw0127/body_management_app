@@ -13,7 +13,6 @@ import com.app.calendar.model.BodyMeasureEntity
 import com.app.calendar.model.PhotoEntity
 import com.app.calendar.repository.BodyMeasureRepository
 import com.app.calendar.repository.PhotoRepository
-import com.app.calendar.ui.camera.CameraActivity
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlinx.coroutines.launch
@@ -112,8 +111,12 @@ class BodyMeasureEditFormViewModel() : ViewModel() {
     fun addPhoto(saveModel: BodyMeasureEntity) {
         viewModelScope.launch {
             runCatching {
+                // 最新の写真をサムネイルに設定
+                if (photoList.value?.isNotEmpty() == true) {
+                    saveModel.photoUri = checkNotNull(photoList.value).last().toString()
+                }
                 val id = bodyMeasureRepository.insert(saveModel)
-                if (CameraActivity.photoList.isNotEmpty()) {
+                if (photoList.value?.isNotEmpty() == true) {
                     photoRepository.insert(
                         createPhotoModels(id.toInt())
                     )
@@ -135,13 +138,11 @@ class BodyMeasureEditFormViewModel() : ViewModel() {
                     photoRepository.insert(
                         createPhotoModels(bodyMeasureEntity.ui)
                     )
+                    // 最新の写真をサムネイルに設定
+                    saveModel.photoUri = checkNotNull(photoList.value).last().toString()
                 }
                 bodyMeasureRepository.update(saveModel)
-            }.onFailure {
-                it.printStackTrace()
-            }.onSuccess {
-                print(it)
-            }
+            }.onFailure { it.printStackTrace() }
         }
     }
 

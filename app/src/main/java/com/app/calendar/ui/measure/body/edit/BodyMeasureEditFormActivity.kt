@@ -18,6 +18,7 @@ import com.app.calendar.ui.camera.CameraActivity
 import com.app.calendar.util.DateUtil
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import kotlin.math.abs
 
 class BodyMeasureEditFormActivity : AppCompatActivity() {
@@ -224,7 +225,8 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                 Intent(context.applicationContext, BodyMeasureEditFormActivity::class.java)
             intent.putExtra(FORM_TYPE, formType)
             intent.putExtra(KEY_CAPTURE_DATE, formDate)
-            intent.putExtra(KEY_CAPTURE_TIME, LocalDateTime.now())
+            //登録日の現在時刻
+            intent.putExtra(KEY_CAPTURE_TIME, LocalDateTime.of(formDate, LocalTime.now()))
             return intent
         }
     }
