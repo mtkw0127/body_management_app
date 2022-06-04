@@ -38,7 +38,6 @@ class CameraActivity : AppCompatActivity() {
     private var lensFacing = CameraSelector.LENS_FACING_BACK
     private lateinit var cameraSelector: CameraSelector
 
-    private var photoUri = mutableListOf<Uri>()
     private lateinit var cameraExecutor: ExecutorService
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -185,11 +184,11 @@ class CameraActivity : AppCompatActivity() {
         private const val REQUEST_CODE_PERMISSIONS = 10
         private const val PHOTO_EXTENSION = ".jpg"
         private const val FILE_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSSS"
-        const val INTENT_KEY_PHOTO_URI = "PHOTO_URI"
 
-        val photoList: MutableList<Uri> = mutableListOf()
+        var photoList: MutableList<Uri> = mutableListOf()
 
         fun createCameraActivityIntent(context: Context): Intent {
+            photoList.clear()
             return Intent(context.applicationContext, CameraActivity::class.java)
         }
 
