@@ -140,8 +140,11 @@ class BodyMeasureEditFormViewModel : ViewModel() {
                     )
                 }
                 bodyMeasureRepository.update(saveModel)
-            }.onFailure { it.printStackTrace() }
-
+            }.onFailure {
+                it.printStackTrace()
+            }.onSuccess {
+                print(it)
+            }
         }
     }
 
@@ -151,7 +154,6 @@ class BodyMeasureEditFormViewModel : ViewModel() {
     private fun createPhotoModels(id: Int): List<PhotoEntity> {
         val photoList = checkNotNull(photoList.value)
         return photoList.map {
-            it
             PhotoEntity(
                 ui = 0,
                 bodyMeasureId = id,

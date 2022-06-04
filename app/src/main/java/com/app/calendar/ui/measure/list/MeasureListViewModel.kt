@@ -13,17 +13,12 @@ class MeasureListViewModel(
     private val localDate: LocalDate,
     private val bodyMeasureRepository: BodyMeasureRepository
 ) : ViewModel() {
-    val fabOpened = MutableLiveData(false)
-
+    
     private val _measureList = MutableLiveData<List<BodyMeasureEntity>>(mutableListOf())
     val measureList: LiveData<List<BodyMeasureEntity>> = _measureList
 
     init {
         loadMeasureList()
-    }
-
-    fun updateFabVisibility() {
-        fabOpened.value = fabOpened.value?.not()
     }
 
     fun reload() {

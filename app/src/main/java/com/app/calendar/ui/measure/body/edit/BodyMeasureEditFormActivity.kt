@@ -175,6 +175,8 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                     vm.addPhoto(saveModel)
                 }
                 FormType.EDIT -> {
+                    // 測定がロードできていない場合は更新しない
+                    if (vm.loadedBodyMeasure.value == false) return@setOnClickListener
                     vm.editPhoto(saveModel)
                 }
             }
