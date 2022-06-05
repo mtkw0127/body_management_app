@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">身体管理</string>
+    <string name="app_name">体形管理</string>
     <string name="not_yet_measure_message">まだ記録がありません。</string>
     <string name="prev_month">先月</string>
     <string name="next_month">翌月</string>

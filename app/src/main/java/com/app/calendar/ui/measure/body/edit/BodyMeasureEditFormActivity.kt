@@ -163,7 +163,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         binding.fat.setOnClickListener {
             val fatPickerFragment =
                 FloatNumberPickerDialog.createDialog(vm.measureFat, "%") { fat ->
-                    (it as TextView).text = "${fat}kg"
+                    (it as TextView).text = "${fat}%"
                     vm.measureFat = fat
                 }
             fatPickerFragment.show(supportFragmentManager, "FatPicker")
