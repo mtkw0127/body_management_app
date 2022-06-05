@@ -4,13 +4,19 @@ import androidx.annotation.NonNull;
 import androidx.room.DatabaseConfiguration;
 import androidx.room.InvalidationTracker;
 import androidx.room.RoomOpenHelper;
+import androidx.room.RoomOpenHelper.Delegate;
+import androidx.room.RoomOpenHelper.ValidationResult;
 import androidx.room.migration.AutoMigrationSpec;
 import androidx.room.migration.Migration;
 import androidx.room.util.DBUtil;
 import androidx.room.util.TableInfo;
+import androidx.room.util.TableInfo.Column;
+import androidx.room.util.TableInfo.ForeignKey;
+import androidx.room.util.TableInfo.Index;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 import androidx.sqlite.db.SupportSQLiteOpenHelper;
-
+import androidx.sqlite.db.SupportSQLiteOpenHelper.Callback;
+import androidx.sqlite.db.SupportSQLiteOpenHelper.Configuration;
 import com.app.body_manage.dao.BodyMeasureDao;
 import com.app.body_manage.dao.BodyMeasureDao_Impl;
 import com.app.body_manage.dao.PhotoDao;
@@ -100,7 +106,7 @@ public final class AppDatabase_Impl extends AppDatabase {
         final TableInfo _infoBodyMeasures = new TableInfo("bodyMeasures", _columnsBodyMeasures, _foreignKeysBodyMeasures, _indicesBodyMeasures);
         final TableInfo _existingBodyMeasures = TableInfo.read(_db, "bodyMeasures");
         if (! _infoBodyMeasures.equals(_existingBodyMeasures)) {
-          return new RoomOpenHelper.ValidationResult(false, "bodyMeasures(com.app.calendar.model.BodyMeasureEntity).\n"
+          return new RoomOpenHelper.ValidationResult(false, "bodyMeasures(com.app.body_manage.model.BodyMeasureEntity).\n"
                   + " Expected:\n" + _infoBodyMeasures + "\n"
                   + " Found:\n" + _existingBodyMeasures);
         }
@@ -115,7 +121,7 @@ public final class AppDatabase_Impl extends AppDatabase {
         final TableInfo _infoPhotos = new TableInfo("photos", _columnsPhotos, _foreignKeysPhotos, _indicesPhotos);
         final TableInfo _existingPhotos = TableInfo.read(_db, "photos");
         if (! _infoPhotos.equals(_existingPhotos)) {
-          return new RoomOpenHelper.ValidationResult(false, "photos(com.app.calendar.model.PhotoEntity).\n"
+          return new RoomOpenHelper.ValidationResult(false, "photos(com.app.body_manage.model.PhotoEntity).\n"
                   + " Expected:\n" + _infoPhotos + "\n"
                   + " Found:\n" + _existingPhotos);
         }

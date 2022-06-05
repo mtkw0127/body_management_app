@@ -1,6 +1,6 @@
 package com.app.body_manage.databinding;
 import com.app.body_manage.R;
-
+import com.app.body_manage.BR;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import android.view.View;

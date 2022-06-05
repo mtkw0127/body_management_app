@@ -29,7 +29,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toFile
 import androidx.lifecycle.LifecycleOwner
-import com.app.body_manage.R.id
+import com.app.body_manage.R
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import java.lang.Double.parseDouble
@@ -53,7 +53,7 @@ class MeasureCameraActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(layout.camera_preview_with_number)
+        setContentView(R.layout.camera_preview_with_number)
         initCamera()
         // バックグラウンドのエグゼキュータ
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -62,7 +62,7 @@ class MeasureCameraActivity : AppCompatActivity() {
         } else {
             permissionCheck()
         }
-        val nextButton = findViewById<Button>(id.next_btn)
+        val nextButton = findViewById<Button>(R.id.next_btn)
         nextButton.setOnClickListener {
             // 撮影した結果を返却
             if (this@MeasureCameraActivity::photoUri.isInitialized) {
@@ -71,11 +71,11 @@ class MeasureCameraActivity : AppCompatActivity() {
             }
             finish()
         }
-        val backButton = findViewById<Button>(id.back_from_camera_btn)
+        val backButton = findViewById<Button>(R.id.back_from_camera_btn)
         backButton.setOnClickListener {
             finish()
         }
-        val switchCameraButton = findViewById<Button>(id.switch_camera)
+        val switchCameraButton = findViewById<Button>(R.id.switch_camera)
         switchCameraButton.setOnClickListener {
             lensFacing = when (lensFacing) {
                 CameraSelector.LENS_FACING_BACK -> CameraSelector.LENS_FACING_FRONT
@@ -85,7 +85,7 @@ class MeasureCameraActivity : AppCompatActivity() {
             initCamera()
             startCamera()
         }
-        val takePhotoButton = findViewById<Button>(id.shutter_btn)
+        val takePhotoButton = findViewById<Button>(R.id.shutter_btn)
         takePhotoButton.setOnClickListener {
             val photoOutputFilePath = createFile(it.context)
             val metadata = Metadata().apply {
@@ -106,7 +106,7 @@ class MeasureCameraActivity : AppCompatActivity() {
                             if (this@MeasureCameraActivity::photoUri.isInitialized) photoUri.toFile()
                                 .delete()
                             photoUri = checkNotNull(outputFileResults.savedUri)
-                            val imageView = findViewById<ImageView>(id.captured_img)
+                            val imageView = findViewById<ImageView>(R.id.captured_img)
                             imageView?.setImageURI(photoUri)
                         }
                     }
@@ -135,7 +135,7 @@ class MeasureCameraActivity : AppCompatActivity() {
      */
     @OptIn(ExperimentalGetImage::class)
     private fun startCamera() {
-        val previewView = findViewById<PreviewView>(id.camera_preview)
+        val previewView = findViewById<PreviewView>(R.id.camera_preview)
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener(Runnable {
             // Camera provider is now guaranteed to be available
@@ -208,7 +208,7 @@ class MeasureCameraActivity : AppCompatActivity() {
                                         }
 
                                         val recognitionResultView =
-                                            findViewById<TextView>(id.recognized)
+                                            findViewById<TextView>(R.id.recognized)
                                         recognitionResultView.text =
                                             recognitionMap.map {
                                                 "${it.key}kg -> ${it.value}回"

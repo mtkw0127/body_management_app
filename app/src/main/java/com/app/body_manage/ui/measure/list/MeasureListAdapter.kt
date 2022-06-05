@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
-import com.app.body_manage.R.id
+import com.app.body_manage.R
 import com.app.body_manage.model.BodyMeasureEntity
 import com.app.body_manage.ui.measure.body.edit.BodyMeasureEditFormActivity
 import com.app.body_manage.ui.measure.list.MeasureListAdapter.ViewHolder
@@ -23,15 +23,15 @@ class MeasureListAdapter(
 ) : RecyclerView.Adapter<ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        var measureTimeTextView: TextView = view.findViewById(id.measure_time)
-        var measureWeightTextView: TextView = view.findViewById(id.weight)
-        var measureFatTextView: TextView = view.findViewById(id.fat)
-        var captureImageView: ImageView = view.findViewById(id.image_view)
+        var measureTimeTextView: TextView = view.findViewById(R.id.measure_time)
+        var measureWeightTextView: TextView = view.findViewById(R.id.weight)
+        var measureFatTextView: TextView = view.findViewById(R.id.fat)
+        var captureImageView: ImageView = view.findViewById(R.id.image_view)
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(viewGroup.context)
-        val view = layoutInflater.inflate(layout.training_measure_list_cell, viewGroup, false)
+        val view = layoutInflater.inflate(R.layout.training_measure_list_cell, viewGroup, false)
         return ViewHolder(view)
     }
 
