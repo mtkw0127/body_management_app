@@ -6,7 +6,7 @@
 
         <variable
             name="vm"
-            type="com.app.calendar.ui.measure.list.MeasureListViewModel" />
+            type="com.app.body_manage.ui.measure.list.MeasureListViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.app.calendar">
+    package="com.app.body_manage">
 
     <uses-feature android:name="android.hardware.camera" />
 
@@ -10,7 +10,7 @@
         android:maxSdkVersion="28" />
 
     <application
-        android:name=".TrainingApplication"
+        android:name="com.app.body_manage.TrainingApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -18,7 +18,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CalendarApp">
         <activity
-            android:name=".ui.calendar.MainActivity"
+            android:name="com.app.body_manage.ui.calendar.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,17 +26,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.app.calendar.ui.measure.body.edit.BodyMeasureEditFormActivity"
+            android:name="com.app.body_manage.ui.measure.body.edit.BodyMeasureEditFormActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.measure.list.MeasureListActivity"
+            android:name="com.app.body_manage.ui.measure.list.MeasureListActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.camera.CameraActivity"
+            android:name="com.app.body_manage.ui.camera.CameraActivity"
             android:theme="@style/Theme.Material3.Light.NoActionBar"
             android:exported="true" />
         <activity
-            android:name=".ui.camera.MeasureCameraActivity"
+            android:name="com.app.body_manage.ui.camera.MeasureCameraActivity"
             android:exported="true" />
     </application>
 
