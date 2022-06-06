@@ -4,7 +4,7 @@
     <dimen name="size_label_sp">16sp</dimen>
     <dimen name="size_input_sp">16sp</dimen>
     <dimen name="width_label_sp">120sp</dimen>
-    <dimen name="width_input_sp">160sp</dimen>
-    <dimen name="height_label_input_container_sp">40sp</dimen>
+    <dimen name="width_input_sp">120sp</dimen>
+    <dimen name="height_label_input_container_sp">50sp</dimen>
     <color name="color_label">#000000</color>
 </resources>
