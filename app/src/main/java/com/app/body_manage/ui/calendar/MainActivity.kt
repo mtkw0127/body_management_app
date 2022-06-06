@@ -2,9 +2,12 @@ package com.app.body_manage.ui.calendar
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
+import com.app.body_manage.R
 import com.app.body_manage.databinding.ActivityMainBinding
+import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.util.DateUtil
 import com.app.body_manage.util.OnSwipeTouchListener
 import java.time.LocalDate
@@ -15,10 +18,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: CalendarAdapter
 
     // 当日のトレーニング詳細画面 -> 一覧に戻ってきた場合の処理
-    private val trainingMeasureFormActivityLauncher =
-        registerForActivityResult(StartActivityForResult()) {
-            adapter.notifyDataSetChanged()
-        }
+    private val photoListLauncher =
+        registerForActivityResult(StartActivityForResult()) {}
 
     // 当日のトレーニング一覧画面
     private val trainingMeasureListActivityLauncher =
@@ -75,5 +76,17 @@ class MainActivity : AppCompatActivity() {
                 binding.nextMonthBtn.callOnClick()
             }
         })
+
+        val navigation = binding.bottomNavigator
+        val menuPhoto = navigation.menu.findItem(R.id.menu_photo)
+        val menuGraph = navigation.menu.findItem(R.id.menu_graph)
+        menuPhoto.setOnMenuItemClickListener {
+            photoListLauncher.launch(PhotoListActivity.createIntent(applicationContext))
+            return@setOnMenuItemClickListener true
+        }
+        menuGraph.setOnMenuItemClickListener {
+            Toast.makeText(applicationContext, "次回6/20リリース予定", Toast.LENGTH_SHORT).show()
+            return@setOnMenuItemClickListener true
+        }
     }
 }
