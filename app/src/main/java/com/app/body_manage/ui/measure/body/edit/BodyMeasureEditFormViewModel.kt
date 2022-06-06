@@ -20,8 +20,19 @@ import timber.log.Timber
 
 class BodyMeasureEditFormViewModel() : ViewModel() {
 
+
+    enum class PhotoType {
+        Saved, ADDED
+    }
+
     // 撮影した写真データはここに保存する
-    var photoList = MutableLiveData<MutableList<Uri>>(mutableListOf())
+    data class PhotoModel(val id: Int = -1, val uri: Uri, val photoType: PhotoType)
+
+    var photoList = MutableLiveData<MutableList<PhotoModel>>(mutableListOf())
+    fun deletePhoto(position: Int) {
+        photoList.value?.removeAt(position)
+        photoList.value = photoList.value
+    }
 
     var application: Application? = null
     private val bodyMeasureRepository: BodyMeasureRepository by lazy {
@@ -76,7 +87,6 @@ class BodyMeasureEditFormViewModel() : ViewModel() {
         }
     }
 
-    val loadedPhoto = MutableLiveData(false)
     private val loadingPhoto = MutableLiveData(false)
     fun loadPhotos() {
         if (loadingPhoto.value == true) return
@@ -95,9 +105,10 @@ class BodyMeasureEditFormViewModel() : ViewModel() {
                 .onSuccess { photos ->
                     if (photos.isNotEmpty()) {
                         photoList.value =
-                            photos.map { it.photoUri.toUri() }.toList().toMutableList()
+                            photos.map {
+                                PhotoModel(it.ui, it.photoUri.toUri(), PhotoType.Saved)
+                            }.toList().toMutableList()
                     }
-                    loadedPhoto.value = true
                 }
                 .also {
                     loadingPhoto.value = false
@@ -139,7 +150,7 @@ class BodyMeasureEditFormViewModel() : ViewModel() {
                         createPhotoModels(bodyMeasureEntity.ui)
                     )
                     // 最新の写真をサムネイルに設定
-                    saveModel.photoUri = checkNotNull(photoList.value).last().toString()
+                    saveModel.photoUri = checkNotNull(photoList.value).last().uri.toString()
                 }
                 bodyMeasureRepository.update(saveModel)
             }.onFailure { it.printStackTrace() }
@@ -155,7 +166,7 @@ class BodyMeasureEditFormViewModel() : ViewModel() {
             PhotoEntity(
                 ui = 0,
                 bodyMeasureId = id,
-                photoUri = it.toString()
+                photoUri = it.uri.toString()
             )
         }
     }

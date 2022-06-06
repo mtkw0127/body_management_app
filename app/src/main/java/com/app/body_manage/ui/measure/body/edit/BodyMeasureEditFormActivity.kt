@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +17,8 @@ import com.app.body_manage.dialog.FloatNumberPickerDialog
 import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.model.BodyMeasureEntity
 import com.app.body_manage.ui.camera.CameraActivity
+import com.app.body_manage.ui.measure.body.edit.BodyMeasureEditFormViewModel.PhotoModel
+import com.app.body_manage.ui.measure.body.edit.BodyMeasureEditFormViewModel.PhotoType.ADDED
 import com.app.body_manage.util.DateUtil
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -44,7 +48,9 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
     private val cameraActivityLauncher = registerForActivityResult(StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
             val photoList = CameraActivity.photoList.toList()
-            vm.photoList.value?.addAll(photoList)
+            val photoModels =
+                photoList.map { _uri -> PhotoModel(uri = _uri, photoType = ADDED) }.toList()
+            vm.photoList.value?.addAll(photoModels)
             vm.photoList.value = vm.photoList.value
         }
     }
@@ -81,7 +87,6 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
     }
 
     private fun initPagerAdapter() {
-        binding.prevImg.adapter = SliderAdapter(listOf())
         binding.prevImg.clipToPadding = false
         binding.prevImg.clipChildren = false
         binding.prevImg.offscreenPageLimit = 3
@@ -109,13 +114,6 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                 vm.loadPhotos()
             }
         }
-        // 写真のローディング完了
-        vm.loadedPhoto.observe(this) {
-            if (it) {
-                binding.prevImg.adapter = SliderAdapter(checkNotNull(vm.photoList.value).toList())
-            }
-        }
-
         // カメラフィールド
         binding.camera.setOnClickListener {
             val intent = CameraActivity.createCameraActivityIntent(applicationContext)
@@ -193,11 +191,18 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
             finish()
         }
 
+        val photoDeleteAction = View.OnClickListener {
+            val position = (it as ImageButton).tooltipText.toString().toInt()
+            vm.deletePhoto(position)
+        }
         vm.photoList.observe(this) {
-            binding.prevImg.adapter = SliderAdapter(it.toList())
+            binding.prevImg.adapter = SliderAdapter(
+                it.toList(),
+                photoDeleteAction
+            )
+            binding.prevImg.adapter?.notifyDataSetChanged()
         }
     }
-
 
     companion object {
         const val KEY_CAPTURE_DATE = "CAPTURE_DATE_TIME"
