@@ -2,18 +2,59 @@ package com.app.body_manage.ui.photoList
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.TrainingApplication
+import com.app.body_manage.model.BodyMeasureEntity
+import com.app.body_manage.model.PhotoEntity
 import com.app.body_manage.repository.BodyMeasurePhotoRepository
+import com.app.body_manage.ui.photoList.PhotoListState.HasPhoto
+import com.app.body_manage.ui.photoList.PhotoListState.NoPhoto
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
+sealed interface PhotoListState {
+    data class NoPhoto(
+        val message: String
+    ) : PhotoListState
+
+    data class HasPhoto(
+        val photos: Map<BodyMeasureEntity, List<PhotoEntity>>
+    ) : PhotoListState
+}
+
+internal data class PhotoListViewModelState(
+    val photos: Map<BodyMeasureEntity, List<PhotoEntity>> = mutableMapOf()
+) {
+    fun toUiState(): PhotoListState =
+        when {
+            photos.isEmpty() -> {
+                NoPhoto(message = "写真はまだ登録されていません。")
+            }
+            else -> {
+                HasPhoto(photos = photos)
+            }
+        }
+}
+
 
 class PhotoListViewModel(application: Application) : AndroidViewModel(application) {
 
     private val bmpRepository: BodyMeasurePhotoRepository by lazy {
         (application as TrainingApplication).bodyMeasurePhotoRepository
     }
+
+    private val viewModelState = MutableStateFlow(PhotoListViewModelState())
+    val uiState = viewModelState
+        .map { it.toUiState() }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            viewModelState.value.toUiState()
+        )
 
     /**
      * 写真が登録された日、一覧を取得する
@@ -23,16 +64,12 @@ class PhotoListViewModel(application: Application) : AndroidViewModel(applicatio
             kotlin.runCatching { bmpRepository.selectPhotosByDate() }
                 .onFailure { e -> e.printStackTrace() }
                 .onSuccess {
-                    it.forEach { a ->
-                        println(a)
+                    if (it.isEmpty()) {
+                        viewModelState.update { state ->
+                            state.copy(photos = it)
+                        }
                     }
                 }
         }
-    }
-}
-
-class PhotoListViewModelFactory : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return PhotoListViewModel(application = TrainingApplication()) as T
     }
 }

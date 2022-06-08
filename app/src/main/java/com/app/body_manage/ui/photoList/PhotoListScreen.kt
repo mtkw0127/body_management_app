@@ -6,7 +6,7 @@ import androidx.compose.ui.graphics.Color
 
 @Composable
 fun PhotoListScreen(
-    viewModel: PhotoListViewModel
+    state: PhotoListState
 ) {
     Text(
         color = Color.Black,

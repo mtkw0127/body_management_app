@@ -6,6 +6,8 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 class PhotoListActivity : AppCompatActivity() {
 
@@ -19,7 +21,8 @@ class PhotoListActivity : AppCompatActivity() {
         vm.loadPhotoRegisteredDates()
         setContent {
             MaterialTheme {
-                PhotoListScreen(vm)
+                val state: PhotoListState by vm.uiState.collectAsState()
+                PhotoListScreen(state)
             }
         }
     }

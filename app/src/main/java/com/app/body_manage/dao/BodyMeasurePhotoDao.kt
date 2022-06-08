@@ -3,12 +3,14 @@ package com.app.body_manage.dao
 import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Query
+import com.app.body_manage.model.BodyMeasureEntity
+import com.app.body_manage.model.PhotoEntity
 import java.time.LocalDate
 
 @Dao
 interface BodyMeasurePhotoDao {
-    @Query("SELECT bodyMeasures.ui as bid, bodyMeasures.calendar_date as c_date, photos.ui as pid, photos.photo_uri as photo_uri from photos INNER JOIN bodyMeasures ON bodyMeasures.ui = photos.body_measure_id GROUP BY bodyMeasures.capture_date ORDER BY bodyMeasures.capture_date asc")
-    suspend fun selectPhotosByDate(): List<BodyMeasurePhoto>
+    @Query("SELECT * from photos INNER JOIN bodyMeasures ON bodyMeasures.ui = photos.body_measure_id ORDER BY bodyMeasures.capture_date asc")
+    suspend fun selectPhotosByDate(): Map<BodyMeasureEntity, List<PhotoEntity>>
 
     data class BodyMeasurePhoto(
         @ColumnInfo(name = "bid") val bodyMeasureId: Int,

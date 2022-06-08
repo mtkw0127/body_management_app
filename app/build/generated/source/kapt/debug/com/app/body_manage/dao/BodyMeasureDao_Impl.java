@@ -117,7 +117,7 @@ public final class BodyMeasureDao_Impl implements BodyMeasureDao {
 
   @Override
   public Object insert(final BodyMeasureEntity bodyMeasureEntity,
-      final Continuation<? super Long> continuation) {
+      final Continuation<? super Long> arg1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Long>() {
       @Override
       public Long call() throws Exception {
@@ -130,12 +130,12 @@ public final class BodyMeasureDao_Impl implements BodyMeasureDao {
           __db.endTransaction();
         }
       }
-    }, continuation);
+    }, arg1);
   }
 
   @Override
   public Object update(final BodyMeasureEntity bodyMeasureEntity,
-      final Continuation<? super Integer> continuation) {
+      final Continuation<? super Integer> arg1) {
     return CoroutinesRoom.execute(__db, true, new Callable<Integer>() {
       @Override
       public Integer call() throws Exception {
@@ -149,12 +149,12 @@ public final class BodyMeasureDao_Impl implements BodyMeasureDao {
           __db.endTransaction();
         }
       }
-    }, continuation);
+    }, arg1);
   }
 
   @Override
   public Object getTrainingEntityListByDate(final LocalDate calendarDate,
-      final Continuation<? super List<BodyMeasureEntity>> continuation) {
+      final Continuation<? super List<BodyMeasureEntity>> arg1) {
     final String _sql = "SELECT * FROM bodyMeasures WHERE calendar_date = ? ORDER BY capture_time ASC";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
@@ -225,12 +225,12 @@ public final class BodyMeasureDao_Impl implements BodyMeasureDao {
           _statement.release();
         }
       }
-    }, continuation);
+    }, arg1);
   }
 
   @Override
   public Object getTrainingEntityByLocalDateTime(final LocalDateTime captureTime,
-      final Continuation<? super List<BodyMeasureEntity>> continuation) {
+      final Continuation<? super List<BodyMeasureEntity>> arg1) {
     final String _sql = "SELECT * FROM bodyMeasures WHERE capture_time = ?";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
@@ -301,7 +301,7 @@ public final class BodyMeasureDao_Impl implements BodyMeasureDao {
           _statement.release();
         }
       }
-    }, continuation);
+    }, arg1);
   }
 
   public static List<Class<?>> getRequiredConverters() {
