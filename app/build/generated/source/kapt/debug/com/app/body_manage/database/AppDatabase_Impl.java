@@ -19,6 +19,8 @@ import androidx.sqlite.db.SupportSQLiteOpenHelper.Callback;
 import androidx.sqlite.db.SupportSQLiteOpenHelper.Configuration;
 import com.app.body_manage.dao.BodyMeasureDao;
 import com.app.body_manage.dao.BodyMeasureDao_Impl;
+import com.app.body_manage.dao.BodyMeasurePhotoDao;
+import com.app.body_manage.dao.BodyMeasurePhotoDao_Impl;
 import com.app.body_manage.dao.PhotoDao;
 import com.app.body_manage.dao.PhotoDao_Impl;
 import java.lang.Class;
@@ -37,6 +39,8 @@ public final class AppDatabase_Impl extends AppDatabase {
   private volatile BodyMeasureDao _bodyMeasureDao;
 
   private volatile PhotoDao _photoDao;
+
+  private volatile BodyMeasurePhotoDao _bodyMeasurePhotoDao;
 
   @Override
   protected SupportSQLiteOpenHelper createOpenHelper(DatabaseConfiguration configuration) {
@@ -176,6 +180,7 @@ public final class AppDatabase_Impl extends AppDatabase {
     final HashMap<Class<?>, List<Class<?>>> _typeConvertersMap = new HashMap<Class<?>, List<Class<?>>>();
     _typeConvertersMap.put(BodyMeasureDao.class, BodyMeasureDao_Impl.getRequiredConverters());
     _typeConvertersMap.put(PhotoDao.class, PhotoDao_Impl.getRequiredConverters());
+    _typeConvertersMap.put(BodyMeasurePhotoDao.class, BodyMeasurePhotoDao_Impl.getRequiredConverters());
     return _typeConvertersMap;
   }
 
@@ -215,6 +220,20 @@ public final class AppDatabase_Impl extends AppDatabase {
           _photoDao = new PhotoDao_Impl(this);
         }
         return _photoDao;
+      }
+    }
+  }
+
+  @Override
+  public BodyMeasurePhotoDao bodyMeasurePhotoDao() {
+    if (_bodyMeasurePhotoDao != null) {
+      return _bodyMeasurePhotoDao;
+    } else {
+      synchronized(this) {
+        if(_bodyMeasurePhotoDao == null) {
+          _bodyMeasurePhotoDao = new BodyMeasurePhotoDao_Impl(this);
+        }
+        return _bodyMeasurePhotoDao;
       }
     }
   }

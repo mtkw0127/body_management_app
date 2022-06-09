@@ -38,6 +38,9 @@
         <activity
             android:name="com.app.body_manage.ui.camera.MeasureCameraActivity"
             android:exported="true" />
+        <activity
+            android:name="com.app.body_manage.ui.photoList.PhotoListActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

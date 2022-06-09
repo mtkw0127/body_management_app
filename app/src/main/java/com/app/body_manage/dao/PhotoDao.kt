@@ -15,5 +15,4 @@ interface PhotoDao {
 
     @Query("DELETE FROM photos WHERE body_measure_id = :bodyMeasureId")
     suspend fun deletePhotos(bodyMeasureId: Int)
-
 }
