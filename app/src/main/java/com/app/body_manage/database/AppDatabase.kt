@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.app.body_manage.dao.BodyMeasureDao
+import com.app.body_manage.dao.BodyMeasurePhotoDao
 import com.app.body_manage.dao.PhotoDao
 import com.app.body_manage.model.BodyMeasureEntity
 import com.app.body_manage.model.PhotoEntity
@@ -35,4 +36,5 @@ abstract class AppDatabase : RoomDatabase() {
 
     abstract fun bodyMeasureDao(): BodyMeasureDao
     abstract fun photoDao(): PhotoDao
+    abstract fun bodyMeasurePhotoDao(): BodyMeasurePhotoDao
 }

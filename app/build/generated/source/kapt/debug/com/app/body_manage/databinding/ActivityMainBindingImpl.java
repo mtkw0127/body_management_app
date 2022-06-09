@@ -19,6 +19,7 @@ public class ActivityMainBindingImpl extends ActivityMainBinding  {
         sViewsWithIds.put(R.id.year_month_txt, 3);
         sViewsWithIds.put(R.id.next_month_btn, 4);
         sViewsWithIds.put(R.id.calendarGridView, 5);
+        sViewsWithIds.put(R.id.bottom_navigator, 6);
     }
     // views
     @NonNull
@@ -29,10 +30,11 @@ public class ActivityMainBindingImpl extends ActivityMainBinding  {
     // Inverse Binding Event Handlers
 
     public ActivityMainBindingImpl(@Nullable androidx.databinding.DataBindingComponent bindingComponent, @NonNull View root) {
-        this(bindingComponent, root, mapBindings(bindingComponent, root, 6, sIncludes, sViewsWithIds));
+        this(bindingComponent, root, mapBindings(bindingComponent, root, 7, sIncludes, sViewsWithIds));
     }
     private ActivityMainBindingImpl(androidx.databinding.DataBindingComponent bindingComponent, View root, Object[] bindings) {
         super(bindingComponent, root, 0
+            , (com.google.android.material.bottomnavigation.BottomNavigationView) bindings[6]
             , (androidx.constraintlayout.widget.ConstraintLayout) bindings[1]
             , (android.widget.GridView) bindings[5]
             , (android.widget.Button) bindings[4]
