@@ -124,7 +124,7 @@ class BodyMeasureEditFormViewModel() : ViewModel() {
             runCatching {
                 // 最新の写真をサムネイルに設定
                 if (photoList.value?.isNotEmpty() == true) {
-                    saveModel.photoUri = checkNotNull(photoList.value).last().toString()
+                    saveModel.photoUri = checkNotNull(photoList.value).last().uri.toString()
                 }
                 val id = bodyMeasureRepository.insert(saveModel)
                 if (photoList.value?.isNotEmpty() == true) {

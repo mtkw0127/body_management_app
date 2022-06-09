@@ -2,15 +2,15 @@ package com.app.body_manage.dao
 
 import androidx.room.ColumnInfo
 import androidx.room.Dao
+import androidx.room.MapInfo
 import androidx.room.Query
-import com.app.body_manage.model.BodyMeasureEntity
-import com.app.body_manage.model.PhotoEntity
 import java.time.LocalDate
 
 @Dao
 interface BodyMeasurePhotoDao {
-    @Query("SELECT * from photos INNER JOIN bodyMeasures ON bodyMeasures.ui = photos.body_measure_id ORDER BY bodyMeasures.capture_date asc")
-    suspend fun selectPhotosByDate(): Map<BodyMeasureEntity, List<PhotoEntity>>
+    @MapInfo(keyColumn = "calendar_date", valueColumn = "photo_uri")
+    @Query("SELECT bodyMeasures.calendar_date as calendar_date, photos.photo_uri as photo_uri from photos INNER JOIN bodyMeasures ON bodyMeasures.ui = photos.body_measure_id ORDER BY bodyMeasures.capture_date asc")
+    suspend fun selectPhotosByDate(): Map<String, List<String>>
 
     data class BodyMeasurePhoto(
         @ColumnInfo(name = "bid") val bodyMeasureId: Int,
