@@ -112,6 +112,9 @@ dependencies {
     // UI Tests
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.1.1'
 
+    // 画像
+    implementation("io.coil-kt:coil-compose:2.1.0")
+
     // Text feature
     implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.0.0'
 }

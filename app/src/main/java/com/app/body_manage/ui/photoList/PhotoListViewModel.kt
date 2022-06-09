@@ -64,7 +64,7 @@ class PhotoListViewModel(application: Application) : AndroidViewModel(applicatio
             kotlin.runCatching { bmpRepository.selectPhotosByDate() }
                 .onFailure { e -> e.printStackTrace() }
                 .onSuccess {
-                    if (it.isEmpty()) {
+                    if (it.isNotEmpty()) {
                         viewModelState.update { state ->
                             state.copy(photos = it)
                         }
