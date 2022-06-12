@@ -41,6 +41,9 @@
         <activity
             android:name="com.app.body_manage.ui.photoList.PhotoListActivity"
             android:exported="true" />
+        <activity
+            android:name="com.app.body_manage.ui.graph.GraphActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

@@ -2,11 +2,11 @@ package com.app.body_manage.ui.calendar
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
 import com.app.body_manage.R
 import com.app.body_manage.databinding.ActivityMainBinding
+import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.util.DateUtil
 import com.app.body_manage.util.OnSwipeTouchListener
@@ -19,6 +19,10 @@ class MainActivity : AppCompatActivity() {
 
     // 当日のトレーニング詳細画面 -> 一覧に戻ってきた場合の処理
     private val photoListLauncher =
+        registerForActivityResult(StartActivityForResult()) {}
+
+    // グラフ画面遷移
+    private val graphListLauncher =
         registerForActivityResult(StartActivityForResult()) {}
 
     // 当日のトレーニング一覧画面
@@ -85,7 +89,7 @@ class MainActivity : AppCompatActivity() {
             return@setOnMenuItemClickListener true
         }
         menuGraph.setOnMenuItemClickListener {
-            Toast.makeText(applicationContext, "次回6/20リリース予定", Toast.LENGTH_SHORT).show()
+            graphListLauncher.launch(GraphActivity.createIntent(applicationContext))
             return@setOnMenuItemClickListener true
         }
     }

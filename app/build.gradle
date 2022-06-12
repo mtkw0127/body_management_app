@@ -117,4 +117,7 @@ dependencies {
 
     // Text feature
     implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.0.0'
+
+    // graph
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }
