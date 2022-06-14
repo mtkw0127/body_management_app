@@ -18,11 +18,10 @@ class GraphViewModel(application: Application) : AndroidViewModel(application) {
         (application as TrainingApplication).bodyMeasureRepository
     }
 
-    var weightEntryList = MutableLiveData<List<Entry>>(mutableListOf())
-    var fatEntryList = MutableLiveData<List<Entry>>(mutableListOf())
+    var entryList = MutableLiveData<MutableList<List<Entry>>>(mutableListOf())
 
     private fun createEntryList(bodyMeasureList: List<BodyMeasureEntity>) {
-        weightEntryList.value = bodyMeasureList.asSequence()
+        val weight = bodyMeasureList.asSequence()
             .map {
                 Entry().apply {
                     this.x = it.capturedTime.toEpochSecond(ZoneOffset.UTC).toFloat()
@@ -30,13 +29,17 @@ class GraphViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }.toList()
 
-        fatEntryList.value = bodyMeasureList.asSequence()
+        val fat = bodyMeasureList.asSequence()
             .map {
                 Entry().apply {
                     this.x = it.capturedTime.toEpochSecond(ZoneOffset.UTC).toFloat()
                     this.y = it.fatRate
                 }
             }.toList()
+
+        entryList.value?.add(weight)
+        entryList.value?.add(fat)
+        entryList.value = entryList.value
     }
 
     private var loadBodyMeasure = false

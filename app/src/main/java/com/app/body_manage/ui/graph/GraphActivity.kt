@@ -2,16 +2,14 @@ package com.app.body_manage.ui.graph
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.app.body_manage.databinding.ActivityGraphBinding
-import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.github.mikephil.charting.data.Entry
 
-class GraphActivity : AppCompatActivity() {
+class GraphActivity : FragmentActivity() {
 
     private lateinit var binding: ActivityGraphBinding
 
@@ -25,36 +23,23 @@ class GraphActivity : AppCompatActivity() {
         viewModel = GraphViewModel(application = application)
         viewModel.loadBodyMeasure()
 
-        viewModel.weightEntryList.observe(this) {
-            createLineChart(binding.chart1)
-        }
-
-        viewModel.fatEntryList.observe(this) {
-            createLineChart(binding.chart2)
+        viewModel.entryList.observe(this) {
+            binding.pager.adapter = PagerAdapter(fa = this, entryList = it.toList())
         }
     }
 
-    private fun createLineChart(lineChart: LineChart) {
-        //LineDataSetのList
-        val lineDataSets = mutableListOf<ILineDataSet>()
-        //②DataSetにデータ格納
-        val lineDataSet = LineDataSet(viewModel.fatEntryList.value, "square")
-        //③DataSetにフォーマット指定(3章で詳説)
-        lineDataSet.color = Color.BLUE
-        //リストに格納
-        lineDataSets.add(lineDataSet)
+    private inner class PagerAdapter(fa: FragmentActivity, val entryList: List<List<Entry>>) :
+        FragmentStateAdapter(fa) {
+        override fun getItemCount(): Int = entryList.size
 
-        //④LineDataにLineDataSet格納
-        val lineData = LineData(lineDataSets)
-        //⑤LineChartにLineData格納
+        override fun createFragment(position: Int): Fragment {
+            return if (position == 0) {
+                GraphPageFragment.newInstance(entryList[position], "体重")
+            } else {
+                GraphPageFragment.newInstance(entryList[position], "体脂肪率")
+            }
+        }
 
-        //⑥Chartのフォーマット指定(3章で詳説)
-        //X軸の設定
-        lineChart.apply {
-            data = lineData
-            xAxis.isEnabled = true
-            xAxis.textColor = Color.BLACK
-        }.invalidate()
     }
 
     companion object {
