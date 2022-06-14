@@ -49,12 +49,17 @@ class GraphPageFragment : Fragment() {
         val lineData = LineData(lineDataSets)
         //⑤LineChartにLineData格納
 
+        // yの最大値取得
+        val yMax = entryList.map { it.y }.maxOrNull() ?: 0F
+
         //⑥Chartのフォーマット指定(3章で詳説)
         //X軸の設定
         val chart = lineChart.apply {
             data = lineData
             xAxis.isEnabled = true
             xAxis.textColor = Color.BLACK
+            axisLeft.axisMinimum = 0F
+            axisLeft.axisMaximum = yMax * 1.1F
         }
         chart.invalidate()
     }
