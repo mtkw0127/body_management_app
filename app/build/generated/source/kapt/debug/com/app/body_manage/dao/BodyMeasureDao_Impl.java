@@ -229,6 +229,159 @@ public final class BodyMeasureDao_Impl implements BodyMeasureDao {
   }
 
   @Override
+  public Object getTrainingEntityListBetween(final LocalDateTime startDateTime,
+      final LocalDateTime endDateTime,
+      final Continuation<? super List<BodyMeasureEntity>> continuation) {
+    final String _sql = "SELECT * FROM bodyMeasures WHERE capture_time BETWEEN ? AND ?";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 2);
+    int _argIndex = 1;
+    final String _tmp = __localDateConverter.fromLocalDateTime(startDateTime);
+    if (_tmp == null) {
+      _statement.bindNull(_argIndex);
+    } else {
+      _statement.bindString(_argIndex, _tmp);
+    }
+    _argIndex = 2;
+    final String _tmp_1 = __localDateConverter.fromLocalDateTime(endDateTime);
+    if (_tmp_1 == null) {
+      _statement.bindNull(_argIndex);
+    } else {
+      _statement.bindString(_argIndex, _tmp_1);
+    }
+    final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
+    return CoroutinesRoom.execute(__db, false, _cancellationSignal, new Callable<List<BodyMeasureEntity>>() {
+      @Override
+      public List<BodyMeasureEntity> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfUi = CursorUtil.getColumnIndexOrThrow(_cursor, "ui");
+          final int _cursorIndexOfCalendarDate = CursorUtil.getColumnIndexOrThrow(_cursor, "calendar_date");
+          final int _cursorIndexOfCapturedDate = CursorUtil.getColumnIndexOrThrow(_cursor, "capture_date");
+          final int _cursorIndexOfCapturedTime = CursorUtil.getColumnIndexOrThrow(_cursor, "capture_time");
+          final int _cursorIndexOfWeight = CursorUtil.getColumnIndexOrThrow(_cursor, "weight");
+          final int _cursorIndexOfFatRate = CursorUtil.getColumnIndexOrThrow(_cursor, "fat_fate");
+          final int _cursorIndexOfPhotoUri = CursorUtil.getColumnIndexOrThrow(_cursor, "photo_uri");
+          final List<BodyMeasureEntity> _result = new ArrayList<BodyMeasureEntity>(_cursor.getCount());
+          while(_cursor.moveToNext()) {
+            final BodyMeasureEntity _item;
+            final int _tmpUi;
+            _tmpUi = _cursor.getInt(_cursorIndexOfUi);
+            final LocalDate _tmpCalendarDate;
+            final String _tmp_2;
+            if (_cursor.isNull(_cursorIndexOfCalendarDate)) {
+              _tmp_2 = null;
+            } else {
+              _tmp_2 = _cursor.getString(_cursorIndexOfCalendarDate);
+            }
+            _tmpCalendarDate = __localDateConverter.toLocalDate(_tmp_2);
+            final LocalDate _tmpCapturedDate;
+            final String _tmp_3;
+            if (_cursor.isNull(_cursorIndexOfCapturedDate)) {
+              _tmp_3 = null;
+            } else {
+              _tmp_3 = _cursor.getString(_cursorIndexOfCapturedDate);
+            }
+            _tmpCapturedDate = __localDateConverter.toLocalDate(_tmp_3);
+            final LocalDateTime _tmpCapturedTime;
+            final String _tmp_4;
+            if (_cursor.isNull(_cursorIndexOfCapturedTime)) {
+              _tmp_4 = null;
+            } else {
+              _tmp_4 = _cursor.getString(_cursorIndexOfCapturedTime);
+            }
+            _tmpCapturedTime = __localDateConverter.toLocalDateTime(_tmp_4);
+            final float _tmpWeight;
+            _tmpWeight = _cursor.getFloat(_cursorIndexOfWeight);
+            final float _tmpFatRate;
+            _tmpFatRate = _cursor.getFloat(_cursorIndexOfFatRate);
+            final String _tmpPhotoUri;
+            if (_cursor.isNull(_cursorIndexOfPhotoUri)) {
+              _tmpPhotoUri = null;
+            } else {
+              _tmpPhotoUri = _cursor.getString(_cursorIndexOfPhotoUri);
+            }
+            _item = new BodyMeasureEntity(_tmpUi,_tmpCalendarDate,_tmpCapturedDate,_tmpCapturedTime,_tmpWeight,_tmpFatRate,_tmpPhotoUri);
+            _result.add(_item);
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+          _statement.release();
+        }
+      }
+    }, continuation);
+  }
+
+  @Override
+  public Object getTrainingEntityList(
+      final Continuation<? super List<BodyMeasureEntity>> continuation) {
+    final String _sql = "SELECT * FROM bodyMeasures WHERE capture_time";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
+    final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
+    return CoroutinesRoom.execute(__db, false, _cancellationSignal, new Callable<List<BodyMeasureEntity>>() {
+      @Override
+      public List<BodyMeasureEntity> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfUi = CursorUtil.getColumnIndexOrThrow(_cursor, "ui");
+          final int _cursorIndexOfCalendarDate = CursorUtil.getColumnIndexOrThrow(_cursor, "calendar_date");
+          final int _cursorIndexOfCapturedDate = CursorUtil.getColumnIndexOrThrow(_cursor, "capture_date");
+          final int _cursorIndexOfCapturedTime = CursorUtil.getColumnIndexOrThrow(_cursor, "capture_time");
+          final int _cursorIndexOfWeight = CursorUtil.getColumnIndexOrThrow(_cursor, "weight");
+          final int _cursorIndexOfFatRate = CursorUtil.getColumnIndexOrThrow(_cursor, "fat_fate");
+          final int _cursorIndexOfPhotoUri = CursorUtil.getColumnIndexOrThrow(_cursor, "photo_uri");
+          final List<BodyMeasureEntity> _result = new ArrayList<BodyMeasureEntity>(_cursor.getCount());
+          while(_cursor.moveToNext()) {
+            final BodyMeasureEntity _item;
+            final int _tmpUi;
+            _tmpUi = _cursor.getInt(_cursorIndexOfUi);
+            final LocalDate _tmpCalendarDate;
+            final String _tmp;
+            if (_cursor.isNull(_cursorIndexOfCalendarDate)) {
+              _tmp = null;
+            } else {
+              _tmp = _cursor.getString(_cursorIndexOfCalendarDate);
+            }
+            _tmpCalendarDate = __localDateConverter.toLocalDate(_tmp);
+            final LocalDate _tmpCapturedDate;
+            final String _tmp_1;
+            if (_cursor.isNull(_cursorIndexOfCapturedDate)) {
+              _tmp_1 = null;
+            } else {
+              _tmp_1 = _cursor.getString(_cursorIndexOfCapturedDate);
+            }
+            _tmpCapturedDate = __localDateConverter.toLocalDate(_tmp_1);
+            final LocalDateTime _tmpCapturedTime;
+            final String _tmp_2;
+            if (_cursor.isNull(_cursorIndexOfCapturedTime)) {
+              _tmp_2 = null;
+            } else {
+              _tmp_2 = _cursor.getString(_cursorIndexOfCapturedTime);
+            }
+            _tmpCapturedTime = __localDateConverter.toLocalDateTime(_tmp_2);
+            final float _tmpWeight;
+            _tmpWeight = _cursor.getFloat(_cursorIndexOfWeight);
+            final float _tmpFatRate;
+            _tmpFatRate = _cursor.getFloat(_cursorIndexOfFatRate);
+            final String _tmpPhotoUri;
+            if (_cursor.isNull(_cursorIndexOfPhotoUri)) {
+              _tmpPhotoUri = null;
+            } else {
+              _tmpPhotoUri = _cursor.getString(_cursorIndexOfPhotoUri);
+            }
+            _item = new BodyMeasureEntity(_tmpUi,_tmpCalendarDate,_tmpCapturedDate,_tmpCapturedTime,_tmpWeight,_tmpFatRate,_tmpPhotoUri);
+            _result.add(_item);
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+          _statement.release();
+        }
+      }
+    }, continuation);
+  }
+
+  @Override
   public Object getTrainingEntityByLocalDateTime(final LocalDateTime captureTime,
       final Continuation<? super List<BodyMeasureEntity>> continuation) {
     final String _sql = "SELECT * FROM bodyMeasures WHERE capture_time = ?";

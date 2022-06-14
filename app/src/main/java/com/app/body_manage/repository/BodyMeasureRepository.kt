@@ -13,6 +13,17 @@ class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
         return trainingDao.insert(bodyMeasureEntity)
     }
 
+    suspend fun getEntityListBetween(
+        startDateTime: LocalDateTime?,
+        endDateTime: LocalDateTime?
+    ): List<BodyMeasureEntity> {
+        return if (startDateTime != null && endDateTime != null) {
+            trainingDao.getTrainingEntityListBetween(startDateTime, endDateTime)
+        } else {
+            trainingDao.getTrainingEntityList()
+        }
+    }
+
     suspend fun getEntityListByDate(date: LocalDate): List<BodyMeasureEntity> {
         return trainingDao.getTrainingEntityListByDate(date)
     }

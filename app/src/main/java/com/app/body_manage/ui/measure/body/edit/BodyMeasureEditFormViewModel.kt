@@ -18,8 +18,7 @@ import java.time.LocalDateTime
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class BodyMeasureEditFormViewModel() : ViewModel() {
-
+class BodyMeasureEditFormViewModel : ViewModel() {
 
     enum class PhotoType {
         Saved, ADDED
