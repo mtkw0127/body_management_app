@@ -32,6 +32,9 @@
             android:name="com.app.body_manage.ui.measure.list.MeasureListActivity"
             android:exported="true" />
         <activity
+            android:name="com.app.body_manage.ui.graph.GraphActivity"
+            android:exported="true" />
+        <activity
             android:name="com.app.body_manage.ui.camera.CameraActivity"
             android:theme="@style/Theme.Material3.Light.NoActionBar"
             android:exported="true" />
@@ -40,9 +43,6 @@
             android:exported="true" />
         <activity
             android:name="com.app.body_manage.ui.photoList.PhotoListActivity"
-            android:exported="true" />
-        <activity
-            android:name="com.app.body_manage.ui.graph.GraphActivity"
             android:exported="true" />
     </application>
 
