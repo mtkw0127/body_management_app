@@ -44,7 +44,7 @@ class GraphPageFragment : Fragment() {
         //②DataSetにデータ格納
         val entryList = myEntryList.mapIndexed { index, it ->
             Entry().apply {
-                x = index.toFloat()
+                x = index.toFloat() + 1
                 y = it.y
             }
         }.toList()
@@ -65,6 +65,8 @@ class GraphPageFragment : Fragment() {
         //X軸の設定
         val chart = lineChart.apply {
             data = lineData
+            setPinchZoom(false)
+            setScaleEnabled(false)
             with(xAxis) {
                 this.isEnabled = true
                 this.setDrawGridLines(false)
@@ -73,9 +75,8 @@ class GraphPageFragment : Fragment() {
                 this.labelCount = entryList.size
                 this.valueFormatter = object : ValueFormatter() {
                     override fun getAxisLabel(value: Float, axis: AxisBase?): String {
-                        val index = value.toInt() - 1
                         var label = ""
-                        runCatching { myEntryList[index].axisLocalDateTime }
+                        runCatching { myEntryList[value.toInt()].axisLocalDateTime }
                             .onSuccess { label = DateUtil.localDateConvertMMDD(it) }
                         return label
                     }

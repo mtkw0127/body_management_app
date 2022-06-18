@@ -229,25 +229,10 @@ public final class BodyMeasureDao_Impl implements BodyMeasureDao {
   }
 
   @Override
-  public Object getTrainingEntityListBetween(final LocalDateTime startDateTime,
-      final LocalDateTime endDateTime,
+  public Object getTrainingEntityListBetween(
       final Continuation<? super List<BodyMeasureEntity>> continuation) {
-    final String _sql = "SELECT ui, calendar_date, capture_date, capture_time, AVG(weight) as weight, AVG(fat) as fat, photo_uri FROM bodyMeasures WHERE capture_date BETWEEN ? AND ? GROUP BY bodyMeasures.calendar_date";
-    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 2);
-    int _argIndex = 1;
-    final String _tmp = __localDateConverter.fromLocalDateTime(startDateTime);
-    if (_tmp == null) {
-      _statement.bindNull(_argIndex);
-    } else {
-      _statement.bindString(_argIndex, _tmp);
-    }
-    _argIndex = 2;
-    final String _tmp_1 = __localDateConverter.fromLocalDateTime(endDateTime);
-    if (_tmp_1 == null) {
-      _statement.bindNull(_argIndex);
-    } else {
-      _statement.bindString(_argIndex, _tmp_1);
-    }
+    final String _sql = "SELECT ui, calendar_date, capture_date, capture_time, AVG(weight) as weight, AVG(fat) as fat, photo_uri FROM bodyMeasures GROUP BY bodyMeasures.calendar_date";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 0);
     final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
     return CoroutinesRoom.execute(__db, false, _cancellationSignal, new Callable<List<BodyMeasureEntity>>() {
       @Override
@@ -267,29 +252,29 @@ public final class BodyMeasureDao_Impl implements BodyMeasureDao {
             final int _tmpUi;
             _tmpUi = _cursor.getInt(_cursorIndexOfUi);
             final LocalDate _tmpCalendarDate;
-            final String _tmp_2;
+            final String _tmp;
             if (_cursor.isNull(_cursorIndexOfCalendarDate)) {
+              _tmp = null;
+            } else {
+              _tmp = _cursor.getString(_cursorIndexOfCalendarDate);
+            }
+            _tmpCalendarDate = __localDateConverter.toLocalDate(_tmp);
+            final LocalDate _tmpCapturedDate;
+            final String _tmp_1;
+            if (_cursor.isNull(_cursorIndexOfCapturedDate)) {
+              _tmp_1 = null;
+            } else {
+              _tmp_1 = _cursor.getString(_cursorIndexOfCapturedDate);
+            }
+            _tmpCapturedDate = __localDateConverter.toLocalDate(_tmp_1);
+            final LocalDateTime _tmpCapturedTime;
+            final String _tmp_2;
+            if (_cursor.isNull(_cursorIndexOfCapturedTime)) {
               _tmp_2 = null;
             } else {
-              _tmp_2 = _cursor.getString(_cursorIndexOfCalendarDate);
+              _tmp_2 = _cursor.getString(_cursorIndexOfCapturedTime);
             }
-            _tmpCalendarDate = __localDateConverter.toLocalDate(_tmp_2);
-            final LocalDate _tmpCapturedDate;
-            final String _tmp_3;
-            if (_cursor.isNull(_cursorIndexOfCapturedDate)) {
-              _tmp_3 = null;
-            } else {
-              _tmp_3 = _cursor.getString(_cursorIndexOfCapturedDate);
-            }
-            _tmpCapturedDate = __localDateConverter.toLocalDate(_tmp_3);
-            final LocalDateTime _tmpCapturedTime;
-            final String _tmp_4;
-            if (_cursor.isNull(_cursorIndexOfCapturedTime)) {
-              _tmp_4 = null;
-            } else {
-              _tmp_4 = _cursor.getString(_cursorIndexOfCapturedTime);
-            }
-            _tmpCapturedTime = __localDateConverter.toLocalDateTime(_tmp_4);
+            _tmpCapturedTime = __localDateConverter.toLocalDateTime(_tmp_2);
             final float _tmpWeight;
             _tmpWeight = _cursor.getFloat(_cursorIndexOfWeight);
             final float _tmpFatRate;

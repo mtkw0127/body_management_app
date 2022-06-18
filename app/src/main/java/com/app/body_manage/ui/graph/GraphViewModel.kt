@@ -38,12 +38,12 @@ class GraphViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private var loadBodyMeasure = false
-    fun loadBodyMeasure(startDateTime: LocalDateTime? = null, endDateTime: LocalDateTime? = null) {
+    fun loadBodyMeasure() {
         if (loadBodyMeasure) return
         loadBodyMeasure = true
 
         viewModelScope.launch {
-            runCatching { bodyMeasureRepository.getEntityListBetween(startDateTime, endDateTime) }
+            runCatching { bodyMeasureRepository.getEntityListBetween() }
                 .onFailure { e -> e.printStackTrace() }
                 .onSuccess {
                     createEntryList(bodyMeasureList = it)
