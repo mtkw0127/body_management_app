@@ -18,6 +18,7 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import kotlin.math.abs
 
 class GraphPageFragment : Fragment() {
 
@@ -44,10 +45,12 @@ class GraphPageFragment : Fragment() {
         //②DataSetにデータ格納
         val entryList = myEntryList.mapIndexed { index, it ->
             Entry().apply {
-                x = index.toFloat() + 1
+                x = index.toFloat()
                 y = it.y
             }
         }.toList()
+        val xAxisLabels =
+            myEntryList.map { DateUtil.localDateConvertMMDD(it.axisLocalDateTime) }.toList()
         val lineDataSet = LineDataSet(entryList, label)
 
         //③DataSetにフォーマット指定(3章で詳説)
@@ -74,10 +77,12 @@ class GraphPageFragment : Fragment() {
                 this.position = BOTTOM
                 this.labelCount = entryList.size
                 this.valueFormatter = object : ValueFormatter() {
-                    override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+                    override fun getAxisLabel(value: Float, axis: AxisBase): String {
                         var label = ""
-                        runCatching { myEntryList[value.toInt()].axisLocalDateTime }
-                            .onSuccess { label = DateUtil.localDateConvertMMDD(it) }
+                        //  小数点除去
+                        if (abs(value.toInt() - value) > 0) return label
+                        runCatching { xAxisLabels[value.toInt()] }
+                            .onSuccess { label = it }
                         return label
                     }
                 }
