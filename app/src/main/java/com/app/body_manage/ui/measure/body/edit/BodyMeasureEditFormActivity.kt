@@ -61,8 +61,6 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = TrainingDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        // カメラ内部のキャッシュをクリア
-        CameraActivity.photoList.clear()
         // ViewModelにapplication設定
         vm = BodyMeasureEditFormViewModel()
         vm.intent = intent

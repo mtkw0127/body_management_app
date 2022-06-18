@@ -27,7 +27,7 @@ class BodyMeasureEditFormViewModel : ViewModel() {
     // 撮影した写真データはここに保存する
     data class PhotoModel(val id: Int = -1, val uri: Uri, val photoType: PhotoType)
 
-    var photoList = MutableLiveData<MutableList<PhotoModel>>(mutableListOf())
+    val photoList = MutableLiveData<MutableList<PhotoModel>>(mutableListOf())
     fun deletePhoto(position: Int) {
         photoList.value?.removeAt(position)
         photoList.value = photoList.value
