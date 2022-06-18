@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.app.body_manage.databinding.ActivityGraphBinding
 import com.app.body_manage.ui.graph.GraphViewModel.MyEntry
+import com.google.android.material.tabs.TabLayoutMediator
 
 class GraphActivity : FragmentActivity() {
 
@@ -22,9 +23,13 @@ class GraphActivity : FragmentActivity() {
         setContentView(binding.root)
         viewModel = GraphViewModel(application = application)
         viewModel.loadBodyMeasure()
-
+        
         viewModel.entryList.observe(this) {
             binding.pager.adapter = PagerAdapter(fa = this, entryList = it.toList())
+
+            TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
+                tab.text = if (position == 0) "体重" else "体脂肪率"
+            }.attach()
         }
     }
 

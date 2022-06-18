@@ -63,7 +63,7 @@ public final class PhotoDao_Impl implements PhotoDao {
 
   @Override
   public Object insert(final List<PhotoEntity> photos,
-      final Continuation<? super List<Long>> arg1) {
+      final Continuation<? super List<Long>> continuation) {
     return CoroutinesRoom.execute(__db, true, new Callable<List<Long>>() {
       @Override
       public List<Long> call() throws Exception {
@@ -76,11 +76,12 @@ public final class PhotoDao_Impl implements PhotoDao {
           __db.endTransaction();
         }
       }
-    }, arg1);
+    }, continuation);
   }
 
   @Override
-  public Object deletePhotos(final int bodyMeasureId, final Continuation<? super Unit> arg1) {
+  public Object deletePhotos(final int bodyMeasureId,
+      final Continuation<? super Unit> continuation) {
     return CoroutinesRoom.execute(__db, true, new Callable<Unit>() {
       @Override
       public Unit call() throws Exception {
@@ -97,12 +98,12 @@ public final class PhotoDao_Impl implements PhotoDao {
           __preparedStmtOfDeletePhotos.release(_stmt);
         }
       }
-    }, arg1);
+    }, continuation);
   }
 
   @Override
   public Object selectPhotos(final int bodyMeasureId,
-      final Continuation<? super List<PhotoEntity>> arg1) {
+      final Continuation<? super List<PhotoEntity>> continuation) {
     final String _sql = "SELECT * FROM photos WHERE body_measure_id = ?";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 1);
     int _argIndex = 1;
@@ -138,7 +139,7 @@ public final class PhotoDao_Impl implements PhotoDao {
           _statement.release();
         }
       }
-    }, arg1);
+    }, continuation);
   }
 
   public static List<Class<?>> getRequiredConverters() {
