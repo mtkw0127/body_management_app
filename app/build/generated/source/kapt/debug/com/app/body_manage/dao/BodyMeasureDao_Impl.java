@@ -43,7 +43,7 @@ public final class BodyMeasureDao_Impl implements BodyMeasureDao {
     this.__insertionAdapterOfBodyMeasureEntity = new EntityInsertionAdapter<BodyMeasureEntity>(__db) {
       @Override
       public String createQuery() {
-        return "INSERT OR ABORT INTO `bodyMeasures` (`ui`,`calendar_date`,`capture_date`,`capture_time`,`weight`,`fat_fate`,`photo_uri`) VALUES (nullif(?, 0),?,?,?,?,?,?)";
+        return "INSERT OR ABORT INTO `bodyMeasures` (`ui`,`calendar_date`,`capture_date`,`capture_time`,`weight`,`fat`,`photo_uri`) VALUES (nullif(?, 0),?,?,?,?,?,?)";
       }
 
       @Override
@@ -79,7 +79,7 @@ public final class BodyMeasureDao_Impl implements BodyMeasureDao {
     this.__updateAdapterOfBodyMeasureEntity = new EntityDeletionOrUpdateAdapter<BodyMeasureEntity>(__db) {
       @Override
       public String createQuery() {
-        return "UPDATE OR ABORT `bodyMeasures` SET `ui` = ?,`calendar_date` = ?,`capture_date` = ?,`capture_time` = ?,`weight` = ?,`fat_fate` = ?,`photo_uri` = ? WHERE `ui` = ?";
+        return "UPDATE OR ABORT `bodyMeasures` SET `ui` = ?,`calendar_date` = ?,`capture_date` = ?,`capture_time` = ?,`weight` = ?,`fat` = ?,`photo_uri` = ? WHERE `ui` = ?";
       }
 
       @Override
@@ -175,7 +175,7 @@ public final class BodyMeasureDao_Impl implements BodyMeasureDao {
           final int _cursorIndexOfCapturedDate = CursorUtil.getColumnIndexOrThrow(_cursor, "capture_date");
           final int _cursorIndexOfCapturedTime = CursorUtil.getColumnIndexOrThrow(_cursor, "capture_time");
           final int _cursorIndexOfWeight = CursorUtil.getColumnIndexOrThrow(_cursor, "weight");
-          final int _cursorIndexOfFatRate = CursorUtil.getColumnIndexOrThrow(_cursor, "fat_fate");
+          final int _cursorIndexOfFatRate = CursorUtil.getColumnIndexOrThrow(_cursor, "fat");
           final int _cursorIndexOfPhotoUri = CursorUtil.getColumnIndexOrThrow(_cursor, "photo_uri");
           final List<BodyMeasureEntity> _result = new ArrayList<BodyMeasureEntity>(_cursor.getCount());
           while(_cursor.moveToNext()) {
@@ -232,7 +232,7 @@ public final class BodyMeasureDao_Impl implements BodyMeasureDao {
   public Object getTrainingEntityListBetween(final LocalDateTime startDateTime,
       final LocalDateTime endDateTime,
       final Continuation<? super List<BodyMeasureEntity>> continuation) {
-    final String _sql = "SELECT * FROM bodyMeasures WHERE capture_time BETWEEN ? AND ?";
+    final String _sql = "SELECT ui, calendar_date, capture_date, capture_time, AVG(weight) as weight, AVG(fat) as fat, photo_uri FROM bodyMeasures WHERE capture_date BETWEEN ? AND ? GROUP BY bodyMeasures.calendar_date";
     final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 2);
     int _argIndex = 1;
     final String _tmp = __localDateConverter.fromLocalDateTime(startDateTime);
@@ -254,13 +254,13 @@ public final class BodyMeasureDao_Impl implements BodyMeasureDao {
       public List<BodyMeasureEntity> call() throws Exception {
         final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
         try {
-          final int _cursorIndexOfUi = CursorUtil.getColumnIndexOrThrow(_cursor, "ui");
-          final int _cursorIndexOfCalendarDate = CursorUtil.getColumnIndexOrThrow(_cursor, "calendar_date");
-          final int _cursorIndexOfCapturedDate = CursorUtil.getColumnIndexOrThrow(_cursor, "capture_date");
-          final int _cursorIndexOfCapturedTime = CursorUtil.getColumnIndexOrThrow(_cursor, "capture_time");
-          final int _cursorIndexOfWeight = CursorUtil.getColumnIndexOrThrow(_cursor, "weight");
-          final int _cursorIndexOfFatRate = CursorUtil.getColumnIndexOrThrow(_cursor, "fat_fate");
-          final int _cursorIndexOfPhotoUri = CursorUtil.getColumnIndexOrThrow(_cursor, "photo_uri");
+          final int _cursorIndexOfUi = 0;
+          final int _cursorIndexOfCalendarDate = 1;
+          final int _cursorIndexOfCapturedDate = 2;
+          final int _cursorIndexOfCapturedTime = 3;
+          final int _cursorIndexOfWeight = 4;
+          final int _cursorIndexOfFatRate = 5;
+          final int _cursorIndexOfPhotoUri = 6;
           final List<BodyMeasureEntity> _result = new ArrayList<BodyMeasureEntity>(_cursor.getCount());
           while(_cursor.moveToNext()) {
             final BodyMeasureEntity _item;
@@ -328,7 +328,7 @@ public final class BodyMeasureDao_Impl implements BodyMeasureDao {
           final int _cursorIndexOfCapturedDate = CursorUtil.getColumnIndexOrThrow(_cursor, "capture_date");
           final int _cursorIndexOfCapturedTime = CursorUtil.getColumnIndexOrThrow(_cursor, "capture_time");
           final int _cursorIndexOfWeight = CursorUtil.getColumnIndexOrThrow(_cursor, "weight");
-          final int _cursorIndexOfFatRate = CursorUtil.getColumnIndexOrThrow(_cursor, "fat_fate");
+          final int _cursorIndexOfFatRate = CursorUtil.getColumnIndexOrThrow(_cursor, "fat");
           final int _cursorIndexOfPhotoUri = CursorUtil.getColumnIndexOrThrow(_cursor, "photo_uri");
           final List<BodyMeasureEntity> _result = new ArrayList<BodyMeasureEntity>(_cursor.getCount());
           while(_cursor.moveToNext()) {
@@ -404,7 +404,7 @@ public final class BodyMeasureDao_Impl implements BodyMeasureDao {
           final int _cursorIndexOfCapturedDate = CursorUtil.getColumnIndexOrThrow(_cursor, "capture_date");
           final int _cursorIndexOfCapturedTime = CursorUtil.getColumnIndexOrThrow(_cursor, "capture_time");
           final int _cursorIndexOfWeight = CursorUtil.getColumnIndexOrThrow(_cursor, "weight");
-          final int _cursorIndexOfFatRate = CursorUtil.getColumnIndexOrThrow(_cursor, "fat_fate");
+          final int _cursorIndexOfFatRate = CursorUtil.getColumnIndexOrThrow(_cursor, "fat");
           final int _cursorIndexOfPhotoUri = CursorUtil.getColumnIndexOrThrow(_cursor, "photo_uri");
           final List<BodyMeasureEntity> _result = new ArrayList<BodyMeasureEntity>(_cursor.getCount());
           while(_cursor.moveToNext()) {

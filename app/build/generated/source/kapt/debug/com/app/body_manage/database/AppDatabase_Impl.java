@@ -47,11 +47,11 @@ public final class AppDatabase_Impl extends AppDatabase {
     final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(configuration, new RoomOpenHelper.Delegate(1) {
       @Override
       public void createAllTables(SupportSQLiteDatabase _db) {
-        _db.execSQL("CREATE TABLE IF NOT EXISTS `bodyMeasures` (`ui` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `calendar_date` TEXT NOT NULL, `capture_date` TEXT NOT NULL, `capture_time` TEXT NOT NULL, `weight` REAL NOT NULL, `fat_fate` REAL NOT NULL, `photo_uri` TEXT)");
+        _db.execSQL("CREATE TABLE IF NOT EXISTS `bodyMeasures` (`ui` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `calendar_date` TEXT NOT NULL, `capture_date` TEXT NOT NULL, `capture_time` TEXT NOT NULL, `weight` REAL NOT NULL, `fat` REAL NOT NULL, `photo_uri` TEXT)");
         _db.execSQL("CREATE TABLE IF NOT EXISTS `photos` (`ui` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `body_measure_id` INTEGER NOT NULL, `photo_uri` TEXT NOT NULL, FOREIGN KEY(`body_measure_id`) REFERENCES `bodyMeasures`(`ui`) ON UPDATE NO ACTION ON DELETE CASCADE )");
         _db.execSQL("CREATE INDEX IF NOT EXISTS `index_photos_body_measure_id` ON `photos` (`body_measure_id`)");
         _db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        _db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '142973f8b3408e9a95df33d814f5c677')");
+        _db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '33b9825a6566441b96d10eec9247c0f7')");
       }
 
       @Override
@@ -103,7 +103,7 @@ public final class AppDatabase_Impl extends AppDatabase {
         _columnsBodyMeasures.put("capture_date", new TableInfo.Column("capture_date", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsBodyMeasures.put("capture_time", new TableInfo.Column("capture_time", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsBodyMeasures.put("weight", new TableInfo.Column("weight", "REAL", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsBodyMeasures.put("fat_fate", new TableInfo.Column("fat_fate", "REAL", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsBodyMeasures.put("fat", new TableInfo.Column("fat", "REAL", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsBodyMeasures.put("photo_uri", new TableInfo.Column("photo_uri", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
         final HashSet<TableInfo.ForeignKey> _foreignKeysBodyMeasures = new HashSet<TableInfo.ForeignKey>(0);
         final HashSet<TableInfo.Index> _indicesBodyMeasures = new HashSet<TableInfo.Index>(0);
@@ -131,7 +131,7 @@ public final class AppDatabase_Impl extends AppDatabase {
         }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "142973f8b3408e9a95df33d814f5c677", "3cba3a23f22aa7c305c822c786c2314a");
+    }, "33b9825a6566441b96d10eec9247c0f7", "60e7cbfd6d4ea91ee0d0d9dc17894d84");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(configuration.context)
         .name(configuration.name)
         .callback(_openCallback)

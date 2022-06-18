@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.app.body_manage.databinding.ActivityGraphBinding
-import com.github.mikephil.charting.data.Entry
+import com.app.body_manage.ui.graph.GraphViewModel.MyEntry
 
 class GraphActivity : FragmentActivity() {
 
@@ -28,7 +28,7 @@ class GraphActivity : FragmentActivity() {
         }
     }
 
-    private inner class PagerAdapter(fa: FragmentActivity, val entryList: List<List<Entry>>) :
+    private inner class PagerAdapter(fa: FragmentActivity, val entryList: List<List<MyEntry>>) :
         FragmentStateAdapter(fa) {
         override fun getItemCount(): Int = entryList.size
 

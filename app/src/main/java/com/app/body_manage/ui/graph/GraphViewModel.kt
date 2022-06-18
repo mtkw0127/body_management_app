@@ -7,34 +7,29 @@ import androidx.lifecycle.viewModelScope
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.model.BodyMeasureEntity
 import com.app.body_manage.repository.BodyMeasureRepository
-import com.github.mikephil.charting.data.Entry
+import java.io.Serializable
 import java.time.LocalDateTime
-import java.time.ZoneOffset
 import kotlinx.coroutines.launch
 
 class GraphViewModel(application: Application) : AndroidViewModel(application) {
+
+    data class MyEntry(val axisLocalDateTime: LocalDateTime, val y: Float) : Serializable
 
     private val bodyMeasureRepository: BodyMeasureRepository by lazy {
         (application as TrainingApplication).bodyMeasureRepository
     }
 
-    var entryList = MutableLiveData<MutableList<List<Entry>>>(mutableListOf())
+    var entryList = MutableLiveData<MutableList<List<MyEntry>>>(mutableListOf())
 
     private fun createEntryList(bodyMeasureList: List<BodyMeasureEntity>) {
         val weight = bodyMeasureList.asSequence()
             .map {
-                Entry().apply {
-                    this.x = it.capturedTime.toEpochSecond(ZoneOffset.UTC).toFloat()
-                    this.y = it.weight
-                }
+                MyEntry(axisLocalDateTime = it.capturedTime, y = it.weight)
             }.toList()
 
         val fat = bodyMeasureList.asSequence()
             .map {
-                Entry().apply {
-                    this.x = it.capturedTime.toEpochSecond(ZoneOffset.UTC).toFloat()
-                    this.y = it.fatRate
-                }
+                MyEntry(axisLocalDateTime = it.capturedTime, y = it.fatRate)
             }.toList()
 
         entryList.value?.add(weight)
