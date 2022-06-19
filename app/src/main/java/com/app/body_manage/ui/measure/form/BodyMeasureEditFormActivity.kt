@@ -1,4 +1,4 @@
-package com.app.body_manage.ui.measure.body.edit
+package com.app.body_manage.ui.measure.form
 
 import android.app.Activity
 import android.content.Context
@@ -17,8 +17,8 @@ import com.app.body_manage.dialog.FloatNumberPickerDialog
 import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.model.BodyMeasureEntity
 import com.app.body_manage.ui.camera.CameraActivity
-import com.app.body_manage.ui.measure.body.edit.BodyMeasureEditFormViewModel.PhotoModel
-import com.app.body_manage.ui.measure.body.edit.BodyMeasureEditFormViewModel.PhotoType.ADDED
+import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel.PhotoModel
+import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel.PhotoType.ADDED
 import com.app.body_manage.util.DateUtil
 import java.time.LocalDate
 import java.time.LocalDateTime

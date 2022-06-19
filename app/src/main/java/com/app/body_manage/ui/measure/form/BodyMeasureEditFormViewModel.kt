@@ -1,4 +1,4 @@
-package com.app.body_manage.ui.measure.body.edit
+package com.app.body_manage.ui.measure.form
 
 import android.app.Application
 import android.content.Intent
