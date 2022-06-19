@@ -46,9 +46,7 @@ class GraphViewModel(application: Application) : AndroidViewModel(application) {
             runCatching {
                 bodyMeasureRepository.getEntityListBetween()
             }
-                .onFailure { e ->
-                    e.printStackTrace()
-                }
+                .onFailure { e -> e.printStackTrace() }
                 .onSuccess {
                     createEntryList(bodyMeasureList = it)
                 }
