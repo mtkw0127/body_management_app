@@ -1,4 +1,4 @@
-package com.app.body_manage.model
+package com.app.body_manage.data.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

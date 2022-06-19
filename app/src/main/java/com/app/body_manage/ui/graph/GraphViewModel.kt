@@ -5,8 +5,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.TrainingApplication
-import com.app.body_manage.model.BodyMeasureEntity
-import com.app.body_manage.repository.BodyMeasureRepository
+import com.app.body_manage.data.entity.BodyMeasureEntity
+import com.app.body_manage.data.repository.BodyMeasureRepository
 import java.io.Serializable
 import java.time.LocalDateTime
 import kotlinx.coroutines.launch

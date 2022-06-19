@@ -1,10 +1,10 @@
-package com.app.body_manage.dao
+package com.app.body_manage.data.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import com.app.body_manage.model.BodyMeasureEntity
+import com.app.body_manage.data.entity.BodyMeasureEntity
 import java.time.LocalDate
 import java.time.LocalDateTime
 

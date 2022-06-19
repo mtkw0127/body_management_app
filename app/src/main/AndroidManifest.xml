@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.app.body_manage.ui.measure.body.edit.BodyMeasureEditFormActivity"
+            android:name="com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity"
             android:exported="true" />
         <activity
             android:name="com.app.body_manage.ui.measure.list.MeasureListActivity"

@@ -1,9 +1,9 @@
-package com.app.body_manage.dao
+package com.app.body_manage.data.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.app.body_manage.model.PhotoEntity
+import com.app.body_manage.data.entity.PhotoEntity
 
 @Dao
 interface PhotoDao {

@@ -1,4 +1,4 @@
-package com.app.body_manage.dao
+package com.app.body_manage.data.dao
 
 import androidx.room.ColumnInfo
 import androidx.room.Dao

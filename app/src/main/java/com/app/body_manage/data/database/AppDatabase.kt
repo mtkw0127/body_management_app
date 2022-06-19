@@ -1,15 +1,15 @@
-package com.app.body_manage.database
+package com.app.body_manage.data.dao.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.app.body_manage.dao.BodyMeasureDao
-import com.app.body_manage.dao.BodyMeasurePhotoDao
-import com.app.body_manage.dao.PhotoDao
-import com.app.body_manage.model.BodyMeasureEntity
-import com.app.body_manage.model.PhotoEntity
+import com.app.body_manage.data.dao.BodyMeasureDao
+import com.app.body_manage.data.dao.BodyMeasurePhotoDao
+import com.app.body_manage.data.dao.PhotoDao
+import com.app.body_manage.data.entity.BodyMeasureEntity
+import com.app.body_manage.data.entity.PhotoEntity
 
 @Database(
     entities = [BodyMeasureEntity::class, PhotoEntity::class],
