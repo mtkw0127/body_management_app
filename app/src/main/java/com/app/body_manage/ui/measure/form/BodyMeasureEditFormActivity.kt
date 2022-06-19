@@ -50,8 +50,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
             val photoList = CameraActivity.photoList.toList()
             val photoModels =
                 photoList.map { _uri -> PhotoModel(uri = _uri, photoType = ADDED) }.toList()
-            vm.photoList.value?.addAll(photoModels)
-            vm.photoList.value = vm.photoList.value
+            vm.addPhotos(photoModels)
         }
     }
 
@@ -61,6 +60,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = TrainingDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         // ViewModelにapplication設定
         vm = BodyMeasureEditFormViewModel()
         vm.intent = intent
