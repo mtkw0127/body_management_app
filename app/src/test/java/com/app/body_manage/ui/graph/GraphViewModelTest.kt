@@ -29,7 +29,7 @@ class GraphViewModelTest {
     @get:Rule
     val instantExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val application: TrainingApplication = mockk(relaxed = true)
+    private val application: TrainingApplication = mockk()
 
     private lateinit var viewModel: GraphViewModel
 
@@ -50,6 +50,7 @@ class GraphViewModelTest {
     fun `0件のグラフ用データ取得`() {
         // prepare
         val repository: BodyMeasureRepository = mockk(relaxed = true)
+        coEvery { application.bodyMeasureRepository }.returns(repository)
         coEvery { repository.getEntityListBetween() }.returns(mutableListOf())
         // exec
         viewModel.loadBodyMeasure()
@@ -78,6 +79,7 @@ class GraphViewModelTest {
             )
         }
         val repository = mockk<BodyMeasureRepository>()
+        coEvery { application.bodyMeasureRepository }.returns(repository)
         coEvery { repository.getEntityListBetween() } returns returnValue.toList()
         // exec
         runBlocking {
