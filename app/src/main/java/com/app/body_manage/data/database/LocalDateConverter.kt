@@ -1,4 +1,4 @@
-package com.app.body_manage.database
+package com.app.body_manage.data.dao.database
 
 import androidx.room.TypeConverter
 import java.time.LocalDate

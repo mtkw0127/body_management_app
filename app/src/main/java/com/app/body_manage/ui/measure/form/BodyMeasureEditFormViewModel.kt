@@ -1,25 +1,25 @@
-package com.app.body_manage.ui.measure.body.edit
+package com.app.body_manage.ui.measure.form
 
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.core.net.toUri
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.TrainingApplication
-import com.app.body_manage.model.BodyMeasureEntity
-import com.app.body_manage.model.PhotoEntity
-import com.app.body_manage.repository.BodyMeasureRepository
-import com.app.body_manage.repository.PhotoRepository
+import com.app.body_manage.data.entity.BodyMeasureEntity
+import com.app.body_manage.data.entity.PhotoEntity
+import com.app.body_manage.data.repository.BodyMeasureRepository
+import com.app.body_manage.data.repository.PhotoRepository
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class BodyMeasureEditFormViewModel() : ViewModel() {
-
+class BodyMeasureEditFormViewModel : ViewModel() {
 
     enum class PhotoType {
         Saved, ADDED
@@ -28,10 +28,17 @@ class BodyMeasureEditFormViewModel() : ViewModel() {
     // 撮影した写真データはここに保存する
     data class PhotoModel(val id: Int = -1, val uri: Uri, val photoType: PhotoType)
 
-    var photoList = MutableLiveData<MutableList<PhotoModel>>(mutableListOf())
+    private val _photoList = MutableLiveData<MutableList<PhotoModel>>(mutableListOf())
+    val photoList: LiveData<MutableList<PhotoModel>> = _photoList
+
+    fun addPhotos(photoList: List<PhotoModel>) {
+        _photoList.value?.addAll(photoList)
+        _photoList.value = _photoList.value
+    }
+
     fun deletePhoto(position: Int) {
-        photoList.value?.removeAt(position)
-        photoList.value = photoList.value
+        _photoList.value?.removeAt(position)
+        _photoList.value = _photoList.value
     }
 
     var application: Application? = null
@@ -104,7 +111,7 @@ class BodyMeasureEditFormViewModel() : ViewModel() {
                 }
                 .onSuccess { photos ->
                     if (photos.isNotEmpty()) {
-                        photoList.value =
+                        _photoList.value =
                             photos.map {
                                 PhotoModel(it.ui, it.photoUri.toUri(), PhotoType.Saved)
                             }.toList().toMutableList()
@@ -123,11 +130,11 @@ class BodyMeasureEditFormViewModel() : ViewModel() {
         viewModelScope.launch {
             runCatching {
                 // 最新の写真をサムネイルに設定
-                if (photoList.value?.isNotEmpty() == true) {
-                    saveModel.photoUri = checkNotNull(photoList.value).last().uri.toString()
+                if (_photoList.value?.isNotEmpty() == true) {
+                    saveModel.photoUri = checkNotNull(_photoList.value).last().uri.toString()
                 }
                 val id = bodyMeasureRepository.insert(saveModel)
-                if (photoList.value?.isNotEmpty() == true) {
+                if (_photoList.value?.isNotEmpty() == true) {
                     photoRepository.insert(
                         createPhotoModels(id.toInt())
                     )
@@ -145,12 +152,12 @@ class BodyMeasureEditFormViewModel() : ViewModel() {
             // 紐づく写真を全件->再登録して更新
             runCatching {
                 photoRepository.deletePhotos(bodyMeasureEntity.ui)
-                if (photoList.value?.isNotEmpty() == true) {
+                if (_photoList.value?.isNotEmpty() == true) {
                     photoRepository.insert(
                         createPhotoModels(bodyMeasureEntity.ui)
                     )
                     // 最新の写真をサムネイルに設定
-                    saveModel.photoUri = checkNotNull(photoList.value).last().uri.toString()
+                    saveModel.photoUri = checkNotNull(_photoList.value).last().uri.toString()
                 }
                 bodyMeasureRepository.update(saveModel)
             }.onFailure { it.printStackTrace() }
@@ -161,7 +168,7 @@ class BodyMeasureEditFormViewModel() : ViewModel() {
      * 写真のモデル生成
      */
     private fun createPhotoModels(id: Int): List<PhotoEntity> {
-        val photoList = checkNotNull(photoList.value)
+        val photoList = checkNotNull(_photoList.value)
         return photoList.map {
             PhotoEntity(
                 ui = 0,

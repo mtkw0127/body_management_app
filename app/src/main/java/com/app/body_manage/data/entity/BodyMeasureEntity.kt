@@ -1,4 +1,4 @@
-package com.app.body_manage.model
+package com.app.body_manage.data.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -16,6 +16,6 @@ data class BodyMeasureEntity(
     @ColumnInfo(name = "capture_date") val capturedDate: LocalDate,
     @ColumnInfo(name = "capture_time") val capturedTime: LocalDateTime,
     @ColumnInfo(name = "weight") val weight: Float,
-    @ColumnInfo(name = "fat_fate") val fatRate: Float,
+    @ColumnInfo(name = "fat") val fatRate: Float,
     @ColumnInfo(name = "photo_uri") var photoUri: String?
 ) : Serializable

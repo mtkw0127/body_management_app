@@ -1,4 +1,4 @@
-package com.app.body_manage.ui.measure.body.edit
+package com.app.body_manage.ui.measure.form
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,7 +6,7 @@ import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.app.body_manage.databinding.SlideItemContainerBinding
-import com.app.body_manage.ui.measure.body.edit.BodyMeasureEditFormViewModel.PhotoModel
+import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel.PhotoModel
 
 class SliderAdapter(
     var sliderItems: List<PhotoModel>,

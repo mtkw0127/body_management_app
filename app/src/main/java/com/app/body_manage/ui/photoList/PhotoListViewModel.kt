@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.TrainingApplication
-import com.app.body_manage.repository.BodyMeasurePhotoRepository
+import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.ui.photoList.PhotoListState.HasPhoto
 import com.app.body_manage.ui.photoList.PhotoListState.NoPhoto
 import kotlinx.coroutines.flow.MutableStateFlow

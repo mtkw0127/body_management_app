@@ -1,8 +1,8 @@
-package com.app.body_manage.repository
+package com.app.body_manage.data.repository
 
 import androidx.annotation.WorkerThread
-import com.app.body_manage.dao.PhotoDao
-import com.app.body_manage.model.PhotoEntity
+import com.app.body_manage.data.dao.PhotoDao
+import com.app.body_manage.data.entity.PhotoEntity
 
 class PhotoRepository(private val photoDao: PhotoDao) {
 
