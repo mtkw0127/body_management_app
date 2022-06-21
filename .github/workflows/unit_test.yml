@@ -1,0 +1,8 @@
+on: unit_test
+  pull_request:
+    types: [ opened, reopened ]
+jobs:
+  check-bats-version:
+    runs-on: ubuntu-latest
+    steps:
+      - run: ./grablew build
