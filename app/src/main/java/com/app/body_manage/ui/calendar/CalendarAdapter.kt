@@ -12,7 +12,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.ContextCompat
 import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
-import com.app.body_manage.repository.BodyMeasureRepository
+import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.ui.calendar.CalendarAdapter.MonthType.CURRENT
 import com.app.body_manage.ui.calendar.CalendarAdapter.MonthType.NEXT
 import com.app.body_manage.ui.calendar.CalendarAdapter.MonthType.NONE

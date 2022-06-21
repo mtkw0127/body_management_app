@@ -21,6 +21,13 @@ class DateUtil {
     companion object {
 
         /**
+         * 引数のLocalDateTimeをMM/DDの文字列に変換して返却
+         */
+        fun localDateConvertMMDD(localDateTime: LocalDateTime): String {
+            return "${localDateTime.monthValue}/${localDateTime.dayOfMonth}"
+        }
+
+        /**
          * 引数のLocalDateをYYYY年MM月DD日のフォーマットに変換して返却.
          */
         fun localDateConvertJapaneseFormatYearMonthDay(localDate: LocalDate): String {

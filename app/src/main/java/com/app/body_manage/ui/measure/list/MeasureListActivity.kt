@@ -6,9 +6,9 @@ import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
 import com.app.body_manage.TrainingApplication
+import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.databinding.ActivityTrainingMeasureListBinding
-import com.app.body_manage.repository.BodyMeasureRepository
-import com.app.body_manage.ui.measure.body.edit.BodyMeasureEditFormActivity
+import com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity
 import com.app.body_manage.util.DateUtil
 import java.time.LocalDate
 
