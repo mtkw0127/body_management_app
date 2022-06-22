@@ -56,7 +56,7 @@ class GraphViewModelTest {
         viewModel.loadBodyMeasure()
         // assert
         val entryList = checkNotNull(viewModel.entryList.value)
-        Assertions.assertEquals(2, entryList.size, "体重と体脂肪率以外が入っている")
+        Assertions.assertEquals(3, entryList.size, "体重と体脂肪率以外が入っている")
         Assertions.assertEquals(true, entryList[0].isEmpty(), "体重が0件になっていない")
         Assertions.assertEquals(true, entryList[1].isEmpty(), "体脂肪率が0件になっていない")
     }
