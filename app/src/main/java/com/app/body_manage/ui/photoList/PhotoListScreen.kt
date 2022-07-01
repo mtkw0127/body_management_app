@@ -18,19 +18,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.app.body_manage.R
+import com.app.body_manage.ui.photoList.PhotoListActivity.BottomSheetData
 import com.app.body_manage.ui.photoList.PhotoListState.HasPhoto
 import com.app.body_manage.ui.photoList.PhotoListState.NoPhoto
 
 @Composable
 fun PhotoListScreen(
-    state: PhotoListState
+    state: PhotoListState,
+    bottomSheetDataList: List<BottomSheetData>,
 ) {
-    val items = listOf(
-        "カレンダー" to R.drawable.ic_baseline_calendar_month_24,
-        "写真" to R.drawable.ic_baseline_photo_library_24,
-        "グラフ" to R.drawable.ic_baseline_show_chart_24
-    )
     Scaffold(
         bottomBar = {
             BottomNavigation(
@@ -39,24 +35,24 @@ fun PhotoListScreen(
                     .height(60.dp)
                     .padding(0.dp)
             ) {
-                items.forEach { item ->
+                bottomSheetDataList.forEach { item ->
                     BottomNavigationItem(
                         icon = {
                             Icon(
-                                painter = painterResource(id = item.second),
-                                contentDescription = item.first,
+                                painter = painterResource(id = item.resourceId),
+                                contentDescription = item.name,
                                 modifier = Modifier.padding(bottom = 5.dp),
                                 tint = Color.Black.copy(alpha = 0.7f)
                             )
                         },
                         label = {
                             Text(
-                                text = item.first,
+                                text = item.name,
                                 fontSize = 12.sp,
                                 modifier = Modifier.padding(0.dp)
                             )
                         },
-                        onClick = {},
+                        onClick = item.action,
                         selected = false
                     )
                 }

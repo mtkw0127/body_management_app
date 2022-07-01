@@ -1,6 +1,8 @@
 package com.app.body_manage.ui.calendar
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +15,10 @@ import com.app.body_manage.util.OnSwipeTouchListener
 import java.time.LocalDate
 
 class MainActivity : AppCompatActivity() {
+
+    companion object {
+        fun createIntent(context: Context) = Intent(context, MainActivity::class.java)
+    }
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: CalendarAdapter
