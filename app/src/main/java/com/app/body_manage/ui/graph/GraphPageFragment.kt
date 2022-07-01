@@ -11,14 +11,12 @@ import com.app.body_manage.R
 import com.app.body_manage.ui.graph.GraphViewModel.MyEntry
 import com.app.body_manage.util.DateUtil
 import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis.XAxisPosition.BOTTOM
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
-import kotlin.math.abs
 
 class GraphPageFragment : Fragment() {
 
@@ -68,24 +66,13 @@ class GraphPageFragment : Fragment() {
         //X軸の設定
         val chart = lineChart.apply {
             data = lineData
-            setPinchZoom(false)
-            setScaleEnabled(false)
             with(xAxis) {
                 this.isEnabled = true
                 this.setDrawGridLines(false)
                 this.textColor = Color.BLACK
                 this.position = BOTTOM
-                this.labelCount = entryList.size
-                this.valueFormatter = object : ValueFormatter() {
-                    override fun getAxisLabel(value: Float, axis: AxisBase): String {
-                        var label = ""
-                        //  小数点除去
-                        if (abs(value.toInt() - value) > 0) return label
-                        runCatching { xAxisLabels[value.toInt()] }
-                            .onSuccess { label = it }
-                        return label
-                    }
-                }
+                this.setLabelCount(entryList.size, true)
+                this.valueFormatter = IndexAxisValueFormatter(xAxisLabels)
             }
             with(axisLeft) {
                 this.axisMinimum = 0F
@@ -96,6 +83,7 @@ class GraphPageFragment : Fragment() {
                 this.isEnabled = false
             }
         }
+        chart.notifyDataSetChanged()
         chart.invalidate()
     }
 
