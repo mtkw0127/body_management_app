@@ -24,8 +24,14 @@
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigator"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="60dp"
+            android:padding="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:itemTextAppearanceActive="@style/BottomNavigationView.Active"
+            app:itemTextAppearanceInactive="@style/BottomNavigationView"
+            app:itemPaddingBottom="10dp"
+            app:itemPaddingTop="5dp"
             app:menu="@menu/bottom_nav_menu" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

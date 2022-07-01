@@ -83,9 +83,12 @@ class MainActivity : AppCompatActivity() {
 
         val navigation = binding.bottomNavigator
         val menuCalendar = navigation.menu.findItem(R.id.menu_calendar)
-        menuCalendar.isVisible = false
         val menuPhoto = navigation.menu.findItem(R.id.menu_photo)
         val menuGraph = navigation.menu.findItem(R.id.menu_graph)
+        menuCalendar.setOnMenuItemClickListener {
+            onResume()
+            return@setOnMenuItemClickListener true
+        }
         menuPhoto.setOnMenuItemClickListener {
             photoListLauncher.launch(PhotoListActivity.createIntent(applicationContext))
             return@setOnMenuItemClickListener true
