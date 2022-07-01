@@ -48,13 +48,16 @@ class GraphActivity : AppCompatActivity() {
         val menuCalendar = navigation.menu.findItem(R.id.menu_calendar)
         val menuPhoto = navigation.menu.findItem(R.id.menu_photo)
         val menuGraph = navigation.menu.findItem(R.id.menu_graph)
-        menuGraph.isVisible = false
         menuCalendar.setOnMenuItemClickListener {
             finish()
             return@setOnMenuItemClickListener true
         }
         menuPhoto.setOnMenuItemClickListener {
             calendarLauncher.launch(PhotoListActivity.createIntent(applicationContext))
+            return@setOnMenuItemClickListener true
+        }
+        menuGraph.setOnMenuItemClickListener {
+            onResume()
             return@setOnMenuItemClickListener true
         }
     }
