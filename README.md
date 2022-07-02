@@ -15,9 +15,7 @@ AndoirdStudioでクローンすれば動きます。
 
 ## :package: 機能
 
-| カレンダー管理| 日付ごとに管理 |
-| ------------- | ------------- |
-| <img src="https://user-images.githubusercontent.com/36796492/172868271-af26a53c-8a0f-4ce0-95e8-393c610e9932.png" width="200px"/>  | <img src="https://user-images.githubusercontent.com/36796492/172868243-b7c82ca6-cc2f-4473-9ae5-f09fc3deafea.png" width="200px"/>  |
-
-
+| カレンダー管理| 日付ごとに写真管理| 写真と計測内容を登録| グラフで表示|
+| ------------- | -------------| -------------| -------------|
+|<img src="https://user-images.githubusercontent.com/36796492/176981309-9f564277-cabb-4430-a717-66ce7f6e0c25.png" width="200px"/>|<img src="https://user-images.githubusercontent.com/36796492/176981306-cc24e705-55d2-4e40-b78a-726c9027fbbc.png" width="200px"/>|<img src="https://user-images.githubusercontent.com/36796492/176981533-33384077-ca79-484d-9d69-69a4d8415249.png" width="200px"/>|<img src="https://user-images.githubusercontent.com/36796492/176981311-d226852b-847b-4c9b-84ed-6bd7896a4371.png" width="200px"/>|
 
