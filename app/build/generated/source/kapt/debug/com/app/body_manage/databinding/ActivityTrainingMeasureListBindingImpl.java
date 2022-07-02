@@ -91,11 +91,11 @@ public class ActivityTrainingMeasureListBindingImpl extends ActivityTrainingMeas
     protected boolean onFieldChange(int localFieldId, Object object, int fieldId) {
         switch (localFieldId) {
             case 0 :
-                return onChangeVmMeasureList((androidx.lifecycle.LiveData<java.util.List<com.app.body_manage.model.BodyMeasureEntity>>) object, fieldId);
+                return onChangeVmMeasureList((androidx.lifecycle.LiveData<java.util.List<com.app.body_manage.data.entity.BodyMeasureEntity>>) object, fieldId);
         }
         return false;
     }
-    private boolean onChangeVmMeasureList(androidx.lifecycle.LiveData<java.util.List<com.app.body_manage.model.BodyMeasureEntity>> VmMeasureList, int fieldId) {
+    private boolean onChangeVmMeasureList(androidx.lifecycle.LiveData<java.util.List<com.app.body_manage.data.entity.BodyMeasureEntity>> VmMeasureList, int fieldId) {
         if (fieldId == BR._all) {
             synchronized(this) {
                     mDirtyFlags |= 0x1L;
@@ -112,11 +112,11 @@ public class ActivityTrainingMeasureListBindingImpl extends ActivityTrainingMeas
             dirtyFlags = mDirtyFlags;
             mDirtyFlags = 0;
         }
-        java.util.List<com.app.body_manage.model.BodyMeasureEntity> vmMeasureListGetValue = null;
+        java.util.List<com.app.body_manage.data.entity.BodyMeasureEntity> vmMeasureListGetValue = null;
         int vmMeasureListSize = 0;
         boolean vmMeasureListSizeInt0 = false;
         com.app.body_manage.ui.measure.list.MeasureListViewModel vm = mVm;
-        androidx.lifecycle.LiveData<java.util.List<com.app.body_manage.model.BodyMeasureEntity>> vmMeasureList = null;
+        androidx.lifecycle.LiveData<java.util.List<com.app.body_manage.data.entity.BodyMeasureEntity>> vmMeasureList = null;
 
         if ((dirtyFlags & 0x7L) != 0) {
 

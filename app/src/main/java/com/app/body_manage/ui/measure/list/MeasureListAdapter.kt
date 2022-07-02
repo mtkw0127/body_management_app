@@ -11,8 +11,8 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.app.body_manage.R
-import com.app.body_manage.model.BodyMeasureEntity
-import com.app.body_manage.ui.measure.body.edit.BodyMeasureEditFormActivity
+import com.app.body_manage.data.entity.BodyMeasureEntity
+import com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity
 import com.app.body_manage.ui.measure.list.MeasureListAdapter.ViewHolder
 import com.app.body_manage.util.DateUtil
 

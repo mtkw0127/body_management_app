@@ -184,7 +184,7 @@ class CameraActivity : AppCompatActivity() {
         private const val PHOTO_EXTENSION = ".jpg"
         private const val FILE_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSSS"
 
-        var photoList: MutableList<Uri> = mutableListOf()
+        val photoList: MutableList<Uri> = mutableListOf()
 
         fun createCameraActivityIntent(context: Context): Intent {
             photoList.clear()

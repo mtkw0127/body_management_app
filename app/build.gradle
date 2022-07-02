@@ -2,6 +2,17 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id 'de.mannodermaus.android-junit5'
+    id 'org.jlleitschuh.gradle.ktlint'
+}
+
+ktlint {
+    android = true
+    outputToConsole = true
+    ignoreFailures = true
+    reporters {
+        reporter "checkstyle"
+    }
 }
 
 android {
@@ -11,8 +22,8 @@ android {
         applicationId "com.app.calendar"
         minSdk 26
         targetSdk 32
-        versionCode 2
-        versionName "1.1.0"
+        versionCode 3
+        versionName "1.2.0"
         applicationId "com.app.body_manage"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -39,6 +50,11 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion '1.1.1'
     }
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
 }
 
 ext {
@@ -51,9 +67,7 @@ ext {
     materialVersion = '1.2.1'
     roomVersion = '2.2.5'
     // testing
-    junitVersion = '4.13.1'
     espressoVersion = '3.1.0'
-    androidxJunitVersion = '1.1.2'
 }
 
 dependencies {
@@ -61,8 +75,6 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     // lifecycle
@@ -84,6 +96,7 @@ dependencies {
     // Kotlin components
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.2'
 
     // 画像加工
     implementation 'com.makeramen:roundedimageview:2.3.0'
@@ -109,12 +122,21 @@ dependencies {
     // Integration with observables
     implementation 'androidx.compose.runtime:runtime-livedata:1.1.1'
 
-    // UI Tests
-    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.1.1'
-
+    // Junit5
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.2"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.8.2"
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
+    testImplementation "io.mockk:mockk:1.12.4"
     // 画像
     implementation("io.coil-kt:coil-compose:2.1.0")
 
     // Text feature
     implementation 'com.google.android.gms:play-services-mlkit-text-recognition:16.0.0'
+
+    // graph
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+}
+
+tasks.withType(org.jlleitschuh.gradle.ktlint.tasks.GenerateReportsTask) {
+    reportsOutputDirectory = project.layout.buildDirectory.dir("other/location/$name")
 }
