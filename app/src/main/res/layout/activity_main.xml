@@ -48,9 +48,10 @@
         <GridView
             android:id="@+id/calendarGridView"
             android:layout_width="match_parent"
-            android:layout_height="620dp"
+            android:layout_height="0dp"
             android:numColumns="7"
             android:background="@drawable/border"
+            app:layout_constraintBottom_toTopOf="@id/bottom_navigator"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/calendar_btn_field" />
