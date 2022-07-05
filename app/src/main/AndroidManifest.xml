@@ -30,6 +30,7 @@
             android:exported="true" />
         <activity
             android:name="com.app.body_manage.ui.measure.list.MeasureListActivity"
+            android:theme="@style/Theme.Material3.Light.NoActionBar"
             android:exported="true" />
         <activity
             android:name="com.app.body_manage.ui.graph.GraphActivity"
