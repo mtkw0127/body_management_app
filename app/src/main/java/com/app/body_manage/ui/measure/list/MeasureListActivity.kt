@@ -30,7 +30,7 @@ class MeasureListActivity : AppCompatActivity() {
         )
         setContent {
             val state: MeasureListState by viewModel.uiState.collectAsState()
-            MeasureListScreen(uiState = state)
+            MeasureListScreen(uiState = state) { viewModel.reload() }
         }
     }
 

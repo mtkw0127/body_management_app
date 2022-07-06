@@ -16,15 +16,18 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 sealed interface MeasureListState {
+    val tabName: String
     val date: LocalDate
 
     data class BodyMeasureListState(
         val list: List<BodyMeasureEntity>,
+        override val tabName: String = "体型",
         override val date: LocalDate
     ) : MeasureListState
 
     data class MealMeasureListState(
         val list: List<MealMeasureEntity>,
+        override val tabName: String = "食事",
         override val date: LocalDate
     ) : MeasureListState
 }
@@ -67,8 +70,8 @@ class MeasureListViewModel(
             viewModelState.value.toUiState()
         )
 
-    fun reload(state: MeasureListState) {
-        when (state) {
+    fun reload() {
+        when (uiState.value) {
             is BodyMeasureListState -> {
                 loadBodyMeasure()
             }

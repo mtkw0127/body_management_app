@@ -121,6 +121,8 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.4.1'
     // Integration with observables
     implementation 'androidx.compose.runtime:runtime-livedata:1.1.1'
+    implementation "com.google.accompanist:accompanist-pager:0.24.13-rc"
+    implementation "com.google.accompanist:accompanist-pager-indicators:0.24.11-rc"
 
     // Junit5
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.2"
