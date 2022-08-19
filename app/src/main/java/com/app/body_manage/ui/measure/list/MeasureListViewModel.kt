@@ -7,44 +7,40 @@ import com.app.body_manage.data.entity.MealMeasureEntity
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.ui.measure.list.MeasureListState.BodyMeasureListState
 import com.app.body_manage.ui.measure.list.MeasureListState.MealMeasureListState
-import java.time.LocalDate
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 sealed interface MeasureListState {
-    val tabName: String
     val date: LocalDate
+    val measureType: MeasureType
 
     data class BodyMeasureListState(
         val list: List<BodyMeasureEntity>,
-        override val tabName: String = "体型",
-        override val date: LocalDate
+        override val measureType: MeasureType,
+        override val date: LocalDate,
     ) : MeasureListState
 
     data class MealMeasureListState(
         val list: List<MealMeasureEntity>,
-        override val tabName: String = "食事",
+        override val measureType: MeasureType,
         override val date: LocalDate
     ) : MeasureListState
 }
 
 internal data class MeasureListViewModelState(
     val date: LocalDate,
-    val pagerState: MeasureListState,
+    val mealType: MeasureType,
     val bodyMeasureList: List<BodyMeasureEntity> = mutableListOf<BodyMeasureEntity>().toList(),
     val mealMeasureList: List<MealMeasureEntity> = listOf(),
 ) {
     fun toUiState(): MeasureListState {
-        return when (pagerState) {
-            is BodyMeasureListState -> {
-                BodyMeasureListState(date = date, list = bodyMeasureList)
+        return when (mealType) {
+            MeasureType.BODY -> {
+                BodyMeasureListState(date = date, list = bodyMeasureList, measureType = mealType)
             }
-            is MealMeasureListState -> {
-                MealMeasureListState(date = date, list = mealMeasureList)
+            MeasureType.MEAL -> {
+                MealMeasureListState(date = date, list = mealMeasureList, measureType = mealType)
             }
         }
     }
@@ -52,14 +48,14 @@ internal data class MeasureListViewModelState(
 
 class MeasureListViewModel(
     private val localDate: LocalDate,
-    private val pagerState: MeasureListState,
+    private val mealType: MeasureType,
     private val bodyMeasureRepository: BodyMeasureRepository
 ) : ViewModel() {
 
     private val viewModelState = MutableStateFlow(
         MeasureListViewModelState(
             date = localDate,
-            pagerState = pagerState
+            mealType = mealType,
         )
     )
     val uiState = viewModelState
@@ -71,11 +67,11 @@ class MeasureListViewModel(
         )
 
     fun reload() {
-        when (uiState.value) {
-            is BodyMeasureListState -> {
+        when (viewModelState.value.mealType) {
+            MeasureType.BODY -> {
                 loadBodyMeasure()
             }
-            is MealMeasureListState -> {
+            MeasureType.MEAL -> {
                 loadMealMeasureList()
             }
         }
@@ -91,7 +87,7 @@ class MeasureListViewModel(
                 viewModelState.update {
                     it.copy(
                         date = localDate,
-                        pagerState = pagerState,
+                        mealType = mealType,
                         bodyMeasureList = loadedResult,
                         mealMeasureList = mutableListOf()
                     )
@@ -109,7 +105,7 @@ class MeasureListViewModel(
         viewModelState.update {
             it.copy(
                 date = localDate,
-                pagerState = pagerState,
+                mealType = mealType,
                 bodyMeasureList = mutableListOf(),
                 mealMeasureList = result
             )

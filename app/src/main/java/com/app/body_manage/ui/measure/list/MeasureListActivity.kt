@@ -25,12 +25,15 @@ class MeasureListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         viewModel = MeasureListViewModel(
             localDate = localDate,
-            pagerState = MeasureListState.BodyMeasureListState(mutableListOf(), localDate),
+            mealType = MeasureType.BODY,
             bodyMeasureRepository,
         )
         setContent {
             val state: MeasureListState by viewModel.uiState.collectAsState()
-            MeasureListScreen(uiState = state) { viewModel.reload() }
+            MeasureListScreen(
+                uiState = state,
+                reload = { viewModel.reload() },
+            )
         }
     }
 
