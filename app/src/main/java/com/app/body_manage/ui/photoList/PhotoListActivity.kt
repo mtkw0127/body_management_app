@@ -46,7 +46,7 @@ class PhotoListActivity : AppCompatActivity() {
                 )
                 PhotoListScreen(
                     state = state,
-                    bottomSheetDataList
+                    bottomSheetDataList = bottomSheetDataList
                 )
             }
         }

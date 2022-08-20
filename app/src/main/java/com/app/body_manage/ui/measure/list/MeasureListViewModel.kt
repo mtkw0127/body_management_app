@@ -2,16 +2,14 @@ package com.app.body_manage.ui.measure.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.body_manage.data.entity.BodyMeasureEntity
 import com.app.body_manage.data.entity.BodyMeasureModel
 import com.app.body_manage.data.entity.MealMeasureEntity
-import com.app.body_manage.data.entity.toModel
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.ui.measure.list.MeasureListState.BodyMeasureListState
 import com.app.body_manage.ui.measure.list.MeasureListState.MealMeasureListState
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.LocalDateTime
 
 sealed interface MeasureListState {
     val date: LocalDate
@@ -89,38 +87,22 @@ class MeasureListViewModel(
     }
 
     private fun loadBodyMeasure() {
-        val result = listOf(
-            BodyMeasureEntity(
-                ui = 1,
-                capturedDate = LocalDate.now(),
-                calendarDate = LocalDate.now(),
-                capturedTime = LocalDateTime.now(),
-                weight = 1.0F,
-                fatRate = 1.0F,
-                photoUri = "https:yahoo.co.jp"
-            ).toModel()
-        )
-        viewModelState.update {
-            it.copy(
-                bodyMeasureList = result
-            )
+        viewModelScope.launch {
+            runCatching {
+                bodyMeasureRepository.getEntityListByDate(localDate)
+            }.onFailure { e ->
+                e.printStackTrace()
+            }.onSuccess { loadedResult ->
+                viewModelState.update {
+                    it.copy(
+                        date = localDate,
+                        measureType = mealType,
+                        bodyMeasureList = loadedResult,
+                        mealMeasureList = mutableListOf()
+                    )
+                }
+            }
         }
-//        viewModelScope.launch {
-//            runCatching {
-//                bodyMeasureRepository.getEntityListByDate(localDate)
-//            }.onFailure { e ->
-//                e.printStackTrace()
-//            }.onSuccess { loadedResult ->
-//                viewModelState.update {
-//                    it.copy(
-//                        date = localDate,
-//                        mealType = mealType,
-//                        bodyMeasureList = loadedResult,
-//                        mealMeasureList = mutableListOf()
-//                    )
-//                }
-//            }
-//        }
     }
 
     private fun loadMealMeasureList() {
