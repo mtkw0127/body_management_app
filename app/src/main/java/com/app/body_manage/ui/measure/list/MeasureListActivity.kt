@@ -23,18 +23,23 @@ class MeasureListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initViewModel()
+        setContent {
+            val state: MeasureListState by viewModel.uiState.collectAsState()
+            MeasureListScreen(
+                uiState = state,
+                switchPage = { viewModel.switchType(it) },
+            )
+        }
+    }
+
+    private fun initViewModel() {
         viewModel = MeasureListViewModel(
             localDate = localDate,
             mealType = MeasureType.BODY,
             bodyMeasureRepository,
         )
-        setContent {
-            val state: MeasureListState by viewModel.uiState.collectAsState()
-            MeasureListScreen(
-                uiState = state,
-                reload = { viewModel.reload() },
-            )
-        }
+        viewModel.reload()
     }
 
     companion object {

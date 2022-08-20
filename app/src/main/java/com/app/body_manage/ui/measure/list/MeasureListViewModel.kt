@@ -3,20 +3,22 @@ package com.app.body_manage.ui.measure.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.data.entity.BodyMeasureEntity
+import com.app.body_manage.data.entity.BodyMeasureModel
 import com.app.body_manage.data.entity.MealMeasureEntity
+import com.app.body_manage.data.entity.toModel
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.ui.measure.list.MeasureListState.BodyMeasureListState
 import com.app.body_manage.ui.measure.list.MeasureListState.MealMeasureListState
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 sealed interface MeasureListState {
     val date: LocalDate
     val measureType: MeasureType
 
     data class BodyMeasureListState(
-        val list: List<BodyMeasureEntity>,
+        val list: List<BodyMeasureModel>,
         override val measureType: MeasureType,
         override val date: LocalDate,
     ) : MeasureListState
@@ -30,17 +32,17 @@ sealed interface MeasureListState {
 
 internal data class MeasureListViewModelState(
     val date: LocalDate,
-    val mealType: MeasureType,
-    val bodyMeasureList: List<BodyMeasureEntity> = mutableListOf<BodyMeasureEntity>().toList(),
+    val measureType: MeasureType,
+    val bodyMeasureList: List<BodyMeasureModel> = listOf(),
     val mealMeasureList: List<MealMeasureEntity> = listOf(),
 ) {
     fun toUiState(): MeasureListState {
-        return when (mealType) {
+        return when (measureType) {
             MeasureType.BODY -> {
-                BodyMeasureListState(date = date, list = bodyMeasureList, measureType = mealType)
+                BodyMeasureListState(date = date, list = bodyMeasureList, measureType = measureType)
             }
             MeasureType.MEAL -> {
-                MealMeasureListState(date = date, list = mealMeasureList, measureType = mealType)
+                MealMeasureListState(date = date, list = mealMeasureList, measureType = measureType)
             }
         }
     }
@@ -55,7 +57,7 @@ class MeasureListViewModel(
     private val viewModelState = MutableStateFlow(
         MeasureListViewModelState(
             date = localDate,
-            mealType = mealType,
+            measureType = mealType,
         )
     )
     val uiState = viewModelState
@@ -66,8 +68,17 @@ class MeasureListViewModel(
             viewModelState.value.toUiState()
         )
 
+    fun switchType(measureType: MeasureType) {
+        viewModelState.update {
+            it.copy(
+                measureType = measureType
+            )
+        }
+        reload()
+    }
+
     fun reload() {
-        when (viewModelState.value.mealType) {
+        when (viewModelState.value.measureType) {
             MeasureType.BODY -> {
                 loadBodyMeasure()
             }
@@ -78,22 +89,38 @@ class MeasureListViewModel(
     }
 
     private fun loadBodyMeasure() {
-        viewModelScope.launch {
-            runCatching {
-                bodyMeasureRepository.getEntityListByDate(localDate)
-            }.onFailure { e ->
-                e.printStackTrace()
-            }.onSuccess { loadedResult ->
-                viewModelState.update {
-                    it.copy(
-                        date = localDate,
-                        mealType = mealType,
-                        bodyMeasureList = loadedResult,
-                        mealMeasureList = mutableListOf()
-                    )
-                }
-            }
+        val result = listOf(
+            BodyMeasureEntity(
+                ui = 1,
+                capturedDate = LocalDate.now(),
+                calendarDate = LocalDate.now(),
+                capturedTime = LocalDateTime.now(),
+                weight = 1.0F,
+                fatRate = 1.0F,
+                photoUri = "https:yahoo.co.jp"
+            ).toModel()
+        )
+        viewModelState.update {
+            it.copy(
+                bodyMeasureList = result
+            )
         }
+//        viewModelScope.launch {
+//            runCatching {
+//                bodyMeasureRepository.getEntityListByDate(localDate)
+//            }.onFailure { e ->
+//                e.printStackTrace()
+//            }.onSuccess { loadedResult ->
+//                viewModelState.update {
+//                    it.copy(
+//                        date = localDate,
+//                        mealType = mealType,
+//                        bodyMeasureList = loadedResult,
+//                        mealMeasureList = mutableListOf()
+//                    )
+//                }
+//            }
+//        }
     }
 
     private fun loadMealMeasureList() {
@@ -104,9 +131,6 @@ class MeasureListViewModel(
         )
         viewModelState.update {
             it.copy(
-                date = localDate,
-                mealType = mealType,
-                bodyMeasureList = mutableListOf(),
                 mealMeasureList = result
             )
         }
