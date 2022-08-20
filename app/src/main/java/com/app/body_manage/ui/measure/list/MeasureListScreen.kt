@@ -33,6 +33,7 @@ fun MeasureListScreen(
     uiState: MeasureListState,
     switchPage: (MeasureType) -> Unit,
     bottomSheetDataList: List<PhotoListActivity.BottomSheetData>,
+    clickFab: () -> Unit,
 ) {
     val pages = MeasureType.values()
     val pagerState = rememberPagerState()
@@ -112,7 +113,7 @@ fun MeasureListScreen(
             }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { /*TODO*/ }) {
+            FloatingActionButton(onClick = clickFab) {
                 Icon(Icons.Filled.Add, contentDescription = "追加")
             }
         },

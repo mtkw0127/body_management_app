@@ -3,6 +3,7 @@ package com.app.body_manage.ui.measure.list
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,7 @@ import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.ui.calendar.MainActivity
 import com.app.body_manage.ui.graph.GraphActivity
+import com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import java.time.LocalDate
 
@@ -26,8 +28,6 @@ class MeasureListActivity : AppCompatActivity() {
 
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
-
-    data class BottomSheetData(val name: String, val resourceId: Int, val action: () -> Unit)
 
     private lateinit var viewModel: MeasureListViewModel
 
@@ -58,6 +58,21 @@ class MeasureListActivity : AppCompatActivity() {
                 uiState = state,
                 switchPage = { viewModel.switchType(it) },
                 bottomSheetDataList = bottomSheetDataList,
+                clickFab = {
+                    when (viewModel.uiState.value.measureType) {
+                        MeasureType.BODY -> {
+                            launcher.launch(
+                                BodyMeasureEditFormActivity.createMeasureFormIntent(
+                                    context = this,
+                                    formDate = viewModel.uiState.value.date,
+                                )
+                            )
+                        }
+                        MeasureType.MEAL -> {
+                            Toast.makeText(this, "今後機能追加する！", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
             )
         }
     }
