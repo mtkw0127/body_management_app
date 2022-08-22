@@ -1,10 +1,18 @@
 package com.app.body_manage.ui.photoList
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.*
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,7 +68,6 @@ fun PhotoListScreen(
                 modifier = Modifier
                     .padding(it)
                     .fillMaxSize(),
-                contentAlignment = Alignment.Center
             ) {
                 when (state) {
                     is HasPhoto -> {
@@ -87,12 +94,18 @@ fun PhotoListScreen(
                         }
                     }
                     is NoPhoto -> {
-                        Text(
-                            text = "未登録です\n体型登録時に撮影した写真がここに表示されます",
-                            fontWeight = FontWeight.Bold,
-                            color = Color.Gray,
-                            textAlign = TextAlign.Center,
-                        )
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .fillMaxSize()
+                        ) {
+                            Text(
+                                text = "未登録です\n体型登録時に撮影した写真がここに表示されます",
+                                fontWeight = FontWeight.Bold,
+                                color = Color.Gray,
+                                textAlign = TextAlign.Center,
+                            )
+                        }
                     }
                 }
             }
