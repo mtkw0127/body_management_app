@@ -39,18 +39,15 @@ class MeasureListActivity : AppCompatActivity() {
 
             val bottomSheetDataList = listOf(
                 PhotoListActivity.BottomSheetData(
-                    "カレンダー",
-                    R.drawable.ic_baseline_calendar_month_24
+                    "カレンダー", R.drawable.ic_baseline_calendar_month_24
                 ) {
-                    launcher.launch(
-                        MainActivity.createIntent(this)
-                    )
+                    launcher.launch(MainActivity.createIntent(this))
                 },
-                PhotoListActivity.BottomSheetData("写真", R.drawable.ic_baseline_photo_library_24) {},
+                PhotoListActivity.BottomSheetData("写真", R.drawable.ic_baseline_photo_library_24) {
+                    launcher.launch(PhotoListActivity.createIntent(this))
+                },
                 PhotoListActivity.BottomSheetData("グラフ", R.drawable.ic_baseline_show_chart_24) {
-                    launcher.launch(
-                        GraphActivity.createIntent(this)
-                    )
+                    launcher.launch(GraphActivity.createIntent(this))
                 }
             )
 
