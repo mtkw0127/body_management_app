@@ -7,9 +7,13 @@ import com.app.body_manage.data.entity.MealMeasureEntity
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.ui.measure.list.MeasureListState.BodyMeasureListState
 import com.app.body_manage.ui.measure.list.MeasureListState.MealMeasureListState
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import java.time.LocalDate
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 sealed interface MeasureListState {
     val date: LocalDate
@@ -26,6 +30,12 @@ sealed interface MeasureListState {
         override val measureType: MeasureType,
         override val date: LocalDate
     ) : MeasureListState
+
+    data class CommonMeasureListState(
+        val list: List<MealMeasureEntity>,
+        override val measureType: MeasureType,
+        override val date: LocalDate
+    ) : MeasureListState
 }
 
 internal data class MeasureListViewModelState(
@@ -37,10 +47,25 @@ internal data class MeasureListViewModelState(
     fun toUiState(): MeasureListState {
         return when (measureType) {
             MeasureType.BODY -> {
-                BodyMeasureListState(date = date, list = bodyMeasureList, measureType = measureType)
+                BodyMeasureListState(
+                    date = date,
+                    list = bodyMeasureList,
+                    measureType = measureType,
+                )
             }
             MeasureType.MEAL -> {
-                MealMeasureListState(date = date, list = mealMeasureList, measureType = measureType)
+                MealMeasureListState(
+                    date = date,
+                    list = mealMeasureList,
+                    measureType = measureType,
+                )
+            }
+            else -> {
+                MeasureListState.CommonMeasureListState(
+                    date = date,
+                    list = mealMeasureList,
+                    measureType = measureType,
+                )
             }
         }
     }

@@ -29,6 +29,11 @@ class MeasureListActivity : AppCompatActivity() {
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
 
+    private val measureFormLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            viewModel.reload()
+        }
+
     private lateinit var viewModel: MeasureListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,12 +58,11 @@ class MeasureListActivity : AppCompatActivity() {
 
             MeasureListScreen(
                 uiState = state,
-                switchPage = { viewModel.switchType(it) },
                 bottomSheetDataList = bottomSheetDataList,
                 clickFab = {
                     when (viewModel.uiState.value.measureType) {
                         MeasureType.BODY -> {
-                            launcher.launch(
+                            measureFormLauncher.launch(
                                 BodyMeasureEditFormActivity.createMeasureFormIntent(
                                     context = this,
                                     formDate = viewModel.uiState.value.date,
@@ -68,6 +72,7 @@ class MeasureListActivity : AppCompatActivity() {
                         MeasureType.MEAL -> {
                             Toast.makeText(this, "今後機能追加する！", Toast.LENGTH_LONG).show()
                         }
+                        else -> {}
                     }
                 }
             )

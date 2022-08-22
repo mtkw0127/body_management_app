@@ -1,49 +1,45 @@
 package com.app.body_manage.ui.measure.list
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.*
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.app.body_manage.R
-import com.app.body_manage.ui.measure.list.MeasureListState.BodyMeasureListState
-import com.app.body_manage.ui.measure.list.MeasureListState.MealMeasureListState
+import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.pagerTabIndicatorOffset
-import com.google.accompanist.pager.rememberPagerState
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun MeasureListScreen(
     uiState: MeasureListState,
-    switchPage: (MeasureType) -> Unit,
     bottomSheetDataList: List<PhotoListActivity.BottomSheetData>,
     clickFab: () -> Unit,
 ) {
-    val pages = MeasureType.values()
-    val pagerState = rememberPagerState()
-
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }.collect {
-            switchPage.invoke(pages[it])
-        }
-    }
-
     Scaffold(
         content = { padding ->
             Column {
@@ -52,69 +48,107 @@ fun MeasureListScreen(
                         .padding(padding)
                         .fillMaxHeight()
                 ) {
-                    TabRow(
-                        selectedTabIndex = pagerState.currentPage,
-                        indicator = { tabPositions ->
-                            TabRowDefaults.Indicator(
-                                color = colorResource(id = R.color.purple_700),
-                                modifier = Modifier.pagerTabIndicatorOffset(
-                                    pagerState,
-                                    tabPositions
-                                )
-                            )
-                        },
-                    ) {
-                        pages.forEachIndexed { index, type ->
-                            Tab(
-                                text = { Text(text = type.title, color = Color.Black) },
-                                selected = pagerState.currentPage == index,
-                                selectedContentColor = Color.Black,
-                                onClick = { },
-
-                                modifier = Modifier.background(colorResource(id = R.color.purple_200)),
-                            )
-                        }
-                    }
-                    HorizontalPager(
-                        count = pages.size,
-                        state = pagerState,
-                        modifier = Modifier.fillMaxHeight()
-                    ) {
-                        when (uiState) {
-                            is BodyMeasureListState -> {
-                                if (uiState.list.isNotEmpty()) {
-                                    LazyColumn(content = {
-                                        items(uiState.list) { item ->
+                    when (uiState) {
+                        is MeasureListState.BodyMeasureListState -> {
+                            if (uiState.list.isNotEmpty()) {
+                                LazyColumn(
+                                    modifier = Modifier.fillMaxSize(),
+                                    content = {
+                                        stickyHeader {
                                             Row {
-                                                Text(item.ui.toString())
-                                                Text(item.photoUri.toString())
+                                                DisplayMeasureColumn.values().forEach {
+                                                    Box(
+                                                        contentAlignment = Alignment.Center,
+                                                        modifier = Modifier
+                                                            .weight(1F)
+                                                            .padding(3.dp)
+                                                    ) {
+                                                        Text(
+                                                            text = it.display,
+                                                            fontSize = 16.sp,
+                                                            fontWeight = FontWeight.Bold,
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        items(uiState.list) { item ->
+                                            Row(
+                                                Modifier
+                                                    .wrapContentHeight()
+                                            ) {
+                                                Box(
+                                                    contentAlignment = Alignment.Center,
+                                                    modifier = Modifier
+                                                        .padding(top = 6.dp)
+                                                        .weight(1F)
+                                                ) {
+                                                    Text(
+                                                        text = item.capturedLocalDateTime.toJapaneseTime(),
+                                                    )
+                                                }
+                                                Box(
+                                                    contentAlignment = Alignment.Center,
+                                                    modifier = Modifier
+                                                        .padding(top = 6.dp)
+                                                        .weight(1F)
+                                                ) {
+                                                    Text(
+                                                        text = item.weight.toString() + "Kg",
+                                                    )
+                                                }
+                                                Box(
+                                                    contentAlignment = Alignment.Center,
+                                                    modifier = Modifier
+                                                        .padding(top = 6.dp)
+                                                        .weight(1F)
+                                                ) {
+                                                    Text(
+                                                        text = item.fat.toString() + "%",
+                                                    )
+                                                }
+                                                Box(
+                                                    contentAlignment = Alignment.Center,
+                                                    modifier = Modifier
+                                                        .padding(top = 6.dp)
+                                                        .weight(1F)
+                                                ) {
+                                                    Text(
+                                                        text = "5枚",
+                                                    )
+                                                }
+                                                Icon(
+                                                    Icons.Filled.OpenInNew,
+                                                    contentDescription = "体型登録",
+                                                    modifier = Modifier
+                                                        .weight(1F)
+                                                        .padding(3.dp),
+                                                    tint = Color.Gray,
+                                                )
                                             }
                                         }
                                     })
-                                } else {
+                            } else {
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.fillMaxSize()
+                                ) {
                                     Text(
                                         text = "未登録です\n右下のボタンから登録してください",
                                         fontWeight = FontWeight.Bold,
-                                        color = Color.Gray,
                                         textAlign = TextAlign.Center,
                                     )
                                 }
                             }
-                            is MealMeasureListState -> {
-                                Text(
-                                    text = "今後食事も登録できるようにするよ！",
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.Gray,
-                                )
-                            }
                         }
+                        else -> {}
                     }
                 }
             }
         },
         floatingActionButton = {
             FloatingActionButton(onClick = clickFab) {
-                Icon(Icons.Filled.Add, contentDescription = "追加")
+                Icon(Icons.Filled.Add, contentDescription = "体型登録")
             }
         },
         bottomBar = {
