@@ -19,7 +19,8 @@ data class BodyMeasureEntity(
     @ColumnInfo(name = "capture_time") val capturedTime: LocalDateTime,
     @ColumnInfo(name = "weight") val weight: Float,
     @ColumnInfo(name = "fat") val fatRate: Float,
-    @ColumnInfo(name = "photo_uri") var photoUri: String?
+    @ColumnInfo(name = "photo_uri") var photoUri: String?,
+    @ColumnInfo(name = "tall") val tall: Float?,
 ) : Serializable
 
 data class BodyMeasureModel(

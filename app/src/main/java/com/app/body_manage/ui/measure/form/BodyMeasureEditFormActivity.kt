@@ -174,7 +174,8 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                 vm.measureTime,
                 vm.measureWeight,
                 vm.measureFat,
-                null
+                null,
+                0F,
             )
             when (formType) {
                 FormType.ADD -> {

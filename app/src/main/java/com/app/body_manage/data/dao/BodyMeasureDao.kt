@@ -13,7 +13,7 @@ interface BodyMeasureDao {
     @Query("SELECT * FROM bodyMeasures WHERE calendar_date = :calendarDate ORDER BY capture_time ASC")
     suspend fun getTrainingEntityListByDate(calendarDate: LocalDate): List<BodyMeasureEntity>
 
-    @Query("SELECT ui, calendar_date, capture_date, capture_time, AVG(weight) as weight, AVG(fat) as fat, photo_uri FROM bodyMeasures GROUP BY bodyMeasures.calendar_date")
+    @Query("SELECT ui, calendar_date, capture_date, capture_time, AVG(weight) as weight, AVG(fat) as fat, photo_uri, tall FROM bodyMeasures GROUP BY bodyMeasures.calendar_date")
     suspend fun getTrainingEntityListBetween(): List<BodyMeasureEntity>
 
     @Query("SELECT * FROM bodyMeasures WHERE capture_time")
