@@ -59,6 +59,7 @@ class MeasureListActivity : AppCompatActivity() {
             MeasureListScreen(
                 uiState = state,
                 bottomSheetDataList = bottomSheetDataList,
+                clickSaveBodyInfo = {},
                 clickBodyMeasureEdit = {
                     measureFormLauncher.launch(
                         BodyMeasureEditFormActivity.createMeasureEditIntent(

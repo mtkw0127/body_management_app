@@ -16,6 +16,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Button
+import androidx.compose.material.Divider
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
@@ -47,6 +49,7 @@ import kotlin.math.pow
 @Composable
 fun MeasureListScreen(
     uiState: MeasureListState,
+    clickSaveBodyInfo: () -> Unit,
     bottomSheetDataList: List<PhotoListActivity.BottomSheetData>,
     clickBodyMeasureEdit: (LocalDateTime) -> Unit,
     clickFab: () -> Unit,
@@ -82,6 +85,7 @@ fun MeasureListScreen(
                                         contentAlignment = Alignment.Center,
                                         modifier = Modifier
                                             .fillMaxHeight()
+                                            .padding(end = 16.dp)
                                     ) {
                                         TextField(
                                             value = tall.value,
@@ -97,7 +101,16 @@ fun MeasureListScreen(
                                                 .height(48.dp)
                                         )
                                     }
+                                    Box(
+                                        contentAlignment = Alignment.Center,
+                                        modifier = Modifier.fillMaxHeight()
+                                    ) {
+                                        Button(onClick = { clickSaveBodyInfo.invoke() }) {
+                                            Text(text = "保存")
+                                        }
+                                    }
                                 }
+                                Divider(modifier = Modifier.padding(12.dp))
                                 LazyColumn(
                                     modifier = Modifier.fillMaxSize(),
                                     content = {
@@ -112,7 +125,6 @@ fun MeasureListScreen(
                                                                 start = 3.dp,
                                                                 end = 3.dp,
                                                                 bottom = 3.dp,
-                                                                top = 12.dp
                                                             )
                                                     ) {
                                                         Text(
