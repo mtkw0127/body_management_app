@@ -59,6 +59,14 @@ class MeasureListActivity : AppCompatActivity() {
             MeasureListScreen(
                 uiState = state,
                 bottomSheetDataList = bottomSheetDataList,
+                clickBodyMeasureEdit = {
+                    measureFormLauncher.launch(
+                        BodyMeasureEditFormActivity.createMeasureEditIntent(
+                            context = this,
+                            captureTime = it,
+                        )
+                    )
+                },
                 clickFab = {
                     when (viewModel.uiState.value.measureType) {
                         MeasureType.BODY -> {

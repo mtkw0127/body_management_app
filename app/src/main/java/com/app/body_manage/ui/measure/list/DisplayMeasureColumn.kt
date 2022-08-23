@@ -4,6 +4,6 @@ enum class DisplayMeasureColumn(val measureType: MeasureType, val display: Strin
     TIME(MeasureType.COMMON, "計測時刻"),
     WEIGHT(MeasureType.BODY, "体重"),
     FAT(MeasureType.BODY, "体脂肪率"),
-    PHOTO_NUM(MeasureType.COMMON, "写真枚数"),
-    DETAIL(MeasureType.COMMON, "詳細"),
+    BMI(MeasureType.COMMON, "BMI"),
+    DETAIL(MeasureType.COMMON, "編集"),
 }
