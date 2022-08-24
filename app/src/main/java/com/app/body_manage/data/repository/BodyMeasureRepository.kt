@@ -12,6 +12,10 @@ import kotlinx.coroutines.withContext
 
 class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
 
+    companion object {
+        private const val DEFAULT_TALL = 160F
+    }
+
     @WorkerThread
     suspend fun insert(bodyMeasureEntity: BodyMeasureEntity): Long {
         return trainingDao.insert(bodyMeasureEntity)
@@ -24,6 +28,12 @@ class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
     suspend fun updateTallByDate(tall: Float, calendarDate: LocalDate): Int =
         withContext(Dispatchers.IO) {
             return@withContext trainingDao.updateTallByDate(tall, calendarDate)
+        }
+
+    suspend fun getTallByDate(calendarDate: LocalDate): Float =
+        withContext(Dispatchers.IO) {
+            return@withContext trainingDao.getTrainingEntityListByDate(calendarDate)
+                .firstOrNull()?.tall ?: DEFAULT_TALL
         }
 
     suspend fun getEntityListByDate(date: LocalDate): List<BodyMeasureModel> {

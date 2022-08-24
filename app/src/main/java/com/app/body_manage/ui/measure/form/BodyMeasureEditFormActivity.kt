@@ -68,6 +68,8 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         vm.measureTime = captureDateTime
         // 日付設定
         binding.dateText.text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(vm.captureDate)
+        // 当日の体重を取得
+        vm.fetchTall()
 
         setListener()
         initPagerAdapter()
@@ -175,7 +177,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                 vm.measureWeight,
                 vm.measureFat,
                 null,
-                0F,
+                vm.tall,
             )
             when (formType) {
                 FormType.ADD -> {

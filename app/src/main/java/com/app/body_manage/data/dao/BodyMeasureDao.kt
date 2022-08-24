@@ -19,6 +19,9 @@ interface BodyMeasureDao {
     @Query("UPDATE bodyMeasures SET tall = :tall WHERE calendar_date = :calendarDate")
     suspend fun updateTallByDate(tall: Float, calendarDate: LocalDate): Int
 
+    @Query("SELECT * FROM bodyMeasures WHERE calendar_date = :calendarDate")
+    suspend fun getTallByDate(calendarDate: LocalDate): List<BodyMeasureEntity>
+
     @Query("SELECT * FROM bodyMeasures WHERE capture_time = :captureTime")
     suspend fun getTrainingEntityByLocalDateTime(captureTime: LocalDateTime): List<BodyMeasureEntity>
 
