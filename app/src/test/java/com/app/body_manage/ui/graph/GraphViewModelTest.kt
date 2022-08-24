@@ -74,7 +74,8 @@ class GraphViewModelTest {
                     capturedTime = LocalDateTime.now(),
                     weight = 0F,
                     fatRate = 0F,
-                    photoUri = null
+                    photoUri = null,
+                    tall = null,
                 )
             )
         }
