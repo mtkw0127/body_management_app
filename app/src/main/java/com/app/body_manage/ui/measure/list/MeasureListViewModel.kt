@@ -21,6 +21,7 @@ sealed interface MeasureListState {
 
     data class BodyMeasureListState(
         val list: List<BodyMeasureModel>,
+        val tall: String,
         override val measureType: MeasureType,
         override val date: LocalDate,
     ) : MeasureListState
@@ -43,6 +44,7 @@ internal data class MeasureListViewModelState(
     val measureType: MeasureType,
     val bodyMeasureList: List<BodyMeasureModel> = listOf(),
     val mealMeasureList: List<MealMeasureEntity> = listOf(),
+    val tall: String = (bodyMeasureList.firstOrNull()?.tall ?: 150.0F).toString()
 ) {
     fun toUiState(): MeasureListState {
         return when (measureType) {
@@ -50,6 +52,7 @@ internal data class MeasureListViewModelState(
                 BodyMeasureListState(
                     date = date,
                     list = bodyMeasureList,
+                    tall = tall,
                     measureType = measureType,
                 )
             }
@@ -111,6 +114,28 @@ class MeasureListViewModel(
         }
     }
 
+    fun updateTall() {
+        val tall = viewModelState.value.tall
+        viewModelScope.launch {
+            runCatching {
+                bodyMeasureRepository.updateTallByDate(
+                    tall = tall.toFloat(),
+                    calendarDate = localDate,
+                )
+            }.onFailure {
+
+            }.onSuccess {
+                reload()
+            }
+        }
+    }
+
+    fun setTall(tall: String) {
+        viewModelState.update {
+            it.copy(tall = tall)
+        }
+    }
+
     private fun loadBodyMeasure() {
         viewModelScope.launch {
             runCatching {
@@ -123,7 +148,8 @@ class MeasureListViewModel(
                         date = localDate,
                         measureType = mealType,
                         bodyMeasureList = loadedResult,
-                        mealMeasureList = mutableListOf()
+                        mealMeasureList = mutableListOf(),
+                        tall = (loadedResult.firstOrNull()?.tall ?: 150.0F).toString()
                     )
                 }
             }

@@ -16,8 +16,8 @@ interface BodyMeasureDao {
     @Query("SELECT ui, calendar_date, capture_date, capture_time, AVG(weight) as weight, AVG(fat) as fat, photo_uri, tall FROM bodyMeasures GROUP BY bodyMeasures.calendar_date")
     suspend fun getTrainingEntityListBetween(): List<BodyMeasureEntity>
 
-    @Query("SELECT * FROM bodyMeasures WHERE capture_time")
-    suspend fun getTrainingEntityList(): List<BodyMeasureEntity>
+    @Query("UPDATE bodyMeasures SET tall = :tall WHERE calendar_date = :calendarDate")
+    suspend fun updateTallByDate(tall: Float, calendarDate: LocalDate): Int
 
     @Query("SELECT * FROM bodyMeasures WHERE capture_time = :captureTime")
     suspend fun getTrainingEntityByLocalDateTime(captureTime: LocalDateTime): List<BodyMeasureEntity>

@@ -59,7 +59,12 @@ class MeasureListActivity : AppCompatActivity() {
             MeasureListScreen(
                 uiState = state,
                 bottomSheetDataList = bottomSheetDataList,
-                clickSaveBodyInfo = {},
+                clickSaveBodyInfo = {
+                    viewModel.updateTall()
+                },
+                setTall = {
+                    viewModel.setTall(it)
+                },
                 clickBodyMeasureEdit = {
                     measureFormLauncher.launch(
                         BodyMeasureEditFormActivity.createMeasureEditIntent(
@@ -83,7 +88,7 @@ class MeasureListActivity : AppCompatActivity() {
                         }
                         else -> {}
                     }
-                }
+                },
             )
         }
     }

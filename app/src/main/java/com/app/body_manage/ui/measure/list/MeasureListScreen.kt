@@ -27,8 +27,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,8 +40,6 @@ import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.google.accompanist.pager.ExperimentalPagerApi
 import java.time.LocalDateTime
-import kotlin.math.ceil
-import kotlin.math.pow
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -51,12 +47,10 @@ fun MeasureListScreen(
     uiState: MeasureListState,
     clickSaveBodyInfo: () -> Unit,
     bottomSheetDataList: List<PhotoListActivity.BottomSheetData>,
+    setTall: (String) -> Unit,
     clickBodyMeasureEdit: (LocalDateTime) -> Unit,
     clickFab: () -> Unit,
 ) {
-
-    val tall = rememberSaveable { mutableStateOf("169") }
-
     Scaffold(
         content = { padding ->
             Column {
@@ -88,13 +82,16 @@ fun MeasureListScreen(
                                             .padding(end = 16.dp)
                                     ) {
                                         TextField(
-                                            value = tall.value,
+                                            value = uiState.tall,
                                             singleLine = true,
                                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                             onValueChange = {
-                                                tall.value = if (it.toDoubleOrNull() != null) {
-                                                    it
-                                                } else tall.value
+                                                if (it.toDoubleOrNull() != null ||
+                                                    it.startsWith("0")
+                                                        .not()
+                                                ) {
+                                                    setTall.invoke(it)
+                                                }
                                             },
                                             modifier = Modifier
                                                 .width(120.dp)
@@ -173,10 +170,6 @@ fun MeasureListScreen(
                                                     )
                                                 }
 
-                                                val tall2 = (tall.value.toDouble() / 100)
-                                                    .pow(2)
-                                                val bmi =
-                                                    (ceil(item.weight / tall2 * 100) / 100).toString()
                                                 Box(
                                                     contentAlignment = Alignment.Center,
                                                     modifier = Modifier
@@ -184,7 +177,7 @@ fun MeasureListScreen(
                                                         .weight(1F)
                                                 ) {
                                                     Text(
-                                                        text = bmi,
+                                                        text = item.bmi,
                                                     )
                                                 }
                                                 Icon(

@@ -5,6 +5,7 @@ import androidx.core.net.toUri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.app.body_manage.domain.BMICalculator
 import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -28,7 +29,9 @@ data class BodyMeasureModel(
     val capturedLocalDateTime: LocalDateTime,
     val weight: Float,
     val fat: Float,
-    val photoUri: Uri?
+    val photoUri: Uri?,
+    val tall: Float?,
+    val bmi: String,
 ) {
     @JvmInline
     value class Id(val ui: Int)
@@ -40,5 +43,11 @@ fun BodyMeasureEntity.toModel(): BodyMeasureModel =
         capturedLocalDateTime = this.capturedTime,
         weight = this.weight,
         fat = this.fatRate,
-        photoUri = this.photoUri?.toUri()
+        photoUri = this.photoUri?.toUri(),
+        tall = this.tall,
+        bmi = if (tall == null) {
+            "-"
+        } else {
+            BMICalculator().calculate(tall, weight).toString()
+        }
     )
