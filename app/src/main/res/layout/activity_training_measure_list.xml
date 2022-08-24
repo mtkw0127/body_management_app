@@ -40,7 +40,6 @@
             android:visibility="invisible"
             android:gravity="center"
             android:textSize="@dimen/size_input_sp"
-            app:isExist="@{vm.measureList.size() == 0}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

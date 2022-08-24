@@ -60,6 +60,7 @@ class BodyMeasureEditFormViewModel : ViewModel() {
     lateinit var measureTime: LocalDateTime
     var measureWeight = 50F
     var measureFat = 20.0F
+    var tall: Float? = null
 
     // coroutineによるローディング取得
     lateinit var bodyMeasureEntity: BodyMeasureEntity
@@ -120,6 +121,18 @@ class BodyMeasureEditFormViewModel : ViewModel() {
                 .also {
                     loadingPhoto.value = false
                 }
+        }
+    }
+
+    fun fetchTall() {
+        viewModelScope.launch {
+            runCatching {
+                bodyMeasureRepository.getTallByDate(captureDate)
+            }.onFailure { e ->
+                Timber.e(e)
+            }.onSuccess {
+                tall = it
+            }
         }
     }
 

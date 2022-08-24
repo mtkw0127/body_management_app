@@ -14,8 +14,9 @@ public class ActivityTrainingMeasureListBindingImpl extends ActivityTrainingMeas
     static {
         sIncludes = null;
         sViewsWithIds = new android.util.SparseIntArray();
-        sViewsWithIds.put(R.id.date_field, 2);
-        sViewsWithIds.put(R.id.date_text, 3);
+        sViewsWithIds.put(R.id.date_field, 1);
+        sViewsWithIds.put(R.id.date_text, 2);
+        sViewsWithIds.put(R.id.is_empty_message, 3);
         sViewsWithIds.put(R.id.training_measure_list, 4);
         sViewsWithIds.put(R.id.back_btn, 5);
         sViewsWithIds.put(R.id.body_btn, 6);
@@ -32,15 +33,14 @@ public class ActivityTrainingMeasureListBindingImpl extends ActivityTrainingMeas
         this(bindingComponent, root, mapBindings(bindingComponent, root, 7, sIncludes, sViewsWithIds));
     }
     private ActivityTrainingMeasureListBindingImpl(androidx.databinding.DataBindingComponent bindingComponent, View root, Object[] bindings) {
-        super(bindingComponent, root, 1
+        super(bindingComponent, root, 0
             , (com.google.android.material.button.MaterialButton) bindings[5]
             , (com.google.android.material.button.MaterialButton) bindings[6]
-            , (android.widget.FrameLayout) bindings[2]
+            , (android.widget.FrameLayout) bindings[1]
+            , (android.widget.TextView) bindings[2]
             , (android.widget.TextView) bindings[3]
-            , (android.widget.TextView) bindings[1]
             , (androidx.recyclerview.widget.RecyclerView) bindings[4]
             );
-        this.isEmptyMessage.setTag(null);
         this.mboundView0 = (androidx.constraintlayout.widget.ConstraintLayout) bindings[0];
         this.mboundView0.setTag(null);
         setRootTag(root);
@@ -51,7 +51,7 @@ public class ActivityTrainingMeasureListBindingImpl extends ActivityTrainingMeas
     @Override
     public void invalidateAll() {
         synchronized(this) {
-                mDirtyFlags = 0x4L;
+                mDirtyFlags = 0x2L;
         }
         requestRebind();
     }
@@ -80,27 +80,11 @@ public class ActivityTrainingMeasureListBindingImpl extends ActivityTrainingMeas
 
     public void setVm(@Nullable com.app.body_manage.ui.measure.list.MeasureListViewModel Vm) {
         this.mVm = Vm;
-        synchronized(this) {
-            mDirtyFlags |= 0x2L;
-        }
-        notifyPropertyChanged(BR.vm);
-        super.requestRebind();
     }
 
     @Override
     protected boolean onFieldChange(int localFieldId, Object object, int fieldId) {
         switch (localFieldId) {
-            case 0 :
-                return onChangeVmMeasureList((androidx.lifecycle.LiveData<java.util.List<com.app.body_manage.data.entity.BodyMeasureEntity>>) object, fieldId);
-        }
-        return false;
-    }
-    private boolean onChangeVmMeasureList(androidx.lifecycle.LiveData<java.util.List<com.app.body_manage.data.entity.BodyMeasureEntity>> VmMeasureList, int fieldId) {
-        if (fieldId == BR._all) {
-            synchronized(this) {
-                    mDirtyFlags |= 0x1L;
-            }
-            return true;
         }
         return false;
     }
@@ -112,53 +96,15 @@ public class ActivityTrainingMeasureListBindingImpl extends ActivityTrainingMeas
             dirtyFlags = mDirtyFlags;
             mDirtyFlags = 0;
         }
-        java.util.List<com.app.body_manage.data.entity.BodyMeasureEntity> vmMeasureListGetValue = null;
-        int vmMeasureListSize = 0;
-        boolean vmMeasureListSizeInt0 = false;
-        com.app.body_manage.ui.measure.list.MeasureListViewModel vm = mVm;
-        androidx.lifecycle.LiveData<java.util.List<com.app.body_manage.data.entity.BodyMeasureEntity>> vmMeasureList = null;
-
-        if ((dirtyFlags & 0x7L) != 0) {
-
-
-
-                if (vm != null) {
-                    // read vm.measureList
-                    vmMeasureList = vm.getMeasureList();
-                }
-                updateLiveDataRegistration(0, vmMeasureList);
-
-
-                if (vmMeasureList != null) {
-                    // read vm.measureList.getValue()
-                    vmMeasureListGetValue = vmMeasureList.getValue();
-                }
-
-
-                if (vmMeasureListGetValue != null) {
-                    // read vm.measureList.getValue().size()
-                    vmMeasureListSize = vmMeasureListGetValue.size();
-                }
-
-
-                // read vm.measureList.getValue().size() == 0
-                vmMeasureListSizeInt0 = (vmMeasureListSize) == (0);
-        }
         // batch finished
-        if ((dirtyFlags & 0x7L) != 0) {
-            // api target 1
-
-            com.app.body_manage.extension.ViewExtensionKt.setIsExist(this.isEmptyMessage, vmMeasureListSizeInt0);
-        }
     }
     // Listener Stub Implementations
     // callback impls
     // dirty flag
     private  long mDirtyFlags = 0xffffffffffffffffL;
     /* flag mapping
-        flag 0 (0x1L): vm.measureList
-        flag 1 (0x2L): vm
-        flag 2 (0x3L): null
+        flag 0 (0x1L): vm
+        flag 1 (0x2L): null
     flag mapping end*/
     //end
 }
