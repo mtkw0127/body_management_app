@@ -1,7 +1,7 @@
 package com.app.body_manage
 
 import android.app.Application
-import com.app.body_manage.data.dao.database.AppDatabase
+import com.app.body_manage.data.database.AppDatabase
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.PhotoRepository

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
@@ -140,6 +141,12 @@ class CalendarAdapter(
         }
 
         val calendarCellView = checkNotNull(inflater.inflate(R.layout.calendar_cell, null))
+        // カレンダーが画面内に収まるためにGridLayoutを行数で割った値を設定
+        calendarCellView.layoutParams =
+            ConstraintLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                (parent.height - 100) / 6
+            )
         // 日付設定
         // cellInfoからView情報を定義する
         val cellInfo = getItem(pos - 7)

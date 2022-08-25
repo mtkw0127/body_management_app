@@ -1,40 +1,171 @@
 package com.app.body_manage.ui.measure.list
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.body_manage.data.entity.BodyMeasureEntity
+import com.app.body_manage.data.entity.BodyMeasureModel
+import com.app.body_manage.data.entity.MealMeasureEntity
 import com.app.body_manage.data.repository.BodyMeasureRepository
+import com.app.body_manage.ui.measure.list.MeasureListState.BodyMeasureListState
+import com.app.body_manage.ui.measure.list.MeasureListState.MealMeasureListState
 import java.time.LocalDate
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
+sealed interface MeasureListState {
+    val date: LocalDate
+    val measureType: MeasureType
+
+    data class BodyMeasureListState(
+        val list: List<BodyMeasureModel>,
+        val tall: String,
+        override val measureType: MeasureType,
+        override val date: LocalDate,
+    ) : MeasureListState
+
+    data class MealMeasureListState(
+        val list: List<MealMeasureEntity>,
+        override val measureType: MeasureType,
+        override val date: LocalDate
+    ) : MeasureListState
+
+    data class CommonMeasureListState(
+        val list: List<MealMeasureEntity>,
+        override val measureType: MeasureType,
+        override val date: LocalDate
+    ) : MeasureListState
+}
+
+internal data class MeasureListViewModelState(
+    val date: LocalDate,
+    val measureType: MeasureType,
+    val bodyMeasureList: List<BodyMeasureModel> = listOf(),
+    val mealMeasureList: List<MealMeasureEntity> = listOf(),
+    val tall: String = (bodyMeasureList.firstOrNull()?.tall ?: 150.0F).toString()
+) {
+    fun toUiState(): MeasureListState {
+        return when (measureType) {
+            MeasureType.BODY -> {
+                BodyMeasureListState(
+                    date = date,
+                    list = bodyMeasureList,
+                    tall = tall,
+                    measureType = measureType,
+                )
+            }
+            MeasureType.MEAL -> {
+                MealMeasureListState(
+                    date = date,
+                    list = mealMeasureList,
+                    measureType = measureType,
+                )
+            }
+            else -> {
+                MeasureListState.CommonMeasureListState(
+                    date = date,
+                    list = mealMeasureList,
+                    measureType = measureType,
+                )
+            }
+        }
+    }
+}
 
 class MeasureListViewModel(
     private val localDate: LocalDate,
+    private val mealType: MeasureType,
     private val bodyMeasureRepository: BodyMeasureRepository
 ) : ViewModel() {
 
-    private val _measureList = MutableLiveData<List<BodyMeasureEntity>>(mutableListOf())
-    val measureList: LiveData<List<BodyMeasureEntity>> = _measureList
+    private val viewModelState = MutableStateFlow(
+        MeasureListViewModelState(
+            date = localDate,
+            measureType = mealType,
+        )
+    )
+    val uiState = viewModelState
+        .map { it.toUiState() }
+        .stateIn(
+            viewModelScope,
+            SharingStarted.Eagerly,
+            viewModelState.value.toUiState()
+        )
 
-    init {
-        loadMeasureList()
+    fun switchType(measureType: MeasureType) {
+        viewModelState.update {
+            it.copy(
+                measureType = measureType
+            )
+        }
+        reload()
     }
 
     fun reload() {
-        _measureList.value = mutableListOf()
-        loadMeasureList()
+        when (viewModelState.value.measureType) {
+            MeasureType.BODY -> {
+                loadBodyMeasure()
+            }
+            MeasureType.MEAL -> {
+                loadMealMeasureList()
+            }
+        }
     }
 
-    private fun loadMeasureList() {
+    fun updateTall() {
+        val tall = viewModelState.value.tall
+        viewModelScope.launch {
+            runCatching {
+                bodyMeasureRepository.updateTallByDate(
+                    tall = tall.toFloat(),
+                    calendarDate = localDate,
+                )
+            }.onFailure {
+
+            }.onSuccess {
+                reload()
+            }
+        }
+    }
+
+    fun setTall(tall: String) {
+        viewModelState.update {
+            it.copy(tall = tall)
+        }
+    }
+
+    private fun loadBodyMeasure() {
         viewModelScope.launch {
             runCatching {
                 bodyMeasureRepository.getEntityListByDate(localDate)
             }.onFailure { e ->
                 e.printStackTrace()
-            }.onSuccess {
-                _measureList.value = it
+            }.onSuccess { loadedResult ->
+                viewModelState.update {
+                    it.copy(
+                        date = localDate,
+                        measureType = mealType,
+                        bodyMeasureList = loadedResult,
+                        mealMeasureList = mutableListOf(),
+                        tall = (loadedResult.firstOrNull()?.tall ?: 150.0F).toString()
+                    )
+                }
             }
+        }
+    }
+
+    private fun loadMealMeasureList() {
+        val result = listOf(
+            MealMeasureEntity(ui = 1),
+            MealMeasureEntity(ui = 2),
+            MealMeasureEntity(ui = 3)
+        )
+        viewModelState.update {
+            it.copy(
+                mealMeasureList = result
+            )
         }
     }
 }

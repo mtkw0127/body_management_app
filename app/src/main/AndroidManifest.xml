@@ -36,8 +36,8 @@
             android:exported="true" />
         <activity
             android:name="com.app.body_manage.ui.camera.CameraActivity"
-            android:theme="@style/Theme.Material3.Light.NoActionBar"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@style/Theme.Material3.Light.NoActionBar" />
         <activity
             android:name="com.app.body_manage.ui.camera.MeasureCameraActivity"
             android:exported="true" />
