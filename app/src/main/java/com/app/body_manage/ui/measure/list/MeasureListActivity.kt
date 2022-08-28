@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.repository.BodyMeasureRepository
-import com.app.body_manage.ui.calendar.MainActivity
+import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
@@ -46,7 +46,7 @@ class MeasureListActivity : AppCompatActivity() {
                 PhotoListActivity.BottomSheetData(
                     "カレンダー", R.drawable.ic_baseline_calendar_month_24
                 ) {
-                    launcher.launch(MainActivity.createIntent(this))
+                    launcher.launch(CalendarActivity.createIntent(this))
                 },
                 PhotoListActivity.BottomSheetData("写真", R.drawable.ic_baseline_photo_library_24) {
                     launcher.launch(PhotoListActivity.createIntent(this))
