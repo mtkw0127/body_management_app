@@ -186,18 +186,19 @@ class CalendarAdapter(
             else -> {}
         }
 
-        CoroutineScope(Dispatchers.Main).launch {
+        // セルタッチ時のイベント
+        calendarCellView.setOnClickListener {
+            val intent = MeasureListActivity.createTrainingMeasureListIntent(
+                it.context,
+                cellInfo.localDate
+            )
+            trainingMeasureListLauncher.launch(intent)
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
             runCatching { bodyMeasureRepository.getEntityListByDate(cellInfo.localDate) }
                 .onFailure { e -> e.printStackTrace() }
-                .onSuccess { it ->
-                    // セルタッチ時のイベント
-                    calendarCellView.setOnClickListener {
-                        val intent = MeasureListActivity.createTrainingMeasureListIntent(
-                            it.context,
-                            cellInfo.localDate
-                        )
-                        trainingMeasureListLauncher.launch(intent)
-                    }
+                .onSuccess {
                     if (it.isNotEmpty()) {
                         val measureCntView =
                             calendarCellView.findViewById<TextView>(R.id.measure_cnt)
@@ -207,8 +208,6 @@ class CalendarAdapter(
                     }
                 }
         }
-
         return calendarCellView
     }
-
 }
