@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -19,11 +18,11 @@ import androidx.camera.core.ImageCapture.Metadata
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.PreviewView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.app.body_manage.R
+import com.app.body_manage.databinding.CameraPreviewBinding
 import java.nio.file.Path
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -36,13 +35,15 @@ class CameraActivity : AppCompatActivity() {
 
     private var lensFacing = CameraSelector.LENS_FACING_BACK
     private lateinit var cameraSelector: CameraSelector
-
+    private lateinit var binding: CameraPreviewBinding
     private lateinit var cameraExecutor: ExecutorService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.camera_preview)
+        binding = CameraPreviewBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initCamera()
+
         // バックグラウンドのエグゼキュータ
         cameraExecutor = Executors.newSingleThreadExecutor()
         if (allPermissionsGranted()) {
@@ -50,20 +51,17 @@ class CameraActivity : AppCompatActivity() {
         } else {
             permissionCheck()
         }
-        val nextButton = findViewById<Button>(R.id.next_btn)
-        nextButton.setOnClickListener {
+        binding.nextBtn.setOnClickListener {
             // 撮影した結果を返却
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
         // バックの場合、撮影した撮影した撮影を除去
-        val backButton = findViewById<Button>(R.id.back_from_camera_btn)
-        backButton.setOnClickListener {
+        binding.backFromCameraBtn.setOnClickListener {
             photoList.clear()
             finish()
         }
-        val switchCameraButton = findViewById<Button>(R.id.switch_camera)
-        switchCameraButton.setOnClickListener {
+        binding.switchCamera.setOnClickListener {
             lensFacing = when (lensFacing) {
                 CameraSelector.LENS_FACING_BACK -> CameraSelector.LENS_FACING_FRONT
                 CameraSelector.LENS_FACING_FRONT -> CameraSelector.LENS_FACING_BACK
@@ -72,8 +70,7 @@ class CameraActivity : AppCompatActivity() {
             initCamera()
             startCamera()
         }
-        val takePhotoButton = findViewById<Button>(R.id.shutter_btn)
-        takePhotoButton.setOnClickListener {
+        binding.shutterBtn.setOnClickListener {
             val photoOutputFilePath = createFile(it.context)
             val metadata = Metadata().apply {
                 // インカメの場合は写真を反転する
@@ -91,7 +88,7 @@ class CameraActivity : AppCompatActivity() {
                         Handler(Looper.getMainLooper()).post {
                             val photoUri = checkNotNull(outputFileResults.savedUri)
                             // Prevに追加
-                            val imageView = findViewById<ImageView>(R.id.captured_img)
+                            val imageView = findViewById<ImageView>(R.id.captured)
                             imageView?.setImageURI(photoUri)
                             // 一覧に追加
                             photoList.add(photoUri)
@@ -117,11 +114,11 @@ class CameraActivity : AppCompatActivity() {
             .build()
     }
 
+
     /**
      * カメラ起動
      */
     private fun startCamera() {
-        val previewView = findViewById<PreviewView>(R.id.camera_preview)
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener(Runnable {
             // Camera provider is now guaranteed to be available
@@ -144,7 +141,7 @@ class CameraActivity : AppCompatActivity() {
 
             // Connect the preview use case to the previewView
             preview.setSurfaceProvider(
-                previewView.surfaceProvider
+                binding.cameraPreview.surfaceProvider
             )
         }, ContextCompat.getMainExecutor(this))
     }

@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingComponent;
 import androidx.databinding.ViewDataBinding;
 import com.app.body_manage.databinding.ActivityGraphBindingImpl;
 import com.app.body_manage.databinding.ActivityMainBindingImpl;
+import com.app.body_manage.databinding.CameraPreviewBindingImpl;
 import com.app.body_manage.databinding.SlideItemContainerBindingImpl;
 import com.app.body_manage.databinding.TrainingDetailBindingImpl;
 import java.lang.IllegalArgumentException;
@@ -25,15 +26,18 @@ public class DataBinderMapperImpl extends DataBinderMapper {
 
   private static final int LAYOUT_ACTIVITYMAIN = 2;
 
-  private static final int LAYOUT_SLIDEITEMCONTAINER = 3;
+  private static final int LAYOUT_CAMERAPREVIEW = 3;
 
-  private static final int LAYOUT_TRAININGDETAIL = 4;
+  private static final int LAYOUT_SLIDEITEMCONTAINER = 4;
 
-  private static final SparseIntArray INTERNAL_LAYOUT_ID_LOOKUP = new SparseIntArray(4);
+  private static final int LAYOUT_TRAININGDETAIL = 5;
+
+  private static final SparseIntArray INTERNAL_LAYOUT_ID_LOOKUP = new SparseIntArray(5);
 
   static {
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.app.body_manage.R.layout.activity_graph, LAYOUT_ACTIVITYGRAPH);
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.app.body_manage.R.layout.activity_main, LAYOUT_ACTIVITYMAIN);
+    INTERNAL_LAYOUT_ID_LOOKUP.put(com.app.body_manage.R.layout.camera_preview, LAYOUT_CAMERAPREVIEW);
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.app.body_manage.R.layout.slide_item_container, LAYOUT_SLIDEITEMCONTAINER);
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.app.body_manage.R.layout.training_detail, LAYOUT_TRAININGDETAIL);
   }
@@ -58,6 +62,12 @@ public class DataBinderMapperImpl extends DataBinderMapper {
             return new ActivityMainBindingImpl(component, view);
           }
           throw new IllegalArgumentException("The tag for activity_main is invalid. Received: " + tag);
+        }
+        case  LAYOUT_CAMERAPREVIEW: {
+          if ("layout/camera_preview_0".equals(tag)) {
+            return new CameraPreviewBindingImpl(component, view);
+          }
+          throw new IllegalArgumentException("The tag for camera_preview is invalid. Received: " + tag);
         }
         case  LAYOUT_SLIDEITEMCONTAINER: {
           if ("layout/slide_item_container_0".equals(tag)) {
@@ -124,11 +134,12 @@ public class DataBinderMapperImpl extends DataBinderMapper {
   }
 
   private static class InnerLayoutIdLookup {
-    static final HashMap<String, Integer> sKeys = new HashMap<String, Integer>(4);
+    static final HashMap<String, Integer> sKeys = new HashMap<String, Integer>(5);
 
     static {
       sKeys.put("layout/activity_graph_0", com.app.body_manage.R.layout.activity_graph);
       sKeys.put("layout/activity_main_0", com.app.body_manage.R.layout.activity_main);
+      sKeys.put("layout/camera_preview_0", com.app.body_manage.R.layout.camera_preview);
       sKeys.put("layout/slide_item_container_0", com.app.body_manage.R.layout.slide_item_container);
       sKeys.put("layout/training_detail_0", com.app.body_manage.R.layout.training_detail);
     }
