@@ -28,10 +28,19 @@ class DateUtil {
         }
 
         /**
-         * 引数のLocalDateをYYYY年MM月DD日のフォーマットに変換して返却.
+         * 引数のLocalDateをYYYY年MM月DD日(曜日)のフォーマットに変換して返却.
          */
         fun localDateConvertJapaneseFormatYearMonthDay(localDate: LocalDate): String {
-            return "${localDate.year}年${localDate.monthValue}月${localDate.dayOfMonth}日"
+            val japaneseDayOfWeek = when (localDate.dayOfWeek) {
+                DayOfWeek.SUNDAY -> "日"
+                DayOfWeek.MONDAY -> "月"
+                DayOfWeek.TUESDAY -> "火"
+                DayOfWeek.WEDNESDAY -> "水"
+                DayOfWeek.THURSDAY -> "木"
+                DayOfWeek.FRIDAY -> "金"
+                DayOfWeek.SATURDAY -> "土"
+            }
+            return "${localDate.year}年${localDate.monthValue}月${localDate.dayOfMonth}日(${japaneseDayOfWeek})"
         }
 
         /**

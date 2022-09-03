@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -17,6 +18,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -38,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.ui.photoList.PhotoListActivity
+import com.app.body_manage.util.DateUtil
 import com.google.accompanist.pager.ExperimentalPagerApi
 import java.time.LocalDateTime
 
@@ -62,48 +65,82 @@ fun MeasureListScreen(
                     when (uiState) {
                         is MeasureListState.BodyMeasureListState -> {
                             if (uiState.list.isNotEmpty()) {
-                                Row(
-                                    modifier = Modifier
-                                        .height(60.dp)
-                                        .padding(start = 12.dp)
-                                ) {
-                                    Box(
-                                        contentAlignment = Alignment.Center,
-                                        modifier = Modifier
-                                            .fillMaxHeight()
-                                            .padding(end = 16.dp)
-                                    ) {
-                                        Text(text = "身長[cm]")
-                                    }
-                                    Box(
-                                        contentAlignment = Alignment.Center,
-                                        modifier = Modifier
-                                            .fillMaxHeight()
-                                            .padding(end = 16.dp)
-                                    ) {
-                                        TextField(
-                                            value = uiState.tall,
-                                            singleLine = true,
-                                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                            onValueChange = {
-                                                if (it.toDoubleOrNull() != null ||
-                                                    it.startsWith("0")
-                                                        .not()
-                                                ) {
-                                                    setTall.invoke(it)
-                                                }
-                                            },
+                                Column {
+                                    Row {
+                                        Box(
+                                            contentAlignment = Alignment.Center,
                                             modifier = Modifier
-                                                .width(120.dp)
-                                                .height(48.dp)
-                                        )
+                                                .weight(1F)
+                                                .padding(
+                                                    start = 12.dp,
+                                                    end = 16.dp,
+                                                    top = 12.dp,
+                                                    bottom = 12.dp
+                                                )
+                                        ) {
+                                            Text(
+                                                text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(
+                                                    uiState.date
+                                                ),
+                                                textAlign = TextAlign.Start,
+                                                fontSize = 16.sp,
+                                                modifier = Modifier.fillMaxWidth(),
+                                            )
+                                        }
+                                        if (uiState.loading) {
+                                            Box(
+                                                contentAlignment = Alignment.CenterEnd,
+                                            ) {
+                                                CircularProgressIndicator(
+                                                    progress = 0.1F,
+                                                    modifier = Modifier.padding(start = 12.dp)
+                                                )
+                                            }
+                                        }
                                     }
-                                    Box(
-                                        contentAlignment = Alignment.Center,
-                                        modifier = Modifier.fillMaxHeight()
+                                    Row(
+                                        modifier = Modifier
+                                            .height(60.dp)
+                                            .padding(start = 12.dp)
                                     ) {
-                                        Button(onClick = { clickSaveBodyInfo.invoke() }) {
-                                            Text(text = "保存")
+                                        Box(
+                                            contentAlignment = Alignment.Center,
+                                            modifier = Modifier
+                                                .fillMaxHeight()
+                                                .padding(end = 16.dp)
+                                        ) {
+                                            Text(text = "身長[cm]")
+                                        }
+                                        Box(
+                                            contentAlignment = Alignment.Center,
+                                            modifier = Modifier
+                                                .fillMaxHeight()
+                                                .padding(end = 16.dp)
+                                        ) {
+                                            TextField(
+                                                value = uiState.tall,
+                                                singleLine = true,
+                                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                                onValueChange = {
+                                                    if (it.toDoubleOrNull() != null ||
+                                                        it.startsWith("0")
+                                                            .not()
+                                                    ) {
+                                                        setTall.invoke(it)
+                                                    }
+                                                },
+                                                modifier = Modifier
+                                                    .width(120.dp)
+                                                    .height(48.dp)
+                                            )
+                                        }
+                                        Box(
+                                            contentAlignment = Alignment.Center,
+                                            modifier = Modifier.fillMaxHeight()
+                                        ) {
+                                            Button(onClick = { clickSaveBodyInfo.invoke() }) {
+                                                Text(text = "保存")
+                                            }
                                         }
                                     }
                                 }

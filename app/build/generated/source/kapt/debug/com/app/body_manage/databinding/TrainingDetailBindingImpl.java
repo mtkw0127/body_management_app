@@ -17,22 +17,17 @@ public class TrainingDetailBindingImpl extends TrainingDetailBinding  {
         sViewsWithIds.put(R.id.date_field, 1);
         sViewsWithIds.put(R.id.date_text, 2);
         sViewsWithIds.put(R.id.add_content, 3);
-        sViewsWithIds.put(R.id.time_field, 4);
-        sViewsWithIds.put(R.id.time_label, 5);
-        sViewsWithIds.put(R.id.training_time, 6);
+        sViewsWithIds.put(R.id.training_time, 4);
+        sViewsWithIds.put(R.id.time_field, 5);
+        sViewsWithIds.put(R.id.weight, 6);
         sViewsWithIds.put(R.id.weight_field, 7);
-        sViewsWithIds.put(R.id.weight_label, 8);
-        sViewsWithIds.put(R.id.weight, 9);
-        sViewsWithIds.put(R.id.fat_field, 10);
-        sViewsWithIds.put(R.id.fat_label, 11);
-        sViewsWithIds.put(R.id.fat, 12);
-        sViewsWithIds.put(R.id.photo_field, 13);
-        sViewsWithIds.put(R.id.photo_label, 14);
-        sViewsWithIds.put(R.id.camera, 15);
-        sViewsWithIds.put(R.id.prev_img, 16);
-        sViewsWithIds.put(R.id.save_container, 17);
-        sViewsWithIds.put(R.id.back_btn, 18);
-        sViewsWithIds.put(R.id.save_btn, 19);
+        sViewsWithIds.put(R.id.fat, 8);
+        sViewsWithIds.put(R.id.fat_field, 9);
+        sViewsWithIds.put(R.id.prev_img, 10);
+        sViewsWithIds.put(R.id.camera, 11);
+        sViewsWithIds.put(R.id.save_container, 12);
+        sViewsWithIds.put(R.id.back_btn, 13);
+        sViewsWithIds.put(R.id.save_btn, 14);
     }
     // views
     @NonNull
@@ -43,29 +38,24 @@ public class TrainingDetailBindingImpl extends TrainingDetailBinding  {
     // Inverse Binding Event Handlers
 
     public TrainingDetailBindingImpl(@Nullable androidx.databinding.DataBindingComponent bindingComponent, @NonNull View root) {
-        this(bindingComponent, root, mapBindings(bindingComponent, root, 20, sIncludes, sViewsWithIds));
+        this(bindingComponent, root, mapBindings(bindingComponent, root, 15, sIncludes, sViewsWithIds));
     }
     private TrainingDetailBindingImpl(androidx.databinding.DataBindingComponent bindingComponent, View root, Object[] bindings) {
         super(bindingComponent, root, 0
             , (android.widget.ScrollView) bindings[3]
-            , (android.widget.Button) bindings[18]
-            , (android.widget.ImageButton) bindings[15]
+            , (android.widget.Button) bindings[13]
+            , (com.google.android.material.floatingactionbutton.FloatingActionButton) bindings[11]
             , (android.widget.FrameLayout) bindings[1]
             , (android.widget.TextView) bindings[2]
-            , (android.widget.TextView) bindings[12]
-            , (androidx.constraintlayout.widget.ConstraintLayout) bindings[10]
-            , (android.widget.TextView) bindings[11]
-            , (androidx.constraintlayout.widget.ConstraintLayout) bindings[13]
-            , (android.widget.TextView) bindings[14]
-            , (androidx.viewpager2.widget.ViewPager2) bindings[16]
-            , (android.widget.Button) bindings[19]
-            , (androidx.constraintlayout.widget.ConstraintLayout) bindings[17]
-            , (androidx.constraintlayout.widget.ConstraintLayout) bindings[4]
-            , (android.widget.TextView) bindings[5]
-            , (android.widget.TextView) bindings[6]
-            , (android.widget.TextView) bindings[9]
-            , (androidx.constraintlayout.widget.ConstraintLayout) bindings[7]
-            , (android.widget.TextView) bindings[8]
+            , (com.google.android.material.textfield.TextInputLayout) bindings[8]
+            , (com.google.android.material.textfield.TextInputEditText) bindings[9]
+            , (androidx.viewpager2.widget.ViewPager2) bindings[10]
+            , (android.widget.Button) bindings[14]
+            , (androidx.constraintlayout.widget.ConstraintLayout) bindings[12]
+            , (com.google.android.material.textfield.TextInputEditText) bindings[5]
+            , (com.google.android.material.textfield.TextInputLayout) bindings[4]
+            , (com.google.android.material.textfield.TextInputLayout) bindings[6]
+            , (com.google.android.material.textfield.TextInputEditText) bindings[7]
             );
         this.mboundView0 = (androidx.constraintlayout.widget.ConstraintLayout) bindings[0];
         this.mboundView0.setTag(null);

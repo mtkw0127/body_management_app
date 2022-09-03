@@ -12,12 +12,11 @@ import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.util.DateUtil
 import com.app.body_manage.util.OnSwipeTouchListener
-import java.time.LocalDate
 
-class MainActivity : AppCompatActivity() {
+class CalendarActivity : AppCompatActivity() {
 
     companion object {
-        fun createIntent(context: Context) = Intent(context, MainActivity::class.java)
+        fun createIntent(context: Context) = Intent(context, CalendarActivity::class.java)
     }
 
     private lateinit var binding: ActivityMainBinding
@@ -37,6 +36,8 @@ class MainActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
         }
 
+    private val viewModel: CalendarListViewModel = CalendarListViewModel()
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,18 +45,23 @@ class MainActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         setContentView(binding.root)
 
+        initViewModel()
+
         adapter = CalendarAdapter(
-            LocalDate.now(),
+            viewModel.today,
             this.applicationContext,
             trainingMeasureListActivityLauncher
         )
         binding.calendarGridView.adapter = adapter
 
         // 初期画面の年月設定
-        binding.yearMonthTxt.text =
-            DateUtil.localDateConvertJapaneseFormatYearMonth(adapter.localDate)
+        binding.yearMonthTxt.text = viewModel.yearMonth
 
         initListener()
+    }
+
+    private fun initViewModel() {
+
     }
 
     @SuppressLint("ClickableViewAccessibility")

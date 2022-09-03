@@ -36,7 +36,7 @@ class CalendarAdapter(
     private var dayOfWeek = arrayListOf("日", "月", "火", "水", "木", "金", "土")
     private var dateList = Array(42) { CellInfo(LocalDate.now(), NONE) }
 
-    private var inflater: LayoutInflater
+    private lateinit var inflater: LayoutInflater
 
     private val bodyMeasureRepository: BodyMeasureRepository by lazy {
         (context.applicationContext as TrainingApplication).bodyMeasureRepository
@@ -54,8 +54,6 @@ class CalendarAdapter(
      */
     init {
         createDateList()
-        // inflater初期化
-        inflater = LayoutInflater.from(context)
     }
 
     /**
@@ -132,6 +130,11 @@ class CalendarAdapter(
      * ViewHolder生成
      */
     override fun getView(pos: Int, convertView: View?, parent: ViewGroup): View {
+        // inflater初期化
+        if (::inflater.isInitialized.not()) {
+            inflater = LayoutInflater.from(context)
+        }
+
         val dayOfWeekCellView =
             checkNotNull(inflater.inflate(R.layout.calendar_cell_day_of_week, null))
         //  曜日設定
@@ -183,18 +186,19 @@ class CalendarAdapter(
             else -> {}
         }
 
-        CoroutineScope(Dispatchers.Main).launch {
+        // セルタッチ時のイベント
+        calendarCellView.setOnClickListener {
+            val intent = MeasureListActivity.createTrainingMeasureListIntent(
+                it.context,
+                cellInfo.localDate
+            )
+            trainingMeasureListLauncher.launch(intent)
+        }
+
+        CoroutineScope(Dispatchers.IO).launch {
             runCatching { bodyMeasureRepository.getEntityListByDate(cellInfo.localDate) }
                 .onFailure { e -> e.printStackTrace() }
-                .onSuccess { it ->
-                    // セルタッチ時のイベント
-                    calendarCellView.setOnClickListener {
-                        val intent = MeasureListActivity.createTrainingMeasureListIntent(
-                            it.context,
-                            cellInfo.localDate
-                        )
-                        trainingMeasureListLauncher.launch(intent)
-                    }
+                .onSuccess {
                     if (it.isNotEmpty()) {
                         val measureCntView =
                             calendarCellView.findViewById<TextView>(R.id.measure_cnt)
@@ -204,8 +208,6 @@ class CalendarAdapter(
                     }
                 }
         }
-
         return calendarCellView
     }
-
 }

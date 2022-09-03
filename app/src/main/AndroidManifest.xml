@@ -18,8 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CalendarApp">
         <activity
-            android:name="com.app.body_manage.ui.calendar.MainActivity"
-            android:exported="true">
+            android:name="com.app.body_manage.ui.calendar.CalendarActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -27,23 +28,29 @@
         </activity>
         <activity
             android:name="com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.app.body_manage.ui.measure.list.MeasureListActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.app.body_manage.ui.graph.GraphActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.app.body_manage.ui.camera.CameraActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Material3.Light.NoActionBar" />
         <activity
             android:name="com.app.body_manage.ui.camera.MeasureCameraActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.app.body_manage.ui.photoList.PhotoListActivity"
-            android:exported="true" />
+            android:exported="true"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

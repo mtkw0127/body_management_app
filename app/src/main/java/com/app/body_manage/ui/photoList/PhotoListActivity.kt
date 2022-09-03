@@ -10,7 +10,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.app.body_manage.R
-import com.app.body_manage.ui.calendar.MainActivity
+import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.graph.GraphActivity
 
 class PhotoListActivity : AppCompatActivity() {
@@ -34,7 +34,7 @@ class PhotoListActivity : AppCompatActivity() {
                 val bottomSheetDataList = listOf(
                     BottomSheetData("カレンダー", R.drawable.ic_baseline_calendar_month_24) {
                         launcher.launch(
-                            MainActivity.createIntent(this)
+                            CalendarActivity.createIntent(this)
                         )
                     },
                     BottomSheetData("写真", R.drawable.ic_baseline_photo_library_24) {},
