@@ -25,6 +25,7 @@ sealed interface MeasureListState {
     data class BodyMeasureListState(
         val list: List<BodyMeasureModel>,
         val tall: String,
+        val loading: Boolean,
         override val measureType: MeasureType,
         override val date: LocalDate,
     ) : MeasureListState
@@ -47,8 +48,12 @@ internal data class MeasureListViewModelState(
     val measureType: MeasureType,
     val bodyMeasureList: List<BodyMeasureModel> = listOf(),
     val mealMeasureList: List<MealMeasureEntity> = listOf(),
-    val tall: String = 150.0F.toString()
+    val tall: String = 150.0F.toString(),
+    val updateTall: Boolean = false,
+    val loadingTall: Boolean = false,
 ) {
+    private val someLoading = updateTall || loadingTall
+
     fun toUiState(): MeasureListState {
         return when (measureType) {
             MeasureType.BODY -> {
@@ -57,6 +62,7 @@ internal data class MeasureListViewModelState(
                     list = bodyMeasureList,
                     tall = tall,
                     measureType = measureType,
+                    loading = someLoading,
                 )
             }
             MeasureType.MEAL -> {
@@ -107,6 +113,19 @@ class MeasureListViewModel(
         reload()
     }
 
+    private fun viewModelStateLoadingUpdate(updateTall: Boolean? = null, loading: Boolean? = null) {
+        updateTall?.let { it1 ->
+            viewModelState.update {
+                it.copy(updateTall = it1)
+            }
+        }
+        loading?.let { it2 ->
+            viewModelState.update {
+                it.copy(loadingTall = it2)
+            }
+        }
+    }
+
     fun reload() {
         when (viewModelState.value.measureType) {
             MeasureType.BODY -> {
@@ -123,6 +142,8 @@ class MeasureListViewModel(
     }
 
     fun updateTall() {
+        if (viewModelState.value.updateTall) return
+        viewModelStateLoadingUpdate(updateTall = true)
         val tall = viewModelState.value.tall.toFloat()
         viewModelScope.launch {
             runCatching {
@@ -133,8 +154,10 @@ class MeasureListViewModel(
             }.onFailure {
                 Timber.e(it)
             }.onSuccess {
-                reload()
                 updateUserPrefTall(tall)
+                reload()
+            }.also {
+                viewModelStateLoadingUpdate(updateTall = false)
             }
         }
     }
@@ -145,9 +168,7 @@ class MeasureListViewModel(
                 .onFailure {
                     Timber.e(it)
                 }
-                .onSuccess {
-                    println("hoge")
-                }
+                .onSuccess {}
         }
     }
 
@@ -168,6 +189,8 @@ class MeasureListViewModel(
     }
 
     private fun loadBodyMeasure() {
+        if (viewModelState.value.loadingTall) return
+        viewModelStateLoadingUpdate(loading = true)
         viewModelScope.launch {
             runCatching {
                 bodyMeasureRepository.getEntityListByDate(localDate)
@@ -186,6 +209,8 @@ class MeasureListViewModel(
                         tall = tall.toString()
                     )
                 }
+            }.also {
+                viewModelStateLoadingUpdate(loading = false)
             }
         }
     }

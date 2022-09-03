@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -17,6 +18,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -64,22 +66,37 @@ fun MeasureListScreen(
                         is MeasureListState.BodyMeasureListState -> {
                             if (uiState.list.isNotEmpty()) {
                                 Column {
-                                    Box(
-                                        contentAlignment = Alignment.Center,
-                                        modifier = Modifier
-                                            .padding(
-                                                start = 12.dp,
-                                                end = 16.dp,
-                                                top = 12.dp,
-                                                bottom = 12.dp
+                                    Row {
+                                        Box(
+                                            contentAlignment = Alignment.Center,
+                                            modifier = Modifier
+                                                .weight(1F)
+                                                .padding(
+                                                    start = 12.dp,
+                                                    end = 16.dp,
+                                                    top = 12.dp,
+                                                    bottom = 12.dp
+                                                )
+                                        ) {
+                                            Text(
+                                                text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(
+                                                    uiState.date
+                                                ),
+                                                textAlign = TextAlign.Start,
+                                                fontSize = 16.sp,
+                                                modifier = Modifier.fillMaxWidth(),
                                             )
-                                    ) {
-                                        Text(
-                                            text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(
-                                                uiState.date
-                                            ),
-                                            fontSize = 16.sp
-                                        )
+                                        }
+                                        if (uiState.loading) {
+                                            Box(
+                                                contentAlignment = Alignment.CenterEnd,
+                                            ) {
+                                                CircularProgressIndicator(
+                                                    progress = 0.1F,
+                                                    modifier = Modifier.padding(start = 12.dp)
+                                                )
+                                            }
+                                        }
                                     }
                                     Row(
                                         modifier = Modifier
