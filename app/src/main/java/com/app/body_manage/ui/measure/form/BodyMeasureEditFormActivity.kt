@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
@@ -77,8 +78,9 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         when (formType) {
             FormType.ADD -> {
                 // 新規追加の場合は、今の時刻を設定
-                binding.trainingTime.text =
+                binding.trainingTime.editText?.setText(
                     DateUtil.localDateConvertLocalTimeDateToTime(LocalDateTime.now())
+                )
             }
             FormType.EDIT -> {
                 // 紐づく測定結果、写真を取得してフィールドに設定
@@ -106,10 +108,11 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         // 測定結果を画面描画し、写真をロード
         vm.loadedBodyMeasure.observe(this) {
             if (it) {
-                binding.trainingTime.text =
+                binding.trainingTime.editText?.setText(
                     DateUtil.localDateConvertLocalTimeDateToTime(vm.bodyMeasureEntity.capturedTime)
-                binding.weight.text = "${vm.bodyMeasureEntity.weight}kg"
-                binding.fat.text = "${vm.bodyMeasureEntity.fatRate}%"
+                )
+                binding.weight.editText?.setText("${vm.bodyMeasureEntity.weight}kg")
+                binding.fat.editText?.setText("${vm.bodyMeasureEntity.fatRate}%")
 
                 // 紐づく写真を取得
                 vm.loadPhotos()
@@ -127,7 +130,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         }
 
         // 計測時刻
-        binding.trainingTime.setOnClickListener {
+        binding.timeField.setOnClickListener {
             val timePickerFragment = TimePickerDialog.createTimePickerDialog(
                 vm.measureTime.hour,
                 vm.measureTime.minute
@@ -135,7 +138,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                 val hourStr = String.format("%02d", hour)
                 val minuteStr = String.format("%02d", minute)
                 val time = "${hourStr}時${minuteStr}分"
-                (it as TextView).text = time
+                (it as EditText).setText(time)
                 // 計測時刻更新
                 vm.measureTime = LocalDateTime.of(
                     vm.measureTime.year,
@@ -149,7 +152,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         }
 
         // 体重
-        binding.weight.setOnClickListener {
+        binding.weightField.setOnClickListener {
             val weightPickerFragment =
                 FloatNumberPickerDialog.createDialog(vm.measureWeight, "kg") { weight ->
                     (it as TextView).text = "${weight}kg"
@@ -159,7 +162,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         }
 
         // 体脂肪率
-        binding.fat.setOnClickListener {
+        binding.fatField.setOnClickListener {
             val fatPickerFragment =
                 FloatNumberPickerDialog.createDialog(vm.measureFat, "%") { fat ->
                     (it as TextView).text = "${fat}%"
