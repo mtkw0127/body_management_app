@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import com.app.body_manage.data.entity.BodyMeasureEntity
+import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.databinding.TrainingDetailBinding
 import com.app.body_manage.dialog.FloatNumberPickerDialog
 import com.app.body_manage.dialog.TimePickerDialog
@@ -62,7 +63,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // ViewModelにapplication設定
-        vm = BodyMeasureEditFormViewModel()
+        vm = BodyMeasureEditFormViewModel(UserPreferenceRepository(this))
         vm.intent = intent
         vm.application = application
         vm.measureTime = captureDateTime

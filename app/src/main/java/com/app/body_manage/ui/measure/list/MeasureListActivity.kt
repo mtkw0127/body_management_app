@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
+import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.graph.GraphActivity
@@ -39,6 +40,7 @@ class MeasureListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initViewModel()
+
         setContent {
             val state: MeasureListState by viewModel.uiState.collectAsState()
 
@@ -63,6 +65,7 @@ class MeasureListActivity : AppCompatActivity() {
                     viewModel.updateTall()
                 },
                 setTall = {
+                    applicationContext
                     viewModel.setTall(it)
                 },
                 clickBodyMeasureEdit = {
@@ -98,6 +101,7 @@ class MeasureListActivity : AppCompatActivity() {
             localDate = localDate,
             mealType = MeasureType.BODY,
             bodyMeasureRepository,
+            UserPreferenceRepository(this),
         )
         viewModel.reload()
     }

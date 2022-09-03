@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.data.entity.BodyMeasureModel
 import com.app.body_manage.data.entity.MealMeasureEntity
+import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.ui.measure.list.MeasureListState.BodyMeasureListState
 import com.app.body_manage.ui.measure.list.MeasureListState.MealMeasureListState
@@ -14,6 +15,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import timber.log.Timber
 
 sealed interface MeasureListState {
     val date: LocalDate
@@ -44,7 +47,7 @@ internal data class MeasureListViewModelState(
     val measureType: MeasureType,
     val bodyMeasureList: List<BodyMeasureModel> = listOf(),
     val mealMeasureList: List<MealMeasureEntity> = listOf(),
-    val tall: String = (bodyMeasureList.firstOrNull()?.tall ?: 150.0F).toString()
+    val tall: String = 150.0F.toString()
 ) {
     fun toUiState(): MeasureListState {
         return when (measureType) {
@@ -77,7 +80,8 @@ internal data class MeasureListViewModelState(
 class MeasureListViewModel(
     private val localDate: LocalDate,
     private val mealType: MeasureType,
-    private val bodyMeasureRepository: BodyMeasureRepository
+    private val bodyMeasureRepository: BodyMeasureRepository,
+    private val userPreferenceRepository: UserPreferenceRepository
 ) : ViewModel() {
 
     private val viewModelState = MutableStateFlow(
@@ -106,27 +110,44 @@ class MeasureListViewModel(
     fun reload() {
         when (viewModelState.value.measureType) {
             MeasureType.BODY -> {
-                loadBodyMeasure()
+                runBlocking {
+                    loadTall()
+                    loadBodyMeasure()
+                }
             }
             MeasureType.MEAL -> {
                 loadMealMeasureList()
             }
+            else -> {}
         }
     }
 
     fun updateTall() {
-        val tall = viewModelState.value.tall
+        val tall = viewModelState.value.tall.toFloat()
         viewModelScope.launch {
             runCatching {
                 bodyMeasureRepository.updateTallByDate(
-                    tall = tall.toFloat(),
+                    tall = tall,
                     calendarDate = localDate,
                 )
             }.onFailure {
-
+                Timber.e(it)
             }.onSuccess {
                 reload()
+                updateUserPrefTall(tall)
             }
+        }
+    }
+
+    private fun updateUserPrefTall(tall: Float) {
+        viewModelScope.launch {
+            runCatching { userPreferenceRepository.putTall(tall) }
+                .onFailure {
+                    Timber.e(it)
+                }
+                .onSuccess {
+                    println("hoge")
+                }
         }
     }
 
@@ -136,20 +157,33 @@ class MeasureListViewModel(
         }
     }
 
+    private fun loadTall() {
+        viewModelScope.launch {
+            userPreferenceRepository.tall.collect {
+                if (it.tall != null) {
+                    setTall(it.tall.toString())
+                }
+            }
+        }
+    }
+
     private fun loadBodyMeasure() {
         viewModelScope.launch {
             runCatching {
                 bodyMeasureRepository.getEntityListByDate(localDate)
             }.onFailure { e ->
-                e.printStackTrace()
+                Timber.e(e)
             }.onSuccess { loadedResult ->
+                // 当日の記録の身長を優先して利用する、未設定の場合は前回保存の身長を利用する。
+                var tall = loadedResult.firstOrNull()?.tall
+                if (tall == null) tall = viewModelState.value.tall.toFloat()
                 viewModelState.update {
                     it.copy(
                         date = localDate,
                         measureType = mealType,
                         bodyMeasureList = loadedResult,
                         mealMeasureList = mutableListOf(),
-                        tall = (loadedResult.firstOrNull()?.tall ?: 150.0F).toString()
+                        tall = tall.toString()
                     )
                 }
             }
@@ -168,4 +202,5 @@ class MeasureListViewModel(
             )
         }
     }
+
 }

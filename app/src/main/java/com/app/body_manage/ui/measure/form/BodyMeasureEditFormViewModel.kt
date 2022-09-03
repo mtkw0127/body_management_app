@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.entity.BodyMeasureEntity
 import com.app.body_manage.data.entity.PhotoEntity
+import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.PhotoRepository
 import java.time.LocalDate
@@ -19,7 +20,9 @@ import java.time.LocalDateTime
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class BodyMeasureEditFormViewModel : ViewModel() {
+class BodyMeasureEditFormViewModel(
+    private val userPreferenceRepository: UserPreferenceRepository
+) : ViewModel() {
 
     enum class PhotoType {
         Saved, ADDED
@@ -60,7 +63,7 @@ class BodyMeasureEditFormViewModel : ViewModel() {
     lateinit var measureTime: LocalDateTime
     var measureWeight = 50F
     var measureFat = 20.0F
-    var tall: Float? = null
+    var tall: Float = 160F
 
     // coroutineによるローディング取得
     lateinit var bodyMeasureEntity: BodyMeasureEntity
@@ -131,8 +134,25 @@ class BodyMeasureEditFormViewModel : ViewModel() {
             }.onFailure { e ->
                 Timber.e(e)
             }.onSuccess {
-                tall = it
+                if (it != null) {
+                    tall = it
+                } else {
+                    fetchTallByUserPreference()
+                }
             }
+        }
+    }
+
+    private fun fetchTallByUserPreference() {
+        viewModelScope.launch {
+            runCatching {
+                userPreferenceRepository.tall.collect {
+                    it.tall ?: return@collect
+                    tall = it.tall
+                }
+            }
+                .onFailure { Timber.e(it) }
+                .onSuccess { }
         }
     }
 
