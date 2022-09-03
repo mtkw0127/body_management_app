@@ -1,6 +1,7 @@
 package com.app.body_manage.ui.camera
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -9,7 +10,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
@@ -21,8 +21,8 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
-import com.app.body_manage.R
 import com.app.body_manage.databinding.CameraPreviewBinding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import java.nio.file.Path
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -38,11 +38,33 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var binding: CameraPreviewBinding
     private lateinit var cameraExecutor: ExecutorService
 
+    private val viewModel = CameraViewModel()
+
+    private val deletePhoto: (Int) -> Unit = {
+        viewModel.removePhoto(it)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = CameraPreviewBinding.inflate(layoutInflater)
+        binding.lifecycleOwner = this
         setContentView(binding.root)
         initCamera()
+        initBottomSheet()
+
+        viewModel.photoList.observe(this) {
+            if (it.isEmpty()) {
+                binding.captured.setImageURI(null)
+            }
+            binding.bottomSheetInclude.photoListRecyclerView.adapter =
+                PhotoListAdapter(
+                    dataSet = it.toList(),
+                    deletePhoto = deletePhoto
+                )
+            binding.photoNum.text = viewModel.photoList.value?.size.toString()
+            requireNotNull(binding.bottomSheetInclude.photoListRecyclerView.adapter).notifyDataSetChanged()
+        }
 
         // バックグラウンドのエグゼキュータ
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -54,6 +76,7 @@ class CameraActivity : AppCompatActivity() {
         binding.nextBtn.setOnClickListener {
             // 撮影した結果を返却
             setResult(Activity.RESULT_OK, intent)
+            viewModel.photoList.value?.let { it1 -> photoList.addAll(it1) }
             finish()
         }
         // バックの場合、撮影した撮影した撮影を除去
@@ -69,6 +92,13 @@ class CameraActivity : AppCompatActivity() {
             }
             initCamera()
             startCamera()
+        }
+        binding.capturedContainer.setOnClickListener {
+            if (viewModel.photoList.value?.isNotEmpty() == true) {
+                val bottomSheetBehavior =
+                    BottomSheetBehavior.from(binding.bottomSheetInclude.bottomSheet)
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
         }
         binding.shutterBtn.setOnClickListener {
             val photoOutputFilePath = createFile(it.context)
@@ -87,11 +117,9 @@ class CameraActivity : AppCompatActivity() {
                         // TODO: シャッター音をならす
                         Handler(Looper.getMainLooper()).post {
                             val photoUri = checkNotNull(outputFileResults.savedUri)
-                            // Prevに追加
-                            val imageView = findViewById<ImageView>(R.id.captured)
-                            imageView?.setImageURI(photoUri)
                             // 一覧に追加
-                            photoList.add(photoUri)
+                            viewModel.addPhoto(photoUri)
+                            binding.captured.setImageURI(photoUri)
                         }
                     }
 
@@ -108,12 +136,16 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
+    private fun initBottomSheet() {
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetInclude.bottomSheet)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
     private fun initCamera() {
         cameraSelector = CameraSelector.Builder()
             .requireLensFacing(lensFacing)
             .build()
     }
-
 
     /**
      * カメラ起動

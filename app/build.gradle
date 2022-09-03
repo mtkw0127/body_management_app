@@ -123,6 +123,7 @@ dependencies {
     implementation 'androidx.compose.runtime:runtime-livedata:1.1.1'
     implementation "com.google.accompanist:accompanist-pager:0.24.13-rc"
     implementation "com.google.accompanist:accompanist-pager-indicators:0.24.11-rc"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:1.2.0"
 
     // Junit5
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.2"
