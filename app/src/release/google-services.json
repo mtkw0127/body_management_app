@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "95163161048",
+    "project_id": "pro-training-management-app",
+    "storage_bucket": "pro-training-management-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:95163161048:android:3f59b4a26cd947561d7aad",
+        "android_client_info": {
+          "package_name": "com.app.body_manage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "95163161048-nfhqrdveba46ubclifnmt4kjm22g659f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqQ_DseyMHvwSPeXntqkbAtcHMcb-VVtE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "95163161048-nfhqrdveba46ubclifnmt4kjm22g659f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

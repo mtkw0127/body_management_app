@@ -4,6 +4,8 @@ plugins {
     id 'kotlin-kapt'
     id 'de.mannodermaus.android-junit5'
     id 'org.jlleitschuh.gradle.ktlint'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 ktlint {
@@ -16,6 +18,20 @@ ktlint {
 }
 
 android {
+    signingConfigs {
+        debug {
+            storePassword 'chekera0127'
+            keyPassword 'chekera0127'
+            storeFile file('/Users/tomonori.matsukawa/StudioProjects/vetonum/training_management_app/key/Untitled')
+            keyAlias 'key0'
+        }
+        release {
+            storeFile file('/Users/tomonori.matsukawa/StudioProjects/vetonum/training_management_app/key/Untitled')
+            storePassword 'chekera0127'
+            keyPassword 'chekera0127'
+            keyAlias 'key0'
+        }
+    }
     compileSdk 32
 
     defaultConfig {
@@ -32,6 +48,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -143,6 +160,10 @@ dependencies {
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     // Proto DataStore
     implementation "androidx.datastore:datastore-core:1.0.0"
+
+    implementation platform('com.google.firebase:firebase-bom:30.3.2')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
 }
 
 tasks.withType(org.jlleitschuh.gradle.ktlint.tasks.GenerateReportsTask) {
