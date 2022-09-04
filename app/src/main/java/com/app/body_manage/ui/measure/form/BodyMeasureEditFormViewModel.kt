@@ -3,6 +3,7 @@ package com.app.body_manage.ui.measure.form
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
+import android.view.View
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
@@ -21,8 +22,17 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class BodyMeasureEditFormViewModel(
-    private val userPreferenceRepository: UserPreferenceRepository
+    private val userPreferenceRepository: UserPreferenceRepository,
+    private val formType: BodyMeasureEditFormActivity.FormType,
 ) : ViewModel() {
+
+    val deleteButtonVisibility: MutableLiveData<Int> = MutableLiveData<Int>().apply {
+        this.value = if (formType == BodyMeasureEditFormActivity.FormType.EDIT) {
+            View.VISIBLE
+        } else {
+            View.INVISIBLE
+        }
+    }
 
     enum class PhotoType {
         Saved, ADDED
@@ -98,9 +108,25 @@ class BodyMeasureEditFormViewModel(
         }
     }
 
+    var deleting = false
+    val deleted = MutableLiveData(false)
+    fun deleteBodyMeasure() {
+        if (deleting) return
+        deleting = true
+        viewModelScope.launch {
+            runCatching { bodyMeasureRepository.deleteBodyMeasure(measureTime) }
+                .onFailure {
+                    Timber.e(it)
+                }
+                .onSuccess {
+                    deleted.value = true
+                }
+        }
+    }
+
     private val loadingPhoto = MutableLiveData(false)
     fun loadPhotos() {
-        if (loadingPhoto.value == true) return
+        if (loadingPhoto.value == true || deleting) return
         loadingPhoto.value = true
         viewModelScope.launch {
             runCatching { photoRepository.selectPhotos(bodyMeasureId = bodyMeasureEntity.ui) }

@@ -25,6 +25,9 @@ interface BodyMeasureDao {
     @Query("SELECT * FROM bodyMeasures WHERE capture_time = :captureTime")
     suspend fun getTrainingEntityByLocalDateTime(captureTime: LocalDateTime): List<BodyMeasureEntity>
 
+    @Query("DELETE FROM bodyMeasures WHERE capture_time = :captureTime")
+    suspend fun deleteBodyMeasure(captureTime: LocalDateTime): Int
+
     @Insert
     suspend fun insert(bodyMeasureEntity: BodyMeasureEntity): Long
 

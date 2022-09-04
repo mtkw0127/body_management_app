@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.local.UserPreferenceRepository
@@ -32,11 +33,19 @@ class MeasureListActivity : AppCompatActivity() {
 
     private val measureFormLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            val message = when (it.resultCode) {
+                BodyMeasureEditFormActivity.RESULT_DELETE -> "削除しました"
+                BodyMeasureEditFormActivity.RESULT_UPDATE -> "更新しました"
+                BodyMeasureEditFormActivity.RESULT_CREATE -> "追加しました"
+                else -> ""
+            }
+            viewModel.updateMessage(message)
             viewModel.reload()
         }
 
     private lateinit var viewModel: MeasureListViewModel
 
+    @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initViewModel()
@@ -75,6 +84,9 @@ class MeasureListActivity : AppCompatActivity() {
                             captureTime = it,
                         )
                     )
+                },
+                resetSnackbarMessage = {
+                    viewModel.resetMessage()
                 },
                 clickFab = {
                     when (viewModel.uiState.value.measureType) {

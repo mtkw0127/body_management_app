@@ -61,19 +61,17 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = TrainingDetailBinding.inflate(layoutInflater)
+        binding.lifecycleOwner = this
         setContentView(binding.root)
 
         // ViewModelにapplication設定
-        vm = BodyMeasureEditFormViewModel(UserPreferenceRepository(this))
+        vm = BodyMeasureEditFormViewModel(UserPreferenceRepository(this), formType)
         vm.intent = intent
         vm.application = application
         vm.measureTime = captureDateTime
-        // 日付設定
-        binding.dateText.text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(vm.captureDate)
         // 当日の体重を取得
         vm.fetchTall()
 
-        setListener()
         initPagerAdapter()
         when (formType) {
             FormType.ADD -> {
@@ -85,8 +83,15 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
             FormType.EDIT -> {
                 // 紐づく測定結果、写真を取得してフィールドに設定
                 vm.loadBodyMeasure()
+                binding.deleteMeasureBtn.setOnClickListener {
+                }
             }
         }
+        // 日付設定
+        binding.dateText.text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(vm.captureDate)
+        binding.viewModel = vm
+
+        setListener()
     }
 
     private fun initPagerAdapter() {
@@ -118,8 +123,19 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                 vm.loadPhotos()
             }
         }
+        // 削除完了後、一覧へ戻る
+        vm.deleted.observe(this) {
+            if (it) {
+                setResult(RESULT_DELETE)
+                finish()
+            }
+        }
+        binding.deleteMeasureBtn.setOnClickListener {
+            vm.deleteBodyMeasure()
+        }
         // カメラフィールド
         binding.camera.setOnClickListener {
+            if (vm.deleting) return@setOnClickListener
             val intent = CameraActivity.createCameraActivityIntent(applicationContext)
             cameraActivityLauncher.launch(intent)
         }
@@ -186,11 +202,13 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
             when (formType) {
                 FormType.ADD -> {
                     vm.addPhoto(saveModel)
+                    setResult(RESULT_CREATE)
                 }
                 FormType.EDIT -> {
                     // 測定がロードできていない場合は更新しない
                     if (vm.loadedBodyMeasure.value == false) return@setOnClickListener
                     vm.editPhoto(saveModel)
+                    setResult(RESULT_UPDATE)
                 }
             }
             finish()
@@ -213,6 +231,11 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         const val KEY_CAPTURE_DATE = "CAPTURE_DATE_TIME"
         const val KEY_CAPTURE_TIME = "CAPTURED_TIME"
         private const val FORM_TYPE = "FORM_TYPE"
+
+        const val RESULT_DELETE = 10
+        const val RESULT_UPDATE = 11
+        const val RESULT_CREATE = 12
+
         fun createMeasureEditIntent(
             context: Context,
             formType: FormType = FormType.EDIT,

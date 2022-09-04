@@ -47,10 +47,6 @@ class CalendarActivity : AppCompatActivity() {
 
         initViewModel()
 
-        binding.yearMonthTxt.setOnClickListener {
-            throw RuntimeException("test crash")
-        }
-
         adapter = CalendarAdapter(
             viewModel.today,
             this.applicationContext,
