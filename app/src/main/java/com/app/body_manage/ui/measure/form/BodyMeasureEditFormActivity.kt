@@ -69,8 +69,11 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         vm.intent = intent
         vm.application = application
         vm.measureTime = captureDateTime
-        // 当日の体重を取得
-        vm.fetchTall()
+
+        setListener()
+
+        // 体重・身長・体脂肪率のデフォルト値を取得
+        vm.fetchTallAndUserPref()
 
         initPagerAdapter()
         when (formType) {
@@ -83,15 +86,12 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
             FormType.EDIT -> {
                 // 紐づく測定結果、写真を取得してフィールドに設定
                 vm.loadBodyMeasure()
-                binding.deleteMeasureBtn.setOnClickListener {
-                }
             }
         }
         // 日付設定
         binding.dateText.text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(vm.captureDate)
         binding.viewModel = vm
 
-        setListener()
     }
 
     private fun initPagerAdapter() {
@@ -110,7 +110,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
     }
 
     private fun setListener() {
-        // 測定結果を画面描画し、写真をロード
+        // (編集時）測定結果を画面描画し、写真をロード
         vm.loadedBodyMeasure.observe(this) {
             if (it) {
                 binding.trainingTime.editText?.setText(
@@ -121,6 +121,13 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
 
                 // 紐づく写真を取得
                 vm.loadPhotos()
+            }
+        }
+        // （追加時）デフォルトの体重と体脂肪率を設定
+        vm.fetchedUserPref.observe(this) {
+            if (it) {
+                binding.weight.editText?.setText("${vm.measureWeight}kg")
+                binding.fat.editText?.setText("${vm.measureFat}%")
             }
         }
         // 削除完了後、一覧へ戻る
@@ -199,6 +206,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                 null,
                 vm.tall,
             )
+            vm.updateWeightAndFat()
             when (formType) {
                 FormType.ADD -> {
                     vm.addPhoto(saveModel)

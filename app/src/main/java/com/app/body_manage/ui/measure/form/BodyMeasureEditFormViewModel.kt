@@ -19,6 +19,7 @@ import com.app.body_manage.data.repository.PhotoRepository
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class BodyMeasureEditFormViewModel(
@@ -70,6 +71,8 @@ class BodyMeasureEditFormViewModel(
     }
 
     // 更新後の測定日時
+    private var fetchUserPref = false
+    val fetchedUserPref = MutableLiveData(false)
     lateinit var measureTime: LocalDateTime
     var measureWeight = 50F
     var measureFat = 20.0F
@@ -153,32 +156,46 @@ class BodyMeasureEditFormViewModel(
         }
     }
 
-    fun fetchTall() {
+    fun fetchTallAndUserPref() {
         viewModelScope.launch {
             runCatching {
                 bodyMeasureRepository.getTallByDate(captureDate)
             }.onFailure { e ->
                 Timber.e(e)
             }.onSuccess {
+                fetchUserPreference()
                 if (it != null) {
                     tall = it
-                } else {
-                    fetchTallByUserPreference()
                 }
             }
         }
     }
 
-    private fun fetchTallByUserPreference() {
+    private fun fetchUserPreference() {
+        if (fetchUserPref) return
+        fetchUserPref = true
         viewModelScope.launch {
-            runCatching {
-                userPreferenceRepository.tall.collect {
-                    it.tall ?: return@collect
-                    tall = it.tall
+            try {
+                userPreferenceRepository.userPref.collect {
+                    it.tall?.let { t ->
+                        tall = t
+                    }
+                    // 新規追加の場合のみデフォルトの体重・体脂肪率を設定する
+                    if (formType == BodyMeasureEditFormActivity.FormType.ADD) {
+                        it.weight?.let { w ->
+                            measureWeight = w
+                        }
+                        it.fat?.let { f ->
+                            measureFat = f
+                        }
+                    }
+                    fetchedUserPref.value = true
                 }
+            } catch (e: Throwable) {
+                Timber.e(e)
+            } finally {
+                fetchUserPref = false
             }
-                .onFailure { Timber.e(it) }
-                .onSuccess { }
         }
     }
 
@@ -234,6 +251,19 @@ class BodyMeasureEditFormViewModel(
                 bodyMeasureId = id,
                 photoUri = it.uri.toString()
             )
+        }
+    }
+
+    fun updateWeightAndFat() {
+        viewModelScope.launch {
+            runCatching {
+                runBlocking {
+                    userPreferenceRepository.putWeight(measureWeight)
+                    userPreferenceRepository.putFat(measureFat)
+                }
+            }.onFailure {
+                Timber.e(it)
+            }.onSuccess { }
         }
     }
 }

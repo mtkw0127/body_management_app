@@ -18,6 +18,8 @@ class UserPreferenceRepository(
     companion object {
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settingPrefs")
         val KEY_TALL = floatPreferencesKey("key_tall")
+        val KEY_WEIGHT = floatPreferencesKey("key_weight")
+        val KEY_FAT = floatPreferencesKey("key_fat")
     }
 
     suspend fun putTall(tall: Float) {
@@ -26,7 +28,19 @@ class UserPreferenceRepository(
         }
     }
 
-    val tall: Flow<UserPreference> = context.dataStore.data
+    suspend fun putWeight(weight: Float) {
+        context.dataStore.edit { preferences ->
+            preferences[KEY_WEIGHT] = weight
+        }
+    }
+
+    suspend fun putFat(fat: Float) {
+        context.dataStore.edit { preferences ->
+            preferences[KEY_FAT] = fat
+        }
+    }
+
+    val userPref: Flow<UserPreference> = context.dataStore.data
         .catch { exception ->
             if (exception is IOException) {
                 emit(emptyPreferences())
@@ -34,6 +48,10 @@ class UserPreferenceRepository(
                 throw exception
             }
         }.map {
-            UserPreference(it[KEY_TALL])
+            UserPreference(
+                tall = it[KEY_TALL],
+                weight = it[KEY_WEIGHT],
+                fat = it[KEY_FAT],
+            )
         }
 }
