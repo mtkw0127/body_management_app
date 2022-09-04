@@ -40,6 +40,10 @@ class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
         return trainingDao.getTrainingEntityByLocalDateTime(localDateTime)
     }
 
+    suspend fun deleteBodyMeasure(localDateTime: LocalDateTime): Int {
+        return trainingDao.deleteBodyMeasure(localDateTime)
+    }
+
     suspend fun update(bodyMeasureEntity: BodyMeasureEntity): Int {
         return trainingDao.update(bodyMeasureEntity)
     }

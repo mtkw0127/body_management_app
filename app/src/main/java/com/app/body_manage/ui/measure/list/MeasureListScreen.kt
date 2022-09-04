@@ -23,15 +23,21 @@ import androidx.compose.material.Divider
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -43,18 +49,28 @@ import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.util.DateUtil
 import com.google.accompanist.pager.ExperimentalPagerApi
 import java.time.LocalDateTime
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalPagerApi::class, ExperimentalFoundationApi::class,
+    ExperimentalComposeUiApi::class
+)
 @Composable
 fun MeasureListScreen(
     uiState: MeasureListState,
     clickSaveBodyInfo: () -> Unit,
     bottomSheetDataList: List<PhotoListActivity.BottomSheetData>,
     setTall: (String) -> Unit,
+    resetSnackbarMessage: () -> Unit,
     clickBodyMeasureEdit: (LocalDateTime) -> Unit,
     clickFab: () -> Unit,
 ) {
+    val coroutineScope: CoroutineScope = rememberCoroutineScope()
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val state = rememberScaffoldState()
     Scaffold(
+        scaffoldState = state,
         content = { padding ->
             Column {
                 Column(
@@ -64,6 +80,17 @@ fun MeasureListScreen(
                 ) {
                     when (uiState) {
                         is MeasureListState.BodyMeasureListState -> {
+                            if (uiState.message.isNotEmpty()) {
+                                LaunchedEffect(uiState.message) {
+                                    coroutineScope.launch {
+                                        state.snackbarHostState.showSnackbar(
+                                            message = uiState.message,
+                                            duration = SnackbarDuration.Short
+                                        )
+                                        resetSnackbarMessage.invoke()
+                                    }
+                                }
+                            }
                             if (uiState.list.isNotEmpty()) {
                                 Column {
                                     Row {
@@ -138,7 +165,10 @@ fun MeasureListScreen(
                                             contentAlignment = Alignment.Center,
                                             modifier = Modifier.fillMaxHeight()
                                         ) {
-                                            Button(onClick = { clickSaveBodyInfo.invoke() }) {
+                                            Button(onClick = {
+                                                keyboardController?.hide()
+                                                clickSaveBodyInfo.invoke()
+                                            }) {
                                                 Text(text = "保存")
                                             }
                                         }

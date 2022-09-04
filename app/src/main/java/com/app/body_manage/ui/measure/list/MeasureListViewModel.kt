@@ -26,6 +26,7 @@ sealed interface MeasureListState {
         val list: List<BodyMeasureModel>,
         val tall: String,
         val loading: Boolean,
+        val message: String,
         override val measureType: MeasureType,
         override val date: LocalDate,
     ) : MeasureListState
@@ -51,6 +52,7 @@ internal data class MeasureListViewModelState(
     val tall: String = 150.0F.toString(),
     val updateTall: Boolean = false,
     val loadingTall: Boolean = false,
+    val message: String = ""
 ) {
     private val someLoading = updateTall || loadingTall
 
@@ -63,6 +65,7 @@ internal data class MeasureListViewModelState(
                     tall = tall,
                     measureType = measureType,
                     loading = someLoading,
+                    message = message,
                 )
             }
             MeasureType.MEAL -> {
@@ -141,6 +144,18 @@ class MeasureListViewModel(
         }
     }
 
+    fun updateMessage(message: String) {
+        viewModelState.update {
+            it.copy(message = message)
+        }
+    }
+
+    fun resetMessage() {
+        viewModelState.update {
+            it.copy(message = "")
+        }
+    }
+
     fun updateTall() {
         if (viewModelState.value.updateTall) return
         viewModelStateLoadingUpdate(updateTall = true)
@@ -156,6 +171,7 @@ class MeasureListViewModel(
             }.onSuccess {
                 updateUserPrefTall(tall)
                 reload()
+                updateMessage("身長を更新し、BMIを再計算しました")
             }.also {
                 viewModelStateLoadingUpdate(updateTall = false)
             }
