@@ -1,5 +1,6 @@
 package com.app.body_manage.ui.photoList
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,6 +31,7 @@ import com.app.body_manage.ui.photoList.PhotoListState.NoPhoto
 @Composable
 fun PhotoListScreen(
     state: PhotoListState,
+    photoDetailAction: () -> Unit,
     bottomSheetDataList: List<BottomSheetData>,
 ) {
     Scaffold(
@@ -88,6 +90,9 @@ fun PhotoListScreen(
                                     AsyncImage(
                                         model = photos[it],
                                         contentDescription = null,
+                                        modifier = Modifier.clickable {
+                                            photoDetailAction.invoke()
+                                        }
                                     )
                                 }
                             }

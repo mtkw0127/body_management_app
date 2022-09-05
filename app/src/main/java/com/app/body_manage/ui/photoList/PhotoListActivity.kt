@@ -46,6 +46,7 @@ class PhotoListActivity : AppCompatActivity() {
                 )
                 PhotoListScreen(
                     state = state,
+                    photoDetailAction = {},
                     bottomSheetDataList = bottomSheetDataList
                 )
             }

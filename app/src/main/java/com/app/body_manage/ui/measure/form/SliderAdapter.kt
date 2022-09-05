@@ -10,7 +10,8 @@ import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel.PhotoMod
 
 class SliderAdapter(
     var sliderItems: List<PhotoModel>,
-    private val photoDeleteAction: OnClickListener
+    private val photoDeleteAction: OnClickListener,
+    private val photoDetailAction: OnClickListener,
 ) : RecyclerView.Adapter<SliderAdapter.SliderViewHolder>() {
 
     class SliderViewHolder(val view: View, val binding: SlideItemContainerBinding) :
@@ -27,8 +28,10 @@ class SliderAdapter(
         holder.binding.imageSlide.setImageURI(sliderItems[position].uri)
         // 位置をtoolTipに設定
         holder.binding.deletePhotoBtn.tooltipText = position.toString()
+        holder.binding.imageSlide.tooltipText = position.toString()
         // 削除
         holder.binding.deletePhotoBtn.setOnClickListener(photoDeleteAction)
+        holder.binding.imageSlide.setOnClickListener(photoDetailAction)
         holder.binding.executePendingBindings()
     }
 

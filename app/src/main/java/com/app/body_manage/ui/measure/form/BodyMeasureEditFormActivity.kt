@@ -21,7 +21,9 @@ import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.camera.CameraActivity
 import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel.PhotoModel
 import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel.PhotoType.ADDED
+import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import com.app.body_manage.util.DateUtil
+import com.makeramen.roundedimageview.RoundedImageView
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -54,6 +56,11 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                 photoList.map { _uri -> PhotoModel(uri = _uri, photoType = ADDED) }.toList()
             vm.addPhotos(photoModels)
         }
+    }
+
+    // 写真詳細への遷移
+    private val photoDetailLauncher = registerForActivityResult(StartActivityForResult()) {
+
     }
 
     private lateinit var vm: BodyMeasureEditFormViewModel
@@ -218,10 +225,23 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
             val position = (it as ImageButton).tooltipText.toString().toInt()
             vm.deletePhoto(position)
         }
+        val photoDetailAction = View.OnClickListener {
+            val position = (it as RoundedImageView).tooltipText.toString().toInt()
+            val photo = vm.photoList.value?.get(position)
+            photo?.let { photoModel ->
+                photoDetailLauncher.launch(
+                    PhotoDetailActivity.createIntent(
+                        context = this,
+                        photoId = photoModel.id
+                    )
+                )
+            }
+        }
         vm.photoList.observe(this) {
             binding.prevImg.adapter = SliderAdapter(
                 it.toList(),
-                photoDeleteAction
+                photoDeleteAction,
+                photoDetailAction,
             )
             binding.prevImg.adapter?.notifyDataSetChanged()
         }
