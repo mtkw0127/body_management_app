@@ -16,6 +16,7 @@ import com.app.body_manage.data.entity.PhotoEntity
 import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.PhotoRepository
+import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlinx.coroutines.launch
@@ -39,7 +40,10 @@ class BodyMeasureEditFormViewModel(
     }
 
     // 撮影した写真データはここに保存する
-    data class PhotoModel(val id: Int = -1, val uri: Uri, val photoType: PhotoType)
+    data class PhotoModel(val id: Id = Id(-1), val uri: Uri, val photoType: PhotoType? = null) {
+        @JvmInline
+        value class Id(val id: Int) : Serializable
+    }
 
     private val _photoList = MutableLiveData<MutableList<PhotoModel>>(mutableListOf())
     val photoList: LiveData<MutableList<PhotoModel>> = _photoList
@@ -143,7 +147,11 @@ class BodyMeasureEditFormViewModel(
                     if (photos.isNotEmpty()) {
                         _photoList.value =
                             photos.map {
-                                PhotoModel(it.ui, it.photoUri.toUri(), PhotoType.Saved)
+                                PhotoModel(
+                                    id = PhotoModel.Id(it.ui),
+                                    uri = it.photoUri.toUri(),
+                                    photoType = PhotoType.Saved,
+                                )
                             }.toList().toMutableList()
                     }
                 }

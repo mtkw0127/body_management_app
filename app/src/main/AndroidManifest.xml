@@ -51,6 +51,11 @@
             android:name="com.app.body_manage.ui.photoList.PhotoListActivity"
             android:exported="true"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.photoDetail.PhotoDetailActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Material3.Light.NoActionBar" />
     </application>
 
 </manifest>
