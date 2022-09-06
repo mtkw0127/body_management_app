@@ -21,6 +21,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
+import com.app.body_manage.data.repository.LocalFileRepository
 import com.app.body_manage.databinding.CameraPreviewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import java.nio.file.Path
@@ -54,9 +55,12 @@ class CameraActivity : AppCompatActivity() {
         initBottomSheet()
 
         viewModel.photoList.observe(this) {
+            // Preview窓の更新
             if (it.isEmpty()) {
                 binding.captured.setImageURI(null)
             }
+
+            // Preview一覧の更新
             binding.bottomSheetInclude.photoListRecyclerView.adapter =
                 PhotoListAdapter(
                     dataSet = it.toList(),
@@ -120,6 +124,11 @@ class CameraActivity : AppCompatActivity() {
                             // 一覧に追加
                             viewModel.addPhoto(photoUri)
                             binding.captured.setImageURI(photoUri)
+                            // 最新の写真を端末のギャラリーに保存する
+                            LocalFileRepository().savePhotoToExternalDir(
+                                photoUri,
+                                applicationContext
+                            )
                         }
                     }
 
