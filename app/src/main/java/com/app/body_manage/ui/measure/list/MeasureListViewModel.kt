@@ -196,7 +196,7 @@ class MeasureListViewModel(
 
     private fun loadTall() {
         viewModelScope.launch {
-            userPreferenceRepository.tall.collect {
+            userPreferenceRepository.userPref.collect {
                 if (it.tall != null) {
                     setTall(it.tall.toString())
                 }
