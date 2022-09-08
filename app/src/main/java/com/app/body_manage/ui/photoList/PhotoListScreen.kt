@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.app.body_manage.R
+import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.ui.photoList.PhotoListActivity.BottomSheetData
 import com.app.body_manage.ui.photoList.PhotoListState.HasPhoto
 import com.app.body_manage.ui.photoList.PhotoListState.NoPhoto
@@ -35,7 +36,7 @@ import com.app.body_manage.ui.photoList.PhotoListState.NoPhoto
 @Composable
 fun PhotoListScreen(
     state: PhotoListState,
-    photoDetailAction: () -> Unit,
+    photoDetailAction: (Int) -> Unit,
     bottomSheetDataList: List<BottomSheetData>,
 ) {
     Scaffold(
@@ -65,7 +66,10 @@ fun PhotoListScreen(
 }
 
 @Composable
-private fun PhotoList(photos: Map<String, List<String>>, photoDetailAction: () -> Unit) {
+private fun PhotoList(
+    photos: Map<String, List<BodyMeasurePhotoDao.PhotoData>>,
+    photoDetailAction: (Int) -> Unit
+) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(200.dp),
         horizontalArrangement = Arrangement.spacedBy(1.dp),
@@ -84,12 +88,12 @@ private fun PhotoList(photos: Map<String, List<String>>, photoDetailAction: () -
             }
             items(photos.size) {
                 AsyncImage(
-                    model = photos[it],
+                    model = photos[it].photoUri,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .clickable {
-                            photoDetailAction.invoke()
+                            photoDetailAction.invoke(photos[it].photoId)
                         }
                         .height(200.dp)
                         .background(Color.Black),
