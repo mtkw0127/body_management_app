@@ -32,6 +32,7 @@
         <entry key="app/src/main/res/layout/training_measure_list_cell.xml" value="0.33" />
         <entry key="app/src/main/res/layout/weight_picker_dialog.xml" value="0.45" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
+        <entry key="app/src/main/res/menu/setting.xml" value="0.24583333333333332" />
       </map>
     </option>
   </component>
