@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.TrainingApplication
+import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.ui.photoList.PhotoListState.HasPhoto
 import com.app.body_manage.ui.photoList.PhotoListState.NoPhoto
@@ -20,12 +21,12 @@ sealed interface PhotoListState {
     ) : PhotoListState
 
     data class HasPhoto(
-        val photos: Map<String, List<String>>
+        val photos: Map<String, List<BodyMeasurePhotoDao.PhotoData>>
     ) : PhotoListState
 }
 
 internal data class PhotoListViewModelState(
-    val photos: Map<String, List<String>> = mutableMapOf()
+    val photos: Map<String, List<BodyMeasurePhotoDao.PhotoData>> = mutableMapOf()
 ) {
     fun toUiState(): PhotoListState =
         when {

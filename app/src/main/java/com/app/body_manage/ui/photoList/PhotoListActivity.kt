@@ -12,6 +12,8 @@ import androidx.compose.runtime.getValue
 import com.app.body_manage.R
 import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.graph.GraphActivity
+import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel
+import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 
 class PhotoListActivity : AppCompatActivity() {
 
@@ -20,6 +22,9 @@ class PhotoListActivity : AppCompatActivity() {
     }
 
     private val launcher =
+        registerForActivityResult(StartActivityForResult()) {}
+
+    private val photoDetailLauncher =
         registerForActivityResult(StartActivityForResult()) {}
 
     data class BottomSheetData(val name: String, val resourceId: Int, val action: () -> Unit)
@@ -46,7 +51,14 @@ class PhotoListActivity : AppCompatActivity() {
                 )
                 PhotoListScreen(
                     state = state,
-                    photoDetailAction = {},
+                    photoDetailAction = { photoId ->
+                        photoDetailLauncher.launch(
+                            PhotoDetailActivity.createIntent(
+                                context = this,
+                                photoId = BodyMeasureEditFormViewModel.PhotoModel.Id(photoId)
+                            )
+                        )
+                    },
                     bottomSheetDataList = bottomSheetDataList
                 )
             }
