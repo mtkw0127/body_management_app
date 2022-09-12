@@ -26,6 +26,7 @@ import java.time.temporal.ChronoField
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class CalendarAdapter(
     var localDate: LocalDate,
@@ -197,7 +198,7 @@ class CalendarAdapter(
 
         CoroutineScope(Dispatchers.IO).launch {
             runCatching { bodyMeasureRepository.getEntityListByDate(cellInfo.localDate) }
-                .onFailure { e -> e.printStackTrace() }
+                .onFailure { Timber.e(it) }
                 .onSuccess {
                     if (it.isNotEmpty()) {
                         val measureCntView =

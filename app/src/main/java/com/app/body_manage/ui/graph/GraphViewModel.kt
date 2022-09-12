@@ -10,6 +10,7 @@ import com.app.body_manage.data.repository.BodyMeasureRepository
 import java.io.Serializable
 import java.time.LocalDateTime
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class GraphViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -46,7 +47,7 @@ class GraphViewModel(application: Application) : AndroidViewModel(application) {
             runCatching {
                 bodyMeasureRepository.getEntityListBetween()
             }
-                .onFailure { e -> e.printStackTrace() }
+                .onFailure { Timber.e(it) }
                 .onSuccess {
                     createEntryList(bodyMeasureList = it)
                 }

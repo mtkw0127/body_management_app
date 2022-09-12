@@ -3,6 +3,7 @@ package com.app.body_manage.data.local
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.floatPreferencesKey
@@ -20,6 +21,7 @@ class UserPreferenceRepository(
         val KEY_TALL = floatPreferencesKey("key_tall")
         val KEY_WEIGHT = floatPreferencesKey("key_weight")
         val KEY_FAT = floatPreferencesKey("key_fat")
+        val KEY_ALARM = booleanPreferencesKey("key_alarm")
     }
 
     suspend fun putTall(tall: Float) {
@@ -40,6 +42,12 @@ class UserPreferenceRepository(
         }
     }
 
+    suspend fun putAlarm(onAlarm: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[KEY_ALARM] = onAlarm
+        }
+    }
+
     val userPref: Flow<UserPreference> = context.dataStore.data
         .catch { exception ->
             if (exception is IOException) {
@@ -52,6 +60,7 @@ class UserPreferenceRepository(
                 tall = it[KEY_TALL],
                 weight = it[KEY_WEIGHT],
                 fat = it[KEY_FAT],
+                alarm = it[KEY_ALARM],
             )
         }
 }

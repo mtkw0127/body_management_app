@@ -1,31 +1,33 @@
 package com.app.body_manage.ui.setting
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import com.app.body_manage.R
+import androidx.compose.runtime.collectAsState
 import com.app.body_manage.common.createBottomDataList
+import com.app.body_manage.data.local.UserPreferenceRepository
+import com.app.body_manage.ui.alarm.AlarmNotification
 import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
+import java.util.Calendar
 
 class SettingActivity : AppCompatActivity() {
-
 
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
 
+    private lateinit var viewModel: SettingViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        viewModel = SettingViewModel(UserPreferenceRepository(this))
 
         val bottomSheetDataList = createBottomDataList(
             calendarAction = { launcher.launch(CalendarActivity.createIntent(this)) },
@@ -34,35 +36,30 @@ class SettingActivity : AppCompatActivity() {
         )
 
         setContent {
-            val checked = rememberSaveable { mutableStateOf(true) }
-            SettingScreen(checked, bottomSheetDataList) {
-                checked.value = it
-                if (it) {
-                    val channelId = "NOTIFICATION_CHANNEL_ID_TRIAL"
-                    val builder = NotificationCompat.Builder(this, channelId)
-                        // 1-2. 表示内容の設定
-                        .setSmallIcon(R.drawable.ic_launcher_foreground)
-                        .setContentTitle("通知のTitle🍩")
-                        .setContentText("通知のText🍮通知ですよ〜")
-                        // 1-3. 優先度の設定
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-
-                    val name = "お試し通知"
-                    val descriptionText = "お試しで通知を送るための通知チャンネルです😊！"
-                    val importance = NotificationManager.IMPORTANCE_DEFAULT
-                    val channel = NotificationChannel(channelId, name, importance).apply {
-                        description = descriptionText
+            val checked = viewModel.uiState.collectAsState()
+            SettingScreen(checked, bottomSheetDataList) { on ->
+                viewModel.updateAlarm(on)
+                val alarmMgr =
+                    baseContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                val alarmIntent =
+                    Intent(baseContext, AlarmNotification::class.java).let { intent ->
+                        PendingIntent.getBroadcast(baseContext, 0, intent, 0)
                     }
-                    // 2-2. チャネルをシステムに登録
-                    val notificationManager: NotificationManager =
-                        getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    notificationManager.createNotificationChannel(channel)
-
-                    with(NotificationManagerCompat.from(this)) {
-                        // notificationIDとbuilder.build()を渡します
-                        notify(12345, builder.build())
+                if (on) {
+                    // 毎朝７時に通知する
+                    val calendar = Calendar.getInstance().apply {
+                        timeInMillis = System.currentTimeMillis()
+                        set(Calendar.HOUR_OF_DAY, 7)
                     }
+                    alarmMgr.setRepeating(
+                        AlarmManager.RTC_WAKEUP,
+                        calendar.timeInMillis,
+                        AlarmManager.INTERVAL_DAY,
+                        alarmIntent,
+                    )
+                } else {
+                    alarmIntent.cancel()
+                    alarmMgr.cancel(alarmIntent)
                 }
             }
         }

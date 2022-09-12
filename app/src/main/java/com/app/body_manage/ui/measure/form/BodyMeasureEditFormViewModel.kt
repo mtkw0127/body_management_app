@@ -99,7 +99,7 @@ class BodyMeasureEditFormViewModel(
                         "読み込みに失敗しました。",
                         Toast.LENGTH_SHORT
                     ).show()
-                    e.printStackTrace()
+                    Timber.e(e)
                 }
                 .onSuccess { res ->
                     val it = res[0]
@@ -138,7 +138,6 @@ class BodyMeasureEditFormViewModel(
         viewModelScope.launch {
             runCatching { photoRepository.selectPhotos(bodyMeasureId = bodyMeasureEntity.ui) }
                 .onFailure { e ->
-                    e.printStackTrace()
                     Timber.e(e)
                     Toast.makeText(
                         application,
@@ -223,7 +222,7 @@ class BodyMeasureEditFormViewModel(
                         createPhotoModels(id.toInt())
                     )
                 }
-            }.onFailure { it.printStackTrace() }
+            }.onFailure { Timber.e(it) }
         }
     }
 
@@ -244,7 +243,7 @@ class BodyMeasureEditFormViewModel(
                     saveModel.photoUri = checkNotNull(_photoList.value).last().uri.toString()
                 }
                 bodyMeasureRepository.update(saveModel)
-            }.onFailure { it.printStackTrace() }
+            }.onFailure { Timber.e(it) }
         }
     }
 

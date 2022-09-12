@@ -3,14 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.124" />
         <entry key="app/src/main/res/drawable/blueOval.xml" value="0.194" />
         <entry key="app/src/main/res/drawable/border.xml" value="0.228125" />
         <entry key="app/src/main/res/drawable/border_radius_5.xml" value="0.1455" />
         <entry key="app/src/main/res/drawable/bottom_only_border.xml" value="0.187" />
         <entry key="app/src/main/res/drawable/bottom_sheet_background.xml" value="0.1165" />
+        <entry key="app/src/main/res/drawable/ic_baseline_accessibility_24.xml" value="0.1115" />
+        <entry key="app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.1115" />
         <entry key="app/src/main/res/drawable/ic_baseline_calendar_month_24.xml" value="0.115" />
         <entry key="app/src/main/res/drawable/ic_baseline_cameraswitch_24.xml" value="0.301" />
         <entry key="app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.249" />
+        <entry key="app/src/main/res/drawable/ic_capture.xml" value="0.124" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.1115" />
         <entry key="app/src/main/res/drawable/ic_plus_24.xml" value="0.322" />
         <entry key="app/src/main/res/drawable/label.xml" value="0.1355" />
         <entry key="app/src/main/res/layout/activity_graph.xml" value="0.1" />

@@ -6,14 +6,14 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
 
 @Composable
 fun SettingScreen(
-    checked: MutableState<Boolean>,
+    state: State<SettingUiState>,
     bottomSheetDataList: List<BottomSheetData>,
     notifyAction: (Boolean) -> Unit,
 ) {
@@ -22,14 +22,24 @@ fun SettingScreen(
             BottomSheet(bottomSheetDataList = (bottomSheetDataList))
         }
     ) {
-        Column(modifier = Modifier.padding(it)) {
-            TextAndLabel(checked, notifyAction)
+        when (state.value) {
+            is SettingUiState.Settings -> {
+                Column(modifier = Modifier.padding(it)) {
+                    val setting = state.value as SettingUiState.Settings
+                    TextAndLabel(setting.alarm, notifyAction)
+                }
+            }
+            is SettingUiState.ErrorSettings -> {
+                Column {
+                    Text(text = "設定情報の取得に失敗しました。")
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun TextAndLabel(checked: MutableState<Boolean>, notifyAction: (Boolean) -> Unit) {
+private fun TextAndLabel(checked: Boolean, notifyAction: (Boolean) -> Unit) {
     Text("設定画面")
-    Switch(checked = checked.value, onCheckedChange = notifyAction)
+    Switch(checked = checked, onCheckedChange = notifyAction)
 }
