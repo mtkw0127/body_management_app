@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 sealed interface PhotoListState {
     data class NoPhoto(
@@ -61,7 +62,7 @@ class PhotoListViewModel(application: Application) : AndroidViewModel(applicatio
     fun loadPhotoRegisteredDates() {
         viewModelScope.launch {
             kotlin.runCatching { bmpRepository.selectPhotosByDate() }
-                .onFailure { e -> e.printStackTrace() }
+                .onFailure { Timber.e(it) }
                 .onSuccess {
                     if (it.isNotEmpty()) {
                         viewModelState.update { state ->

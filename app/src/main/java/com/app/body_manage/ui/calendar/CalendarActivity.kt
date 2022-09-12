@@ -4,12 +4,15 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
 import com.app.body_manage.R
 import com.app.body_manage.databinding.ActivityMainBinding
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
+import com.app.body_manage.ui.setting.SettingActivity
 import com.app.body_manage.util.DateUtil
 import com.app.body_manage.util.OnSwipeTouchListener
 
@@ -36,6 +39,10 @@ class CalendarActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
         }
 
+    // 設定画面への遷移
+    private val settingMenuActivityLauncher =
+        registerForActivityResult(StartActivityForResult()) {}
+
     private val viewModel: CalendarListViewModel = CalendarListViewModel()
 
     @SuppressLint("ClickableViewAccessibility")
@@ -44,8 +51,6 @@ class CalendarActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
         setContentView(binding.root)
-
-        initViewModel()
 
         adapter = CalendarAdapter(
             viewModel.today,
@@ -60,8 +65,20 @@ class CalendarActivity : AppCompatActivity() {
         initListener()
     }
 
-    private fun initViewModel() {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.setting, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_setting -> {
+                val intent = SettingActivity.createIntent(this)
+                settingMenuActivityLauncher.launch(intent)
+                return true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")

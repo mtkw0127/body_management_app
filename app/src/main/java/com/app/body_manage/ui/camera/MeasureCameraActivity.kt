@@ -216,7 +216,7 @@ class MeasureCameraActivity : AppCompatActivity() {
                                     }
                                     imageProxy.close()
                                 }.addOnFailureListener {
-                                    it.printStackTrace()
+                                    Timber.e(it)
                                     imageProxy.close()
                                 }
                         }

@@ -9,9 +9,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.ExperimentalComposeUiApi
-import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
+import com.app.body_manage.common.createBottomDataList
 import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.ui.calendar.CalendarActivity
@@ -45,7 +44,6 @@ class MeasureListActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MeasureListViewModel
 
-    @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initViewModel()
@@ -53,18 +51,10 @@ class MeasureListActivity : AppCompatActivity() {
         setContent {
             val state: MeasureListState by viewModel.uiState.collectAsState()
 
-            val bottomSheetDataList = listOf(
-                PhotoListActivity.BottomSheetData(
-                    "カレンダー", R.drawable.ic_baseline_calendar_month_24
-                ) {
-                    launcher.launch(CalendarActivity.createIntent(this))
-                },
-                PhotoListActivity.BottomSheetData("写真", R.drawable.ic_baseline_photo_library_24) {
-                    launcher.launch(PhotoListActivity.createIntent(this))
-                },
-                PhotoListActivity.BottomSheetData("グラフ", R.drawable.ic_baseline_show_chart_24) {
-                    launcher.launch(GraphActivity.createIntent(this))
-                }
+            val bottomSheetDataList = createBottomDataList(
+                calendarAction = { launcher.launch(CalendarActivity.createIntent(this)) },
+                photoListAction = { launcher.launch(PhotoListActivity.createIntent(this)) },
+                graphAction = { launcher.launch(GraphActivity.createIntent(this)) }
             )
 
             MeasureListScreen(

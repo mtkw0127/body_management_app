@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
@@ -38,29 +36,28 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.app.body_manage.common.BottomSheet
+import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.extension.toJapaneseTime
-import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.util.DateUtil
-import com.google.accompanist.pager.ExperimentalPagerApi
 import java.time.LocalDateTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(
-    ExperimentalPagerApi::class, ExperimentalFoundationApi::class,
+    ExperimentalFoundationApi::class,
     ExperimentalComposeUiApi::class
 )
 @Composable
 fun MeasureListScreen(
     uiState: MeasureListState,
     clickSaveBodyInfo: () -> Unit,
-    bottomSheetDataList: List<PhotoListActivity.BottomSheetData>,
+    bottomSheetDataList: List<BottomSheetData>,
     setTall: (String) -> Unit,
     resetSnackbarMessage: () -> Unit,
     clickBodyMeasureEdit: (LocalDateTime) -> Unit,
@@ -287,34 +284,7 @@ fun MeasureListScreen(
             }
         },
         bottomBar = {
-            BottomNavigation(
-                backgroundColor = Color(red = 232, green = 222, blue = 248),
-                modifier = Modifier
-                    .height(60.dp)
-                    .padding(0.dp)
-            ) {
-                bottomSheetDataList.forEach { item ->
-                    BottomNavigationItem(
-                        icon = {
-                            Icon(
-                                painter = painterResource(id = item.resourceId),
-                                contentDescription = item.name,
-                                modifier = Modifier.padding(bottom = 5.dp),
-                                tint = Color.Black.copy(alpha = 0.7f)
-                            )
-                        },
-                        label = {
-                            Text(
-                                text = item.name,
-                                fontSize = 12.sp,
-                                modifier = Modifier.padding(0.dp)
-                            )
-                        },
-                        onClick = item.action,
-                        selected = false
-                    )
-                }
-            }
+            BottomSheet(bottomSheetDataList)
         }
     )
 }

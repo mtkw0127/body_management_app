@@ -4,4 +4,5 @@ data class UserPreference(
     val tall: Float?,
     val fat: Float?,
     val weight: Float?,
+    val alarm: Boolean?,
 )

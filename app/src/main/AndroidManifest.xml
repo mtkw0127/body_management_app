@@ -4,6 +4,7 @@
 
     <uses-feature android:name="android.hardware.camera" />
 
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -57,6 +58,19 @@
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Material3.Light.NoActionBar" />
+        <activity
+            android:name=".ui.setting.SettingActivity"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+
+        <receiver
+            android:name=".ui.alarm.AlarmNotification"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.INPUT_METHOD_CHANGED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

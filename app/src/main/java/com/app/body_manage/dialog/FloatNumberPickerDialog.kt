@@ -40,7 +40,7 @@ class FloatNumberPickerDialog : DialogFragment() {
         bigPicker.value = number.toInt()
 
         smallPicker.minValue = 0
-        smallPicker.maxValue = 99
+        smallPicker.maxValue = 9
         smallPicker.value = ((number - number.toInt()) * 100).toInt()
 
         unitTextView = dialogLayout.findViewById(R.id.small_weight_txt)
@@ -48,7 +48,7 @@ class FloatNumberPickerDialog : DialogFragment() {
 
         val okButton = dialogLayout.findViewById<Button>(R.id.ok_wight_btn)
         okButton.setOnClickListener {
-            val number = bigPicker.value.toFloat() + (smallPicker.value).toFloat() / 100.0F
+            val number = bigPicker.value.toFloat() + (smallPicker.value).toFloat() / 10.0F
             callBack(number)
             this.dismiss()
         }

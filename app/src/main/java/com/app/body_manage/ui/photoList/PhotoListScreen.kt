@@ -10,9 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -21,15 +18,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.app.body_manage.R
+import com.app.body_manage.common.BottomSheet
+import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
-import com.app.body_manage.ui.photoList.PhotoListActivity.BottomSheetData
 import com.app.body_manage.ui.photoList.PhotoListState.HasPhoto
 import com.app.body_manage.ui.photoList.PhotoListState.NoPhoto
 
@@ -117,37 +114,5 @@ private fun NoPhotoMessage() {
             color = Color.Gray,
             textAlign = TextAlign.Center,
         )
-    }
-}
-
-@Composable
-private fun BottomSheet(bottomSheetDataList: List<BottomSheetData>) {
-    BottomNavigation(
-        backgroundColor = Color(red = 232, green = 222, blue = 248),
-        modifier = Modifier
-            .height(60.dp)
-            .padding(0.dp)
-    ) {
-        bottomSheetDataList.forEach { item ->
-            BottomNavigationItem(
-                icon = {
-                    Icon(
-                        painter = painterResource(id = item.resourceId),
-                        contentDescription = item.name,
-                        modifier = Modifier.padding(bottom = 5.dp),
-                        tint = Color.Black.copy(alpha = 0.7f)
-                    )
-                },
-                label = {
-                    Text(
-                        text = item.name,
-                        fontSize = 12.sp,
-                        modifier = Modifier.padding(0.dp)
-                    )
-                },
-                onClick = item.action,
-                selected = false
-            )
-        }
     }
 }
