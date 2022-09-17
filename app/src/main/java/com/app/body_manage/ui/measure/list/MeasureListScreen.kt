@@ -66,6 +66,7 @@ fun MeasureListScreen(
     resetSnackBarMessage: () -> Unit,
     clickBodyMeasureEdit: (LocalDateTime) -> Unit,
     clickFab: () -> Unit,
+    showPhotoDetail: (Int) -> Unit,
 ) {
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     val state = rememberScaffoldState()
@@ -103,7 +104,7 @@ fun MeasureListScreen(
                                     list = uiState.list,
                                     clickBodyMeasureEdit = clickBodyMeasureEdit,
                                 )
-                                PhotoList(uiState.photoList)
+                                PhotoList(uiState.photoList, clickPhoto = showPhotoDetail)
                             } else {
                                 Box(
                                     contentAlignment = Alignment.Center,
@@ -136,7 +137,7 @@ fun MeasureListScreen(
 }
 
 @Composable
-private fun PhotoList(photoList: List<BodyMeasurePhotoDao.PhotoData>) {
+private fun PhotoList(photoList: List<BodyMeasurePhotoDao.PhotoData>, clickPhoto: (Int) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxHeight()
@@ -154,6 +155,9 @@ private fun PhotoList(photoList: List<BodyMeasurePhotoDao.PhotoData>) {
                         .height(200.dp)
                         .padding(3.dp)
                         .clip(RoundedCornerShape(3.dp))
+                        .clickable {
+                            clickPhoto.invoke(it.photoId)
+                        }
                 )
             }
         }

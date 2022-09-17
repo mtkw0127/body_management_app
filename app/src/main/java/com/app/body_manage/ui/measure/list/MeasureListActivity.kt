@@ -17,6 +17,8 @@ import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity
+import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel
+import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.util.DateUtil
 import java.time.LocalDate
@@ -102,6 +104,13 @@ class MeasureListActivity : AppCompatActivity() {
                         else -> {}
                     }
                 },
+                showPhotoDetail = {
+                    val intent = PhotoDetailActivity.createIntent(
+                        baseContext,
+                        BodyMeasureEditFormViewModel.PhotoModel.Id(it)
+                    )
+                    launcher.launch(intent)
+                }
             )
         }
     }
