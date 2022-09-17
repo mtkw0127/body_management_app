@@ -4,46 +4,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="20dp"
         tools:context=".MainActivity">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/calendar_btn_field"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="5dp"
-            app:layout_constraintBottom_toTopOf="@id/calendarGridView"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <Button
-                android:id="@+id/prev_month_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/prev_month"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/year_month_txt"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/year_month_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2022年2月"
-                android:textSize="24sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/prev_month_btn"
-                app:layout_constraintRight_toLeftOf="@id/next_month_btn"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/next_month_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/next_month"
-                app:layout_constraintLeft_toRightOf="@id/year_month_txt"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <GridView
             android:id="@+id/calendarGridView"
@@ -54,7 +16,7 @@
             app:layout_constraintBottom_toTopOf="@id/bottom_sheet_include"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/calendar_btn_field" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <include
             android:id="@+id/bottom_sheet_include"

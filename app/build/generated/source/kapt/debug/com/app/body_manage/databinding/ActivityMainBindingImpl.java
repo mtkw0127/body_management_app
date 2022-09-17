@@ -12,17 +12,13 @@ public class ActivityMainBindingImpl extends ActivityMainBinding  {
     @Nullable
     private static final android.util.SparseIntArray sViewsWithIds;
     static {
-        sIncludes = new androidx.databinding.ViewDataBinding.IncludedLayouts(7);
+        sIncludes = new androidx.databinding.ViewDataBinding.IncludedLayouts(3);
         sIncludes.setIncludes(0, 
             new String[] {"bottom_sheet"},
             new int[] {1},
             new int[] {com.app.body_manage.R.layout.bottom_sheet});
         sViewsWithIds = new android.util.SparseIntArray();
-        sViewsWithIds.put(R.id.calendar_btn_field, 2);
-        sViewsWithIds.put(R.id.prev_month_btn, 3);
-        sViewsWithIds.put(R.id.year_month_txt, 4);
-        sViewsWithIds.put(R.id.next_month_btn, 5);
-        sViewsWithIds.put(R.id.calendarGridView, 6);
+        sViewsWithIds.put(R.id.calendarGridView, 2);
     }
     // views
     @NonNull
@@ -33,16 +29,12 @@ public class ActivityMainBindingImpl extends ActivityMainBinding  {
     // Inverse Binding Event Handlers
 
     public ActivityMainBindingImpl(@Nullable androidx.databinding.DataBindingComponent bindingComponent, @NonNull View root) {
-        this(bindingComponent, root, mapBindings(bindingComponent, root, 7, sIncludes, sViewsWithIds));
+        this(bindingComponent, root, mapBindings(bindingComponent, root, 3, sIncludes, sViewsWithIds));
     }
     private ActivityMainBindingImpl(androidx.databinding.DataBindingComponent bindingComponent, View root, Object[] bindings) {
         super(bindingComponent, root, 1
             , (com.app.body_manage.databinding.BottomSheetBinding) bindings[1]
-            , (androidx.constraintlayout.widget.ConstraintLayout) bindings[2]
-            , (android.widget.GridView) bindings[6]
-            , (android.widget.Button) bindings[5]
-            , (android.widget.Button) bindings[3]
-            , (android.widget.TextView) bindings[4]
+            , (android.widget.GridView) bindings[2]
             );
         setContainedBinding(this.bottomSheetInclude);
         this.mboundView0 = (androidx.constraintlayout.widget.ConstraintLayout) bindings[0];
