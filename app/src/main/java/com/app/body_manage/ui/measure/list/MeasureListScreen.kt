@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -44,8 +43,6 @@ import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.data.entity.BodyMeasureModel
 import com.app.body_manage.extension.toJapaneseTime
-import com.app.body_manage.util.DateUtil
-import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -69,6 +66,7 @@ fun MeasureListScreen(
                 Column(
                     modifier = Modifier
                         .padding(padding)
+                        .padding(top = 10.dp)
                         .fillMaxHeight()
                 ) {
                     when (uiState) {
@@ -85,9 +83,8 @@ fun MeasureListScreen(
                                 }
                             }
                             if (uiState.list.isNotEmpty()) {
-                                YearMonthDayField(
+                                TallSetField(
                                     tall = uiState.tall,
-                                    date = uiState.date,
                                     setTall = setTall,
                                     clickSaveBodyInfo = clickSaveBodyInfo,
                                 )
@@ -129,36 +126,13 @@ fun MeasureListScreen(
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun YearMonthDayField(
+private fun TallSetField(
     tall: String,
     setTall: (String) -> Unit,
     clickSaveBodyInfo: () -> Unit,
-    date: LocalDate
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     Column {
-        Row {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .weight(1F)
-                    .padding(
-                        start = 12.dp,
-                        end = 16.dp,
-                        top = 12.dp,
-                        bottom = 12.dp
-                    )
-            ) {
-                Text(
-                    text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(
-                        date
-                    ),
-                    textAlign = TextAlign.Start,
-                    fontSize = 16.sp,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-        }
         Row(
             modifier = Modifier
                 .height(60.dp)
