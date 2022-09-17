@@ -59,7 +59,7 @@ fun MeasureListScreen(
     clickSaveBodyInfo: () -> Unit,
     bottomSheetDataList: List<BottomSheetData>,
     setTall: (String) -> Unit,
-    resetSnackbarMessage: () -> Unit,
+    resetSnackBarMessage: () -> Unit,
     clickBodyMeasureEdit: (LocalDateTime) -> Unit,
     clickFab: () -> Unit,
 ) {
@@ -84,7 +84,7 @@ fun MeasureListScreen(
                                             message = uiState.message,
                                             duration = SnackbarDuration.Short
                                         )
-                                        resetSnackbarMessage.invoke()
+                                        resetSnackBarMessage.invoke()
                                     }
                                 }
                             }
