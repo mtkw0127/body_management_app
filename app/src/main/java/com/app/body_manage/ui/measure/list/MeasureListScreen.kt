@@ -268,6 +268,8 @@ fun MeasureListScreen(
                                     Text(
                                         text = "未登録です\n右下のボタンから登録してください",
                                         fontWeight = FontWeight.Bold,
+                                        fontSize = 16.sp,
+                                        color = Color.Gray,
                                         textAlign = TextAlign.Center,
                                     )
                                 }

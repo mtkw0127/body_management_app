@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
 import com.app.body_manage.R
@@ -52,6 +53,8 @@ class CalendarActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         setContentView(binding.root)
 
+        onBackPressedDispatcher.addCallback {}
+
         adapter = CalendarAdapter(
             viewModel.today,
             this.applicationContext,
@@ -60,7 +63,7 @@ class CalendarActivity : AppCompatActivity() {
         binding.calendarGridView.adapter = adapter
 
         // 初期画面の年月設定
-        binding.yearMonthTxt.text = viewModel.yearMonth
+        supportActionBar?.title = viewModel.yearMonth
 
         initListener()
     }
@@ -83,34 +86,26 @@ class CalendarActivity : AppCompatActivity() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initListener() {
-        // 先月・翌月のリスナー登録
-        binding.prevMonthBtn.setOnClickListener {
-            val adapter = (binding.calendarGridView.adapter as CalendarAdapter)
-            adapter.createPrevMonthCalendar()
-            binding.yearMonthTxt.text =
-                DateUtil.localDateConvertJapaneseFormatYearMonth(adapter.localDate)
-        }
-        binding.nextMonthBtn.setOnClickListener {
-            val adapter = (binding.calendarGridView.adapter as CalendarAdapter)
-            adapter.createNextMonthCalendar()
-            binding.yearMonthTxt.text =
-                DateUtil.localDateConvertJapaneseFormatYearMonth(adapter.localDate)
-        }
-
         binding.calendarGridView.setOnTouchListener(object :
             OnSwipeTouchListener(this.applicationContext) {
             override fun up() {}
             override fun down() {}
             override fun right() {
-                binding.prevMonthBtn.callOnClick()
+                val adapter = (binding.calendarGridView.adapter as CalendarAdapter)
+                adapter.createPrevMonthCalendar()
+                supportActionBar?.title =
+                    DateUtil.localDateConvertJapaneseFormatYearMonth(adapter.localDate)
             }
 
             override fun left() {
-                binding.nextMonthBtn.callOnClick()
+                val adapter = (binding.calendarGridView.adapter as CalendarAdapter)
+                adapter.createNextMonthCalendar()
+                supportActionBar?.title =
+                    DateUtil.localDateConvertJapaneseFormatYearMonth(adapter.localDate)
             }
         })
 
-        val navigation = binding.bottomNavigator
+        val navigation = binding.bottomSheetInclude.bottomNavigator
         val menuCalendar = navigation.menu.findItem(R.id.menu_calendar)
         val menuPhoto = navigation.menu.findItem(R.id.menu_photo)
         val menuGraph = navigation.menu.findItem(R.id.menu_graph)

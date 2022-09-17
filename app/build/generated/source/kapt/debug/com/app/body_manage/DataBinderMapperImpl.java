@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingComponent;
 import androidx.databinding.ViewDataBinding;
 import com.app.body_manage.databinding.ActivityGraphBindingImpl;
 import com.app.body_manage.databinding.ActivityMainBindingImpl;
+import com.app.body_manage.databinding.BottomSheetBindingImpl;
 import com.app.body_manage.databinding.BottomSheetCapturedListBindingImpl;
 import com.app.body_manage.databinding.CameraPreviewBindingImpl;
 import com.app.body_manage.databinding.SlideItemContainerBindingImpl;
@@ -27,19 +28,22 @@ public class DataBinderMapperImpl extends DataBinderMapper {
 
   private static final int LAYOUT_ACTIVITYMAIN = 2;
 
-  private static final int LAYOUT_BOTTOMSHEETCAPTUREDLIST = 3;
+  private static final int LAYOUT_BOTTOMSHEET = 3;
 
-  private static final int LAYOUT_CAMERAPREVIEW = 4;
+  private static final int LAYOUT_BOTTOMSHEETCAPTUREDLIST = 4;
 
-  private static final int LAYOUT_SLIDEITEMCONTAINER = 5;
+  private static final int LAYOUT_CAMERAPREVIEW = 5;
 
-  private static final int LAYOUT_TRAININGDETAIL = 6;
+  private static final int LAYOUT_SLIDEITEMCONTAINER = 6;
 
-  private static final SparseIntArray INTERNAL_LAYOUT_ID_LOOKUP = new SparseIntArray(6);
+  private static final int LAYOUT_TRAININGDETAIL = 7;
+
+  private static final SparseIntArray INTERNAL_LAYOUT_ID_LOOKUP = new SparseIntArray(7);
 
   static {
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.app.body_manage.R.layout.activity_graph, LAYOUT_ACTIVITYGRAPH);
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.app.body_manage.R.layout.activity_main, LAYOUT_ACTIVITYMAIN);
+    INTERNAL_LAYOUT_ID_LOOKUP.put(com.app.body_manage.R.layout.bottom_sheet, LAYOUT_BOTTOMSHEET);
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.app.body_manage.R.layout.bottom_sheet_captured_list, LAYOUT_BOTTOMSHEETCAPTUREDLIST);
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.app.body_manage.R.layout.camera_preview, LAYOUT_CAMERAPREVIEW);
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.app.body_manage.R.layout.slide_item_container, LAYOUT_SLIDEITEMCONTAINER);
@@ -66,6 +70,12 @@ public class DataBinderMapperImpl extends DataBinderMapper {
             return new ActivityMainBindingImpl(component, view);
           }
           throw new IllegalArgumentException("The tag for activity_main is invalid. Received: " + tag);
+        }
+        case  LAYOUT_BOTTOMSHEET: {
+          if ("layout/bottom_sheet_0".equals(tag)) {
+            return new BottomSheetBindingImpl(component, view);
+          }
+          throw new IllegalArgumentException("The tag for bottom_sheet is invalid. Received: " + tag);
         }
         case  LAYOUT_BOTTOMSHEETCAPTUREDLIST: {
           if ("layout/bottom_sheet_captured_list_0".equals(tag)) {
@@ -145,11 +155,12 @@ public class DataBinderMapperImpl extends DataBinderMapper {
   }
 
   private static class InnerLayoutIdLookup {
-    static final HashMap<String, Integer> sKeys = new HashMap<String, Integer>(6);
+    static final HashMap<String, Integer> sKeys = new HashMap<String, Integer>(7);
 
     static {
       sKeys.put("layout/activity_graph_0", com.app.body_manage.R.layout.activity_graph);
       sKeys.put("layout/activity_main_0", com.app.body_manage.R.layout.activity_main);
+      sKeys.put("layout/bottom_sheet_0", com.app.body_manage.R.layout.bottom_sheet);
       sKeys.put("layout/bottom_sheet_captured_list_0", com.app.body_manage.R.layout.bottom_sheet_captured_list);
       sKeys.put("layout/camera_preview_0", com.app.body_manage.R.layout.camera_preview);
       sKeys.put("layout/slide_item_container_0", com.app.body_manage.R.layout.slide_item_container);
