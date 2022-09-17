@@ -1,6 +1,7 @@
 package com.app.body_manage.ui.measure.list
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,14 +10,17 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
@@ -34,37 +38,37 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
+import com.app.body_manage.data.dao.BodyMeasurePhotoDao
+import com.app.body_manage.data.entity.BodyMeasureModel
 import com.app.body_manage.extension.toJapaneseTime
-import com.app.body_manage.util.DateUtil
 import java.time.LocalDateTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@OptIn(
-    ExperimentalFoundationApi::class,
-    ExperimentalComposeUiApi::class
-)
 @Composable
 fun MeasureListScreen(
     uiState: MeasureListState,
     clickSaveBodyInfo: () -> Unit,
     bottomSheetDataList: List<BottomSheetData>,
     setTall: (String) -> Unit,
-    resetSnackbarMessage: () -> Unit,
+    resetSnackBarMessage: () -> Unit,
     clickBodyMeasureEdit: (LocalDateTime) -> Unit,
     clickFab: () -> Unit,
+    showPhotoDetail: (Int) -> Unit,
 ) {
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
-    val keyboardController = LocalSoftwareKeyboardController.current
     val state = rememberScaffoldState()
     Scaffold(
         scaffoldState = state,
@@ -73,6 +77,7 @@ fun MeasureListScreen(
                 Column(
                     modifier = Modifier
                         .padding(padding)
+                        .padding(top = 10.dp)
                         .fillMaxHeight()
                 ) {
                     when (uiState) {
@@ -84,182 +89,22 @@ fun MeasureListScreen(
                                             message = uiState.message,
                                             duration = SnackbarDuration.Short
                                         )
-                                        resetSnackbarMessage.invoke()
+                                        resetSnackBarMessage.invoke()
                                     }
                                 }
                             }
                             if (uiState.list.isNotEmpty()) {
-                                Column {
-                                    Row {
-                                        Box(
-                                            contentAlignment = Alignment.Center,
-                                            modifier = Modifier
-                                                .weight(1F)
-                                                .padding(
-                                                    start = 12.dp,
-                                                    end = 16.dp,
-                                                    top = 12.dp,
-                                                    bottom = 12.dp
-                                                )
-                                        ) {
-                                            Text(
-                                                text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(
-                                                    uiState.date
-                                                ),
-                                                textAlign = TextAlign.Start,
-                                                fontSize = 16.sp,
-                                                modifier = Modifier.fillMaxWidth(),
-                                            )
-                                        }
-                                        if (uiState.loading) {
-                                            Box(
-                                                contentAlignment = Alignment.CenterEnd,
-                                            ) {
-                                                CircularProgressIndicator(
-                                                    progress = 0.1F,
-                                                    modifier = Modifier.padding(start = 12.dp)
-                                                )
-                                            }
-                                        }
-                                    }
-                                    Row(
-                                        modifier = Modifier
-                                            .height(60.dp)
-                                            .padding(start = 12.dp)
-                                    ) {
-                                        Box(
-                                            contentAlignment = Alignment.Center,
-                                            modifier = Modifier
-                                                .fillMaxHeight()
-                                                .padding(end = 16.dp)
-                                        ) {
-                                            Text(text = "身長[cm]")
-                                        }
-                                        Box(
-                                            contentAlignment = Alignment.Center,
-                                            modifier = Modifier
-                                                .fillMaxHeight()
-                                                .padding(end = 16.dp)
-                                        ) {
-                                            TextField(
-                                                value = uiState.tall,
-                                                singleLine = true,
-                                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                                onValueChange = {
-                                                    if (it.toDoubleOrNull() != null ||
-                                                        it.startsWith("0")
-                                                            .not()
-                                                    ) {
-                                                        setTall.invoke(it)
-                                                    }
-                                                },
-                                                modifier = Modifier
-                                                    .width(120.dp)
-                                                    .height(48.dp)
-                                            )
-                                        }
-                                        Box(
-                                            contentAlignment = Alignment.Center,
-                                            modifier = Modifier.fillMaxHeight()
-                                        ) {
-                                            Button(onClick = {
-                                                keyboardController?.hide()
-                                                clickSaveBodyInfo.invoke()
-                                            }) {
-                                                Text(text = "保存")
-                                            }
-                                        }
-                                    }
-                                }
+                                TallSetField(
+                                    tall = uiState.tall,
+                                    setTall = setTall,
+                                    clickSaveBodyInfo = clickSaveBodyInfo,
+                                )
                                 Divider(modifier = Modifier.padding(12.dp))
-                                LazyColumn(
-                                    modifier = Modifier.fillMaxSize(),
-                                    content = {
-                                        stickyHeader {
-                                            Row {
-                                                DisplayMeasureColumn.values().forEach {
-                                                    Box(
-                                                        contentAlignment = Alignment.Center,
-                                                        modifier = Modifier
-                                                            .weight(1F)
-                                                            .padding(
-                                                                start = 3.dp,
-                                                                end = 3.dp,
-                                                                bottom = 3.dp,
-                                                            )
-                                                    ) {
-                                                        Text(
-                                                            text = it.display,
-                                                            fontSize = 16.sp,
-                                                            fontWeight = FontWeight.Bold,
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        items(uiState.list) { item ->
-                                            Row(
-                                                Modifier
-                                                    .wrapContentHeight()
-                                                    .padding(top = 3.dp)
-                                            ) {
-                                                Box(
-                                                    contentAlignment = Alignment.Center,
-                                                    modifier = Modifier
-                                                        .padding(top = 6.dp)
-                                                        .weight(1F)
-                                                ) {
-                                                    Text(
-                                                        text = item.capturedLocalDateTime.toJapaneseTime(),
-                                                    )
-                                                }
-                                                Box(
-                                                    contentAlignment = Alignment.Center,
-                                                    modifier = Modifier
-                                                        .padding(top = 6.dp)
-                                                        .weight(1F)
-                                                ) {
-                                                    Text(
-                                                        text = item.weight.toString() + "Kg",
-                                                    )
-                                                }
-                                                Box(
-                                                    contentAlignment = Alignment.Center,
-                                                    modifier = Modifier
-                                                        .padding(top = 6.dp)
-                                                        .weight(1F)
-                                                ) {
-                                                    Text(
-                                                        text = item.fat.toString() + "%",
-                                                    )
-                                                }
-
-                                                Box(
-                                                    contentAlignment = Alignment.Center,
-                                                    modifier = Modifier
-                                                        .padding(top = 6.dp)
-                                                        .weight(1F)
-                                                ) {
-                                                    Text(
-                                                        text = item.bmi,
-                                                    )
-                                                }
-                                                Icon(
-                                                    Icons.Filled.Edit,
-                                                    contentDescription = "体型登録",
-                                                    modifier = Modifier
-                                                        .weight(1F)
-                                                        .padding(3.dp)
-                                                        .clickable {
-                                                            clickBodyMeasureEdit.invoke(
-                                                                item.capturedLocalDateTime
-                                                            )
-                                                        },
-                                                    tint = Color.Gray,
-                                                )
-                                            }
-                                        }
-                                    })
+                                BodyMeasureList(
+                                    list = uiState.list,
+                                    clickBodyMeasureEdit = clickBodyMeasureEdit,
+                                )
+                                PhotoList(uiState.photoList, clickPhoto = showPhotoDetail)
                             } else {
                                 Box(
                                     contentAlignment = Alignment.Center,
@@ -288,5 +133,194 @@ fun MeasureListScreen(
         bottomBar = {
             BottomSheet(bottomSheetDataList)
         }
+    )
+}
+
+@Composable
+private fun PhotoList(photoList: List<BodyMeasurePhotoDao.PhotoData>, clickPhoto: (Int) -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth(0.95F)
+            .padding(bottom = 100.dp),
+        contentAlignment = Alignment.BottomStart
+    ) {
+        LazyRow {
+            items(photoList) {
+                AsyncImage(
+                    model = it.photoUri,
+                    contentDescription = "当日の写真一覧",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .height(200.dp)
+                        .padding(3.dp)
+                        .clip(RoundedCornerShape(3.dp))
+                        .clickable {
+                            clickPhoto.invoke(it.photoId)
+                        }
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+private fun TallSetField(
+    tall: String,
+    setTall: (String) -> Unit,
+    clickSaveBodyInfo: () -> Unit,
+) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+    Column {
+        Row(
+            modifier = Modifier
+                .height(60.dp)
+                .padding(start = 12.dp)
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(end = 16.dp)
+            ) {
+                Text(text = "身長[cm]")
+            }
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(end = 16.dp)
+            ) {
+                TextField(
+                    value = tall,
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    onValueChange = {
+                        if (it.toDoubleOrNull() != null ||
+                            it.startsWith("0")
+                                .not()
+                        ) {
+                            setTall.invoke(it)
+                        }
+                    },
+                    modifier = Modifier
+                        .width(120.dp)
+                        .height(48.dp)
+                )
+            }
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier.fillMaxHeight()
+            ) {
+                Button(onClick = {
+                    keyboardController?.hide()
+                    clickSaveBodyInfo.invoke()
+                }) {
+                    Text(text = "保存")
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun BodyMeasureList(
+    list: List<BodyMeasureModel>,
+    clickBodyMeasureEdit: (LocalDateTime) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier
+            .wrapContentWidth()
+            .wrapContentHeight()
+            .heightIn(min = 200.dp, max = 400.dp),
+        content = {
+            stickyHeader {
+                Row {
+                    DisplayMeasureColumn.values().forEach {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .weight(1F)
+                                .background(Color.White)
+                                .padding(
+                                    start = 3.dp,
+                                    end = 3.dp,
+                                    bottom = 3.dp,
+                                ),
+                        ) {
+                            Text(
+                                text = it.display,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
+                }
+            }
+            items(list) { item ->
+                Row(
+                    Modifier
+                        .wrapContentHeight()
+                        .padding(top = 3.dp)
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .padding(top = 6.dp)
+                            .weight(1F)
+                    ) {
+                        Text(
+                            text = item.capturedLocalDateTime.toJapaneseTime(),
+                        )
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .padding(top = 6.dp)
+                            .weight(1F)
+                    ) {
+                        Text(
+                            text = item.weight.toString() + "Kg",
+                        )
+                    }
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .padding(top = 6.dp)
+                            .weight(1F)
+                    ) {
+                        Text(
+                            text = item.fat.toString() + "%",
+                        )
+                    }
+
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .padding(top = 6.dp)
+                            .weight(1F)
+                    ) {
+                        Text(
+                            text = item.bmi,
+                        )
+                    }
+                    Icon(
+                        Icons.Filled.Edit,
+                        contentDescription = "体型登録",
+                        modifier = Modifier
+                            .weight(1F)
+                            .padding(3.dp)
+                            .clickable {
+                                clickBodyMeasureEdit.invoke(
+                                    item.capturedLocalDateTime
+                                )
+                            },
+                        tint = Color.Gray,
+                    )
+                }
+            }
+        },
     )
 }

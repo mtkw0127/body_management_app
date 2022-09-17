@@ -2,9 +2,11 @@ package com.app.body_manage.ui.measure.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.data.entity.BodyMeasureModel
 import com.app.body_manage.data.entity.MealMeasureEntity
 import com.app.body_manage.data.local.UserPreferenceRepository
+import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.ui.measure.list.MeasureListState.BodyMeasureListState
 import com.app.body_manage.ui.measure.list.MeasureListState.MealMeasureListState
@@ -29,6 +31,7 @@ sealed interface MeasureListState {
         val message: String,
         override val measureType: MeasureType,
         override val date: LocalDate,
+        val photoList: List<BodyMeasurePhotoDao.PhotoData>,
     ) : MeasureListState
 
     data class MealMeasureListState(
@@ -49,6 +52,7 @@ internal data class MeasureListViewModelState(
     val measureType: MeasureType,
     val bodyMeasureList: List<BodyMeasureModel> = listOf(),
     val mealMeasureList: List<MealMeasureEntity> = listOf(),
+    val photoList: List<BodyMeasurePhotoDao.PhotoData> = listOf(),
     val tall: String = 150.0F.toString(),
     val updateTall: Boolean = false,
     val loadingTall: Boolean = false,
@@ -62,6 +66,7 @@ internal data class MeasureListViewModelState(
                 BodyMeasureListState(
                     date = date,
                     list = bodyMeasureList,
+                    photoList = photoList,
                     tall = tall,
                     measureType = measureType,
                     loading = someLoading,
@@ -90,6 +95,7 @@ class MeasureListViewModel(
     private val localDate: LocalDate,
     private val mealType: MeasureType,
     private val bodyMeasureRepository: BodyMeasureRepository,
+    private val bodyMeasurePhotoRepository: BodyMeasurePhotoRepository,
     private val userPreferenceRepository: UserPreferenceRepository
 ) : ViewModel() {
 
@@ -135,6 +141,7 @@ class MeasureListViewModel(
                 runBlocking {
                     loadTall()
                     loadBodyMeasure()
+                    loadPhoto()
                 }
             }
             MeasureType.MEAL -> {
@@ -175,6 +182,18 @@ class MeasureListViewModel(
             }.also {
                 viewModelStateLoadingUpdate(updateTall = false)
             }
+        }
+    }
+
+    private fun loadPhoto() {
+        viewModelScope.launch {
+            runCatching { bodyMeasurePhotoRepository.selectPhotosByDate(viewModelState.value.date) }
+                .onFailure { Timber.e(it) }
+                .onSuccess { dbResponse ->
+                    viewModelState.update {
+                        it.copy(photoList = dbResponse)
+                    }
+                }
         }
     }
 
