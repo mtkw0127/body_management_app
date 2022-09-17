@@ -104,7 +104,9 @@ fun MeasureListScreen(
                                     list = uiState.list,
                                     clickBodyMeasureEdit = clickBodyMeasureEdit,
                                 )
-                                PhotoList(uiState.photoList, clickPhoto = showPhotoDetail)
+                                if (uiState.photoList.isNotEmpty()) {
+                                    PhotoList(uiState.photoList, clickPhoto = showPhotoDetail)
+                                }
                             } else {
                                 Box(
                                     contentAlignment = Alignment.Center,
@@ -138,22 +140,26 @@ fun MeasureListScreen(
 
 @Composable
 private fun PhotoList(photoList: List<BodyMeasurePhotoDao.PhotoData>, clickPhoto: (Int) -> Unit) {
+    Text(
+        text = "この日撮影した写真",
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(start = 12.dp, bottom = 10.dp)
+    )
     Box(
         modifier = Modifier
             .fillMaxHeight()
-            .fillMaxWidth(0.95F)
-            .padding(bottom = 100.dp),
-        contentAlignment = Alignment.BottomStart
+            .fillMaxWidth(0.95F),
+        contentAlignment = Alignment.TopCenter
     ) {
         LazyRow {
             items(photoList) {
                 AsyncImage(
                     model = it.photoUri,
                     contentDescription = "当日の写真一覧",
-                    contentScale = ContentScale.Crop,
+                    contentScale = ContentScale.Inside,
                     modifier = Modifier
-                        .height(200.dp)
                         .padding(3.dp)
+                        .width(200.dp)
                         .clip(RoundedCornerShape(3.dp))
                         .clickable {
                             clickPhoto.invoke(it.photoId)
@@ -233,7 +239,6 @@ private fun BodyMeasureList(
     LazyColumn(
         modifier = Modifier
             .wrapContentWidth()
-            .wrapContentHeight()
             .heightIn(min = 200.dp, max = 400.dp),
         content = {
             stickyHeader {
