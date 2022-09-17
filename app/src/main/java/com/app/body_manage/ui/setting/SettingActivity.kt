@@ -43,17 +43,30 @@ class SettingActivity : AppCompatActivity() {
                     baseContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
                 val alarmIntent =
                     Intent(baseContext, AlarmNotification::class.java).let { intent ->
-                        PendingIntent.getBroadcast(baseContext, 0, intent, 0)
+                        PendingIntent.getBroadcast(
+                            baseContext,
+                            0,
+                            intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                        )
                     }
                 if (on) {
                     // 毎朝７時に通知する
                     val calendar = Calendar.getInstance().apply {
                         timeInMillis = System.currentTimeMillis()
                         set(Calendar.HOUR_OF_DAY, 7)
+                        set(Calendar.MINUTE, 0)
+                        set(Calendar.SECOND, 0)
                     }
+                    // 既に7時を超えている場合は翌日を開始時刻に設定する
+                    var startUpTime = calendar.timeInMillis
+                    if (System.currentTimeMillis() > startUpTime) {
+                        startUpTime += 24 * 60 * 60 * 1000
+                    }
+                    // 毎日7時に通知を実施する
                     alarmMgr.setRepeating(
                         AlarmManager.RTC_WAKEUP,
-                        calendar.timeInMillis,
+                        startUpTime,
                         AlarmManager.INTERVAL_DAY,
                         alarmIntent,
                     )
