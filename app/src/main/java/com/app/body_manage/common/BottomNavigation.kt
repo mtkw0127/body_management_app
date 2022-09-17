@@ -50,6 +50,7 @@ data class BottomSheetData(val name: String, val resourceId: Int, val action: ()
 
 fun createBottomDataList(
     calendarAction: () -> Unit,
+    compareAction: () -> Unit,
     photoListAction: () -> Unit,
     graphAction: () -> Unit,
 ): List<BottomSheetData> {
@@ -58,6 +59,11 @@ fun createBottomDataList(
             "カレンダー",
             R.drawable.ic_baseline_calendar_month_24,
             calendarAction
+        ),
+        BottomSheetData(
+            "比較",
+            R.drawable.ic_baseline_compare_arrows_24,
+            compareAction,
         ),
         BottomSheetData(
             "写真",

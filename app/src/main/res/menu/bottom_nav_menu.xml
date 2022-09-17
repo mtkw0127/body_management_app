@@ -8,6 +8,12 @@
         app:showAsAction="ifRoom"
         android:title="カレンダー" />
     <item
+        android:id="@+id/menu_compare"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_compare_arrows_24"
+        app:showAsAction="ifRoom"
+        android:title="比較" />
+    <item
         android:id="@+id/menu_photo"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_photo_library_24"

@@ -10,6 +10,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.app.body_manage.R
 import com.app.body_manage.databinding.ActivityGraphBinding
+import com.app.body_manage.ui.calendar.CalendarActivity
+import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphViewModel.MyEntry
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.google.android.material.tabs.TabLayoutMediator
@@ -21,7 +23,7 @@ class GraphActivity : AppCompatActivity() {
     private lateinit var viewModel: GraphViewModel
 
     // 当日のトレーニング詳細画面 -> 一覧に戻ってきた場合の処理
-    private val calendarLauncher =
+    private val simpleLauncher =
         registerForActivityResult(StartActivityForResult()) {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,18 +44,18 @@ class GraphActivity : AppCompatActivity() {
 
         val navigation = binding.bottomSheetInclude.bottomNavigator
         val menuCalendar = navigation.menu.findItem(R.id.menu_calendar)
+        val menuCompare = navigation.menu.findItem(R.id.menu_compare)
         val menuPhoto = navigation.menu.findItem(R.id.menu_photo)
-        val menuGraph = navigation.menu.findItem(R.id.menu_graph)
         menuCalendar.setOnMenuItemClickListener {
-            finish()
+            simpleLauncher.launch(CalendarActivity.createIntent(this))
+            return@setOnMenuItemClickListener true
+        }
+        menuCompare.setOnMenuItemClickListener {
+            simpleLauncher.launch(CompareActivity.createIntent(this))
             return@setOnMenuItemClickListener true
         }
         menuPhoto.setOnMenuItemClickListener {
-            calendarLauncher.launch(PhotoListActivity.createIntent(applicationContext))
-            return@setOnMenuItemClickListener true
-        }
-        menuGraph.setOnMenuItemClickListener {
-            onResume()
+            simpleLauncher.launch(PhotoListActivity.createIntent(this))
             return@setOnMenuItemClickListener true
         }
     }
@@ -69,7 +71,6 @@ class GraphActivity : AppCompatActivity() {
                 GraphPageFragment.newInstance(entryList[position], "体脂肪率")
             }
         }
-
     }
 
     companion object {

@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.appcompat.app.AppCompatActivity
 import com.app.body_manage.R
 import com.app.body_manage.databinding.ActivityMainBinding
+import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.ui.setting.SettingActivity
@@ -26,23 +27,8 @@ class CalendarActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: CalendarAdapter
 
-    // 当日のトレーニング詳細画面 -> 一覧に戻ってきた場合の処理
-    private val photoListLauncher =
-        registerForActivityResult(StartActivityForResult()) {}
-
-    // グラフ画面遷移
-    private val graphListLauncher =
-        registerForActivityResult(StartActivityForResult()) {}
-
-    // 当日のトレーニング一覧画面
-    private val trainingMeasureListActivityLauncher =
-        registerForActivityResult(StartActivityForResult()) {
-            adapter.notifyDataSetChanged()
-        }
-
-    // 設定画面への遷移
-    private val settingMenuActivityLauncher =
-        registerForActivityResult(StartActivityForResult()) {}
+    // シンプルなランチャー
+    private val simpleLauncher = registerForActivityResult(StartActivityForResult()) {}
 
     private val viewModel: CalendarListViewModel = CalendarListViewModel()
 
@@ -58,7 +44,7 @@ class CalendarActivity : AppCompatActivity() {
         adapter = CalendarAdapter(
             viewModel.today,
             this.applicationContext,
-            trainingMeasureListActivityLauncher
+            simpleLauncher
         )
         binding.calendarGridView.adapter = adapter
 
@@ -77,7 +63,7 @@ class CalendarActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.menu_setting -> {
                 val intent = SettingActivity.createIntent(this)
-                settingMenuActivityLauncher.launch(intent)
+                simpleLauncher.launch(intent)
                 return true
             }
             else -> super.onOptionsItemSelected(item)
@@ -106,19 +92,19 @@ class CalendarActivity : AppCompatActivity() {
         })
 
         val navigation = binding.bottomSheetInclude.bottomNavigator
-        val menuCalendar = navigation.menu.findItem(R.id.menu_calendar)
+        val menuCompare = navigation.menu.findItem(R.id.menu_compare)
         val menuPhoto = navigation.menu.findItem(R.id.menu_photo)
         val menuGraph = navigation.menu.findItem(R.id.menu_graph)
-        menuCalendar.setOnMenuItemClickListener {
-            onResume()
+        menuCompare.setOnMenuItemClickListener {
+            simpleLauncher.launch(CompareActivity.createIntent(this))
             return@setOnMenuItemClickListener true
         }
         menuPhoto.setOnMenuItemClickListener {
-            photoListLauncher.launch(PhotoListActivity.createIntent(applicationContext))
+            simpleLauncher.launch(PhotoListActivity.createIntent(this))
             return@setOnMenuItemClickListener true
         }
         menuGraph.setOnMenuItemClickListener {
-            graphListLauncher.launch(GraphActivity.createIntent(applicationContext))
+            simpleLauncher.launch(GraphActivity.createIntent(this))
             return@setOnMenuItemClickListener true
         }
     }

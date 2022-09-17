@@ -71,6 +71,11 @@
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.compare.CompareActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
 
         <receiver
             android:name=".ui.alarm.AlarmNotification"
