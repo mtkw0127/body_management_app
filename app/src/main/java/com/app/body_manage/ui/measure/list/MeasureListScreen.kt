@@ -1,18 +1,24 @@
 package com.app.body_manage.ui.measure.list
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
@@ -32,15 +38,19 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
+import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.data.entity.BodyMeasureModel
 import com.app.body_manage.extension.toJapaneseTime
 import java.time.LocalDateTime
@@ -93,6 +103,7 @@ fun MeasureListScreen(
                                     list = uiState.list,
                                     clickBodyMeasureEdit = clickBodyMeasureEdit,
                                 )
+                                PhotoList(uiState.photoList)
                             } else {
                                 Box(
                                     contentAlignment = Alignment.Center,
@@ -122,6 +133,31 @@ fun MeasureListScreen(
             BottomSheet(bottomSheetDataList)
         }
     )
+}
+
+@Composable
+private fun PhotoList(photoList: List<BodyMeasurePhotoDao.PhotoData>) {
+    Box(
+        modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth(0.95F)
+            .padding(bottom = 100.dp),
+        contentAlignment = Alignment.BottomStart
+    ) {
+        LazyRow {
+            items(photoList) {
+                AsyncImage(
+                    model = it.photoUri,
+                    contentDescription = "当日の写真一覧",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .height(200.dp)
+                        .padding(3.dp)
+                        .clip(RoundedCornerShape(3.dp))
+                )
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -191,7 +227,10 @@ private fun BodyMeasureList(
     clickBodyMeasureEdit: (LocalDateTime) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .wrapContentWidth()
+            .wrapContentHeight()
+            .heightIn(min = 200.dp, max = 400.dp),
         content = {
             stickyHeader {
                 Row {
@@ -200,11 +239,12 @@ private fun BodyMeasureList(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
                                 .weight(1F)
+                                .background(Color.White)
                                 .padding(
                                     start = 3.dp,
                                     end = 3.dp,
                                     bottom = 3.dp,
-                                )
+                                ),
                         ) {
                             Text(
                                 text = it.display,

@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.common.createBottomDataList
 import com.app.body_manage.data.local.UserPreferenceRepository
+import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.graph.GraphActivity
@@ -24,6 +25,10 @@ class MeasureListActivity : AppCompatActivity() {
 
     private val bodyMeasureRepository: BodyMeasureRepository by lazy {
         (application as TrainingApplication).bodyMeasureRepository
+    }
+
+    private val bodyMeasurePhotoRepository: BodyMeasurePhotoRepository by lazy {
+        (application as TrainingApplication).bodyMeasurePhotoRepository
     }
 
     private val localDate: LocalDate by lazy { intent.getSerializableExtra(INTENT_KEY) as LocalDate }
@@ -105,8 +110,9 @@ class MeasureListActivity : AppCompatActivity() {
         viewModel = MeasureListViewModel(
             localDate = localDate,
             mealType = MeasureType.BODY,
-            bodyMeasureRepository,
-            UserPreferenceRepository(this),
+            bodyMeasureRepository = bodyMeasureRepository,
+            bodyMeasurePhotoRepository = bodyMeasurePhotoRepository,
+            userPreferenceRepository = UserPreferenceRepository(this),
         )
         viewModel.reload()
     }
