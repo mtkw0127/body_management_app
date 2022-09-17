@@ -75,7 +75,7 @@ class MeasureListActivity : AppCompatActivity() {
                         )
                     )
                 },
-                resetSnackbarMessage = {
+                resetSnackBarMessage = {
                     viewModel.resetMessage()
                 },
                 clickFab = {
