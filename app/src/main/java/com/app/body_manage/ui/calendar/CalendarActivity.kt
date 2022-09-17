@@ -110,7 +110,7 @@ class CalendarActivity : AppCompatActivity() {
             }
         })
 
-        val navigation = binding.bottomNavigator
+        val navigation = binding.bottomSheetInclude.bottomNavigator
         val menuCalendar = navigation.menu.findItem(R.id.menu_calendar)
         val menuPhoto = navigation.menu.findItem(R.id.menu_photo)
         val menuGraph = navigation.menu.findItem(R.id.menu_graph)
