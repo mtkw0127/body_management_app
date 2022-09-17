@@ -4,6 +4,8 @@ plugins {
     id 'kotlin-kapt'
     id 'de.mannodermaus.android-junit5'
     id 'org.jlleitschuh.gradle.ktlint'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
 }
 
 ktlint {
@@ -16,14 +18,28 @@ ktlint {
 }
 
 android {
+    signingConfigs {
+        debug {
+            storePassword 'chekera0127'
+            keyPassword 'chekera0127'
+            storeFile file('/Users/tomonori.matsukawa/StudioProjects/vetonum/training_management_app/key/Untitled')
+            keyAlias 'key0'
+        }
+        release {
+            storeFile file('/Users/tomonori.matsukawa/StudioProjects/vetonum/training_management_app/key/Untitled')
+            storePassword 'chekera0127'
+            keyPassword 'chekera0127'
+            keyAlias 'key0'
+        }
+    }
     compileSdk 32
 
     defaultConfig {
         applicationId "com.app.calendar"
         minSdk 26
         targetSdk 32
-        versionCode 4
-        versionName "1.3.0"
+        versionCode 8
+        versionName "1.7.0"
         applicationId "com.app.body_manage"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -32,6 +48,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
@@ -123,6 +140,7 @@ dependencies {
     implementation 'androidx.compose.runtime:runtime-livedata:1.1.1'
     implementation "com.google.accompanist:accompanist-pager:0.24.13-rc"
     implementation "com.google.accompanist:accompanist-pager-indicators:0.24.11-rc"
+    implementation "androidx.coordinatorlayout:coordinatorlayout:1.2.0"
 
     // Junit5
     testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.2"
@@ -137,6 +155,15 @@ dependencies {
 
     // graph
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    // Preferences DataStore
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
+    // Proto DataStore
+    implementation "androidx.datastore:datastore-core:1.0.0"
+
+    implementation platform('com.google.firebase:firebase-bom:30.3.2')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
 }
 
 tasks.withType(org.jlleitschuh.gradle.ktlint.tasks.GenerateReportsTask) {

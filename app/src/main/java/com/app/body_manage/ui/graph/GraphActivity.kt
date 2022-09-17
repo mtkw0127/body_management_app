@@ -24,10 +24,6 @@ class GraphActivity : AppCompatActivity() {
     private val calendarLauncher =
         registerForActivityResult(StartActivityForResult()) {}
 
-    // グラフ画面遷移
-    private val photoLauncher =
-        registerForActivityResult(StartActivityForResult()) {}
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityGraphBinding.inflate(layoutInflater)
@@ -44,7 +40,7 @@ class GraphActivity : AppCompatActivity() {
             }.attach()
         }
 
-        val navigation = binding.bottomNavigator
+        val navigation = binding.bottomSheetInclude.bottomNavigator
         val menuCalendar = navigation.menu.findItem(R.id.menu_calendar)
         val menuPhoto = navigation.menu.findItem(R.id.menu_photo)
         val menuGraph = navigation.menu.findItem(R.id.menu_graph)

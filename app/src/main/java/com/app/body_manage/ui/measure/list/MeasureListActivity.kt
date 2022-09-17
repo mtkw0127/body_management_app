@@ -9,19 +9,28 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
+import com.app.body_manage.common.createBottomDataList
+import com.app.body_manage.data.local.UserPreferenceRepository
+import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
-import com.app.body_manage.ui.calendar.MainActivity
+import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity
+import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel
+import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
+import com.app.body_manage.util.DateUtil
 import java.time.LocalDate
 
 class MeasureListActivity : AppCompatActivity() {
 
     private val bodyMeasureRepository: BodyMeasureRepository by lazy {
         (application as TrainingApplication).bodyMeasureRepository
+    }
+
+    private val bodyMeasurePhotoRepository: BodyMeasurePhotoRepository by lazy {
+        (application as TrainingApplication).bodyMeasurePhotoRepository
     }
 
     private val localDate: LocalDate by lazy { intent.getSerializableExtra(INTENT_KEY) as LocalDate }
@@ -31,6 +40,13 @@ class MeasureListActivity : AppCompatActivity() {
 
     private val measureFormLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            val message = when (it.resultCode) {
+                BodyMeasureEditFormActivity.RESULT_DELETE -> "削除しました"
+                BodyMeasureEditFormActivity.RESULT_UPDATE -> "更新しました"
+                BodyMeasureEditFormActivity.RESULT_CREATE -> "追加しました"
+                else -> ""
+            }
+            viewModel.updateMessage(message)
             viewModel.reload()
         }
 
@@ -39,21 +55,16 @@ class MeasureListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initViewModel()
+
+        supportActionBar?.title = DateUtil.localDateConvertJapaneseFormatYearMonthDay(localDate)
+
         setContent {
             val state: MeasureListState by viewModel.uiState.collectAsState()
 
-            val bottomSheetDataList = listOf(
-                PhotoListActivity.BottomSheetData(
-                    "カレンダー", R.drawable.ic_baseline_calendar_month_24
-                ) {
-                    launcher.launch(MainActivity.createIntent(this))
-                },
-                PhotoListActivity.BottomSheetData("写真", R.drawable.ic_baseline_photo_library_24) {
-                    launcher.launch(PhotoListActivity.createIntent(this))
-                },
-                PhotoListActivity.BottomSheetData("グラフ", R.drawable.ic_baseline_show_chart_24) {
-                    launcher.launch(GraphActivity.createIntent(this))
-                }
+            val bottomSheetDataList = createBottomDataList(
+                calendarAction = { launcher.launch(CalendarActivity.createIntent(this)) },
+                photoListAction = { launcher.launch(PhotoListActivity.createIntent(this)) },
+                graphAction = { launcher.launch(GraphActivity.createIntent(this)) }
             )
 
             MeasureListScreen(
@@ -63,6 +74,7 @@ class MeasureListActivity : AppCompatActivity() {
                     viewModel.updateTall()
                 },
                 setTall = {
+                    applicationContext
                     viewModel.setTall(it)
                 },
                 clickBodyMeasureEdit = {
@@ -72,6 +84,9 @@ class MeasureListActivity : AppCompatActivity() {
                             captureTime = it,
                         )
                     )
+                },
+                resetSnackBarMessage = {
+                    viewModel.resetMessage()
                 },
                 clickFab = {
                     when (viewModel.uiState.value.measureType) {
@@ -89,6 +104,13 @@ class MeasureListActivity : AppCompatActivity() {
                         else -> {}
                     }
                 },
+                showPhotoDetail = {
+                    val intent = PhotoDetailActivity.createIntent(
+                        baseContext,
+                        BodyMeasureEditFormViewModel.PhotoModel.Id(it)
+                    )
+                    launcher.launch(intent)
+                }
             )
         }
     }
@@ -97,7 +119,9 @@ class MeasureListActivity : AppCompatActivity() {
         viewModel = MeasureListViewModel(
             localDate = localDate,
             mealType = MeasureType.BODY,
-            bodyMeasureRepository,
+            bodyMeasureRepository = bodyMeasureRepository,
+            bodyMeasurePhotoRepository = bodyMeasurePhotoRepository,
+            userPreferenceRepository = UserPreferenceRepository(this),
         )
         viewModel.reload()
     }

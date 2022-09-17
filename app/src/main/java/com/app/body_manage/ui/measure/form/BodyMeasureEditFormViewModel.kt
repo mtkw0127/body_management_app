@@ -3,6 +3,7 @@ package com.app.body_manage.ui.measure.form
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
+import android.view.View
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
@@ -12,21 +13,38 @@ import androidx.lifecycle.viewModelScope
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.entity.BodyMeasureEntity
 import com.app.body_manage.data.entity.PhotoEntity
+import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.PhotoRepository
+import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
-class BodyMeasureEditFormViewModel : ViewModel() {
+class BodyMeasureEditFormViewModel(
+    private val userPreferenceRepository: UserPreferenceRepository,
+    private val formType: BodyMeasureEditFormActivity.FormType,
+) : ViewModel() {
+
+    val deleteButtonVisibility: MutableLiveData<Int> = MutableLiveData<Int>().apply {
+        this.value = if (formType == BodyMeasureEditFormActivity.FormType.EDIT) {
+            View.VISIBLE
+        } else {
+            View.INVISIBLE
+        }
+    }
 
     enum class PhotoType {
         Saved, ADDED
     }
 
     // 撮影した写真データはここに保存する
-    data class PhotoModel(val id: Int = -1, val uri: Uri, val photoType: PhotoType)
+    data class PhotoModel(val id: Id = Id(-1), val uri: Uri, val photoType: PhotoType? = null) {
+        @JvmInline
+        value class Id(val id: Int) : Serializable
+    }
 
     private val _photoList = MutableLiveData<MutableList<PhotoModel>>(mutableListOf())
     val photoList: LiveData<MutableList<PhotoModel>> = _photoList
@@ -57,10 +75,12 @@ class BodyMeasureEditFormViewModel : ViewModel() {
     }
 
     // 更新後の測定日時
+    private var fetchUserPref = false
+    val fetchedUserPref = MutableLiveData(false)
     lateinit var measureTime: LocalDateTime
     var measureWeight = 50F
     var measureFat = 20.0F
-    var tall: Float? = null
+    var tall: Float = 160F
 
     // coroutineによるローディング取得
     lateinit var bodyMeasureEntity: BodyMeasureEntity
@@ -79,7 +99,7 @@ class BodyMeasureEditFormViewModel : ViewModel() {
                         "読み込みに失敗しました。",
                         Toast.LENGTH_SHORT
                     ).show()
-                    e.printStackTrace()
+                    Timber.e(e)
                 }
                 .onSuccess { res ->
                     val it = res[0]
@@ -95,14 +115,29 @@ class BodyMeasureEditFormViewModel : ViewModel() {
         }
     }
 
+    var deleting = false
+    val deleted = MutableLiveData(false)
+    fun deleteBodyMeasure() {
+        if (deleting) return
+        deleting = true
+        viewModelScope.launch {
+            runCatching { bodyMeasureRepository.deleteBodyMeasure(measureTime) }
+                .onFailure {
+                    Timber.e(it)
+                }
+                .onSuccess {
+                    deleted.value = true
+                }
+        }
+    }
+
     private val loadingPhoto = MutableLiveData(false)
     fun loadPhotos() {
-        if (loadingPhoto.value == true) return
+        if (loadingPhoto.value == true || deleting) return
         loadingPhoto.value = true
         viewModelScope.launch {
             runCatching { photoRepository.selectPhotos(bodyMeasureId = bodyMeasureEntity.ui) }
                 .onFailure { e ->
-                    e.printStackTrace()
                     Timber.e(e)
                     Toast.makeText(
                         application,
@@ -114,7 +149,11 @@ class BodyMeasureEditFormViewModel : ViewModel() {
                     if (photos.isNotEmpty()) {
                         _photoList.value =
                             photos.map {
-                                PhotoModel(it.ui, it.photoUri.toUri(), PhotoType.Saved)
+                                PhotoModel(
+                                    id = PhotoModel.Id(it.ui),
+                                    uri = it.photoUri.toUri(),
+                                    photoType = PhotoType.Saved,
+                                )
                             }.toList().toMutableList()
                     }
                 }
@@ -124,14 +163,45 @@ class BodyMeasureEditFormViewModel : ViewModel() {
         }
     }
 
-    fun fetchTall() {
+    fun fetchTallAndUserPref() {
         viewModelScope.launch {
             runCatching {
                 bodyMeasureRepository.getTallByDate(captureDate)
             }.onFailure { e ->
                 Timber.e(e)
             }.onSuccess {
-                tall = it
+                fetchUserPreference()
+                if (it != null) {
+                    tall = it
+                }
+            }
+        }
+    }
+
+    private fun fetchUserPreference() {
+        if (fetchUserPref) return
+        fetchUserPref = true
+        viewModelScope.launch {
+            try {
+                userPreferenceRepository.userPref.collect {
+                    it.tall?.let { t ->
+                        tall = t
+                    }
+                    // 新規追加の場合のみデフォルトの体重・体脂肪率を設定する
+                    if (formType == BodyMeasureEditFormActivity.FormType.ADD) {
+                        it.weight?.let { w ->
+                            measureWeight = w
+                        }
+                        it.fat?.let { f ->
+                            measureFat = f
+                        }
+                    }
+                    fetchedUserPref.value = true
+                }
+            } catch (e: Throwable) {
+                Timber.e(e)
+            } finally {
+                fetchUserPref = false
             }
         }
     }
@@ -152,7 +222,7 @@ class BodyMeasureEditFormViewModel : ViewModel() {
                         createPhotoModels(id.toInt())
                     )
                 }
-            }.onFailure { it.printStackTrace() }
+            }.onFailure { Timber.e(it) }
         }
     }
 
@@ -173,7 +243,7 @@ class BodyMeasureEditFormViewModel : ViewModel() {
                     saveModel.photoUri = checkNotNull(_photoList.value).last().uri.toString()
                 }
                 bodyMeasureRepository.update(saveModel)
-            }.onFailure { it.printStackTrace() }
+            }.onFailure { Timber.e(it) }
         }
     }
 
@@ -188,6 +258,19 @@ class BodyMeasureEditFormViewModel : ViewModel() {
                 bodyMeasureId = id,
                 photoUri = it.uri.toString()
             )
+        }
+    }
+
+    fun updateWeightAndFat() {
+        viewModelScope.launch {
+            runCatching {
+                runBlocking {
+                    userPreferenceRepository.putWeight(measureWeight)
+                    userPreferenceRepository.putFat(measureFat)
+                }
+            }.onFailure {
+                Timber.e(it)
+            }.onSuccess { }
         }
     }
 }

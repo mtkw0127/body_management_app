@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.TrainingApplication
+import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.ui.photoList.PhotoListState.HasPhoto
 import com.app.body_manage.ui.photoList.PhotoListState.NoPhoto
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 sealed interface PhotoListState {
     data class NoPhoto(
@@ -20,12 +22,12 @@ sealed interface PhotoListState {
     ) : PhotoListState
 
     data class HasPhoto(
-        val photos: Map<String, List<String>>
+        val photos: Map<String, List<BodyMeasurePhotoDao.PhotoData>>
     ) : PhotoListState
 }
 
 internal data class PhotoListViewModelState(
-    val photos: Map<String, List<String>> = mutableMapOf()
+    val photos: Map<String, List<BodyMeasurePhotoDao.PhotoData>> = mutableMapOf()
 ) {
     fun toUiState(): PhotoListState =
         when {
@@ -60,7 +62,7 @@ class PhotoListViewModel(application: Application) : AndroidViewModel(applicatio
     fun loadPhotoRegisteredDates() {
         viewModelScope.launch {
             kotlin.runCatching { bmpRepository.selectPhotosByDate() }
-                .onFailure { e -> e.printStackTrace() }
+                .onFailure { Timber.e(it) }
                 .onSuccess {
                     if (it.isNotEmpty()) {
                         viewModelState.update { state ->

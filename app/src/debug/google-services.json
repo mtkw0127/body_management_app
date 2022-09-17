@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "422076565074",
+    "project_id": "dev-training-management-app",
+    "storage_bucket": "dev-training-management-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:422076565074:android:075a38f172ada1e605418b",
+        "android_client_info": {
+          "package_name": "com.app.body_manage"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "422076565074-te6lk1liabdradfrikog14h7kh03ntma.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBU9C29ijzmREnuM5AQinxMG8OJKyaLtSs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "422076565074-te6lk1liabdradfrikog14h7kh03ntma.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

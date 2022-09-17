@@ -12,14 +12,13 @@ public class ActivityMainBindingImpl extends ActivityMainBinding  {
     @Nullable
     private static final android.util.SparseIntArray sViewsWithIds;
     static {
-        sIncludes = null;
+        sIncludes = new androidx.databinding.ViewDataBinding.IncludedLayouts(3);
+        sIncludes.setIncludes(0, 
+            new String[] {"bottom_sheet"},
+            new int[] {1},
+            new int[] {com.app.body_manage.R.layout.bottom_sheet});
         sViewsWithIds = new android.util.SparseIntArray();
-        sViewsWithIds.put(R.id.calendar_btn_field, 1);
-        sViewsWithIds.put(R.id.prev_month_btn, 2);
-        sViewsWithIds.put(R.id.year_month_txt, 3);
-        sViewsWithIds.put(R.id.next_month_btn, 4);
-        sViewsWithIds.put(R.id.calendarGridView, 5);
-        sViewsWithIds.put(R.id.bottom_navigator, 6);
+        sViewsWithIds.put(R.id.calendarGridView, 2);
     }
     // views
     @NonNull
@@ -30,17 +29,14 @@ public class ActivityMainBindingImpl extends ActivityMainBinding  {
     // Inverse Binding Event Handlers
 
     public ActivityMainBindingImpl(@Nullable androidx.databinding.DataBindingComponent bindingComponent, @NonNull View root) {
-        this(bindingComponent, root, mapBindings(bindingComponent, root, 7, sIncludes, sViewsWithIds));
+        this(bindingComponent, root, mapBindings(bindingComponent, root, 3, sIncludes, sViewsWithIds));
     }
     private ActivityMainBindingImpl(androidx.databinding.DataBindingComponent bindingComponent, View root, Object[] bindings) {
-        super(bindingComponent, root, 0
-            , (com.google.android.material.bottomnavigation.BottomNavigationView) bindings[6]
-            , (androidx.constraintlayout.widget.ConstraintLayout) bindings[1]
-            , (android.widget.GridView) bindings[5]
-            , (android.widget.Button) bindings[4]
-            , (android.widget.Button) bindings[2]
-            , (android.widget.TextView) bindings[3]
+        super(bindingComponent, root, 1
+            , (com.app.body_manage.databinding.BottomSheetBinding) bindings[1]
+            , (android.widget.GridView) bindings[2]
             );
+        setContainedBinding(this.bottomSheetInclude);
         this.mboundView0 = (androidx.constraintlayout.widget.ConstraintLayout) bindings[0];
         this.mboundView0.setTag(null);
         setRootTag(root);
@@ -51,8 +47,9 @@ public class ActivityMainBindingImpl extends ActivityMainBinding  {
     @Override
     public void invalidateAll() {
         synchronized(this) {
-                mDirtyFlags = 0x1L;
+                mDirtyFlags = 0x2L;
         }
+        bottomSheetInclude.invalidateAll();
         requestRebind();
     }
 
@@ -62,6 +59,9 @@ public class ActivityMainBindingImpl extends ActivityMainBinding  {
             if (mDirtyFlags != 0) {
                 return true;
             }
+        }
+        if (bottomSheetInclude.hasPendingBindings()) {
+            return true;
         }
         return false;
     }
@@ -73,8 +73,25 @@ public class ActivityMainBindingImpl extends ActivityMainBinding  {
     }
 
     @Override
+    public void setLifecycleOwner(@Nullable androidx.lifecycle.LifecycleOwner lifecycleOwner) {
+        super.setLifecycleOwner(lifecycleOwner);
+        bottomSheetInclude.setLifecycleOwner(lifecycleOwner);
+    }
+
+    @Override
     protected boolean onFieldChange(int localFieldId, Object object, int fieldId) {
         switch (localFieldId) {
+            case 0 :
+                return onChangeBottomSheetInclude((com.app.body_manage.databinding.BottomSheetBinding) object, fieldId);
+        }
+        return false;
+    }
+    private boolean onChangeBottomSheetInclude(com.app.body_manage.databinding.BottomSheetBinding BottomSheetInclude, int fieldId) {
+        if (fieldId == BR._all) {
+            synchronized(this) {
+                    mDirtyFlags |= 0x1L;
+            }
+            return true;
         }
         return false;
     }
@@ -87,13 +104,15 @@ public class ActivityMainBindingImpl extends ActivityMainBinding  {
             mDirtyFlags = 0;
         }
         // batch finished
+        executeBindingsOn(bottomSheetInclude);
     }
     // Listener Stub Implementations
     // callback impls
     // dirty flag
     private  long mDirtyFlags = 0xffffffffffffffffL;
     /* flag mapping
-        flag 0 (0x1L): null
+        flag 0 (0x1L): bottomSheetInclude
+        flag 1 (0x2L): null
     flag mapping end*/
     //end
 }

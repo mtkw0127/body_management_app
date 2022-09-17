@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
@@ -13,13 +14,16 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import com.app.body_manage.data.entity.BodyMeasureEntity
+import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.databinding.TrainingDetailBinding
 import com.app.body_manage.dialog.FloatNumberPickerDialog
 import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.camera.CameraActivity
 import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel.PhotoModel
 import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel.PhotoType.ADDED
+import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import com.app.body_manage.util.DateUtil
+import com.makeramen.roundedimageview.RoundedImageView
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -54,36 +58,47 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         }
     }
 
+    // 写真詳細への遷移
+    private val photoDetailLauncher = registerForActivityResult(StartActivityForResult()) {
+
+    }
+
     private lateinit var vm: BodyMeasureEditFormViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = TrainingDetailBinding.inflate(layoutInflater)
+        binding.lifecycleOwner = this
         setContentView(binding.root)
 
         // ViewModelにapplication設定
-        vm = BodyMeasureEditFormViewModel()
+        vm = BodyMeasureEditFormViewModel(UserPreferenceRepository(this), formType)
         vm.intent = intent
         vm.application = application
         vm.measureTime = captureDateTime
-        // 日付設定
-        binding.dateText.text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(vm.captureDate)
-        // 当日の体重を取得
-        vm.fetchTall()
 
         setListener()
+
+        // 体重・身長・体脂肪率のデフォルト値を取得
+        vm.fetchTallAndUserPref()
+
         initPagerAdapter()
         when (formType) {
             FormType.ADD -> {
                 // 新規追加の場合は、今の時刻を設定
-                binding.trainingTime.text =
+                binding.trainingTime.editText?.setText(
                     DateUtil.localDateConvertLocalTimeDateToTime(LocalDateTime.now())
+                )
             }
             FormType.EDIT -> {
                 // 紐づく測定結果、写真を取得してフィールドに設定
                 vm.loadBodyMeasure()
             }
         }
+        // 日付設定
+        binding.dateText.text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(vm.captureDate)
+        binding.viewModel = vm
+
     }
 
     private fun initPagerAdapter() {
@@ -102,20 +117,39 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
     }
 
     private fun setListener() {
-        // 測定結果を画面描画し、写真をロード
+        // (編集時）測定結果を画面描画し、写真をロード
         vm.loadedBodyMeasure.observe(this) {
             if (it) {
-                binding.trainingTime.text =
+                binding.trainingTime.editText?.setText(
                     DateUtil.localDateConvertLocalTimeDateToTime(vm.bodyMeasureEntity.capturedTime)
-                binding.weight.text = "${vm.bodyMeasureEntity.weight}kg"
-                binding.fat.text = "${vm.bodyMeasureEntity.fatRate}%"
+                )
+                binding.weight.editText?.setText("${vm.bodyMeasureEntity.weight}kg")
+                binding.fat.editText?.setText("${vm.bodyMeasureEntity.fatRate}%")
 
                 // 紐づく写真を取得
                 vm.loadPhotos()
             }
         }
+        // （追加時）デフォルトの体重と体脂肪率を設定
+        vm.fetchedUserPref.observe(this) {
+            if (it) {
+                binding.weight.editText?.setText("${vm.measureWeight}kg")
+                binding.fat.editText?.setText("${vm.measureFat}%")
+            }
+        }
+        // 削除完了後、一覧へ戻る
+        vm.deleted.observe(this) {
+            if (it) {
+                setResult(RESULT_DELETE)
+                finish()
+            }
+        }
+        binding.deleteMeasureBtn.setOnClickListener {
+            vm.deleteBodyMeasure()
+        }
         // カメラフィールド
         binding.camera.setOnClickListener {
+            if (vm.deleting) return@setOnClickListener
             val intent = CameraActivity.createCameraActivityIntent(applicationContext)
             cameraActivityLauncher.launch(intent)
         }
@@ -126,7 +160,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         }
 
         // 計測時刻
-        binding.trainingTime.setOnClickListener {
+        binding.timeField.setOnClickListener {
             val timePickerFragment = TimePickerDialog.createTimePickerDialog(
                 vm.measureTime.hour,
                 vm.measureTime.minute
@@ -134,7 +168,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                 val hourStr = String.format("%02d", hour)
                 val minuteStr = String.format("%02d", minute)
                 val time = "${hourStr}時${minuteStr}分"
-                (it as TextView).text = time
+                (it as EditText).setText(time)
                 // 計測時刻更新
                 vm.measureTime = LocalDateTime.of(
                     vm.measureTime.year,
@@ -148,7 +182,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         }
 
         // 体重
-        binding.weight.setOnClickListener {
+        binding.weightField.setOnClickListener {
             val weightPickerFragment =
                 FloatNumberPickerDialog.createDialog(vm.measureWeight, "kg") { weight ->
                     (it as TextView).text = "${weight}kg"
@@ -158,7 +192,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         }
 
         // 体脂肪率
-        binding.fat.setOnClickListener {
+        binding.fatField.setOnClickListener {
             val fatPickerFragment =
                 FloatNumberPickerDialog.createDialog(vm.measureFat, "%") { fat ->
                     (it as TextView).text = "${fat}%"
@@ -179,14 +213,17 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                 null,
                 vm.tall,
             )
+            vm.updateWeightAndFat()
             when (formType) {
                 FormType.ADD -> {
                     vm.addPhoto(saveModel)
+                    setResult(RESULT_CREATE)
                 }
                 FormType.EDIT -> {
                     // 測定がロードできていない場合は更新しない
                     if (vm.loadedBodyMeasure.value == false) return@setOnClickListener
                     vm.editPhoto(saveModel)
+                    setResult(RESULT_UPDATE)
                 }
             }
             finish()
@@ -196,10 +233,23 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
             val position = (it as ImageButton).tooltipText.toString().toInt()
             vm.deletePhoto(position)
         }
+        val photoDetailAction = View.OnClickListener {
+            val position = (it as RoundedImageView).tooltipText.toString().toInt()
+            val photo = vm.photoList.value?.get(position)
+            photo?.let { photoModel ->
+                photoDetailLauncher.launch(
+                    PhotoDetailActivity.createIntent(
+                        context = this,
+                        photoId = photoModel.id
+                    )
+                )
+            }
+        }
         vm.photoList.observe(this) {
             binding.prevImg.adapter = SliderAdapter(
                 it.toList(),
-                photoDeleteAction
+                photoDeleteAction,
+                photoDetailAction,
             )
             binding.prevImg.adapter?.notifyDataSetChanged()
         }
@@ -209,6 +259,11 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         const val KEY_CAPTURE_DATE = "CAPTURE_DATE_TIME"
         const val KEY_CAPTURE_TIME = "CAPTURED_TIME"
         private const val FORM_TYPE = "FORM_TYPE"
+
+        const val RESULT_DELETE = 10
+        const val RESULT_UPDATE = 11
+        const val RESULT_CREATE = 12
+
         fun createMeasureEditIntent(
             context: Context,
             formType: FormType = FormType.EDIT,

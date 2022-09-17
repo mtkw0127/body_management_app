@@ -2,18 +2,19 @@ package com.app.body_manage.util
 
 import android.content.Context
 import android.view.GestureDetector
-import android.view.GestureDetector.SimpleOnGestureListener
 import android.view.MotionEvent
 import android.view.View
+import androidx.core.view.GestureDetectorCompat
 import kotlin.math.abs
 import kotlin.math.max
 
 abstract class OnSwipeTouchListener(context: Context) : View.OnTouchListener {
 
-    private val gestureDetector: GestureDetector
+    private val gestureDetector: GestureDetectorCompat
+    private val gestureListener: GestureListener = GestureListener()
 
     init {
-        gestureDetector = GestureDetector(context, GestureListener())
+        gestureDetector = GestureDetectorCompat(context, gestureListener)
     }
 
     sealed class SwipeDirection {
@@ -54,16 +55,35 @@ abstract class OnSwipeTouchListener(context: Context) : View.OnTouchListener {
         }
     }
 
-    private inner class GestureListener : SimpleOnGestureListener() {
-        override fun onDown(e: MotionEvent) = true
+    private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
+
+        var firstDownEvent: MotionEvent? = null
+
+        override fun onDown(e: MotionEvent): Boolean {
+            firstDownEvent = e
+            return true
+        }
+
+        override fun onShowPress(e: MotionEvent?) {
+            super.onShowPress(e)
+        }
+
+        override fun onContextClick(e: MotionEvent?): Boolean {
+            return super.onContextClick(e)
+        }
+
         override fun onFling(
             e1: MotionEvent?,
             e2: MotionEvent?,
             velocityX: Float,
             velocityY: Float
         ): Boolean {
-            if (e1 == null || e2 == null) return false
-            val swipeDirection = SwipeDirection.newInstance(e1, e2, velocityX, velocityY)
+            if (e1 == null && firstDownEvent == null) return false
+            if (e2 == null) return false
+
+            val e11 = e1 ?: firstDownEvent
+            val swipeDirection =
+                SwipeDirection.newInstance(checkNotNull(e11), e2, velocityX, velocityY)
             val result = swipeDirection !is SwipeDirection.NONE
             when (swipeDirection) {
                 is SwipeDirection.UP -> up()
@@ -81,7 +101,21 @@ abstract class OnSwipeTouchListener(context: Context) : View.OnTouchListener {
     abstract fun right()
     abstract fun left()
 
+    private var cnt = 0
+
+    /**
+     * onFlingのe1が常にnullのため、ACTION_MOVEの場合の初回の位置を外から渡すようにする
+     */
     override fun onTouch(p0: View?, event: MotionEvent?): Boolean {
+        if (event?.action == MotionEvent.ACTION_MOVE) {
+            if (cnt == 0) {
+                gestureListener.firstDownEvent = MotionEvent.obtain(event)
+            }
+            cnt++
+        }
+        if (event?.action == MotionEvent.ACTION_UP) {
+            cnt = 0
+        }
         return gestureDetector.onTouchEvent(event)
     }
 }
