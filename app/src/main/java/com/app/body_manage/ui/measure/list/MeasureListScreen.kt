@@ -23,8 +23,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.Text
@@ -33,14 +36,11 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -62,10 +62,12 @@ import com.app.body_manage.data.entity.BodyMeasureModel
 import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.style.Colors
 import com.app.body_manage.util.DateUtil
+import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MeasureListScreen(
     uiState: MeasureListState,
@@ -73,13 +75,15 @@ fun MeasureListScreen(
     bottomSheetDataList: List<BottomSheetData>,
     setTall: (String) -> Unit,
     resetSnackBarMessage: () -> Unit,
+    setLocalDate: (LocalDate) -> Unit,
     clickBodyMeasureEdit: (LocalDateTime) -> Unit,
     clickFab: () -> Unit,
     showPhotoDetail: (Int) -> Unit,
 ) {
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     val state = rememberScaffoldState()
-    var showCalendar by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val scope = rememberCoroutineScope()
     Scaffold(
         scaffoldState = state,
         topBar = {
@@ -89,7 +93,9 @@ fun MeasureListScreen(
                     modifier = Modifier
                         .offset(x = 20.dp)
                         .clickable {
-                            showCalendar = true
+                            scope.launch {
+                                sheetState.show()
+                            }
                         },
                     fontSize = 16.sp,
                     color = Color.Black
@@ -97,63 +103,65 @@ fun MeasureListScreen(
             }
         },
         content = { padding ->
-            Column {
-                if (showCalendar) {
-                    Calendar(
-                        onClickDate = {
-                            showCalendar = false
-                        }
-                    )
-                }
-                Column(
-                    modifier = Modifier
-                        .padding(padding)
-                        .padding(top = 10.dp)
-                        .fillMaxHeight()
-                ) {
-                    when (uiState) {
-                        is MeasureListState.BodyMeasureListState -> {
-                            if (uiState.message.isNotEmpty()) {
-                                LaunchedEffect(uiState.message) {
-                                    coroutineScope.launch {
-                                        state.snackbarHostState.showSnackbar(
-                                            message = uiState.message,
-                                            duration = SnackbarDuration.Short
+            ModalBottomSheetLayout(sheetState = sheetState, sheetContent = {
+                Calendar(onClickDate = {
+                    scope.launch {
+                        setLocalDate.invoke(it)
+                        sheetState.hide()
+                    }
+                })
+            }) {
+                Column {
+                    Column(
+                        modifier = Modifier
+                            .padding(padding)
+                            .padding(top = 10.dp)
+                            .fillMaxHeight()
+                    ) {
+                        when (uiState) {
+                            is MeasureListState.BodyMeasureListState -> {
+                                if (uiState.message.isNotEmpty()) {
+                                    LaunchedEffect(uiState.message) {
+                                        coroutineScope.launch {
+                                            state.snackbarHostState.showSnackbar(
+                                                message = uiState.message,
+                                                duration = SnackbarDuration.Short
+                                            )
+                                            resetSnackBarMessage.invoke()
+                                        }
+                                    }
+                                }
+                                if (uiState.list.isNotEmpty()) {
+                                    TallSetField(
+                                        tall = uiState.tall,
+                                        setTall = setTall,
+                                        clickSaveBodyInfo = clickSaveBodyInfo,
+                                    )
+                                    Divider(modifier = Modifier.padding(12.dp))
+                                    BodyMeasureList(
+                                        list = uiState.list,
+                                        clickBodyMeasureEdit = clickBodyMeasureEdit,
+                                    )
+                                    if (uiState.photoList.isNotEmpty()) {
+                                        PhotoList(uiState.photoList, clickPhoto = showPhotoDetail)
+                                    }
+                                } else {
+                                    Box(
+                                        contentAlignment = Alignment.Center,
+                                        modifier = Modifier.fillMaxSize()
+                                    ) {
+                                        Text(
+                                            text = "未登録です\n右下のボタンから登録してください",
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 16.sp,
+                                            color = Color.Gray,
+                                            textAlign = TextAlign.Center,
                                         )
-                                        resetSnackBarMessage.invoke()
                                     }
                                 }
                             }
-                            if (uiState.list.isNotEmpty()) {
-                                TallSetField(
-                                    tall = uiState.tall,
-                                    setTall = setTall,
-                                    clickSaveBodyInfo = clickSaveBodyInfo,
-                                )
-                                Divider(modifier = Modifier.padding(12.dp))
-                                BodyMeasureList(
-                                    list = uiState.list,
-                                    clickBodyMeasureEdit = clickBodyMeasureEdit,
-                                )
-                                if (uiState.photoList.isNotEmpty()) {
-                                    PhotoList(uiState.photoList, clickPhoto = showPhotoDetail)
-                                }
-                            } else {
-                                Box(
-                                    contentAlignment = Alignment.Center,
-                                    modifier = Modifier.fillMaxSize()
-                                ) {
-                                    Text(
-                                        text = "未登録です\n右下のボタンから登録してください",
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 16.sp,
-                                        color = Color.Gray,
-                                        textAlign = TextAlign.Center,
-                                    )
-                                }
-                            }
+                            else -> {}
                         }
-                        else -> {}
                     }
                 }
             }

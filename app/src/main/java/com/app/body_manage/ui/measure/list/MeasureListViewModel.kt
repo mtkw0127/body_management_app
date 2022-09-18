@@ -113,10 +113,10 @@ class MeasureListViewModel(
             viewModelState.value.toUiState()
         )
 
-    fun switchType(measureType: MeasureType) {
+    fun setDate(localDate: LocalDate) {
         viewModelState.update {
             it.copy(
-                measureType = measureType
+                date = localDate
             )
         }
         reload()
@@ -228,7 +228,7 @@ class MeasureListViewModel(
         viewModelStateLoadingUpdate(loading = true)
         viewModelScope.launch {
             runCatching {
-                bodyMeasureRepository.getEntityListByDate(localDate)
+                bodyMeasureRepository.getEntityListByDate(viewModelState.value.date)
             }.onFailure { e ->
                 Timber.e(e)
             }.onSuccess { loadedResult ->

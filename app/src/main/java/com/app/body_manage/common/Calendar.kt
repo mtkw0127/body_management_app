@@ -10,9 +10,7 @@ import java.time.LocalDate
 
 @Composable
 fun Calendar(modifier: Modifier = Modifier, onClickDate: (LocalDate) -> Unit) {
-    Surface(
-        modifier = Modifier
-    ) {
+    Surface {
         StaticCalendar(
             modifier = modifier
                 .padding(bottom = 50.dp),

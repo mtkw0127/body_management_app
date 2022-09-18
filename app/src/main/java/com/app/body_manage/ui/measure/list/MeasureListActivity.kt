@@ -33,8 +33,6 @@ class MeasureListActivity : AppCompatActivity() {
         (application as TrainingApplication).bodyMeasurePhotoRepository
     }
 
-    private val localDate: LocalDate by lazy { intent.getSerializableExtra(INTENT_KEY) as LocalDate }
-
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
 
@@ -76,6 +74,9 @@ class MeasureListActivity : AppCompatActivity() {
                     applicationContext
                     viewModel.setTall(it)
                 },
+                setLocalDate = {
+                    viewModel.setDate(it)
+                },
                 clickBodyMeasureEdit = {
                     measureFormLauncher.launch(
                         BodyMeasureEditFormActivity.createMeasureEditIntent(
@@ -116,7 +117,7 @@ class MeasureListActivity : AppCompatActivity() {
 
     private fun initViewModel() {
         viewModel = MeasureListViewModel(
-            localDate = localDate,
+            localDate = intent.getSerializableExtra(INTENT_KEY) as LocalDate,
             mealType = MeasureType.BODY,
             bodyMeasureRepository = bodyMeasureRepository,
             bodyMeasurePhotoRepository = bodyMeasurePhotoRepository,
