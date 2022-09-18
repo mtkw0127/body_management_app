@@ -21,7 +21,6 @@ import com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity
 import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
-import com.app.body_manage.util.DateUtil
 import java.time.LocalDate
 
 class MeasureListActivity : AppCompatActivity() {
@@ -56,8 +55,6 @@ class MeasureListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initViewModel()
-
-        supportActionBar?.title = DateUtil.localDateConvertJapaneseFormatYearMonthDay(localDate)
 
         setContent {
             val state: MeasureListState by viewModel.uiState.collectAsState()
