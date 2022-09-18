@@ -3,6 +3,7 @@ package com.app.body_manage.ui.measure.list
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,7 +18,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -40,7 +40,9 @@ import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -82,7 +84,10 @@ fun MeasureListScreen(
 ) {
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     val state = rememberScaffoldState()
+
     val sheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val showCalendar = rememberSaveable { mutableStateOf(false) }
+    val showPhotoList = rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     Scaffold(
         scaffoldState = state,
@@ -94,6 +99,8 @@ fun MeasureListScreen(
                         .offset(x = 20.dp)
                         .clickable {
                             scope.launch {
+                                showCalendar.value = true
+                                showPhotoList.value = false
                                 sheetState.show()
                             }
                         },
@@ -103,14 +110,29 @@ fun MeasureListScreen(
             }
         },
         content = { padding ->
-            ModalBottomSheetLayout(sheetState = sheetState, sheetContent = {
-                Calendar(onClickDate = {
-                    scope.launch {
-                        setLocalDate.invoke(it)
-                        sheetState.hide()
+            ModalBottomSheetLayout(
+                sheetShape = RoundedCornerShape(15.dp),
+                sheetState = sheetState,
+                sheetContent = {
+                    Column(
+                        modifier = Modifier
+                            .heightIn(min = 500.dp)
+                    ) {
+                        if (showCalendar.value) {
+                            Calendar(onClickDate = {
+                                scope.launch {
+                                    setLocalDate.invoke(it)
+                                    sheetState.hide()
+                                }
+                            })
+                        }
+                        if (showPhotoList.value) {
+                            if (uiState is MeasureListState.BodyMeasureListState) {
+                                PhotoList(uiState.photoList, clickPhoto = showPhotoDetail)
+                            }
+                        }
                     }
-                })
-            }) {
+                }) {
                 Column {
                     Column(
                         modifier = Modifier
@@ -135,16 +157,19 @@ fun MeasureListScreen(
                                     TallSetField(
                                         tall = uiState.tall,
                                         setTall = setTall,
-                                        clickSaveBodyInfo = clickSaveBodyInfo,
-                                    )
+                                        clickSaveBodyInfo = clickSaveBodyInfo
+                                    ) {
+                                        showCalendar.value = false
+                                        showPhotoList.value = true
+                                        scope.launch {
+                                            sheetState.show()
+                                        }
+                                    }
                                     Divider(modifier = Modifier.padding(12.dp))
                                     BodyMeasureList(
                                         list = uiState.list,
                                         clickBodyMeasureEdit = clickBodyMeasureEdit,
                                     )
-                                    if (uiState.photoList.isNotEmpty()) {
-                                        PhotoList(uiState.photoList, clickPhoto = showPhotoDetail)
-                                    }
                                 } else {
                                     Box(
                                         contentAlignment = Alignment.Center,
@@ -182,15 +207,17 @@ private fun PhotoList(photoList: List<BodyMeasurePhotoDao.PhotoData>, clickPhoto
     Text(
         text = "この日撮影した写真",
         fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(start = 12.dp, bottom = 10.dp)
+        modifier = Modifier.padding(start = 12.dp, top = 12.dp, bottom = 10.dp)
     )
     Box(
         modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth(0.95F),
+            .fillMaxSize(),
         contentAlignment = Alignment.TopCenter
     ) {
-        LazyRow {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth(0.9F)
+        ) {
             items(photoList) {
                 AsyncImage(
                     model = it.photoUri,
@@ -198,7 +225,6 @@ private fun PhotoList(photoList: List<BodyMeasurePhotoDao.PhotoData>, clickPhoto
                     contentScale = ContentScale.Inside,
                     modifier = Modifier
                         .padding(3.dp)
-                        .width(200.dp)
                         .clip(RoundedCornerShape(3.dp))
                         .clickable {
                             clickPhoto.invoke(it.photoId)
@@ -215,6 +241,7 @@ private fun TallSetField(
     tall: String,
     setTall: (String) -> Unit,
     clickSaveBodyInfo: () -> Unit,
+    clickShowPhotoList: () -> Unit,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     Column {
@@ -254,15 +281,21 @@ private fun TallSetField(
                         .height(48.dp)
                 )
             }
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxHeight()
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier.fillMaxSize()
             ) {
                 Button(onClick = {
                     keyboardController?.hide()
                     clickSaveBodyInfo.invoke()
                 }) {
                     Text(text = "保存")
+                }
+                Button(onClick = {
+                    clickShowPhotoList.invoke()
+                }) {
+                    Text(text = "写真を見る")
                 }
             }
         }
@@ -278,7 +311,7 @@ private fun BodyMeasureList(
     LazyColumn(
         modifier = Modifier
             .wrapContentWidth()
-            .heightIn(min = 200.dp, max = 400.dp),
+            .heightIn(min = 200.dp, max = 300.dp),
         content = {
             stickyHeader {
                 Row {
