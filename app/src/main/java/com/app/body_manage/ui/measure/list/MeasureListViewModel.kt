@@ -171,7 +171,7 @@ class MeasureListViewModel(
             runCatching {
                 bodyMeasureRepository.updateTallByDate(
                     tall = tall,
-                    calendarDate = localDate,
+                    calendarDate = viewModelState.value.date,
                 )
             }.onFailure {
                 Timber.e(it)
@@ -237,7 +237,7 @@ class MeasureListViewModel(
                 if (tall == null) tall = viewModelState.value.tall.toFloat()
                 viewModelState.update {
                     it.copy(
-                        date = localDate,
+                        date = viewModelState.value.date,
                         measureType = mealType,
                         bodyMeasureList = loadedResult,
                         mealMeasureList = mutableListOf(),
