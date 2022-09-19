@@ -37,7 +37,8 @@
             android:name="com.app.body_manage.ui.measure.list.MeasureListActivity"
             android:exported="true"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Material3.Light.NoActionBar" />
         <activity
             android:name="com.app.body_manage.ui.graph.GraphActivity"
             android:exported="true"
@@ -71,6 +72,18 @@
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.compare.CompareActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Material3.Light.NoActionBar" />
+        <activity
+            android:name=".ui.choosePhoto.ChoosePhotoActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Material3.Light.NoActionBar" />
 
         <receiver
             android:name=".ui.alarm.AlarmNotification"

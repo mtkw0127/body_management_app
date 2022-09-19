@@ -2,7 +2,6 @@ package com.app.body_manage.ui.measure.form
 
 import android.app.Application
 import android.content.Intent
-import android.net.Uri
 import android.view.View
 import android.widget.Toast
 import androidx.core.net.toUri
@@ -14,9 +13,9 @@ import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.entity.BodyMeasureEntity
 import com.app.body_manage.data.entity.PhotoEntity
 import com.app.body_manage.data.local.UserPreferenceRepository
+import com.app.body_manage.data.model.PhotoModel
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.PhotoRepository
-import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
 import kotlinx.coroutines.launch
@@ -38,12 +37,6 @@ class BodyMeasureEditFormViewModel(
 
     enum class PhotoType {
         Saved, ADDED
-    }
-
-    // 撮影した写真データはここに保存する
-    data class PhotoModel(val id: Id = Id(-1), val uri: Uri, val photoType: PhotoType? = null) {
-        @JvmInline
-        value class Id(val id: Int) : Serializable
     }
 
     private val _photoList = MutableLiveData<MutableList<PhotoModel>>(mutableListOf())

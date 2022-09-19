@@ -5,7 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel
+import com.app.body_manage.data.model.PhotoModel
 import java.io.Serializable
 
 @Entity(
@@ -23,7 +23,7 @@ class PhotoEntity(
     @ColumnInfo(name = "photo_uri") val photoUri: String
 ) : Serializable
 
-fun PhotoEntity.toModel() = BodyMeasureEditFormViewModel.PhotoModel(
-    id = BodyMeasureEditFormViewModel.PhotoModel.Id(ui),
+fun PhotoEntity.toModel() = PhotoModel(
+    id = PhotoModel.Id(ui),
     uri = photoUri.toUri(),
 )

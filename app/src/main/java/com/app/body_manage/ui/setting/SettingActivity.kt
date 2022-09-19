@@ -13,6 +13,7 @@ import com.app.body_manage.common.createBottomDataList
 import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.ui.alarm.AlarmNotification
 import com.app.body_manage.ui.calendar.CalendarActivity
+import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import java.util.Calendar
@@ -31,6 +32,7 @@ class SettingActivity : AppCompatActivity() {
 
         val bottomSheetDataList = createBottomDataList(
             calendarAction = { launcher.launch(CalendarActivity.createIntent(this)) },
+            compareAction = { launcher.launch(CompareActivity.createIntent(this)) },
             photoListAction = { launcher.launch(PhotoListActivity.createIntent(this)) },
             graphAction = { launcher.launch(GraphActivity.createIntent(this)) }
         )

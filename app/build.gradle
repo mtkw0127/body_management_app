@@ -38,8 +38,8 @@ android {
         applicationId "com.app.calendar"
         minSdk 26
         targetSdk 32
-        versionCode 8
-        versionName "1.7.0"
+        versionCode 9
+        versionName "1.8.0"
         applicationId "com.app.body_manage"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -164,6 +164,9 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:30.3.2')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
+
+    // module-level build.gradle
+    implementation "io.github.boguszpawlowski.composecalendar:composecalendar:0.6.0"
 }
 
 tasks.withType(org.jlleitschuh.gradle.ktlint.tasks.GenerateReportsTask) {

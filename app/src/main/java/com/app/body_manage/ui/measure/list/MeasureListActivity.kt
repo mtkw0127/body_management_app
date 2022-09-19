@@ -12,15 +12,15 @@ import androidx.compose.runtime.getValue
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.common.createBottomDataList
 import com.app.body_manage.data.local.UserPreferenceRepository
+import com.app.body_manage.data.model.PhotoModel
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.ui.calendar.CalendarActivity
+import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity
-import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
-import com.app.body_manage.util.DateUtil
 import java.time.LocalDate
 
 class MeasureListActivity : AppCompatActivity() {
@@ -32,8 +32,6 @@ class MeasureListActivity : AppCompatActivity() {
     private val bodyMeasurePhotoRepository: BodyMeasurePhotoRepository by lazy {
         (application as TrainingApplication).bodyMeasurePhotoRepository
     }
-
-    private val localDate: LocalDate by lazy { intent.getSerializableExtra(INTENT_KEY) as LocalDate }
 
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
@@ -56,13 +54,12 @@ class MeasureListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         initViewModel()
 
-        supportActionBar?.title = DateUtil.localDateConvertJapaneseFormatYearMonthDay(localDate)
-
         setContent {
             val state: MeasureListState by viewModel.uiState.collectAsState()
 
             val bottomSheetDataList = createBottomDataList(
                 calendarAction = { launcher.launch(CalendarActivity.createIntent(this)) },
+                compareAction = { launcher.launch(CompareActivity.createIntent(this)) },
                 photoListAction = { launcher.launch(PhotoListActivity.createIntent(this)) },
                 graphAction = { launcher.launch(GraphActivity.createIntent(this)) }
             )
@@ -76,6 +73,9 @@ class MeasureListActivity : AppCompatActivity() {
                 setTall = {
                     applicationContext
                     viewModel.setTall(it)
+                },
+                setLocalDate = {
+                    viewModel.setDate(it)
                 },
                 clickBodyMeasureEdit = {
                     measureFormLauncher.launch(
@@ -107,9 +107,12 @@ class MeasureListActivity : AppCompatActivity() {
                 showPhotoDetail = {
                     val intent = PhotoDetailActivity.createIntent(
                         baseContext,
-                        BodyMeasureEditFormViewModel.PhotoModel.Id(it)
+                        PhotoModel.Id(it)
                     )
                     launcher.launch(intent)
+                },
+                onChangeCurrentMonth = {
+                    viewModel.setCurrentYearMonth(it)
                 }
             )
         }
@@ -117,7 +120,7 @@ class MeasureListActivity : AppCompatActivity() {
 
     private fun initViewModel() {
         viewModel = MeasureListViewModel(
-            localDate = localDate,
+            localDate = intent.getSerializableExtra(INTENT_KEY) as LocalDate,
             mealType = MeasureType.BODY,
             bodyMeasureRepository = bodyMeasureRepository,
             bodyMeasurePhotoRepository = bodyMeasurePhotoRepository,

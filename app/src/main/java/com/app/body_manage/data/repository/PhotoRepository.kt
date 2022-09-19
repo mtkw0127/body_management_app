@@ -4,7 +4,7 @@ import androidx.annotation.WorkerThread
 import com.app.body_manage.data.dao.PhotoDao
 import com.app.body_manage.data.entity.PhotoEntity
 import com.app.body_manage.data.entity.toModel
-import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel
+import com.app.body_manage.data.model.PhotoModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -19,7 +19,7 @@ class PhotoRepository(private val photoDao: PhotoDao) {
         return photoDao.selectPhotos(bodyMeasureId)
     }
 
-    suspend fun selectPhoto(photoId: BodyMeasureEditFormViewModel.PhotoModel.Id): BodyMeasureEditFormViewModel.PhotoModel =
+    suspend fun selectPhoto(photoId: PhotoModel.Id): PhotoModel =
         withContext(Dispatchers.IO) {
             return@withContext photoDao.selectPhoto(photoId = photoId.id).toModel()
         }
