@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -59,6 +60,7 @@ import coil.compose.AsyncImage
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.common.Calendar
+import com.app.body_manage.common.ReverseTriangleShape
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.data.entity.BodyMeasureModel
 import com.app.body_manage.extension.toJapaneseTime
@@ -66,6 +68,7 @@ import com.app.body_manage.style.Colors
 import com.app.body_manage.util.DateUtil
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.YearMonth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -81,6 +84,7 @@ fun MeasureListScreen(
     clickBodyMeasureEdit: (LocalDateTime) -> Unit,
     clickFab: () -> Unit,
     showPhotoDetail: (Int) -> Unit,
+    onChangeCurrentMonth: (YearMonth) -> Unit,
 ) {
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     val state = rememberScaffoldState()
@@ -93,20 +97,33 @@ fun MeasureListScreen(
         scaffoldState = state,
         topBar = {
             TopAppBar(backgroundColor = Colors.theme) {
-                Text(
-                    text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(uiState.date),
-                    modifier = Modifier
-                        .offset(x = 20.dp)
-                        .clickable {
-                            scope.launch {
-                                showCalendar.value = true
-                                showPhotoList.value = false
-                                sheetState.show()
-                            }
-                        },
-                    fontSize = 16.sp,
-                    color = Color.Black
-                )
+                Row(
+                    modifier = Modifier.clickable {
+                        scope.launch {
+                            showCalendar.value = true
+                            showPhotoList.value = false
+                            sheetState.show()
+                        }
+                    },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .offset(x = 8.dp, y = 1.dp)
+                            .size(10.dp)
+                            .background(
+                                color = Color.Gray,
+                                shape = ReverseTriangleShape
+                            )
+                    )
+                    Text(
+                        text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(uiState.date),
+                        modifier = Modifier
+                            .offset(x = 20.dp),
+                        fontSize = 16.sp,
+                        color = Color.Black
+                    )
+                }
             }
         },
         content = { padding ->
@@ -120,13 +137,15 @@ fun MeasureListScreen(
                     ) {
                         if (showCalendar.value) {
                             Calendar(
-                                uiState.date,
+                                selectedDate = uiState.date,
+                                markDayList = uiState.currentMonthRegisteredDayList,
                                 onClickDate = {
                                     scope.launch {
                                         setLocalDate.invoke(it)
                                         sheetState.hide()
                                     }
                                 },
+                                onChangeCurrentMonth = onChangeCurrentMonth,
                             )
                         }
                         if (showPhotoList.value) {

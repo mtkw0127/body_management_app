@@ -110,6 +110,9 @@ class MeasureListActivity : AppCompatActivity() {
                         PhotoModel.Id(it)
                     )
                     launcher.launch(intent)
+                },
+                onChangeCurrentMonth = {
+                    viewModel.setCurrentYearMonth(it)
                 }
             )
         }

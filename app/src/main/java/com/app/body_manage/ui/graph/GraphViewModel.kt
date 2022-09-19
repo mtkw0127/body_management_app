@@ -45,7 +45,7 @@ class GraphViewModel(application: Application) : AndroidViewModel(application) {
 
         viewModelScope.launch {
             runCatching {
-                bodyMeasureRepository.getEntityListBetween()
+                bodyMeasureRepository.getEntityListAll()
             }
                 .onFailure { Timber.e(it) }
                 .onSuccess {

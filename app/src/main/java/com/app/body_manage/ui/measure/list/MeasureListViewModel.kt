@@ -11,6 +11,7 @@ import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.ui.measure.list.MeasureListState.BodyMeasureListState
 import com.app.body_manage.ui.measure.list.MeasureListState.MealMeasureListState
 import java.time.LocalDate
+import java.time.YearMonth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -23,6 +24,8 @@ import timber.log.Timber
 sealed interface MeasureListState {
     val date: LocalDate
     val measureType: MeasureType
+    val currentMonth: YearMonth
+    val currentMonthRegisteredDayList: List<LocalDate>
 
     data class BodyMeasureListState(
         val list: List<BodyMeasureModel>,
@@ -32,23 +35,31 @@ sealed interface MeasureListState {
         override val measureType: MeasureType,
         override val date: LocalDate,
         val photoList: List<BodyMeasurePhotoDao.PhotoData>,
+        override val currentMonth: YearMonth,
+        override val currentMonthRegisteredDayList: List<LocalDate>,
     ) : MeasureListState
 
     data class MealMeasureListState(
         val list: List<MealMeasureEntity>,
         override val measureType: MeasureType,
-        override val date: LocalDate
+        override val date: LocalDate,
+        override val currentMonth: YearMonth,
+        override val currentMonthRegisteredDayList: List<LocalDate>,
     ) : MeasureListState
 
     data class CommonMeasureListState(
         val list: List<MealMeasureEntity>,
         override val measureType: MeasureType,
-        override val date: LocalDate
+        override val date: LocalDate,
+        override val currentMonth: YearMonth,
+        override val currentMonthRegisteredDayList: List<LocalDate>,
     ) : MeasureListState
 }
 
 internal data class MeasureListViewModelState(
     val date: LocalDate,
+    val currentMonth: YearMonth,
+    val currentMonthRegisteredDayList: List<LocalDate> = listOf(),
     val measureType: MeasureType,
     val bodyMeasureList: List<BodyMeasureModel> = listOf(),
     val mealMeasureList: List<MealMeasureEntity> = listOf(),
@@ -68,6 +79,8 @@ internal data class MeasureListViewModelState(
                     list = bodyMeasureList,
                     photoList = photoList,
                     tall = tall,
+                    currentMonth = currentMonth,
+                    currentMonthRegisteredDayList = currentMonthRegisteredDayList,
                     measureType = measureType,
                     loading = someLoading,
                     message = message,
@@ -78,6 +91,8 @@ internal data class MeasureListViewModelState(
                     date = date,
                     list = mealMeasureList,
                     measureType = measureType,
+                    currentMonth = currentMonth,
+                    currentMonthRegisteredDayList = currentMonthRegisteredDayList,
                 )
             }
             else -> {
@@ -85,6 +100,8 @@ internal data class MeasureListViewModelState(
                     date = date,
                     list = mealMeasureList,
                     measureType = measureType,
+                    currentMonth = currentMonth,
+                    currentMonthRegisteredDayList = currentMonthRegisteredDayList,
                 )
             }
         }
@@ -92,7 +109,7 @@ internal data class MeasureListViewModelState(
 }
 
 class MeasureListViewModel(
-    private val localDate: LocalDate,
+    localDate: LocalDate,
     private val mealType: MeasureType,
     private val bodyMeasureRepository: BodyMeasureRepository,
     private val bodyMeasurePhotoRepository: BodyMeasurePhotoRepository,
@@ -102,6 +119,7 @@ class MeasureListViewModel(
     private val viewModelState = MutableStateFlow(
         MeasureListViewModelState(
             date = localDate,
+            currentMonth = YearMonth.now(),
             measureType = mealType,
         )
     )
@@ -142,6 +160,7 @@ class MeasureListViewModel(
                     loadTall()
                     loadBodyMeasure()
                     loadPhoto()
+                    loadRegisteredDayList()
                 }
             }
             MeasureType.MEAL -> {
@@ -150,6 +169,7 @@ class MeasureListViewModel(
             else -> {}
         }
     }
+
 
     fun updateMessage(message: String) {
         viewModelState.update {
@@ -213,6 +233,13 @@ class MeasureListViewModel(
         }
     }
 
+    fun setCurrentYearMonth(yearMonth: YearMonth) {
+        viewModelState.update {
+            it.copy(currentMonth = yearMonth)
+        }
+        loadRegisteredDayList()
+    }
+
     private fun loadTall() {
         viewModelScope.launch {
             userPreferenceRepository.userPref.collect {
@@ -247,6 +274,27 @@ class MeasureListViewModel(
             }.also {
                 viewModelStateLoadingUpdate(loading = false)
             }
+        }
+    }
+
+    private fun loadRegisteredDayList() {
+        viewModelScope.launch {
+            runCatching {
+                with(viewModelState.value.currentMonth) {
+                    val from = LocalDate.of(year, month, 1)
+                    val to = atEndOfMonth()
+                    bodyMeasureRepository.getBetween(from, to)
+                }
+            }
+                .onFailure { Timber.e(it) }
+                .onSuccess {
+                    val dayList =
+                        it.map { bodyMeasure -> bodyMeasure.capturedLocalDateTime.toLocalDate() }
+                            .distinct()
+                    viewModelState.update { vmState ->
+                        vmState.copy(currentMonthRegisteredDayList = dayList)
+                    }
+                }
         }
     }
 
