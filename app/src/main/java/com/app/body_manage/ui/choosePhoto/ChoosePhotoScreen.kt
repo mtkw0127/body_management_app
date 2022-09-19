@@ -46,13 +46,24 @@ fun ChoosePhotoScreen(
                     }
                 }
             }) {
-            Column {
-                Calendar(selectedDate = state.date, onClickDate = { date ->
-                    scope.launch {
-                        sheetState.show()
+            when (state) {
+                is SelectPhotoState.SelectedPhoto -> {
+                    Column {
+                        Calendar(
+                            markDayList = state.currentMonthRegisteredDateList,
+                            selectedDate = state.date,
+                            onClickDate = { date ->
+                                scope.launch {
+                                    sheetState.show()
+                                }
+                                onSelectDate.invoke(date)
+                            }
+                        )
                     }
-                    onSelectDate.invoke(date)
-                })
+                }
+                is SelectPhotoState.Error -> {
+
+                }
             }
         }
     }

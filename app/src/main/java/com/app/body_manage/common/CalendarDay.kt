@@ -1,10 +1,16 @@
 package com.app.body_manage.common
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -12,14 +18,17 @@ import androidx.compose.material.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.app.body_manage.style.Colors
 import io.github.boguszpawlowski.composecalendar.day.DayState
 import io.github.boguszpawlowski.composecalendar.selection.SelectionState
 import java.time.LocalDate
 
 @Composable
 fun <T : SelectionState> CalendarDay(
+    markDayList: List<LocalDate> = listOf(),
     state: DayState<T>,
     selectedDate: LocalDate,
     modifier: Modifier = Modifier,
@@ -42,14 +51,29 @@ fun <T : SelectionState> CalendarDay(
             backgroundColor = MaterialTheme.colors.surface
         )
     ) {
-        Box(
+        Column(
             modifier = Modifier.clickable {
                 onClick(date)
                 selectionState.onDateSelected(date)
             },
-            contentAlignment = Alignment.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ) {
             Text(text = date.dayOfMonth.toString())
+            if (markDayList.contains(date)) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(7.dp)
+                            .clip(CircleShape)
+                            .background(Colors.theme)
+                    )
+                }
+            }
         }
     }
 }

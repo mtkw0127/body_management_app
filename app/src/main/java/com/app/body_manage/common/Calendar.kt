@@ -12,7 +12,8 @@ import java.time.LocalDate
 fun Calendar(
     selectedDate: LocalDate,
     modifier: Modifier = Modifier,
-    onClickDate: (LocalDate) -> Unit
+    onClickDate: (LocalDate) -> Unit,
+    markDayList: List<LocalDate> = listOf()
 ) {
     Surface {
         StaticCalendar(
@@ -22,7 +23,7 @@ fun Calendar(
                 CalendarMonthHeader(monthState = it)
             },
             dayContent = {
-                CalendarDay(state = it, selectedDate = selectedDate) { date ->
+                CalendarDay(markDayList, state = it, selectedDate = selectedDate) { date ->
                     onClickDate.invoke(date)
                 }
             }

@@ -20,6 +20,7 @@ class ChoosePhotoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val vm = ChoosePhotoViewModel(bodyMeasurePhotoRepository)
+        vm.loadCurrentMonthHavePhotosDateList()
         setContent {
             val uiState: SelectPhotoState by vm.uiState.collectAsState()
             ChoosePhotoScreen(

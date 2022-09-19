@@ -119,12 +119,15 @@ fun MeasureListScreen(
                             .heightIn(min = 500.dp)
                     ) {
                         if (showCalendar.value) {
-                            Calendar(uiState.date, onClickDate = {
-                                scope.launch {
-                                    setLocalDate.invoke(it)
-                                    sheetState.hide()
-                                }
-                            })
+                            Calendar(
+                                uiState.date,
+                                onClickDate = {
+                                    scope.launch {
+                                        setLocalDate.invoke(it)
+                                        sheetState.hide()
+                                    }
+                                },
+                            )
                         }
                         if (showPhotoList.value) {
                             Box(modifier = Modifier.padding(top = 10.dp)) {
