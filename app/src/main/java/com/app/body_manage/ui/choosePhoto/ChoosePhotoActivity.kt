@@ -33,6 +33,9 @@ class ChoosePhotoActivity : AppCompatActivity() {
                     intent.putExtra(RESULT_SELECT_PHOTO_ID, it)
                     setResult(Activity.RESULT_OK, intent)
                     finish()
+                },
+                onChangeCurrentMonth = {
+                    vm.updateCurrentMonth(it)
                 }
             )
         }

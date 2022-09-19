@@ -6,6 +6,7 @@ import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.data.model.PhotoModel
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import java.time.LocalDate
+import java.time.YearMonth
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -18,7 +19,7 @@ sealed interface SelectPhotoState {
     val date: LocalDate
 
     data class SelectedPhoto(
-        val currentMonth: LocalDate,
+        val currentMonth: YearMonth,
         val currentMonthRegisteredDateList: List<LocalDate>,
         val photoId: PhotoModel.Id?,
         val photoList: List<BodyMeasurePhotoDao.PhotoData>,
@@ -32,7 +33,7 @@ sealed interface SelectPhotoState {
 }
 
 data class SelectPhotoViewModelState(
-    val currentMonth: LocalDate,
+    val currentMonth: YearMonth,
     val selectedDate: LocalDate,
     val photoId: PhotoModel.Id? = null,
     val currentMonthRegisteredDateList: List<LocalDate> = listOf(),
@@ -59,7 +60,7 @@ class ChoosePhotoViewModel(
 ) : ViewModel() {
     private val viewModelState = MutableStateFlow(
         SelectPhotoViewModelState(
-            currentMonth = LocalDate.now(),
+            currentMonth = YearMonth.now(),
             selectedDate = LocalDate.now(),
         )
     )
@@ -94,11 +95,20 @@ class ChoosePhotoViewModel(
         }
     }
 
+    fun updateCurrentMonth(currentMonth: YearMonth) {
+        viewModelState.update {
+            it.copy(currentMonth = currentMonth)
+        }
+        loadCurrentMonthHavePhotosDateList()
+    }
+
     fun loadCurrentMonthHavePhotosDateList() {
         viewModelScope.launch {
             with(viewModelState.value.currentMonth) {
+                val nextMonth = this.plusMonths(1)
+                val nextMonthFirstDay = LocalDate.of(nextMonth.year, nextMonth.month, 1)
                 val from = LocalDate.of(year, month, 1)
-                val to = this.plusMonths(1).withDayOfMonth(1).minusDays(1)
+                val to = nextMonthFirstDay.minusDays(1)
                 runCatching {
                     bodyMeasurePhotoRepository.selectHavePhotoDateList(from, to)
                 }.onFailure {

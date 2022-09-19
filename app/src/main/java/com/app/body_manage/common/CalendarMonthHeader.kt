@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import io.github.boguszpawlowski.composecalendar.header.MonthState
+import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -26,6 +27,7 @@ import java.util.Locale
 fun CalendarMonthHeader(
     monthState: MonthState,
     modifier: Modifier = Modifier,
+    onChangeCurrentMonth: (YearMonth) -> Unit = {},
 ) {
     Row(
         modifier = modifier
@@ -35,7 +37,10 @@ fun CalendarMonthHeader(
     ) {
         IconButton(
             modifier = Modifier.testTag("Decrement"),
-            onClick = { monthState.currentMonth = monthState.currentMonth.minusMonths(1) }
+            onClick = {
+                monthState.currentMonth = monthState.currentMonth.minusMonths(1)
+                onChangeCurrentMonth.invoke(monthState.currentMonth)
+            }
         ) {
             Image(
                 imageVector = Icons.Default.KeyboardArrowLeft,
@@ -58,7 +63,10 @@ fun CalendarMonthHeader(
         )
         IconButton(
             modifier = Modifier.testTag("Increment"),
-            onClick = { monthState.currentMonth = monthState.currentMonth.plusMonths(1) }
+            onClick = {
+                monthState.currentMonth = monthState.currentMonth.plusMonths(1)
+                onChangeCurrentMonth.invoke(monthState.currentMonth)
+            }
         ) {
             Image(
                 imageVector = Icons.Default.KeyboardArrowRight,

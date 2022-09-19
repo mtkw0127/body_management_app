@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.app.body_manage.common.Calendar
 import com.app.body_manage.ui.measure.list.PhotoList
 import java.time.LocalDate
+import java.time.YearMonth
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
 fun ChoosePhotoScreen(
     state: SelectPhotoState,
     clickPhoto: (Int) -> Unit,
+    onChangeCurrentMonth: (YearMonth) -> Unit,
     onSelectDate: (LocalDate) -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -52,6 +54,7 @@ fun ChoosePhotoScreen(
                         Calendar(
                             markDayList = state.currentMonthRegisteredDateList,
                             selectedDate = state.date,
+                            onChangeCurrentMonth = onChangeCurrentMonth,
                             onClickDate = { date ->
                                 scope.launch {
                                     sheetState.show()

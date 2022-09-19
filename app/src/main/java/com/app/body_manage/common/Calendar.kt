@@ -7,12 +7,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.boguszpawlowski.composecalendar.StaticCalendar
 import java.time.LocalDate
+import java.time.YearMonth
 
 @Composable
 fun Calendar(
     selectedDate: LocalDate,
     modifier: Modifier = Modifier,
     onClickDate: (LocalDate) -> Unit,
+    onChangeCurrentMonth: (YearMonth) -> Unit = {},
     markDayList: List<LocalDate> = listOf()
 ) {
     Surface {
@@ -20,7 +22,7 @@ fun Calendar(
             modifier = modifier
                 .padding(bottom = 10.dp),
             monthHeader = {
-                CalendarMonthHeader(monthState = it)
+                CalendarMonthHeader(monthState = it, onChangeCurrentMonth = onChangeCurrentMonth)
             },
             dayContent = {
                 CalendarDay(markDayList, state = it, selectedDate = selectedDate) { date ->
