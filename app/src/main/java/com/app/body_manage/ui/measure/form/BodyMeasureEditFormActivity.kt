@@ -232,6 +232,8 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
             vm.deletePhoto(position)
         }
         val photoDetailAction = View.OnClickListener {
+            // TODO: 編集でもタップできるようにする
+            if (formType == FormType.ADD) return@OnClickListener
             val position = (it as RoundedImageView).tooltipText.toString().toInt()
             val photo = vm.photoList.value?.get(position)
             photo?.let { photoModel ->
