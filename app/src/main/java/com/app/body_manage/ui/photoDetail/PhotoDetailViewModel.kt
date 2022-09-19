@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.TrainingApplication
-import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel
+import com.app.body_manage.data.model.PhotoModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -15,7 +15,7 @@ import timber.log.Timber
 
 sealed interface PhotoDetailState {
     data class ShowPhotoDetail(
-        val photoModel: BodyMeasureEditFormViewModel.PhotoModel
+        val photoModel: PhotoModel
     ) : PhotoDetailState
 
     data class LoadingPhotoDetail(
@@ -26,7 +26,7 @@ sealed interface PhotoDetailState {
 }
 
 data class PhotoDetailViewModelState(
-    private val photoModel: BodyMeasureEditFormViewModel.PhotoModel? = null,
+    private val photoModel: PhotoModel? = null,
     private val loading: Boolean = true,
     private val err: Throwable? = null,
 ) {
@@ -66,7 +66,7 @@ class PhotoDetailViewModel(
             viewModelState.value.toUiState()
         )
 
-    fun loadPhoto(photoId: BodyMeasureEditFormViewModel.PhotoModel.Id) {
+    fun loadPhoto(photoId: PhotoModel.Id) {
         viewModelState.update {
             it.copy(loading = true)
         }

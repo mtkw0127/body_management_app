@@ -79,11 +79,11 @@ fun CompareScreen(
 }
 
 @Composable
-private fun CompareItem(label: String, item: CompareItem?, onEditClick: () -> Unit) {
+private fun CompareItem(label: String, item: CompareItemStruct?, onEditClick: () -> Unit) {
     var date = "-"
     var weight = "-"
     if (item != null) {
-        date = DateUtil.localDateConvertJapaneseFormatYearMonthDay(item.data)
+        date = DateUtil.localDateConvertJapaneseFormatYearMonthDay(item.date)
         weight = "${item.weight}kg"
     }
     Box(
@@ -136,7 +136,7 @@ private fun CompareItem(label: String, item: CompareItem?, onEditClick: () -> Un
                     contentAlignment = Alignment.Center
                 ) {
                     AsyncImage(
-                        model = item?.photoURI,
+                        model = item?.photoUri,
                         contentScale = ContentScale.Crop,
                         contentDescription = "変更前写真"
                     )

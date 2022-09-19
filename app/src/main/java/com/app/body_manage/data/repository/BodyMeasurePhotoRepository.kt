@@ -20,4 +20,9 @@ class BodyMeasurePhotoRepository(private val bpDao: BodyMeasurePhotoDao) {
                 photoListMap.firstNotNullOf { it.value }
             }
         }
+
+    suspend fun selectBodyMeasureByPhotoId(photoId: Int): BodyMeasurePhotoDao.BodyMeasure? =
+        withContext(Dispatchers.IO) {
+            return@withContext bpDao.selectBodyMeasureByPhotoId(photoId)
+        }
 }

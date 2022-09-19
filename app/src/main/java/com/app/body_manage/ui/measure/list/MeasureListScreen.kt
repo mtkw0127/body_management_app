@@ -119,7 +119,7 @@ fun MeasureListScreen(
                             .heightIn(min = 500.dp)
                     ) {
                         if (showCalendar.value) {
-                            Calendar(onClickDate = {
+                            Calendar(uiState.date, onClickDate = {
                                 scope.launch {
                                     setLocalDate.invoke(it)
                                     sheetState.hide()
@@ -127,8 +127,10 @@ fun MeasureListScreen(
                             })
                         }
                         if (showPhotoList.value) {
-                            if (uiState is MeasureListState.BodyMeasureListState) {
-                                PhotoList(uiState.photoList, clickPhoto = showPhotoDetail)
+                            Box(modifier = Modifier.padding(top = 10.dp)) {
+                                if (uiState is MeasureListState.BodyMeasureListState) {
+                                    PhotoList(uiState.photoList, clickPhoto = showPhotoDetail)
+                                }
                             }
                         }
                     }
@@ -203,33 +205,53 @@ fun MeasureListScreen(
 }
 
 @Composable
-private fun PhotoList(photoList: List<BodyMeasurePhotoDao.PhotoData>, clickPhoto: (Int) -> Unit) {
-    Text(
-        text = "この日撮影した写真",
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(start = 12.dp, top = 12.dp, bottom = 10.dp)
-    )
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
-    ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth(0.9F)
-        ) {
-            items(photoList) {
-                AsyncImage(
-                    model = it.photoUri,
-                    contentDescription = "当日の写真一覧",
-                    contentScale = ContentScale.Inside,
-                    modifier = Modifier
-                        .padding(3.dp)
-                        .clip(RoundedCornerShape(3.dp))
-                        .clickable {
-                            clickPhoto.invoke(it.photoId)
-                        }
+fun PhotoList(
+    photoList: List<BodyMeasurePhotoDao.PhotoData>,
+    clickPhoto: (Int) -> Unit
+) {
+    Column {
+        if (photoList.isEmpty()) {
+            Box(
+                contentAlignment = Alignment.TopCenter,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 100.dp),
+            ) {
+                Text(
+                    text = "写真が未登録です",
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Gray,
                 )
+            }
+        } else {
+            Text(
+                text = "この日撮影した写真",
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 12.dp, bottom = 10.dp)
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.TopCenter
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth(0.9F)
+                ) {
+                    items(photoList) {
+                        AsyncImage(
+                            model = it.photoUri,
+                            contentDescription = "当日の写真一覧",
+                            contentScale = ContentScale.Inside,
+                            modifier = Modifier
+                                .padding(3.dp)
+                                .clip(RoundedCornerShape(3.dp))
+                                .clickable {
+                                    clickPhoto.invoke(it.photoId)
+                                }
+                        )
+                    }
+                }
             }
         }
     }

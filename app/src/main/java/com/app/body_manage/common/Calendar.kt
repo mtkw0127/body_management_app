@@ -9,16 +9,20 @@ import io.github.boguszpawlowski.composecalendar.StaticCalendar
 import java.time.LocalDate
 
 @Composable
-fun Calendar(modifier: Modifier = Modifier, onClickDate: (LocalDate) -> Unit) {
+fun Calendar(
+    selectedDate: LocalDate,
+    modifier: Modifier = Modifier,
+    onClickDate: (LocalDate) -> Unit
+) {
     Surface {
         StaticCalendar(
             modifier = modifier
-                .padding(bottom = 50.dp),
+                .padding(bottom = 10.dp),
             monthHeader = {
                 CalendarMonthHeader(monthState = it)
             },
             dayContent = {
-                CalendarDay(state = it) { date ->
+                CalendarDay(state = it, selectedDate = selectedDate) { date ->
                     onClickDate.invoke(date)
                 }
             }

@@ -21,6 +21,7 @@ import java.time.LocalDate
 @Composable
 fun <T : SelectionState> CalendarDay(
     state: DayState<T>,
+    selectedDate: LocalDate,
     modifier: Modifier = Modifier,
     selectionColor: Color = MaterialTheme.colors.secondary,
     currentDayColor: Color = MaterialTheme.colors.primary,
@@ -29,15 +30,15 @@ fun <T : SelectionState> CalendarDay(
     val date = state.date
     val selectionState = state.selectionState
 
-    val isSelected = selectionState.isDateSelected(date)
+    val isSelected = date == selectedDate
 
     Card(
         modifier = modifier
             .aspectRatio(1f)
             .padding(2.dp),
         elevation = if (state.isFromCurrentMonth) 4.dp else 0.dp,
-        border = if (state.isCurrentDay) BorderStroke(1.dp, currentDayColor) else null,
-        contentColor = if (isSelected) selectionColor else contentColorFor(
+        border = if (isSelected) BorderStroke(1.dp, currentDayColor) else null,
+        contentColor = if (state.isCurrentDay) selectionColor else contentColorFor(
             backgroundColor = MaterialTheme.colors.surface
         )
     ) {

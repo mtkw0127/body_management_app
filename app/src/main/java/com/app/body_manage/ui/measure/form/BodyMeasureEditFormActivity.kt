@@ -15,11 +15,11 @@ import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import com.app.body_manage.data.entity.BodyMeasureEntity
 import com.app.body_manage.data.local.UserPreferenceRepository
+import com.app.body_manage.data.model.PhotoModel
 import com.app.body_manage.databinding.TrainingDetailBinding
 import com.app.body_manage.dialog.FloatNumberPickerDialog
 import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.camera.CameraActivity
-import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel.PhotoModel
 import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel.PhotoType.ADDED
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import com.app.body_manage.util.DateUtil
@@ -59,9 +59,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
     }
 
     // 写真詳細への遷移
-    private val photoDetailLauncher = registerForActivityResult(StartActivityForResult()) {
-
-    }
+    private val photoDetailLauncher = registerForActivityResult(StartActivityForResult()) {}
 
     private lateinit var vm: BodyMeasureEditFormViewModel
 
