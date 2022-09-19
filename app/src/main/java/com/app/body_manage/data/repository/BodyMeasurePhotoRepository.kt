@@ -20,4 +20,14 @@ class BodyMeasurePhotoRepository(private val bpDao: BodyMeasurePhotoDao) {
                 photoListMap.firstNotNullOf { it.value }
             }
         }
+
+    suspend fun selectHavePhotoDateList(from: LocalDate, to: LocalDate): List<LocalDate> =
+        withContext(Dispatchers.IO) {
+            return@withContext bpDao.selectHavePhotoDateList(from, to)
+        }
+
+    suspend fun selectBodyMeasureByPhotoId(photoId: Int): BodyMeasurePhotoDao.BodyMeasure? =
+        withContext(Dispatchers.IO) {
+            return@withContext bpDao.selectBodyMeasureByPhotoId(photoId)
+        }
 }

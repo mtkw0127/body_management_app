@@ -140,7 +140,7 @@
             android:layout_margin="16dp"
             android:src="@drawable/ic_baseline_photo_camera_24"
             app:layout_constraintBottom_toTopOf="@id/save_container"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/save_container"

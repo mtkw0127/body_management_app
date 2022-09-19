@@ -5,8 +5,8 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.app.body_manage.data.model.PhotoModel
 import com.app.body_manage.databinding.SlideItemContainerBinding
-import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel.PhotoModel
 
 class SliderAdapter(
     var sliderItems: List<PhotoModel>,

@@ -51,7 +51,7 @@ class GraphViewModelTest {
         // prepare
         val repository: BodyMeasureRepository = mockk(relaxed = true)
         coEvery { application.bodyMeasureRepository }.returns(repository)
-        coEvery { repository.getEntityListBetween() }.returns(mutableListOf())
+        coEvery { repository.getEntityListAll() }.returns(mutableListOf())
         // exec
         viewModel.loadBodyMeasure()
         // assert
@@ -81,7 +81,7 @@ class GraphViewModelTest {
         }
         val repository = mockk<BodyMeasureRepository>()
         coEvery { application.bodyMeasureRepository }.returns(repository)
-        coEvery { repository.getEntityListBetween() } returns returnValue.toList()
+        coEvery { repository.getEntityListAll() } returns returnValue.toList()
         // exec
         runBlocking {
             viewModel.loadBodyMeasure()
