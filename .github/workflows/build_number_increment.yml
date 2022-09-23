@@ -1,0 +1,10 @@
+name: build_number_increment
+on: push
+jobs:
+  build_number_increment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v3
+      - name: Replace Build Number
+        run: echo 'Replace!!!'
