@@ -9,6 +9,4 @@ jobs:
       - name: Replace Build Number
         run: |
           cd app
-          sed s/versionCode 9/versionCode 10/ build.gradle
-          sed s/versionName "1.8.0"/versionName "1.9.0"/ build.gradle
-          cat build.gradle
+          sed s/'versionCode 9'/'versionCode 10'/ build.gradle
