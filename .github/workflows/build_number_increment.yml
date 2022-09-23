@@ -16,7 +16,6 @@ jobs:
           NEW_VERSION_NAME_MINOR="1.$VERSION_NAME_MINOR.0"
           find . -name 'build.gradle' | xargs sed -e "s/versionCode.*/versionCode $NEW_VERSION_CODE/g"
           find . -name 'build.gradle' | xargs sed -e "s/versionName.*/versionName $NEW_VERSION_NAME_MINOR/g"
-          
           find . -name 'build.gradle' | xargs grep 'versionCode.*'
           find . -name 'build.gradle' | xargs grep 'versionName.*'
           
