@@ -8,6 +8,8 @@ jobs:
         uses: actions/checkout@v3
       - name: Replace Build Number
         run: |
-          VERSIONS=`find . -name 'build.gradle' | xargs grep -n '.*versionCode' | sed -r 's/.*versionCode (.*)$/\1/'`
-          echo $VERSIONS
+          VERSION_CODE=`find . -name 'build.gradle' | xargs grep -n '.*versionCode' | sed -r 's/.*versionCode (.*)$/\1/'`
+          VERSION_NAME_MINOR=`find . -name 'build.gradle' | xargs grep -n '.*versionName' | sed -r 's/.*versionName .*\.(.*)\..*$/\1/'`
+          echo $VERSION_CODE
+          echo $VERSION_NAME_MINOR
           
