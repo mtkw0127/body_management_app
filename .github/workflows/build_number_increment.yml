@@ -7,4 +7,4 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v3
       - name: Replace Build Number
-        run: echo 'Replace!!!'
+        run: pwd
