@@ -10,18 +10,12 @@ jobs:
         run: |
           VERSION_CODE=`find . -name 'build.gradle' | xargs grep -n '.*versionCode' | sed -r 's/.*versionCode (.*)$/\1/'`
           VERSION_NAME_MINOR=`find . -name 'build.gradle' | xargs grep -n '.*versionName' | sed -r 's/.*versionName .*\.(.*)\..*$/\1/'`
-          echo "vc=$VERSION_CODE"
-          echo "vn=$VERSION_NAME_MINOR"
           VERSION_CODE=$(($VERSION_CODE+1))
           VERSION_NAME_MINOR=$(($VERSION_NAME_MINOR+1))
-          echo "incrementedvc=$VERSION_CODE"
-          echo "incrementedvn=$VERSION_NAME_MINOR"
           NEW_VERSION_CODE="versionCode $VERSION_CODE"
           NEW_VERSION_NAME_MINOR="1.$VERSION_NAME_MINOR.0"
-          echo $NEW_VERSION_CODE
-          echo $NEW_VERSION_NAME_MINOR
-          find . -name 'build.gradle' | xargs sed -e "s/versionCode.*/versionCode $NEW_VERSION_CODE/g"
-          find . -name 'build.gradle' | xargs sed -e "s/versionName.*/versionName $NEW_VERSION_NAME_MINOR/g"
+          find . -name 'build.gradle' | xargs sed -ie "s/versionCode.*/versionCode $NEW_VERSION_CODE/g"
+          find . -name 'build.gradle' | xargs sed -ie "s/versionName.*/versionName $NEW_VERSION_NAME_MINOR/g"
           find . -name 'build.gradle' | xargs grep 'versionCode.*'
           find . -name 'build.gradle' | xargs grep 'versionName.*'
           
