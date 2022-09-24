@@ -25,7 +25,7 @@ jobs:
           find . -name 'build.gradle' | xargs sed -ie "s/versionName.*/versionName $NEW_VERSION_NAME_MINOR/g"
           find . -name 'build.gradle' | xargs grep 'versionCode.*'
           find . -name 'build.gradle' | xargs grep 'versionName.*'
-          git branch
+          echo github.ref
           # commit/push
           git config --global user.email "maccho.chekera@gmail.com"
           git config --global user.name "Chekera0127!"
