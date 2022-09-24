@@ -25,6 +25,7 @@ jobs:
           find . -name 'build.gradle' | xargs sed -ie "s/versionName.*/versionName $NEW_VERSION_NAME_MINOR/g"
           find . -name 'build.gradle' | xargs grep 'versionCode.*'
           find . -name 'build.gradle' | xargs grep 'versionName.*'
+          git branch
           # commit/push
           git add .
           git commit -m 'increment version code'
