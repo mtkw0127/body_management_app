@@ -27,6 +27,8 @@ jobs:
           find . -name 'build.gradle' | xargs grep 'versionName.*'
           git branch
           # commit/push
+          git config --global user.email "maccho.chekera@gmail.com"
+          git config --global user.name "Chekera0127!"
           git add .
           git commit -m 'increment version code'
           git push
