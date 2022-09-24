@@ -10,6 +10,8 @@ jobs:
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Replace Build Number
         run: |
           # 取得
@@ -25,10 +27,9 @@ jobs:
           find . -name 'build.gradle' | xargs sed -ie "s/versionName.*/versionName $NEW_VERSION_NAME_MINOR/g"
           find . -name 'build.gradle' | xargs grep 'versionCode.*'
           find . -name 'build.gradle' | xargs grep 'versionName.*'
-          echo ${{ github.ref }}
           # commit/push
-          # git config --global user.email "maccho.chekera@gmail.com"
-          # git config --global user.name "Chekera0127!"
-          # git add .
-          # git commit -m 'increment version code'
-          # git push
+          git config --global user.email "maccho.chekera@gmail.com"
+          git config --global user.name "Chekera0127!"
+          git add .
+          git commit -m 'increment version code'
+          git push
