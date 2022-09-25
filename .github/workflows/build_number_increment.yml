@@ -2,7 +2,7 @@ name: build_number_increment
 on:
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   build_number_increment:
