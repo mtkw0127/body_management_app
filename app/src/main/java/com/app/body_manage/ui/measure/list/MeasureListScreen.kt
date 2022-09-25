@@ -37,6 +37,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
@@ -339,7 +340,10 @@ private fun TallSetField(
                 Button(onClick = {
                     clickShowPhotoList.invoke()
                 }) {
-                    Text(text = "写真を見る")
+                    Icon(
+                        Icons.Filled.Photo,
+                        contentDescription = null
+                    )
                 }
             }
         }

@@ -196,7 +196,7 @@ class CalendarAdapter(
             trainingMeasureListLauncher.launch(intent)
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
+        CoroutineScope(Dispatchers.Main).launch {
             runCatching { bodyMeasureRepository.getEntityListByDate(cellInfo.localDate) }
                 .onFailure { Timber.e(it) }
                 .onSuccess {
