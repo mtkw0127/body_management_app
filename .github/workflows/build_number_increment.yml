@@ -23,8 +23,8 @@ jobs:
           NEW_VERSION_CODE="versionCode $VERSION_CODE"
           NEW_VERSION_NAME_MINOR="1.$VERSION_NAME_MINOR.0"
           # 置換
-          find . -name 'build.gradle' | xargs sed -ie "s/versionCode.*/versionCode $NEW_VERSION_CODE/g"
-          find . -name 'build.gradle' | xargs sed -ie "s/versionName.*/versionName $NEW_VERSION_NAME_MINOR/g"
+          find . -name 'build.gradle' | xargs sed -i "s/versionCode.*/versionCode $NEW_VERSION_CODE/g"
+          find . -name 'build.gradle' | xargs sed -i "s/versionName.*/versionName $NEW_VERSION_NAME_MINOR/g"
           find . -name 'build.gradle' | xargs grep 'versionCode.*'
           find . -name 'build.gradle' | xargs grep 'versionName.*'
           # commit/push
