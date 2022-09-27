@@ -1,0 +1,33 @@
+name: build_number_increment
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build_number_increment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: Replace Build Number
+        run: |
+          # 取得
+          VERSION_CODE=`xargs grep -n '.*versionCode' app/build.gradle | sed -r 's/.*versionCode (.*)$/\1/'`
+          VERSION_NAME_MINOR=`xargs grep -n '.*versionName' app/build.gradle | sed -r 's/.*versionName .*\.(.*)\..*$/\1/'`
+          # 加算し置換後の文字列を生成
+          VERSION_CODE=$(($VERSION_CODE+1))
+          VERSION_NAME_MINOR=$(($VERSION_NAME_MINOR+1))
+          NEW_VERSION_CODE="$VERSION_CODE"
+          NEW_VERSION_NAME_MINOR="1.$VERSION_NAME_MINOR.0"
+          # 置換
+          xargs sed -i "s/versionCode.*/versionCode $NEW_VERSION_CODE/g" app/build.gradle
+          xargs sed -i "s/versionName.*/versionName \"$NEW_VERSION_NAME_MINOR\"/g" app/build.gradle
+          # commit/push
+          git config --global user.email "maccho.chekera@gmail.com"
+          git config --global user.name "Chekera0127!"
+          git add .
+          git commit -m 'increment version code'
+          git push

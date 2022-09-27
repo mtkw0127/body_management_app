@@ -54,6 +54,8 @@ class CameraActivity : AppCompatActivity() {
         initCamera()
         initBottomSheet()
 
+        requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+
         viewModel.photoList.observe(this) {
             // Preview窓の更新
             if (it.isEmpty()) {
