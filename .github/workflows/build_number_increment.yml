@@ -24,7 +24,7 @@ jobs:
           NEW_VERSION_NAME_MINOR="1.$VERSION_NAME_MINOR.0"
           # 置換
           xargs sed -i "s/versionCode.*/versionCode $NEW_VERSION_CODE/g" app/build.gradle
-          xargs sed -i "s/versionName.*/versionName $NEW_VERSION_NAME_MINOR/g" app/build.gradle
+          xargs sed -i "s/versionName.*/versionName "$NEW_VERSION_NAME_MINOR"/g" app/build.gradle
           # commit/push
           git config --global user.email "maccho.chekera@gmail.com"
           git config --global user.name "Chekera0127!"
