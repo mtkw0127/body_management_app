@@ -8,7 +8,6 @@ import android.widget.NumberPicker
 import androidx.fragment.app.DialogFragment
 import com.app.body_manage.R
 
-
 class TimePickerDialog : DialogFragment() {
 
     var hour = 1
@@ -35,7 +34,6 @@ class TimePickerDialog : DialogFragment() {
             timePickerDialog.callBack = callBack
             return timePickerDialog
         }
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,7 +72,6 @@ class TimePickerDialog : DialogFragment() {
             callBack(hourPicker.value, minutePicker.value)
             this.dismiss()
         }
-
         return dialogBuilder.setView(dialogLayout).create()
     }
 }

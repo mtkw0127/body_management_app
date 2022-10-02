@@ -11,5 +11,4 @@ class TrainingApplication : Application() {
     val bodyMeasureRepository by lazy { BodyMeasureRepository(database.bodyMeasureDao()) }
     val photoRepository by lazy { PhotoRepository(database.photoDao()) }
     val bodyMeasurePhotoRepository by lazy { BodyMeasurePhotoRepository(database.bodyMeasurePhotoDao()) }
-
 }

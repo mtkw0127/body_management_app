@@ -88,6 +88,9 @@ class MeasureListActivity : AppCompatActivity() {
                 resetSnackBarMessage = {
                     viewModel.resetMessage()
                 },
+                updateDate = {
+                    viewModel.updateDate(it)
+                },
                 clickFab = {
                     when (viewModel.uiState.value.measureType) {
                         MeasureType.BODY -> {

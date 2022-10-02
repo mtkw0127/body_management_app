@@ -20,8 +20,7 @@ class AlarmNotification : BroadcastReceiver() {
             .setContentText("本日の体型を登録しましょう\uD83D\uDCAA")
             // 1-3. 優先度の設定
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-
+        
         val name = "毎朝の通知"
         val descriptionText = "午前7時に通知します😊！"
         val importance = NotificationManager.IMPORTANCE_DEFAULT
