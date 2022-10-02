@@ -4,15 +4,20 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
+import com.app.body_manage.R
 import com.app.body_manage.data.entity.BodyMeasureEntity
 import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.model.PhotoModel
@@ -94,9 +99,24 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
             }
         }
         // 日付設定
-        binding.dateText.text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(vm.captureDate)
-        binding.viewModel = vm
+        supportActionBar?.title =
+            DateUtil.localDateConvertJapaneseFormatYearMonthDay(vm.captureDate)
 
+        addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                if (vm.deleteButtonVisibility) {
+                    menuInflater.inflate(R.menu.menu_body_mesure_form, menu)
+                }
+            }
+
+            override fun onMenuItemSelected(item: MenuItem): Boolean {
+                if (item.itemId == R.id.menu_delete) {
+                    vm.deleteBodyMeasure()
+                }
+                return true
+            }
+        })
+        binding.viewModel = vm
     }
 
     private fun initPagerAdapter() {
@@ -141,9 +161,6 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                 setResult(RESULT_DELETE)
                 finish()
             }
-        }
-        binding.deleteMeasureBtn.setOnClickListener {
-            vm.deleteBodyMeasure()
         }
         // カメラフィールド
         binding.camera.setOnClickListener {

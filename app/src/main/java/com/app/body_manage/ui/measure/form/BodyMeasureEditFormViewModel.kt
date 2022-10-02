@@ -27,13 +27,8 @@ class BodyMeasureEditFormViewModel(
     private val formType: BodyMeasureEditFormActivity.FormType,
 ) : ViewModel() {
 
-    val deleteButtonVisibility: MutableLiveData<Int> = MutableLiveData<Int>().apply {
-        this.value = if (formType == BodyMeasureEditFormActivity.FormType.EDIT) {
-            View.VISIBLE
-        } else {
-            View.INVISIBLE
-        }
-    }
+    val deleteButtonVisibility: Boolean =
+        formType == BodyMeasureEditFormActivity.FormType.EDIT
 
     enum class PhotoType {
         Saved, ADDED
