@@ -6,6 +6,8 @@ plugins {
     id 'org.jlleitschuh.gradle.ktlint'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
+    id "com.diffplug.spotless" version "6.11.0"
+    id "com.ncorti.ktfmt.gradle"
 }
 
 ktlint {
@@ -71,6 +73,15 @@ android {
         unitTests.all {
             useJUnitPlatform()
         }
+    }
+}
+
+spotless { // if you are using build.gradle.kts, instead of 'spotless {' use:
+    kotlin {
+        target '**/*.kt'
+        targetExclude("$buildDir/**/*.kt")
+        targetExclude('bin/**/*.kt')
+        ktlint("0.45.2")
     }
 }
 

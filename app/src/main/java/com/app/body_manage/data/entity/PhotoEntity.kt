@@ -10,12 +10,14 @@ import java.io.Serializable
 
 @Entity(
     tableName = "photos",
-    foreignKeys = [ForeignKey(
-        entity = BodyMeasureEntity::class,
-        parentColumns = arrayOf("ui"),
-        childColumns = arrayOf("body_measure_id"),
-        onDelete = ForeignKey.CASCADE
-    )]
+    foreignKeys = [
+        ForeignKey(
+            entity = BodyMeasureEntity::class,
+            parentColumns = arrayOf("ui"),
+            childColumns = arrayOf("body_measure_id"),
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 class PhotoEntity(
     @PrimaryKey(autoGenerate = true) var ui: Int,
