@@ -134,7 +134,10 @@ private fun CompareItem(label: String, item: CompareItemStruct?, onEditClick: ()
                     modifier = Modifier
                         .background(Color.White)
                         .fillMaxWidth()
-                        .fillMaxHeight(0.95F),
+                        .fillMaxHeight(0.95F)
+                        .clickable {
+                            onEditClick.invoke()
+                        },
                     contentAlignment = Alignment.Center
                 ) {
                     AsyncImage(
