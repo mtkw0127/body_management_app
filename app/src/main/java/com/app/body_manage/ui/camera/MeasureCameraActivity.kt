@@ -32,6 +32,8 @@ import androidx.lifecycle.LifecycleOwner
 import com.app.body_manage.R
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.TextRecognizerOptionsInterface
+import com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions
 import java.lang.Double.parseDouble
 import java.nio.file.Path
 import java.text.SimpleDateFormat
@@ -151,18 +153,21 @@ class MeasureCameraActivity : AppCompatActivity() {
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
                 .also { it ->
-                    it.setAnalyzer(cameraExecutor, ImageAnalysis.Analyzer { imageProxy ->
+                    it.setAnalyzer(cameraExecutor) { imageProxy ->
                         val mediaImage = imageProxy.image
                         if (mediaImage != null) {
                             val image = InputImage.fromMediaImage(
                                 mediaImage,
                                 imageProxy.imageInfo.rotationDegrees
                             )
-                            val recognizer = TextRecognition.getClient()
+                            val recognizer = TextRecognition.getClient(
+                                JapaneseTextRecognizerOptions.Builder().build()
+                            )
                             recognizer.process(image)
                                 .addOnSuccessListener { result ->
                                     if (result.textBlocks.isNotEmpty()) {
                                         val textList = result.textBlocks
+                                            .asSequence()
                                             .map {
                                                 it.text.replace("S", "5")
                                                     .replace("s", "5")
@@ -225,7 +230,7 @@ class MeasureCameraActivity : AppCompatActivity() {
 //                        // insert your code here.
 //                        // after done, release the ImageProxy object
 //                        imageProxy.close()
-                    })
+                    }
                 }
 
             // Set up the capture use case to allow users to take photos.
