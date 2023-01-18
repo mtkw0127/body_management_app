@@ -64,26 +64,14 @@ abstract class OnSwipeTouchListener(context: Context) : View.OnTouchListener {
             return true
         }
 
-        override fun onShowPress(e: MotionEvent?) {
-            super.onShowPress(e)
-        }
-
-        override fun onContextClick(e: MotionEvent?): Boolean {
-            return super.onContextClick(e)
-        }
-
         override fun onFling(
-            e1: MotionEvent?,
-            e2: MotionEvent?,
+            e1: MotionEvent,
+            e2: MotionEvent,
             velocityX: Float,
             velocityY: Float
         ): Boolean {
-            if (e1 == null && firstDownEvent == null) return false
-            if (e2 == null) return false
-
-            val e11 = e1 ?: firstDownEvent
             val swipeDirection =
-                SwipeDirection.newInstance(checkNotNull(e11), e2, velocityX, velocityY)
+                SwipeDirection.newInstance(e1, e2, velocityX, velocityY)
             val result = swipeDirection !is SwipeDirection.NONE
             when (swipeDirection) {
                 is SwipeDirection.UP -> up()
@@ -107,13 +95,14 @@ abstract class OnSwipeTouchListener(context: Context) : View.OnTouchListener {
      * onFlingのe1が常にnullのため、ACTION_MOVEの場合の初回の位置を外から渡すようにする
      */
     override fun onTouch(p0: View?, event: MotionEvent?): Boolean {
-        if (event?.action == MotionEvent.ACTION_MOVE) {
+        val event = event ?: return false
+        if (event.action == MotionEvent.ACTION_MOVE) {
             if (cnt == 0) {
                 gestureListener.firstDownEvent = MotionEvent.obtain(event)
             }
             cnt++
         }
-        if (event?.action == MotionEvent.ACTION_UP) {
+        if (event.action == MotionEvent.ACTION_UP) {
             cnt = 0
         }
         return gestureDetector.onTouchEvent(event)
