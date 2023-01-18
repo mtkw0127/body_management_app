@@ -205,6 +205,15 @@ class MeasureListViewModel(
         }
     }
 
+    fun updateDate(diff: Int) {
+        viewModelState.update {
+            it.copy(
+                date = viewModelState.value.date.plusDays(diff.toLong())
+            )
+        }
+        reload()
+    }
+
     private fun loadPhoto() {
         viewModelScope.launch {
             runCatching { bodyMeasurePhotoRepository.selectPhotosByDate(viewModelState.value.date) }

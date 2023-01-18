@@ -61,7 +61,9 @@ import coil.compose.AsyncImage
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.common.Calendar
+import com.app.body_manage.common.LeftTriangleShape
 import com.app.body_manage.common.ReverseTriangleShape
+import com.app.body_manage.common.RightTriangleShape
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.data.entity.BodyMeasureModel
 import com.app.body_manage.extension.toJapaneseTime
@@ -84,6 +86,7 @@ fun MeasureListScreen(
     setLocalDate: (LocalDate) -> Unit,
     clickBodyMeasureEdit: (LocalDateTime) -> Unit,
     clickFab: () -> Unit,
+    updateDate: (Int) -> Unit,
     showPhotoDetail: (Int) -> Unit,
     onChangeCurrentMonth: (YearMonth) -> Unit,
 ) {
@@ -98,31 +101,44 @@ fun MeasureListScreen(
         scaffoldState = state,
         topBar = {
             TopAppBar(backgroundColor = Colors.theme) {
-                Row(
-                    modifier = Modifier.clickable {
-                        scope.launch {
-                            showCalendar.value = true
-                            showPhotoList.value = false
-                            sheetState.show()
-                        }
-                    },
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(
                         modifier = Modifier
                             .offset(x = 8.dp, y = 1.dp)
                             .size(10.dp)
                             .background(
                                 color = Color.Gray,
-                                shape = ReverseTriangleShape
+                                shape = LeftTriangleShape
                             )
+                            .clickable {
+                                updateDate.invoke(-1)
+                            }
                     )
                     Text(
                         text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(uiState.date),
                         modifier = Modifier
-                            .offset(x = 20.dp),
+                            .offset(x = 20.dp)
+                            .clickable {
+                                scope.launch {
+                                    showCalendar.value = true
+                                    showPhotoList.value = false
+                                    sheetState.show()
+                                }
+                            },
                         fontSize = 16.sp,
                         color = Color.Black
+                    )
+                    Box(
+                        modifier = Modifier
+                            .offset(x = 28.dp, y = 1.dp)
+                            .size(10.dp)
+                            .background(
+                                color = Color.Gray,
+                                shape = RightTriangleShape
+                            )
+                            .clickable {
+                                updateDate.invoke(1)
+                            }
                     )
                 }
             }

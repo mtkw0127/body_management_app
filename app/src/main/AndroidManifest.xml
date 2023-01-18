@@ -34,6 +34,11 @@
             android:launchMode="singleInstance"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".ui.compareHistory.CompareHistoryActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.app.body_manage.ui.measure.list.MeasureListActivity"
             android:exported="true"
             android:launchMode="singleInstance"
