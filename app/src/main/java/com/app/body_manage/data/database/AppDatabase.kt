@@ -9,13 +9,14 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.app.body_manage.data.dao.BodyMeasureDao
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
+import com.app.body_manage.data.dao.CompareBodyMeasureHistoryDao
 import com.app.body_manage.data.dao.PhotoDao
-import com.app.body_manage.data.dao.database.LocalDateConverter
 import com.app.body_manage.data.entity.BodyMeasureEntity
+import com.app.body_manage.data.entity.CompareBodyMeasureHistoryEntity
 import com.app.body_manage.data.entity.PhotoEntity
 
 @Database(
-    entities = [BodyMeasureEntity::class, PhotoEntity::class],
+    entities = [BodyMeasureEntity::class, PhotoEntity::class, CompareBodyMeasureHistoryEntity::class],
     version = 2,
     exportSchema = false
 )
@@ -43,6 +44,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun bodyMeasureDao(): BodyMeasureDao
     abstract fun photoDao(): PhotoDao
     abstract fun bodyMeasurePhotoDao(): BodyMeasurePhotoDao
+    abstract fun compareBodyMeasureHistoryDao(): CompareBodyMeasureHistoryDao
 }
 
 // 体重カラムをBodyMeasureTableに追加

@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.common.createBottomDataList
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
+import com.app.body_manage.data.repository.CompareHistoryRepository
 import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.choosePhoto.ChoosePhotoActivity
 import com.app.body_manage.ui.graph.GraphActivity
@@ -21,6 +22,10 @@ class CompareActivity : AppCompatActivity() {
 
     private val bodyMeasurePhotoRepository: BodyMeasurePhotoRepository by lazy {
         (application as TrainingApplication).bodyMeasurePhotoRepository
+    }
+
+    private val compareBodyMeasureHistoryRepository: CompareHistoryRepository by lazy {
+        (application as TrainingApplication).compareBodyMeasureHistoryRepository
     }
 
     private val simpleLauncher =
@@ -60,7 +65,8 @@ class CompareActivity : AppCompatActivity() {
             photoListAction = { simpleLauncher.launch(PhotoListActivity.createIntent(this)) },
             graphAction = { simpleLauncher.launch(GraphActivity.createIntent(this)) }
         )
-        viewModel = CompareViewModel(bodyMeasurePhotoRepository)
+        viewModel =
+            CompareViewModel(bodyMeasurePhotoRepository, compareBodyMeasureHistoryRepository)
         setContent {
             val uiState by viewModel.uiState.collectAsState()
             CompareScreen(
@@ -74,6 +80,9 @@ class CompareActivity : AppCompatActivity() {
                     afterSearchLauncher.launch(
                         ChoosePhotoActivity.createIntent(this)
                     )
+                },
+                saveHistory = {
+                    viewModel.saveHistory()
                 },
                 bottomSheetDataList = bottomSheetDataList
             )
