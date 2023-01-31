@@ -5,6 +5,7 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.GestureDetectorCompat
+import timber.log.Timber
 import kotlin.math.abs
 import kotlin.math.max
 
@@ -105,6 +106,7 @@ abstract class OnSwipeTouchListener(context: Context) : View.OnTouchListener {
         if (event.action == MotionEvent.ACTION_UP) {
             cnt = 0
         }
+        Timber.e(event.toString())
         return gestureDetector.onTouchEvent(event)
     }
 }

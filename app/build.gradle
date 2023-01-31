@@ -19,6 +19,12 @@ ktlint {
     }
 }
 
+kapt {
+    arguments {
+        arg("room.schemaLocation", "$projectDir/schemas".toString())
+    }
+}
+
 android {
     signingConfigs {
         debug {

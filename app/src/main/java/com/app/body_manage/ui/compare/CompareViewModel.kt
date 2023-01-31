@@ -3,6 +3,7 @@ package com.app.body_manage.ui.compare
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
+import com.app.body_manage.data.repository.CompareHistoryRepository
 import java.time.LocalDate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -49,7 +50,8 @@ enum class CompareItemType {
 }
 
 class CompareViewModel(
-    private val bodyMeasurePhotoRepository: BodyMeasurePhotoRepository
+    private val bodyMeasurePhotoRepository: BodyMeasurePhotoRepository,
+    private val compareHistoryRepository: CompareHistoryRepository,
 ) : ViewModel() {
     private val viewModelState = MutableStateFlow(CompareViewModelState())
     val uiState = viewModelState.map {
@@ -59,6 +61,10 @@ class CompareViewModel(
         SharingStarted.Eagerly,
         CompareState.CompareItemsHasSet(null, null),
     )
+
+    fun saveHistory() {
+
+    }
 
     fun loadBodyMeasure(photoId: Int, compareItemType: CompareItemType) {
         viewModelScope.launch {
