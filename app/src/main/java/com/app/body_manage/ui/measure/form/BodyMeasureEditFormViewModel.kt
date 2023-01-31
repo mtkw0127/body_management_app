@@ -2,7 +2,6 @@ package com.app.body_manage.ui.measure.form
 
 import android.app.Application
 import android.content.Intent
-import android.view.View
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
@@ -16,11 +15,11 @@ import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.model.PhotoModel
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.PhotoRepository
-import java.time.LocalDate
-import java.time.LocalDateTime
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 class BodyMeasureEditFormViewModel(
     private val userPreferenceRepository: UserPreferenceRepository,
@@ -210,7 +209,11 @@ class BodyMeasureEditFormViewModel(
                         createPhotoModels(id.toInt())
                     )
                 }
-            }.onFailure { Timber.e(it) }
+            }.onFailure {
+                Timber.e(it)
+            }.onSuccess {
+                println("")
+            }
         }
     }
 

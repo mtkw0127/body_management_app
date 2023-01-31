@@ -1,0 +1,162 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 3,
+    "identityHash": "91e4e5281d4ca74c93c58dd6c83801f6",
+    "entities": [
+      {
+        "tableName": "bodyMeasures",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ui` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `calendar_date` TEXT NOT NULL, `capture_date` TEXT NOT NULL, `capture_time` TEXT NOT NULL, `weight` REAL NOT NULL, `fat` REAL NOT NULL, `photo_uri` TEXT, `tall` REAL)",
+        "fields": [
+          {
+            "fieldPath": "ui",
+            "columnName": "ui",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "calendarDate",
+            "columnName": "calendar_date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "capturedDate",
+            "columnName": "capture_date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "capturedTime",
+            "columnName": "capture_time",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "weight",
+            "columnName": "weight",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fatRate",
+            "columnName": "fat",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "photoUri",
+            "columnName": "photo_uri",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tall",
+            "columnName": "tall",
+            "affinity": "REAL",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "ui"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "photos",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ui` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `body_measure_id` INTEGER NOT NULL, `photo_uri` TEXT NOT NULL, FOREIGN KEY(`body_measure_id`) REFERENCES `bodyMeasures`(`ui`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "ui",
+            "columnName": "ui",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bodyMeasureId",
+            "columnName": "body_measure_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "photoUri",
+            "columnName": "photo_uri",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "ui"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_photos_body_measure_id",
+            "unique": false,
+            "columnNames": [
+              "body_measure_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_photos_body_measure_id` ON `${TABLE_NAME}` (`body_measure_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "bodyMeasures",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "body_measure_id"
+            ],
+            "referencedColumns": [
+              "ui"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "compareBodyMeasureHistory",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`ui` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `beforeBodyMeasureId` INTEGER NOT NULL, `afterBodyMeasureId` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "ui",
+            "columnName": "ui",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "beforeBodyMeasureId",
+            "columnName": "beforeBodyMeasureId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "afterBodyMeasureId",
+            "columnName": "afterBodyMeasureId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "ui"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '91e4e5281d4ca74c93c58dd6c83801f6')"
+    ]
+  }
+}

@@ -12,13 +12,16 @@ public class ActivityMainBindingImpl extends ActivityMainBinding  {
     @Nullable
     private static final android.util.SparseIntArray sViewsWithIds;
     static {
-        sIncludes = new androidx.databinding.ViewDataBinding.IncludedLayouts(3);
+        sIncludes = new androidx.databinding.ViewDataBinding.IncludedLayouts(6);
         sIncludes.setIncludes(0, 
             new String[] {"bottom_sheet"},
             new int[] {1},
             new int[] {com.app.body_manage.R.layout.bottom_sheet});
         sViewsWithIds = new android.util.SparseIntArray();
         sViewsWithIds.put(R.id.calendarGridView, 2);
+        sViewsWithIds.put(R.id.move_container, 3);
+        sViewsWithIds.put(R.id.prev, 4);
+        sViewsWithIds.put(R.id.next, 5);
     }
     // views
     @NonNull
@@ -29,12 +32,15 @@ public class ActivityMainBindingImpl extends ActivityMainBinding  {
     // Inverse Binding Event Handlers
 
     public ActivityMainBindingImpl(@Nullable androidx.databinding.DataBindingComponent bindingComponent, @NonNull View root) {
-        this(bindingComponent, root, mapBindings(bindingComponent, root, 3, sIncludes, sViewsWithIds));
+        this(bindingComponent, root, mapBindings(bindingComponent, root, 6, sIncludes, sViewsWithIds));
     }
     private ActivityMainBindingImpl(androidx.databinding.DataBindingComponent bindingComponent, View root, Object[] bindings) {
         super(bindingComponent, root, 1
             , (com.app.body_manage.databinding.BottomSheetBinding) bindings[1]
             , (android.widget.GridView) bindings[2]
+            , (androidx.constraintlayout.widget.ConstraintLayout) bindings[3]
+            , (android.widget.Button) bindings[5]
+            , (android.widget.Button) bindings[4]
             );
         setContainedBinding(this.bottomSheetInclude);
         this.mboundView0 = (androidx.constraintlayout.widget.ConstraintLayout) bindings[0];

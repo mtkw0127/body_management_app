@@ -24,12 +24,12 @@ import androidx.lifecycle.LifecycleOwner
 import com.app.body_manage.data.repository.LocalFileRepository
 import com.app.body_manage.databinding.CameraPreviewBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import timber.log.Timber
 import java.nio.file.Path
 import java.text.SimpleDateFormat
-import java.util.Locale
+import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import timber.log.Timber
 
 class CameraActivity : AppCompatActivity() {
     private lateinit var imageCapture: ImageCapture
@@ -54,7 +54,12 @@ class CameraActivity : AppCompatActivity() {
         initCamera()
         initBottomSheet()
 
-        requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+        requestPermissions(
+            arrayOf(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA
+            ), 1
+        )
 
         viewModel.photoList.observe(this) {
             // Preview窓の更新
