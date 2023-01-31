@@ -81,9 +81,13 @@ fun CompareScreen(
                         },
                         TabRowItem("履歴") {
                             Column(
-                                modifier = Modifier.fillMaxSize()
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Text("次回リリースで作成")
+                                Text(
+                                    text = "次回リリースで作成",
+                                )
                             }
                         }
                     )
