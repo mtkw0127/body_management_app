@@ -11,7 +11,7 @@ interface CompareBodyMeasureHistoryDao {
     @Insert
     suspend fun saveHistory(compareBodyMeasureHistory: CompareBodyMeasureHistoryEntity)
 
-    @Query("SELECT * FROM compareBodyMeasureHistoryEntity")
+    @Query("SELECT * FROM compareBodyMeasureHistory")
     suspend fun selectAll(): List<CompareBodyMeasureHistoryEntity>
 
     @Delete

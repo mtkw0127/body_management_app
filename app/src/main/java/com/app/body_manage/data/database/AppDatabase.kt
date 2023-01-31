@@ -17,8 +17,8 @@ import com.app.body_manage.data.entity.PhotoEntity
 
 @Database(
     entities = [BodyMeasureEntity::class, PhotoEntity::class, CompareBodyMeasureHistoryEntity::class],
-    version = 2,
-    exportSchema = false
+    version = 3,
+    exportSchema = true
 )
 @TypeConverters(LocalDateConverter::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -34,6 +34,7 @@ abstract class AppDatabase : RoomDatabase() {
                         .apply {
                             allowMainThreadQueries()
                             addMigrations(MIGRATION_1_2)
+                            addMigrations(MIGRATION_2_3)
                         }.build()
                 db = instance
                 instance
@@ -47,11 +48,20 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun compareBodyMeasureHistoryDao(): CompareBodyMeasureHistoryDao
 }
 
-// 体重カラムをBodyMeasureTableに追加
+/** 体重カラムをBodyMeasureTableに追加*/
 val MIGRATION_1_2 = object : Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL(
             "ALTER TABLE bodyMeasures ADD COLUMN tall FLOAT"
+        )
+    }
+}
+
+/** 比較履歴のテーブルを追加*/
+val MIGRATION_2_3 = object : Migration(2, 3) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            "CREATE TABLE IF NOT EXISTS `compareBodyMeasureHistory` (`ui` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `beforeBodyMeasureId` INTEGER NOT NULL, `afterBodyMeasureId` INTEGER NOT NULL)",
         )
     }
 }

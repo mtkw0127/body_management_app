@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import java.io.Serializable
 
 @Entity(
-    tableName = "compareBodyMeasureHistoryEntity",
+    tableName = "compareBodyMeasureHistory",
 )
 data class CompareBodyMeasureHistoryEntity(
     @PrimaryKey(autoGenerate = true) var ui: Int,

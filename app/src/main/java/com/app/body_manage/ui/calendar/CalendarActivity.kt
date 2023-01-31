@@ -16,7 +16,6 @@ import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.ui.setting.SettingActivity
 import com.app.body_manage.util.DateUtil
-import com.app.body_manage.util.OnSwipeTouchListener
 
 class CalendarActivity : AppCompatActivity() {
 
@@ -29,6 +28,10 @@ class CalendarActivity : AppCompatActivity() {
 
     // シンプルなランチャー
     private val simpleLauncher = registerForActivityResult(StartActivityForResult()) {}
+
+    private val measureListLauncher = registerForActivityResult(StartActivityForResult()) {
+        adapter.notifyDataSetChanged()
+    }
 
     private val viewModel: CalendarListViewModel = CalendarListViewModel()
 
@@ -44,7 +47,7 @@ class CalendarActivity : AppCompatActivity() {
         adapter = CalendarAdapter(
             viewModel.today,
             this.applicationContext,
-            simpleLauncher
+            measureListLauncher
         )
         binding.calendarGridView.adapter = adapter
 
@@ -72,25 +75,6 @@ class CalendarActivity : AppCompatActivity() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initListener() {
-        binding.calendarGridView.setOnTouchListener(object :
-            OnSwipeTouchListener(this.applicationContext) {
-            override fun up() {}
-            override fun down() {}
-            override fun right() {
-                val adapter = (binding.calendarGridView.adapter as CalendarAdapter)
-                adapter.createPrevMonthCalendar()
-                supportActionBar?.title =
-                    DateUtil.localDateConvertJapaneseFormatYearMonth(adapter.localDate)
-            }
-
-            override fun left() {
-                val adapter = (binding.calendarGridView.adapter as CalendarAdapter)
-                adapter.createNextMonthCalendar()
-                supportActionBar?.title =
-                    DateUtil.localDateConvertJapaneseFormatYearMonth(adapter.localDate)
-            }
-        })
-
         val navigation = binding.bottomSheetInclude.bottomNavigator
         val menuCompare = navigation.menu.findItem(R.id.menu_compare)
         val menuPhoto = navigation.menu.findItem(R.id.menu_photo)
@@ -106,6 +90,18 @@ class CalendarActivity : AppCompatActivity() {
         menuGraph.setOnMenuItemClickListener {
             simpleLauncher.launch(GraphActivity.createIntent(this))
             return@setOnMenuItemClickListener true
+        }
+        binding.next.setOnClickListener {
+            val adapter = (binding.calendarGridView.adapter as CalendarAdapter)
+            adapter.createNextMonthCalendar()
+            supportActionBar?.title =
+                DateUtil.localDateConvertJapaneseFormatYearMonth(adapter.localDate)
+        }
+        binding.prev.setOnClickListener {
+            val adapter = (binding.calendarGridView.adapter as CalendarAdapter)
+            adapter.createPrevMonthCalendar()
+            supportActionBar?.title =
+                DateUtil.localDateConvertJapaneseFormatYearMonth(adapter.localDate)
         }
     }
 }
