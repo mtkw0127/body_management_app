@@ -4,11 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.lifecycleScope
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.common.createBottomDataList
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
@@ -17,6 +19,7 @@ import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.choosePhoto.ChoosePhotoActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
+import kotlinx.coroutines.launch
 
 class CompareActivity : AppCompatActivity() {
 
@@ -65,12 +68,25 @@ class CompareActivity : AppCompatActivity() {
             photoListAction = { simpleLauncher.launch(PhotoListActivity.createIntent(this)) },
             graphAction = { simpleLauncher.launch(GraphActivity.createIntent(this)) }
         )
+
         viewModel =
             CompareViewModel(bodyMeasurePhotoRepository, compareBodyMeasureHistoryRepository)
+
+        lifecycleScope.launch {
+            viewModel.uiState.collect {
+                if (it?.saveFail == true) {
+                    Toast.makeText(this@CompareActivity, "保存に失敗しました", Toast.LENGTH_LONG).show()
+                }
+                if (it?.saveSuccess == true) {
+                    Toast.makeText(this@CompareActivity, "保存に成功しました", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
         setContent {
             val uiState by viewModel.uiState.collectAsState()
             CompareScreen(
-                uiState = uiState,
+                uiState = uiState ?: return@setContent,
                 beforeSearchLauncher = {
                     beforeSearchLauncher.launch(
                         ChoosePhotoActivity.createIntent(this)
@@ -83,6 +99,9 @@ class CompareActivity : AppCompatActivity() {
                 },
                 saveHistory = {
                     viewModel.saveHistory()
+                },
+                loadHistory = {
+                    viewModel.loadHistory()
                 },
                 bottomSheetDataList = bottomSheetDataList
             )

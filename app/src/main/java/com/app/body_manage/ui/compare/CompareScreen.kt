@@ -1,26 +1,28 @@
 package com.app.body_manage.ui.compare
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
+import com.app.body_manage.data.dao.ComparePhotoHistoryDao
 import com.app.body_manage.style.Colors
 import com.app.body_manage.util.DateUtil
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -40,6 +42,7 @@ fun CompareScreen(
     bottomSheetDataList: List<BottomSheetData>,
     uiState: CompareState,
     saveHistory: () -> Unit,
+    loadHistory: () -> Unit,
     beforeSearchLauncher: () -> Unit,
     afterSearchLauncher: () -> Unit,
 ) {
@@ -85,9 +88,7 @@ fun CompareScreen(
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Text(
-                                    text = "次回リリースで作成",
-                                )
+                                HistoryList(uiState.compareHistory)
                             }
                         }
                     )
@@ -101,6 +102,11 @@ fun CompareScreen(
                         }
                     ) {
                         tabRowItems.forEachIndexed { index, item ->
+                            SideEffect {
+                                if (pagerState.currentPage == 1) {
+                                    loadHistory.invoke()
+                                }
+                            }
                             Tab(
                                 selected = pagerState.currentPage == index,
                                 onClick = {
@@ -125,6 +131,129 @@ fun CompareScreen(
                 }
                 is CompareState.CompareItemsError -> {
 
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun HistoryList(compareHistory: List<ComparePhotoHistoryDao.PhotoAndBodyMeasure>) {
+    LazyColumn {
+        items(compareHistory) {
+            Column(
+                Modifier
+                    .fillMaxWidth(0.95F)
+                    .padding(vertical = 15.dp)
+                    .background(Color.LightGray, RoundedCornerShape(5.dp))
+                    .border(1.dp, Color.Transparent, RoundedCornerShape(5.dp)),
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    AsyncImage(
+                        model = it.beforePhotoUri,
+                        contentScale = ContentScale.Inside,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .weight(0.5F)
+                            .padding(5.dp)
+                    )
+                    AsyncImage(
+                        model = it.afterPhotoUri,
+                        contentScale = ContentScale.Inside,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .weight(0.5F)
+                            .padding(5.dp)
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .padding(5.dp)
+                ) {
+                    val weight1 = 0.1F
+                    val weight2 = 0.3F
+                    val weight3 = 0.3F
+                    val weight4 = 0.3F
+                    Row(
+                        modifier = Modifier
+                            .height(30.dp)
+                            .border(1.dp, Color.Black)
+                            .background(Color.White),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .weight(weight1)
+                                .border(1.dp, Color.Black)
+                                .fillMaxHeight(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                "日付",
+                                textAlign = TextAlign.Justify
+                            )
+                        }
+                        Text(
+                            text = "${it.beforeCalendarDate}",
+                            modifier = Modifier
+                                .weight(weight2),
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = "100日",
+                            modifier = Modifier
+                                .weight(weight3),
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = "${it.afterCalendarDate}",
+                            modifier = Modifier
+                                .weight(weight4),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .height(30.dp)
+                            .border(1.dp, Color.Black)
+                            .background(Color.White),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .weight(weight1)
+                                .border(1.dp, Color.Black)
+                                .fillMaxHeight(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                "体重",
+                                textAlign = TextAlign.Justify
+                            )
+                        }
+                        Text(
+                            text = "${it.beforeWeight}kg",
+                            modifier = Modifier
+                                .weight(weight2),
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = "${it.afterWeight - it.beforeWeight}kg",
+                            modifier = Modifier
+                                .weight(weight3),
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = "${it.afterWeight}kg",
+                            modifier = Modifier
+                                .weight(weight4),
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
             }
         }

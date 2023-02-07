@@ -6,10 +6,10 @@ import androidx.room.PrimaryKey
 import java.io.Serializable
 
 @Entity(
-    tableName = "compareBodyMeasureHistory",
+    tableName = "comparePhotoHistory",
 )
-data class CompareBodyMeasureHistoryEntity(
+data class ComparePhotoHistoryEntity(
     @PrimaryKey(autoGenerate = true) var ui: Int,
-    @ColumnInfo(name = "beforeBodyMeasureId") val beforeBodyMeasureId: Int,
-    @ColumnInfo(name = "afterBodyMeasureId") val afterBodyMeasureId: Int,
+    @ColumnInfo(name = "beforePhotoId") val beforePhotoId: Int,
+    @ColumnInfo(name = "afterPhotoId") val afterPhotoId: Int,
 ) : Serializable
