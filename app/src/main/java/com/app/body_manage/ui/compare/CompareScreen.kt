@@ -4,21 +4,25 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
@@ -43,6 +47,8 @@ fun CompareScreen(
     uiState: CompareState,
     saveHistory: () -> Unit,
     loadHistory: () -> Unit,
+    onClickDelete: (ComparePhotoHistoryDao.PhotoAndBodyMeasure) -> Unit,
+    onClickPhoto: (Int) -> Unit,
     beforeSearchLauncher: () -> Unit,
     afterSearchLauncher: () -> Unit,
 ) {
@@ -75,7 +81,7 @@ fun CompareScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .verticalScroll(rememberScrollState()),
-                                verticalArrangement = Arrangement.Center,
+                                verticalArrangement = Arrangement.Top,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 CompareItem("Before", uiState.before, beforeSearchLauncher)
@@ -83,12 +89,31 @@ fun CompareScreen(
                             }
                         },
                         TabRowItem("履歴") {
-                            Column(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                HistoryList(uiState.compareHistory)
+                            if (uiState.compareHistory.isNotEmpty()) {
+                                Column(
+                                    modifier = Modifier.fillMaxSize(),
+                                    verticalArrangement = Arrangement.Top,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    HistoryList(
+                                        uiState.compareHistory,
+                                        onClickDelete,
+                                        onClickPhoto,
+                                    )
+                                }
+                            } else {
+                                Column(
+                                    modifier = Modifier.fillMaxSize(),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Text(
+                                        "体型比較がまだ保存されていません。",
+                                        color = Color.Gray,
+                                        fontSize = 16.sp,
+                                        textAlign = TextAlign.Center,
+                                    )
+                                }
                             }
                         }
                     )
@@ -138,7 +163,11 @@ fun CompareScreen(
 }
 
 @Composable
-private fun HistoryList(compareHistory: List<ComparePhotoHistoryDao.PhotoAndBodyMeasure>) {
+private fun HistoryList(
+    compareHistory: List<ComparePhotoHistoryDao.PhotoAndBodyMeasure>,
+    onClickDelete: (ComparePhotoHistoryDao.PhotoAndBodyMeasure) -> Unit,
+    onClickPhoto: (Int) -> Unit
+) {
     LazyColumn {
         items(compareHistory) {
             Column(
@@ -153,110 +182,172 @@ private fun HistoryList(compareHistory: List<ComparePhotoHistoryDao.PhotoAndBody
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    AsyncImage(
-                        model = it.beforePhotoUri,
-                        contentScale = ContentScale.Inside,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .weight(0.5F)
-                            .padding(5.dp)
+                    CompareImage(
+                        modifier = Modifier.weight(0.5F),
+                        label = "Before",
+                        photoId = it.beforePhotoId,
+                        photoUri = it.beforePhotoUri,
+                        onClickPhoto = onClickPhoto,
                     )
-                    AsyncImage(
-                        model = it.afterPhotoUri,
-                        contentScale = ContentScale.Inside,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .weight(0.5F)
-                            .padding(5.dp)
+                    CompareImage(
+                        modifier = Modifier.weight(0.5F),
+                        label = "After",
+                        photoId = it.afterPhotoId,
+                        photoUri = it.afterPhotoUri,
+                        onClickPhoto = onClickPhoto,
                     )
                 }
-                Column(
+                TableData(compareHistory = it)
+                Box(
                     modifier = Modifier
-                        .padding(5.dp)
+                        .padding(top = 5.dp, bottom = 10.dp, end = 5.dp)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.CenterEnd
                 ) {
-                    val weight1 = 0.1F
-                    val weight2 = 0.3F
-                    val weight3 = 0.3F
-                    val weight4 = 0.3F
-                    Row(
+                    Icon(
+                        Icons.Rounded.Delete,
+                        contentDescription = null,
+                        tint = Color.White,
                         modifier = Modifier
-                            .height(30.dp)
-                            .border(1.dp, Color.Black)
-                            .background(Color.White),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .weight(weight1)
-                                .border(1.dp, Color.Black)
-                                .fillMaxHeight(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                "日付",
-                                textAlign = TextAlign.Justify
+                            .background(
+                                color = Color.Gray,
+                                shape = CircleShape
                             )
-                        }
-                        Text(
-                            text = "${it.beforeCalendarDate}",
-                            modifier = Modifier
-                                .weight(weight2),
-                            textAlign = TextAlign.Center
-                        )
-                        Text(
-                            text = "100日",
-                            modifier = Modifier
-                                .weight(weight3),
-                            textAlign = TextAlign.Center
-                        )
-                        Text(
-                            text = "${it.afterCalendarDate}",
-                            modifier = Modifier
-                                .weight(weight4),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                    Row(
-                        modifier = Modifier
-                            .height(30.dp)
-                            .border(1.dp, Color.Black)
-                            .background(Color.White),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .weight(weight1)
-                                .border(1.dp, Color.Black)
-                                .fillMaxHeight(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                "体重",
-                                textAlign = TextAlign.Justify
-                            )
-                        }
-                        Text(
-                            text = "${it.beforeWeight}kg",
-                            modifier = Modifier
-                                .weight(weight2),
-                            textAlign = TextAlign.Center
-                        )
-                        Text(
-                            text = "${it.afterWeight - it.beforeWeight}kg",
-                            modifier = Modifier
-                                .weight(weight3),
-                            textAlign = TextAlign.Center
-                        )
-                        Text(
-                            text = "${it.afterWeight}kg",
-                            modifier = Modifier
-                                .weight(weight4),
-                            textAlign = TextAlign.Center
-                        )
-                    }
+                            .padding(5.dp)
+                            .size(26.dp)
+                            .clickable {
+                                onClickDelete.invoke(it)
+                            }
+                    )
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun CompareImage(
+    modifier: Modifier,
+    label: String,
+    photoUri: String,
+    onClickPhoto: (Int) -> Unit,
+    photoId: Int,
+) {
+    Box(
+        modifier = modifier
+            .padding(5.dp)
+    ) {
+        AsyncImage(
+            model = photoUri,
+            contentScale = ContentScale.Inside,
+            contentDescription = null,
+            modifier = Modifier
+                .clip(RoundedCornerShape(4.dp))
+                .clickable {
+                    onClickPhoto(photoId)
+                }
+        )
+        Text(
+            label,
+            modifier = Modifier
+                .background(Color.Black)
+                .padding(5.dp),
+            color = Color.White,
+        )
+    }
+}
+
+/** 日付・体重のデータ*/
+@Composable
+private fun TableData(compareHistory: ComparePhotoHistoryDao.PhotoAndBodyMeasure) {
+    Column(
+        modifier = Modifier
+            .padding(5.dp)
+    ) {
+        with(compareHistory) {
+            TableRow(
+                label = "日付",
+                before = beforeCalendarDate.toString(),
+                diff = "${getDiffDays()}日",
+                after = afterCalendarDate.toString(),
+            )
+            TableRow(
+                unit = "kg",
+                label = "体重",
+                before = beforeWeight.toString(),
+                after = afterWeight.toString(),
+                diff = (afterWeight - beforeWeight).toString()
+            )
+        }
+    }
+}
+
+@Composable
+private fun TableRow(
+    label: String,
+    before: String,
+    diff: String,
+    after: String,
+    unit: String? = null,
+) {
+    val weight1 = 0.2F
+    val weight2 = 0.3F
+    val weight3 = 0.2F
+    val weight4 = 0.3F
+    val beforeStr = if (unit != null) before + unit else before
+    val afterStr = if (unit != null) after + unit else after
+    val diffStr = if (unit != null) diff + unit else diff
+    Row(
+        modifier = Modifier
+            .height(40.dp)
+            .border(1.dp, Color.Black)
+            .background(Color.White),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .weight(weight1)
+                .border(1.dp, Color.Black)
+                .fillMaxHeight(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                label,
+                textAlign = TextAlign.Justify,
+                fontSize = 16.sp,
+            )
+        }
+        Text(
+            text = beforeStr,
+            modifier = Modifier
+                .weight(weight2),
+            textAlign = TextAlign.Center,
+            fontSize = 16.sp,
+        )
+        Box(
+            modifier = Modifier
+                .background(
+                    Color.Red,
+                    shape = RoundedCornerShape(topEnd = 25.dp, bottomEnd = 25.dp)
+                )
+                .padding(3.dp)
+                .weight(weight3),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = diffStr,
+                textAlign = TextAlign.Center,
+                fontSize = 16.sp,
+                color = Color.White,
+            )
+        }
+        Text(
+            text = afterStr,
+            modifier = Modifier
+                .weight(weight4),
+            textAlign = TextAlign.Center,
+            fontSize = 16.sp,
+        )
     }
 }
 

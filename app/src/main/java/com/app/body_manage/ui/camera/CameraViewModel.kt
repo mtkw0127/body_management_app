@@ -9,6 +9,9 @@ class CameraViewModel : ViewModel() {
     private val _photoList = MutableLiveData<MutableList<Uri>>(mutableListOf())
     val photoList: LiveData<MutableList<Uri>> = _photoList
 
+    private val _canTakePhoto = MutableLiveData(true)
+    val canTakePhoto: LiveData<Boolean> = _canTakePhoto
+
     fun addPhoto(uri: Uri) {
         _photoList.value?.add(uri)
         _photoList.postValue(_photoList.value)
@@ -19,4 +22,7 @@ class CameraViewModel : ViewModel() {
         _photoList.postValue(_photoList.value)
     }
 
+    fun setCanTakePhoto(takingPhoto: Boolean) {
+        _canTakePhoto.value = takingPhoto
+    }
 }

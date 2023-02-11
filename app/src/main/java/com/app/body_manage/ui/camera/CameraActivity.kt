@@ -6,6 +6,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.AudioManager
+import android.media.MediaActionSound
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -40,9 +42,19 @@ class CameraActivity : AppCompatActivity() {
     private lateinit var cameraExecutor: ExecutorService
 
     private val viewModel = CameraViewModel()
+    private val sound: MediaActionSound by lazy {
+        val sound = MediaActionSound()
+        sound.load(MediaActionSound.SHUTTER_CLICK)
+        return@lazy sound
+    }
 
     private val deletePhoto: (Int) -> Unit = {
         viewModel.removePhoto(it)
+    }
+
+    override fun onDestroy() {
+        sound.release()
+        super.onDestroy()
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -50,6 +62,7 @@ class CameraActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = CameraPreviewBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
+        binding.viewModel = viewModel
         setContentView(binding.root)
         initCamera()
         initBottomSheet()
@@ -75,6 +88,9 @@ class CameraActivity : AppCompatActivity() {
                 )
             binding.photoNum.text = viewModel.photoList.value?.size.toString()
             requireNotNull(binding.bottomSheetInclude.photoListRecyclerView.adapter).notifyDataSetChanged()
+        }
+        viewModel.canTakePhoto.observe(this) {
+
         }
 
         // バックグラウンドのエグゼキュータ
@@ -112,6 +128,13 @@ class CameraActivity : AppCompatActivity() {
             }
         }
         binding.shutterBtn.setOnClickListener {
+            viewModel.setCanTakePhoto(false)
+            val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+            val volume = audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION)
+            if (volume == 0) {
+                audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 2, 1)
+            }
+            sound.play(MediaActionSound.SHUTTER_CLICK)
             val photoOutputFilePath = createFile(it.context)
             val metadata = Metadata().apply {
                 // インカメの場合は写真を反転する
@@ -125,7 +148,6 @@ class CameraActivity : AppCompatActivity() {
             val imageSavedCapture: ImageCapture.OnImageSavedCallback =
                 object : ImageCapture.OnImageSavedCallback {
                     override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                        // TODO: シャッター音をならす
                         Handler(Looper.getMainLooper()).post {
                             val photoUri = checkNotNull(outputFileResults.savedUri)
                             // 一覧に追加
@@ -136,6 +158,10 @@ class CameraActivity : AppCompatActivity() {
                                 photoUri,
                                 applicationContext
                             )
+                            viewModel.setCanTakePhoto(true)
+                            if (volume == 0) {
+                                audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 0, 1)
+                            }
                         }
                     }
 
@@ -145,6 +171,10 @@ class CameraActivity : AppCompatActivity() {
                             Timber.e(exception)
                             Toast.makeText(applicationContext, "写真の撮影に失敗しました。", Toast.LENGTH_SHORT)
                                 .show()
+                        }
+                        viewModel.setCanTakePhoto(true)
+                        if (volume == 0) {
+                            audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 0, 1)
                         }
                     }
                 }

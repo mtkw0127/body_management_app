@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 sealed interface CompareState {
     val saveSuccess: Boolean
@@ -90,15 +91,22 @@ class CompareViewModel(
 
     private val isLoadingHistory = MutableLiveData(false)
 
+    private val _notSetCompareItem = MutableStateFlow(false)
+    val notSetCompareItem = _notSetCompareItem.asStateFlow()
+
     fun saveHistory() {
-        if (viewModelState.value.before == null && viewModelState.value.after == null) return
+        if (viewModelState.value.before == null && viewModelState.value.after == null) {
+            _notSetCompareItem.value = true
+            return
+        }
         viewModelScope.launch {
             runCatching {
                 compareHistoryRepository.saveHistory(
                     compareHistoryEntity = ComparePhotoHistoryEntity(
                         ui = 0,
                         beforePhotoId = requireNotNull(viewModelState.value.before?.photoId),
-                        afterPhotoId = requireNotNull(viewModelState.value.after?.photoId)
+                        afterPhotoId = requireNotNull(viewModelState.value.after?.photoId),
+                        createdAt = LocalDateTime.now(),
                     )
                 )
             }.onFailure {
@@ -161,6 +169,18 @@ class CompareViewModel(
                         }
                     }
                 }
+        }
+    }
+
+    fun deleteHistory(target: ComparePhotoHistoryDao.PhotoAndBodyMeasure) {
+        viewModelScope.launch {
+            runCatching {
+                compareHistoryRepository.delete(target.compareHistoryId)
+            }.onFailure {
+                Timber.e(it)
+            }.onSuccess {
+                loadHistory()
+            }
         }
     }
 }

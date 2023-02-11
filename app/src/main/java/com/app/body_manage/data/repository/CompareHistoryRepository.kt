@@ -16,8 +16,8 @@ class CompareHistoryRepository(private val bpDao: ComparePhotoHistoryDao) {
             return@withContext bpDao.selectAll()
         }
 
-    suspend fun delete(entity: ComparePhotoHistoryEntity) =
+    suspend fun delete(compareHistoryId: Int) =
         withContext(Dispatchers.IO) {
-            return@withContext bpDao.delete(entity)
+            return@withContext bpDao.delete(compareHistoryId)
         }
 }
