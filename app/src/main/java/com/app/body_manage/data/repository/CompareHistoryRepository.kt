@@ -1,12 +1,12 @@
 package com.app.body_manage.data.repository
 
-import com.app.body_manage.data.dao.CompareBodyMeasureHistoryDao
-import com.app.body_manage.data.entity.CompareBodyMeasureHistoryEntity
+import com.app.body_manage.data.dao.ComparePhotoHistoryDao
+import com.app.body_manage.data.entity.ComparePhotoHistoryEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class CompareHistoryRepository(private val bpDao: CompareBodyMeasureHistoryDao) {
-    suspend fun saveHistory(compareHistoryEntity: CompareBodyMeasureHistoryEntity) =
+class CompareHistoryRepository(private val bpDao: ComparePhotoHistoryDao) {
+    suspend fun saveHistory(compareHistoryEntity: ComparePhotoHistoryEntity) =
         withContext(Dispatchers.IO) {
             return@withContext bpDao.saveHistory(compareHistoryEntity)
         }
@@ -16,8 +16,8 @@ class CompareHistoryRepository(private val bpDao: CompareBodyMeasureHistoryDao) 
             return@withContext bpDao.selectAll()
         }
 
-    suspend fun delete(entity: CompareBodyMeasureHistoryEntity) =
+    suspend fun delete(compareHistoryId: Int) =
         withContext(Dispatchers.IO) {
-            return@withContext bpDao.delete(entity)
+            return@withContext bpDao.delete(compareHistoryId)
         }
 }
