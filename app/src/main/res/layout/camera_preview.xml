@@ -1,6 +1,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.app.body_manage.ui.camera.CameraViewModel" />
+    </data>
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/screen"
         android:layout_width="match_parent"
@@ -105,6 +112,7 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:background="@drawable/ic_capture"
+                    android:clickable="@{viewModel.canTakePhoto}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/back_from_camera_btn"
                     app:layout_constraintRight_toLeftOf="@id/next_btn"
