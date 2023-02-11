@@ -271,12 +271,13 @@ private fun TableData(compareHistory: ComparePhotoHistoryDao.PhotoAndBodyMeasure
                 diff = "${getDiffDays()}日",
                 after = afterCalendarDate.toString(),
             )
+            val diff = (afterWeight * 10 - beforeWeight * 10) / 10
             TableRow(
                 unit = "kg",
                 label = "体重",
                 before = beforeWeight.toString(),
                 after = afterWeight.toString(),
-                diff = (afterWeight - beforeWeight).toString()
+                diff = diff.toString()
             )
         }
     }
