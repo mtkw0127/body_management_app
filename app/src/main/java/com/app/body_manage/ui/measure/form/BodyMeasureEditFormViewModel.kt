@@ -1,7 +1,6 @@
 package com.app.body_manage.ui.measure.form
 
 import android.app.Application
-import android.content.Intent
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
@@ -52,13 +51,6 @@ class BodyMeasureEditFormViewModel(
     }
     private val photoRepository: PhotoRepository by lazy {
         (application as TrainingApplication).photoRepository
-    }
-
-    lateinit var intent: Intent
-
-    // 測定日時
-    val captureDate: LocalDate by lazy {
-        intent.getSerializableExtra(BodyMeasureEditFormActivity.KEY_CAPTURE_DATE) as LocalDate
     }
 
     // 更新後の測定日時
@@ -150,7 +142,7 @@ class BodyMeasureEditFormViewModel(
         }
     }
 
-    fun fetchTallAndUserPref() {
+    fun fetchTallAndUserPref(captureDate: LocalDate) {
         viewModelScope.launch {
             runCatching {
                 bodyMeasureRepository.getTallByDate(captureDate)

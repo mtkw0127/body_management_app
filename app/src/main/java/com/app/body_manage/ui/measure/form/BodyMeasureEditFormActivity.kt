@@ -24,6 +24,7 @@ import com.app.body_manage.data.model.PhotoModel
 import com.app.body_manage.databinding.TrainingDetailBinding
 import com.app.body_manage.dialog.FloatNumberPickerDialog
 import com.app.body_manage.dialog.TimePickerDialog
+import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.camera.CameraActivity
 import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel.PhotoType.ADDED
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
@@ -46,11 +47,16 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
     private val captureDateTime: LocalDateTime by lazy {
         intent.getSerializableExtra(
             KEY_CAPTURE_TIME
-        ) as LocalDateTime
+        ) as? LocalDateTime ?: LocalDateTime.now()//ランチャーの場合は今日
     }
 
     private val formType: FormType by lazy {
-        intent.getSerializableExtra(FORM_TYPE) as FormType
+        intent.getSerializableExtra(FORM_TYPE) as? FormType ?: FormType.ADD // ランチャーの場合は追加
+    }
+
+    // 測定日時
+    private val captureDate: LocalDate by lazy {
+        intent.getSerializableExtra(KEY_CAPTURE_DATE) as? LocalDate ?: LocalDate.now()//ランチャーの場合は今日
     }
 
     // カメラ撮影結果コールバック
@@ -76,14 +82,13 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
 
         // ViewModelにapplication設定
         vm = BodyMeasureEditFormViewModel(UserPreferenceRepository(this), formType)
-        vm.intent = intent
         vm.application = application
         vm.measureTime = captureDateTime
 
         setListener()
 
         // 体重・身長・体脂肪率のデフォルト値を取得
-        vm.fetchTallAndUserPref()
+        vm.fetchTallAndUserPref(captureDate)
 
         initPagerAdapter()
         when (formType) {
@@ -100,7 +105,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         }
         // 日付設定
         supportActionBar?.title =
-            DateUtil.localDateConvertJapaneseFormatYearMonthDay(vm.captureDate)
+            DateUtil.localDateConvertJapaneseFormatYearMonthDay(captureDate)
 
         addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -171,7 +176,11 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
 
         // 戻るボタン
         binding.backBtn.setOnClickListener {
-            finish()
+            if (isTaskRoot) {
+                startActivity(CalendarActivity.createIntent(this))
+            } else {
+                finish()
+            }
         }
 
         // 計測時刻
@@ -220,8 +229,8 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         binding.saveBtn.setOnClickListener {
             val saveModel = BodyMeasureEntity(
                 0,
-                vm.captureDate,// カレンダー日付
-                vm.captureDate,// キャプチャ日付
+                captureDate,// カレンダー日付
+                captureDate,// キャプチャ日付
                 vm.measureTime,
                 vm.measureWeight,
                 vm.measureFat,
