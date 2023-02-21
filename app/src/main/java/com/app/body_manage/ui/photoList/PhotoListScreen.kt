@@ -127,15 +127,18 @@ fun PhotoListScreen(
                 }
             },
             floatingActionButton = {
-                FloatingActionButton(onClick = {
-                    scope.launch {
-                        if (modalSheetState.currentValue == ModalBottomSheetValue.Hidden) {
-                            modalSheetState.show()
-                        } else {
-                            modalSheetState.hide()
+                FloatingActionButton(
+                    onClick = {
+                        scope.launch {
+                            if (modalSheetState.currentValue == ModalBottomSheetValue.Hidden) {
+                                modalSheetState.show()
+                            } else {
+                                modalSheetState.hide()
+                            }
                         }
-                    }
-                }) {
+                    },
+                    backgroundColor = nonAccentColor
+                ) {
                     Icon(Icons.Filled.Sort, contentDescription = null)
                 }
             }
