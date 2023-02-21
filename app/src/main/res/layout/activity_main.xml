@@ -33,6 +33,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="先月"
                 android:layout_marginStart="20dp"
+                android:backgroundTint="@color/accent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -42,6 +43,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:text="翌月"
                 android:layout_marginEnd="20dp"
+                android:backgroundTint="@color/accent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </androidx.constraintlayout.widget.ConstraintLayout>

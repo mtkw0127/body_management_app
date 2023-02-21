@@ -14,19 +14,16 @@ import androidx.core.content.ContextCompat
 import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.repository.BodyMeasureRepository
-import com.app.body_manage.ui.calendar.CalendarAdapter.MonthType.CURRENT
-import com.app.body_manage.ui.calendar.CalendarAdapter.MonthType.NEXT
-import com.app.body_manage.ui.calendar.CalendarAdapter.MonthType.NONE
-import com.app.body_manage.ui.calendar.CalendarAdapter.MonthType.PREV
+import com.app.body_manage.ui.calendar.CalendarAdapter.MonthType.*
 import com.app.body_manage.ui.measure.list.MeasureListActivity
 import com.app.body_manage.util.DateUtil
-import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.temporal.ChronoField
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.temporal.ChronoField
 
 class CalendarAdapter(
     var localDate: LocalDate,
@@ -174,8 +171,9 @@ class CalendarAdapter(
         // 当日の場合背景に丸を表示
         if (cellInfo.localDate.isEqual(LocalDate.now())) {
             // TextViewと同じ高さのBitmap作成
-            val color = ContextCompat.getColor(parent.context, R.color.teal_200)
+            val color = ContextCompat.getColor(parent.context, R.color.accent)
             dateTextView.setBackgroundColor(color)
+            dateTextView.setTextColor(Color.WHITE)
         }
         // 先月・翌月の背景は灰色に変更
         when (cellInfo.monthType) {
@@ -203,9 +201,8 @@ class CalendarAdapter(
                     if (it.isNotEmpty()) {
                         val measureCntView =
                             calendarCellView.findViewById<TextView>(R.id.measure_cnt)
-                        measureCntView.text = it.size.toString()
                         measureCntView.background =
-                            context.resources.getDrawable(R.drawable.label, null)
+                            context.resources.getDrawable(R.drawable.icons8_checkmark, null)
                     }
                 }
         }

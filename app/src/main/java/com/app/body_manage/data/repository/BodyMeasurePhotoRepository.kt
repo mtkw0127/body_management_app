@@ -11,6 +11,18 @@ class BodyMeasurePhotoRepository(private val bpDao: BodyMeasurePhotoDao) {
             return@withContext bpDao.selectPhotosByDate()
         }
 
+    suspend fun selectPhotosByWeight(): Map<String, List<BodyMeasurePhotoDao.PhotoData>> =
+        withContext(Dispatchers.IO) {
+            val map = mutableMapOf<String, List<BodyMeasurePhotoDao.PhotoData>>()
+            val data = bpDao.selectPhotosByWeight()
+            data.forEach { (t, u) ->
+                run {
+                    map[t.toString()] = u
+                }
+            }
+            return@withContext map.toMap()
+        }
+
     suspend fun selectPhotosByDate(date: LocalDate): List<BodyMeasurePhotoDao.PhotoData> =
         withContext(Dispatchers.IO) {
             val photoListMap = bpDao.selectPhotosByDateOnlyDate(date)

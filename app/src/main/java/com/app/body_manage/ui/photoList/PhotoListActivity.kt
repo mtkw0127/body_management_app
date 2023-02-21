@@ -32,7 +32,7 @@ class PhotoListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val vm = PhotoListViewModel(application = application)
-        vm.loadPhotoRegisteredDates()
+        vm.load()
         setContent {
             MaterialTheme {
                 val state: PhotoListState by vm.uiState.collectAsState()
@@ -51,6 +51,9 @@ class PhotoListActivity : AppCompatActivity() {
                                 photoId = PhotoModel.Id(photoId)
                             )
                         )
+                    },
+                    onClickSortType = {
+                        vm.changeType(it)
                     },
                     bottomSheetDataList = bottomSheetDataList
                 )

@@ -3,43 +3,16 @@ package com.app.body_manage.ui.measure.list
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Scaffold
-import androidx.compose.material.SnackbarDuration
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Photo
-import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -58,22 +31,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.app.body_manage.common.BottomSheet
-import com.app.body_manage.common.BottomSheetData
-import com.app.body_manage.common.Calendar
-import com.app.body_manage.common.LeftTriangleShape
-import com.app.body_manage.common.ReverseTriangleShape
-import com.app.body_manage.common.RightTriangleShape
+import com.app.body_manage.common.*
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.data.entity.BodyMeasureModel
 import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.style.Colors
+import com.app.body_manage.style.Colors.Companion.accentColor
+import com.app.body_manage.style.Colors.Companion.nonAccentColor
 import com.app.body_manage.util.DateUtil
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.YearMonth
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -126,6 +96,7 @@ fun MeasureListScreen(
                                 }
                             },
                         fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
                     Box(
@@ -233,8 +204,11 @@ fun MeasureListScreen(
             }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = clickFab) {
-                Icon(Icons.Filled.Add, contentDescription = "体型登録")
+            FloatingActionButton(onClick = clickFab, backgroundColor = nonAccentColor) {
+                Icon(
+                    Icons.Filled.Add,
+                    contentDescription = "体型登録",
+                )
             }
         },
         bottomBar = {
@@ -347,15 +321,25 @@ private fun TallSetField(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 modifier = Modifier.fillMaxSize()
             ) {
-                Button(onClick = {
-                    keyboardController?.hide()
-                    clickSaveBodyInfo.invoke()
-                }) {
+                Button(
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = nonAccentColor
+                    ),
+                    onClick = {
+                        keyboardController?.hide()
+                        clickSaveBodyInfo.invoke()
+                    }
+                ) {
                     Text(text = "保存")
                 }
-                Button(onClick = {
-                    clickShowPhotoList.invoke()
-                }) {
+                Button(
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = nonAccentColor
+                    ),
+                    onClick = {
+                        clickShowPhotoList.invoke()
+                    }
+                ) {
                     Icon(
                         Icons.Filled.Photo,
                         contentDescription = null

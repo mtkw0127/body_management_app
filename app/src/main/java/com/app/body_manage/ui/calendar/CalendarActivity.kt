@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
@@ -14,7 +12,6 @@ import com.app.body_manage.databinding.ActivityMainBinding
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
-import com.app.body_manage.ui.setting.SettingActivity
 import com.app.body_manage.util.DateUtil
 
 class CalendarActivity : AppCompatActivity() {
@@ -57,21 +54,21 @@ class CalendarActivity : AppCompatActivity() {
         initListener()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.setting, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
+//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//        menuInflater.inflate(R.menu.setting, menu)
+//        return super.onCreateOptionsMenu(menu)
+//    }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_setting -> {
-                val intent = SettingActivity.createIntent(this)
-                simpleLauncher.launch(intent)
-                return true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        return when (item.itemId) {
+//            R.id.menu_setting -> {
+//                val intent = SettingActivity.createIntent(this)
+//                simpleLauncher.launch(intent)
+//                return true
+//            }
+//            else -> super.onOptionsItemSelected(item)
+//        }
+//    }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initListener() {
