@@ -28,13 +28,13 @@ kapt {
 android {
     signingConfigs {
         debug {
-            storePassword 'chekera0127'
-            keyPassword 'chekera0127'
-            storeFile file('/Users/tomonori.matsukawa/StudioProjects/vetonum/training_management_app/key/Untitled')
-            keyAlias 'key0'
+            storePassword 'develop'
+            keyPassword 'develop'
+            storeFile file('../key/develop.jks')
+            keyAlias 'develop'
         }
         release {
-            storeFile file('/Users/tomonori.matsukawa/StudioProjects/vetonum/training_management_app/key/Untitled')
+            storeFile file('../key/release.jks')
             storePassword 'chekera0127'
             keyPassword 'chekera0127'
             keyAlias 'key0'
