@@ -14,8 +14,10 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v3
       - name: Create Play Service Key
+        env:
+          PLAY_SERVICE_PUBLISHER_KEY: ${{ secrets.PLAY_SERVICE_PUBLISHER_KEY }}
         run: |
-          echo ${{ secrets.GOOGLEPLAYPUBLISHERSERVICEKEY }} > key/play-service-key.json
+          echo $PLAY_SERVICE_PUBLISHER_KEY > key/play-service-key.json
       - name: Publish To Play Service
         run: |
           ./gradlew deploy_play_service
