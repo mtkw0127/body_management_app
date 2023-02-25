@@ -4,18 +4,16 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.TrainingApplication
+import com.app.body_manage.data.entity.BodyMeasureModel
 import com.app.body_manage.data.model.PhotoModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 sealed interface PhotoDetailState {
     data class ShowPhotoDetail(
-        val photoModel: PhotoModel
+        val photoModel: PhotoModel,
+        val bodyMeasureModel: BodyMeasureModel?
     ) : PhotoDetailState
 
     data class LoadingPhotoDetail(
@@ -26,13 +24,17 @@ sealed interface PhotoDetailState {
 }
 
 data class PhotoDetailViewModelState(
-    private val photoModel: PhotoModel? = null,
-    private val loading: Boolean = true,
-    private val err: Throwable? = null,
+    val photoModel: PhotoModel? = null,
+    val bodyMeasureModel: BodyMeasureModel? = null,
+    val loading: Boolean = true,
+    val err: Throwable? = null,
 ) {
     fun toUiState(): PhotoDetailState {
         return if (photoModel != null) {
-            PhotoDetailState.ShowPhotoDetail(photoModel)
+            PhotoDetailState.ShowPhotoDetail(
+                photoModel,
+                bodyMeasureModel,
+            )
         } else if (err != null) {
             PhotoDetailState.NotFoundPhoto(err)
         } else if (loading) {
@@ -51,6 +53,10 @@ class PhotoDetailViewModel(
 
     private val photoDetailRepository by lazy {
         (application as TrainingApplication).photoRepository
+    }
+
+    private val bodyMeasureRepository by lazy {
+        (application as TrainingApplication).bodyMeasureRepository
     }
 
     private val viewModelState = MutableStateFlow(
@@ -72,16 +78,39 @@ class PhotoDetailViewModel(
         }
         viewModelScope.launch {
             runCatching { photoDetailRepository.selectPhoto(photoId) }
-                .onFailure { Timber.e(it) }
+                .onFailure {
+                    Timber.e(it)
+                    viewModelState.update { viewModelState ->
+                        viewModelState.copy(loading = false)
+                    }
+                }
                 .onSuccess { photoModel ->
                     viewModelState.update {
                         it.copy(photoModel = photoModel)
                     }
-                }.also {
-                    viewModelState.update {
-                        it.copy(loading = false)
-                    }
+                    loadBodyMeasure()
                 }
+        }
+    }
+
+    /** 写真に紐づく計測情報を取得*/
+    private fun loadBodyMeasure() {
+        viewModelScope.launch {
+            runCatching {
+                bodyMeasureRepository.fetch(
+                    viewModelState.value.photoModel?.bodyMeasureId ?: return@launch
+                )
+            }.onFailure {
+                Timber.e(it)
+            }.onSuccess { fetchedResult ->
+                viewModelState.update {
+                    it.copy(bodyMeasureModel = fetchedResult)
+                }
+            }.also {
+                viewModelState.update {
+                    it.copy(loading = false)
+                }
+            }
         }
     }
 }

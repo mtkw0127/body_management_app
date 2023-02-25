@@ -27,6 +27,7 @@ import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.camera.CameraActivity
 import com.app.body_manage.ui.measure.form.BodyMeasureEditFormViewModel.PhotoType.ADDED
+import com.app.body_manage.ui.measure.list.MeasureListActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import com.app.body_manage.util.DateUtil
 import com.makeramen.roundedimageview.RoundedImageView
@@ -250,7 +251,16 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                     setResult(RESULT_UPDATE)
                 }
             }
-            finish()
+            if (isTaskRoot) {
+                startActivity(
+                    MeasureListActivity.createTrainingMeasureListIntent(
+                        this,
+                        LocalDate.now()
+                    )
+                )
+            } else {
+                finish()
+            }
         }
 
         val photoDeleteAction = View.OnClickListener {

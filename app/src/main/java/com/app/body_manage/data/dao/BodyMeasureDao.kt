@@ -36,4 +36,7 @@ interface BodyMeasureDao {
 
     @Update
     suspend fun update(bodyMeasureEntity: BodyMeasureEntity): Int
+
+    @Query("SELECT * FROM bodyMeasures WHERE ui = :bodyMeasureId")
+    suspend fun fetch(bodyMeasureId: Int): BodyMeasureEntity
 }

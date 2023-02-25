@@ -56,6 +56,12 @@ class DateUtil {
             return "${hour}時${minute}分"
         }
 
+        fun localDateTimeToJapanese(localDateTime: LocalDateTime): String {
+            val dateStr = localDateConvertJapaneseFormatYearMonthDay(localDateTime.toLocalDate())
+            val hourTime = "${localDateTime.hour}時${localDateTime.minute}分"
+            return "$dateStr$hourTime"
+        }
+
         /**
          * 引数の年月日が祝日か判定する.
          */
