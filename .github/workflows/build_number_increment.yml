@@ -1,5 +1,11 @@
 name: build_number_increment
 
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
 jobs:
   build_number_increment:
     runs-on: ubuntu-latest
