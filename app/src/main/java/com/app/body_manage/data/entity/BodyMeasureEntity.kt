@@ -34,12 +34,12 @@ data class BodyMeasureModel(
     val bmi: String,
 ) {
     @JvmInline
-    value class Id(val ui: Int)
+    value class Id(val ui: Long)
 }
 
 fun BodyMeasureEntity.toModel(): BodyMeasureModel =
     BodyMeasureModel(
-        ui = BodyMeasureModel.Id(this.ui),
+        ui = BodyMeasureModel.Id(this.ui.toLong()),
         capturedLocalDateTime = this.capturedTime,
         weight = this.weight,
         fat = this.fatRate,

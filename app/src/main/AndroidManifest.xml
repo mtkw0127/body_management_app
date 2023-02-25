@@ -22,22 +22,17 @@
             android:name="com.app.body_manage.ui.calendar.CalendarActivity"
             android:exported="true"
             android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity"
-            android:exported="true"
-            android:launchMode="singleInstance"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.compareHistory.CompareHistoryActivity"
-            android:exported="true"
-            android:launchMode="singleInstance"
-            android:screenOrientation="portrait" />
         <activity
             android:name="com.app.body_manage.ui.measure.list.MeasureListActivity"
             android:exported="true"

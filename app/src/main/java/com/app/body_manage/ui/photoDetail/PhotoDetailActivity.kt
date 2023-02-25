@@ -22,6 +22,7 @@ class PhotoDetailActivity : AppCompatActivity() {
             val state by photoDetailViewModel.uiState.collectAsState()
             PhotoDetailScreen(
                 state = state,
+                onClickBackPress = { finish() }
             )
         }
     }
