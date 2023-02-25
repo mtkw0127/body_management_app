@@ -10,16 +10,12 @@ import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.ui.measure.list.MeasureListState.BodyMeasureListState
 import com.app.body_manage.ui.measure.list.MeasureListState.MealMeasureListState
-import java.time.LocalDate
-import java.time.YearMonth
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
+import java.time.LocalDate
+import java.time.YearMonth
 
 sealed interface MeasureListState {
     val date: LocalDate
@@ -56,7 +52,7 @@ sealed interface MeasureListState {
     ) : MeasureListState
 }
 
-internal data class MeasureListViewModelState(
+data class MeasureListViewModelState(
     val date: LocalDate,
     val currentMonth: YearMonth,
     val currentMonthRegisteredDayList: List<LocalDate> = listOf(),
@@ -237,8 +233,12 @@ class MeasureListViewModel(
     }
 
     fun setTall(tall: String) {
-        viewModelState.update {
-            it.copy(tall = tall)
+        runCatching {
+            tall.toFloat()
+        }.onSuccess {
+            viewModelState.update {
+                it.copy(tall = tall)
+            }
         }
     }
 
