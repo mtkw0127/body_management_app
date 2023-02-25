@@ -8,6 +8,7 @@ plugins {
     id 'com.google.firebase.crashlytics'
     id "com.diffplug.spotless" version "6.11.0"
     id "com.ncorti.ktfmt.gradle"
+    id 'com.github.triplet.play'
 }
 
 ktlint {
@@ -80,6 +81,11 @@ android {
             useJUnitPlatform()
         }
     }
+}
+
+play {
+    track = 'internal'
+    serviceAccountCredentials.set(file("../key/play-service-key.json"))
 }
 
 spotless { // if you are using build.gradle.kts, instead of 'spotless {' use:

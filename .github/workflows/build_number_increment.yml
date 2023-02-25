@@ -1,8 +1,4 @@
 name: build_number_increment
-on:
-  pull_request:
-    branches:
-      - master
 
 jobs:
   build_number_increment:
