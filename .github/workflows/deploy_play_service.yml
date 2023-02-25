@@ -20,4 +20,4 @@ jobs:
           echo $PLAY_SERVICE_PUBLISHER_KEY > key/play-service-key.json
       - name: Publish To Play Service
         run: |
-          ./gradlew deploy_play_service
+          ./gradlew publishReleaseBundle
