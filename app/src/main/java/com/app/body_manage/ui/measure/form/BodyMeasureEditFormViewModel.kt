@@ -1,7 +1,6 @@
 package com.app.body_manage.ui.measure.form
 
 import android.app.Application
-import android.content.Intent
 import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
@@ -10,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.entity.BodyMeasureEntity
+import com.app.body_manage.data.entity.BodyMeasureModel
 import com.app.body_manage.data.entity.PhotoEntity
 import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.model.PhotoModel
@@ -52,13 +52,6 @@ class BodyMeasureEditFormViewModel(
     }
     private val photoRepository: PhotoRepository by lazy {
         (application as TrainingApplication).photoRepository
-    }
-
-    lateinit var intent: Intent
-
-    // 測定日時
-    val captureDate: LocalDate by lazy {
-        intent.getSerializableExtra(BodyMeasureEditFormActivity.KEY_CAPTURE_DATE) as LocalDate
     }
 
     // 更新後の測定日時
@@ -150,7 +143,7 @@ class BodyMeasureEditFormViewModel(
         }
     }
 
-    fun fetchTallAndUserPref() {
+    fun fetchTallAndUserPref(captureDate: LocalDate) {
         viewModelScope.launch {
             runCatching {
                 bodyMeasureRepository.getTallByDate(captureDate)
@@ -206,7 +199,7 @@ class BodyMeasureEditFormViewModel(
                 val id = bodyMeasureRepository.insert(saveModel)
                 if (_photoList.value?.isNotEmpty() == true) {
                     photoRepository.insert(
-                        createPhotoModels(id.toInt())
+                        createPhotoModels(id)
                     )
                 }
             }.onFailure {
@@ -228,7 +221,7 @@ class BodyMeasureEditFormViewModel(
                 photoRepository.deletePhotos(bodyMeasureEntity.ui)
                 if (_photoList.value?.isNotEmpty() == true) {
                     photoRepository.insert(
-                        createPhotoModels(bodyMeasureEntity.ui)
+                        createPhotoModels(BodyMeasureModel.Id(bodyMeasureEntity.ui.toLong()))
                     )
                     // 最新の写真をサムネイルに設定
                     saveModel.photoUri = checkNotNull(_photoList.value).last().uri.toString()
@@ -241,12 +234,12 @@ class BodyMeasureEditFormViewModel(
     /**
      * 写真のモデル生成
      */
-    private fun createPhotoModels(id: Int): List<PhotoEntity> {
+    private fun createPhotoModels(bodyMeasureId: BodyMeasureModel.Id): List<PhotoEntity> {
         val photoList = checkNotNull(_photoList.value)
         return photoList.map {
             PhotoEntity(
                 ui = 0,
-                bodyMeasureId = id,
+                bodyMeasureId = bodyMeasureId.ui.toInt(),
                 photoUri = it.uri.toString()
             )
         }

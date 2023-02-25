@@ -1,0 +1,21 @@
+name: deploy_play_service.yml
+
+on:
+  pull_request:
+    branches:
+      - master
+    types: [ closed ]
+
+jobs:
+  deploy_play_service:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v3
+      - name: Create Play Service Key
+        run: |
+          echo ${{ secrets.GOOGLEPLAYPUBLISHERSERVICEKEY }} > key/play-service-key.json
+      - name: Publish To Play Service
+        run: |
+          ./gradlew deploy_play_service

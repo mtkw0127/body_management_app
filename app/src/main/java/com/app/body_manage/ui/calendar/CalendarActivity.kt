@@ -4,8 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
@@ -13,9 +12,10 @@ import com.app.body_manage.R
 import com.app.body_manage.databinding.ActivityMainBinding
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
+import com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
-import com.app.body_manage.ui.setting.SettingActivity
 import com.app.body_manage.util.DateUtil
+import java.time.LocalDate
 
 class CalendarActivity : AppCompatActivity() {
 
@@ -33,9 +33,19 @@ class CalendarActivity : AppCompatActivity() {
         adapter.notifyDataSetChanged()
     }
 
+    private val registeredFromFab = registerForActivityResult(StartActivityForResult()) {
+        val message = when (it.resultCode) {
+            BodyMeasureEditFormActivity.RESULT_CREATE -> "追加しました"
+            else -> null
+        }
+        message?.let {
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        }
+        adapter.notifyDataSetChanged()
+    }
+
     private val viewModel: CalendarListViewModel = CalendarListViewModel()
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -55,22 +65,6 @@ class CalendarActivity : AppCompatActivity() {
         supportActionBar?.title = viewModel.yearMonth
 
         initListener()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.setting, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.menu_setting -> {
-                val intent = SettingActivity.createIntent(this)
-                simpleLauncher.launch(intent)
-                return true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -102,6 +96,15 @@ class CalendarActivity : AppCompatActivity() {
             adapter.createPrevMonthCalendar()
             supportActionBar?.title =
                 DateUtil.localDateConvertJapaneseFormatYearMonth(adapter.localDate)
+        }
+        binding.addButton.setOnClickListener {
+            registeredFromFab.launch(
+                BodyMeasureEditFormActivity.createMeasureFormIntent(
+                    this,
+                    formType = BodyMeasureEditFormActivity.FormType.ADD,
+                    formDate = LocalDate.now()
+                )
+            )
         }
     }
 }

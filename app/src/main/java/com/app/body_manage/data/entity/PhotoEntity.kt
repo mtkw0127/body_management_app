@@ -27,5 +27,6 @@ class PhotoEntity(
 
 fun PhotoEntity.toModel() = PhotoModel(
     id = PhotoModel.Id(ui),
+    bodyMeasureId = BodyMeasureModel.Id(bodyMeasureId.toLong()),
     uri = photoUri.toUri(),
 )

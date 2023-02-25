@@ -11,8 +11,8 @@ import java.time.LocalDateTime
 
 class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
 
-    suspend fun insert(bodyMeasureEntity: BodyMeasureEntity): Long {
-        return trainingDao.insert(bodyMeasureEntity)
+    suspend fun insert(bodyMeasureEntity: BodyMeasureEntity): BodyMeasureModel.Id {
+        return BodyMeasureModel.Id(trainingDao.insert(bodyMeasureEntity))
     }
 
     suspend fun getEntityListAll(): List<BodyMeasureEntity> {
@@ -50,5 +50,9 @@ class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
 
     suspend fun update(bodyMeasureEntity: BodyMeasureEntity): Int {
         return trainingDao.update(bodyMeasureEntity)
+    }
+
+    suspend fun fetch(bodyMeasureId: BodyMeasureModel.Id): BodyMeasureModel {
+        return trainingDao.fetch(bodyMeasureId.ui.toInt()).toModel()
     }
 }

@@ -12,7 +12,7 @@ public class ActivityMainBindingImpl extends ActivityMainBinding  {
     @Nullable
     private static final android.util.SparseIntArray sViewsWithIds;
     static {
-        sIncludes = new androidx.databinding.ViewDataBinding.IncludedLayouts(6);
+        sIncludes = new androidx.databinding.ViewDataBinding.IncludedLayouts(7);
         sIncludes.setIncludes(0, 
             new String[] {"bottom_sheet"},
             new int[] {1},
@@ -22,6 +22,7 @@ public class ActivityMainBindingImpl extends ActivityMainBinding  {
         sViewsWithIds.put(R.id.move_container, 3);
         sViewsWithIds.put(R.id.prev, 4);
         sViewsWithIds.put(R.id.next, 5);
+        sViewsWithIds.put(R.id.add_button, 6);
     }
     // views
     @NonNull
@@ -32,10 +33,11 @@ public class ActivityMainBindingImpl extends ActivityMainBinding  {
     // Inverse Binding Event Handlers
 
     public ActivityMainBindingImpl(@Nullable androidx.databinding.DataBindingComponent bindingComponent, @NonNull View root) {
-        this(bindingComponent, root, mapBindings(bindingComponent, root, 6, sIncludes, sViewsWithIds));
+        this(bindingComponent, root, mapBindings(bindingComponent, root, 7, sIncludes, sViewsWithIds));
     }
     private ActivityMainBindingImpl(androidx.databinding.DataBindingComponent bindingComponent, View root, Object[] bindings) {
         super(bindingComponent, root, 1
+            , (com.google.android.material.floatingactionbutton.FloatingActionButton) bindings[6]
             , (com.app.body_manage.databinding.BottomSheetBinding) bindings[1]
             , (android.widget.GridView) bindings[2]
             , (androidx.constraintlayout.widget.ConstraintLayout) bindings[3]

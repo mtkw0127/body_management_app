@@ -8,6 +8,7 @@ plugins {
     id 'com.google.firebase.crashlytics'
     id "com.diffplug.spotless" version "6.11.0"
     id "com.ncorti.ktfmt.gradle"
+    id 'com.github.triplet.play'
 }
 
 ktlint {
@@ -28,13 +29,13 @@ kapt {
 android {
     signingConfigs {
         debug {
-            storePassword 'chekera0127'
-            keyPassword 'chekera0127'
-            storeFile file('/Users/tomonori.matsukawa/StudioProjects/vetonum/training_management_app/key/Untitled')
-            keyAlias 'key0'
+            storePassword 'develop'
+            keyPassword 'develop'
+            storeFile file('../key/develop.jks')
+            keyAlias 'develop'
         }
         release {
-            storeFile file('/Users/tomonori.matsukawa/StudioProjects/vetonum/training_management_app/key/Untitled')
+            storeFile file('../key/release.jks')
             storePassword 'chekera0127'
             keyPassword 'chekera0127'
             keyAlias 'key0'
@@ -80,6 +81,11 @@ android {
             useJUnitPlatform()
         }
     }
+}
+
+play {
+    track = 'internal'
+    serviceAccountCredentials.set(file("../key/play-service-key.json"))
 }
 
 spotless { // if you are using build.gradle.kts, instead of 'spotless {' use:

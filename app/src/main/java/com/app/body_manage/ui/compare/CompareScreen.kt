@@ -27,7 +27,9 @@ import coil.compose.AsyncImage
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.data.dao.ComparePhotoHistoryDao
-import com.app.body_manage.style.Colors
+import com.app.body_manage.style.Colors.Companion.accentColor
+import com.app.body_manage.style.Colors.Companion.backgroundColor
+import com.app.body_manage.style.Colors.Companion.nonAccentColor
 import com.app.body_manage.util.DateUtil
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -57,7 +59,10 @@ fun CompareScreen(
     Scaffold(
         floatingActionButton = {
             if (pagerState.currentPage == 0) {
-                FloatingActionButton(onClick = { saveHistory.invoke() }) {
+                FloatingActionButton(
+                    onClick = { saveHistory.invoke() },
+                    backgroundColor = nonAccentColor
+                ) {
                     Icon(
                         imageVector = Icons.Filled.Check,
                         contentDescription = null
@@ -122,9 +127,10 @@ fun CompareScreen(
                         indicator = { tabPositions ->
                             TabRowDefaults.Indicator(
                                 Modifier.pagerTabIndicatorOffset(pagerState, tabPositions),
-                                color = MaterialTheme.colors.secondary
+                                color = accentColor
                             )
-                        }
+                        },
+                        backgroundColor = nonAccentColor
                     ) {
                         tabRowItems.forEachIndexed { index, item ->
                             SideEffect {
@@ -142,7 +148,11 @@ fun CompareScreen(
                                     }
                                 },
                                 text = {
-                                    Text(text = item.title)
+                                    Text(
+                                        text = item.title,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 16.sp
+                                    )
                                 }
                             )
                         }
@@ -172,15 +182,16 @@ private fun HistoryList(
         items(compareHistory) {
             Column(
                 Modifier
-                    .fillMaxWidth(0.95F)
-                    .padding(vertical = 15.dp)
-                    .background(Color.LightGray, RoundedCornerShape(5.dp))
+                    .fillMaxWidth(0.98F)
+                    .padding(vertical = 10.dp)
+                    .background(backgroundColor, RoundedCornerShape(5.dp))
                     .border(1.dp, Color.Transparent, RoundedCornerShape(5.dp)),
             ) {
                 Row(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(top = 10.dp)
                 ) {
                     CompareImage(
                         modifier = Modifier.weight(0.5F),
@@ -271,13 +282,18 @@ private fun TableData(compareHistory: ComparePhotoHistoryDao.PhotoAndBodyMeasure
                 diff = "${getDiffDays()}日",
                 after = afterCalendarDate.toString(),
             )
+            val gained = afterWeight >= beforeWeight
             val diff = (afterWeight * 10 - beforeWeight * 10) / 10
             TableRow(
                 unit = "kg",
                 label = "体重",
                 before = beforeWeight.toString(),
                 after = afterWeight.toString(),
-                diff = diff.toString()
+                diff = if (gained) {
+                    "+$diff"
+                } else {
+                    "-$diff"
+                },
             )
         }
     }
@@ -328,7 +344,7 @@ private fun TableRow(
         Box(
             modifier = Modifier
                 .background(
-                    Color.Red,
+                    accentColor,
                     shape = RoundedCornerShape(topEnd = 25.dp, bottomEnd = 25.dp)
                 )
                 .padding(3.dp)
@@ -365,7 +381,7 @@ private fun CompareItem(label: String, item: CompareItemStruct?, onEditClick: ()
             .fillMaxWidth(0.95F)
             .height(400.dp)
             .padding(5.dp)
-            .background(color = Colors.secondThemeColor, shape = RoundedCornerShape(15.dp))
+            .background(color = backgroundColor, shape = RoundedCornerShape(15.dp))
     ) {
         Row {
             Column(

@@ -6,7 +6,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.media.AudioManager
 import android.media.MediaActionSound
 import android.net.Uri
 import android.os.Bundle
@@ -129,12 +128,6 @@ class CameraActivity : AppCompatActivity() {
         }
         binding.shutterBtn.setOnClickListener {
             viewModel.setCanTakePhoto(false)
-            val audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            val volume = audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION)
-            if (volume == 0) {
-                audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 2, 1)
-            }
-            sound.play(MediaActionSound.SHUTTER_CLICK)
             val photoOutputFilePath = createFile(it.context)
             val metadata = Metadata().apply {
                 // インカメの場合は写真を反転する
@@ -159,9 +152,6 @@ class CameraActivity : AppCompatActivity() {
                                 applicationContext
                             )
                             viewModel.setCanTakePhoto(true)
-                            if (volume == 0) {
-                                audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 0, 1)
-                            }
                         }
                     }
 
@@ -173,9 +163,6 @@ class CameraActivity : AppCompatActivity() {
                                 .show()
                         }
                         viewModel.setCanTakePhoto(true)
-                        if (volume == 0) {
-                            audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 0, 1)
-                        }
                     }
                 }
             imageCapture.takePicture(outputOptions, cameraExecutor, imageSavedCapture)
