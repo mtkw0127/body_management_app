@@ -71,7 +71,6 @@ class MeasureListActivity : AppCompatActivity() {
                     viewModel.updateTall()
                 },
                 setTall = {
-                    applicationContext
                     viewModel.setTall(it)
                 },
                 setLocalDate = {
