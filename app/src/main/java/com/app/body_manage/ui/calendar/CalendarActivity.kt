@@ -14,6 +14,7 @@ import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
+import com.app.body_manage.ui.setting.SettingActivity
 import com.app.body_manage.util.DateUtil
 import java.time.LocalDate
 
@@ -73,6 +74,7 @@ class CalendarActivity : AppCompatActivity() {
         val menuCompare = navigation.menu.findItem(R.id.menu_compare)
         val menuPhoto = navigation.menu.findItem(R.id.menu_photo)
         val menuGraph = navigation.menu.findItem(R.id.menu_graph)
+        val menuSettings = navigation.menu.findItem(R.id.menu_settings)
         menuCompare.setOnMenuItemClickListener {
             simpleLauncher.launch(CompareActivity.createIntent(this))
             return@setOnMenuItemClickListener true
@@ -83,6 +85,10 @@ class CalendarActivity : AppCompatActivity() {
         }
         menuGraph.setOnMenuItemClickListener {
             simpleLauncher.launch(GraphActivity.createIntent(this))
+            return@setOnMenuItemClickListener true
+        }
+        menuSettings.setOnMenuItemClickListener {
+            simpleLauncher.launch(SettingActivity.createIntent(this))
             return@setOnMenuItemClickListener true
         }
         binding.next.setOnClickListener {

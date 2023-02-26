@@ -53,6 +53,7 @@ fun createBottomDataList(
     compareAction: () -> Unit,
     photoListAction: () -> Unit,
     graphAction: () -> Unit,
+    settingAction: () -> Unit,
 ): List<BottomSheetData> {
     return listOf(
         BottomSheetData(
@@ -75,5 +76,10 @@ fun createBottomDataList(
             R.drawable.ic_baseline_show_chart_24,
             graphAction
         ),
+        BottomSheetData(
+            "設定",
+            R.drawable.ic_baseline_settings_24,
+            settingAction,
+        )
     )
 }

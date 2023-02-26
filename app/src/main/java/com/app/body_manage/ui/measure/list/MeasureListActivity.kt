@@ -21,6 +21,7 @@ import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
+import com.app.body_manage.ui.setting.SettingActivity
 import java.time.LocalDate
 
 class MeasureListActivity : AppCompatActivity() {
@@ -61,7 +62,8 @@ class MeasureListActivity : AppCompatActivity() {
                 calendarAction = { launcher.launch(CalendarActivity.createIntent(this)) },
                 compareAction = { launcher.launch(CompareActivity.createIntent(this)) },
                 photoListAction = { launcher.launch(PhotoListActivity.createIntent(this)) },
-                graphAction = { launcher.launch(GraphActivity.createIntent(this)) }
+                graphAction = { launcher.launch(GraphActivity.createIntent(this)) },
+                settingAction = { launcher.launch(SettingActivity.createIntent(this)) }
             )
 
             MeasureListScreen(

@@ -15,6 +15,7 @@ import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
+import com.app.body_manage.ui.setting.SettingActivity
 
 class PhotoListActivity : AppCompatActivity() {
 
@@ -40,7 +41,8 @@ class PhotoListActivity : AppCompatActivity() {
                     calendarAction = { launcher.launch(CalendarActivity.createIntent(this)) },
                     compareAction = { launcher.launch(CompareActivity.createIntent(this)) },
                     graphAction = { launcher.launch(GraphActivity.createIntent(this)) },
-                    photoListAction = {}
+                    photoListAction = {},
+                    settingAction = { launcher.launch(SettingActivity.createIntent(this)) }
                 )
                 PhotoListScreen(
                     state = state,

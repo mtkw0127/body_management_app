@@ -25,4 +25,10 @@
         android:icon="@drawable/ic_baseline_show_chart_24"
         app:showAsAction="ifRoom"
         android:title="グラフ" />
+    <item
+        android:id="@+id/menu_settings"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_settings_24"
+        app:showAsAction="ifRoom"
+        android:title="設定" />
 </menu>

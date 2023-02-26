@@ -24,6 +24,7 @@ fun SettingScreen(
     notifyAction: (Boolean) -> Unit,
 ) {
     Scaffold(
+        topBar = {},
         bottomBar = {
             BottomSheet(bottomSheetDataList = (bottomSheetDataList))
         }

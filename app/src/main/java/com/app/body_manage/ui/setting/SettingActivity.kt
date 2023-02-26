@@ -16,7 +16,7 @@ import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
-import java.util.Calendar
+import java.util.*
 
 class SettingActivity : AppCompatActivity() {
 
@@ -34,7 +34,8 @@ class SettingActivity : AppCompatActivity() {
             calendarAction = { launcher.launch(CalendarActivity.createIntent(this)) },
             compareAction = { launcher.launch(CompareActivity.createIntent(this)) },
             photoListAction = { launcher.launch(PhotoListActivity.createIntent(this)) },
-            graphAction = { launcher.launch(GraphActivity.createIntent(this)) }
+            graphAction = { launcher.launch(GraphActivity.createIntent(this)) },
+            settingAction = { launcher.launch(createIntent(this)) },
         )
 
         setContent {

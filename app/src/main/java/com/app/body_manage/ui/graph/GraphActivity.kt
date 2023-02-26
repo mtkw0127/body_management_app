@@ -14,6 +14,7 @@ import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphViewModel.MyEntry
 import com.app.body_manage.ui.photoList.PhotoListActivity
+import com.app.body_manage.ui.setting.SettingActivity
 import com.google.android.material.tabs.TabLayoutMediator
 
 class GraphActivity : AppCompatActivity() {
@@ -46,6 +47,7 @@ class GraphActivity : AppCompatActivity() {
         val menuCalendar = navigation.menu.findItem(R.id.menu_calendar)
         val menuCompare = navigation.menu.findItem(R.id.menu_compare)
         val menuPhoto = navigation.menu.findItem(R.id.menu_photo)
+        val menuSettings = navigation.menu.findItem(R.id.menu_setting)
         menuCalendar.setOnMenuItemClickListener {
             simpleLauncher.launch(CalendarActivity.createIntent(this))
             return@setOnMenuItemClickListener true
@@ -56,6 +58,10 @@ class GraphActivity : AppCompatActivity() {
         }
         menuPhoto.setOnMenuItemClickListener {
             simpleLauncher.launch(PhotoListActivity.createIntent(this))
+            return@setOnMenuItemClickListener true
+        }
+        menuSettings.setOnMenuItemClickListener {
+            simpleLauncher.launch(SettingActivity.createIntent(this))
             return@setOnMenuItemClickListener true
         }
     }

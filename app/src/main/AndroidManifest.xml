@@ -71,7 +71,8 @@
             android:name=".ui.setting.SettingActivity"
             android:exported="true"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Material3.Light.NoActionBar" />
         <activity
             android:name=".ui.compare.CompareActivity"
             android:exported="true"

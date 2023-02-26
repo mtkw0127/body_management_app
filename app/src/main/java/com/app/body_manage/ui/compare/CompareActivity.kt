@@ -33,6 +33,7 @@ import com.app.body_manage.ui.choosePhoto.ChoosePhotoActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
+import com.app.body_manage.ui.setting.SettingActivity
 import kotlinx.coroutines.launch
 
 class CompareActivity : AppCompatActivity() {
@@ -80,7 +81,8 @@ class CompareActivity : AppCompatActivity() {
             calendarAction = { simpleLauncher.launch(CalendarActivity.createIntent(this)) },
             compareAction = { simpleLauncher.launch(createIntent(this)) },
             photoListAction = { simpleLauncher.launch(PhotoListActivity.createIntent(this)) },
-            graphAction = { simpleLauncher.launch(GraphActivity.createIntent(this)) }
+            graphAction = { simpleLauncher.launch(GraphActivity.createIntent(this)) },
+            settingAction = { simpleLauncher.launch(SettingActivity.createIntent(this)) },
         )
 
         viewModel =
