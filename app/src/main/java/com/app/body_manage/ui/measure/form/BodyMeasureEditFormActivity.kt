@@ -237,6 +237,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                 vm.measureFat,
                 null,
                 vm.tall,
+                vm.memo.value.orEmpty(),
             )
             vm.updateWeightAndFat()
             when (formType) {

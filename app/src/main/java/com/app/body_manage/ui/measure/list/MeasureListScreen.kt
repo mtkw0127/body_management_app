@@ -361,7 +361,7 @@ private fun BodyMeasureList(
     LazyColumn(
         modifier = Modifier
             .wrapContentWidth()
-            .heightIn(min = 200.dp, max = 300.dp),
+            .heightIn(min = 200.dp),
         content = {
             stickyHeader {
                 Row {

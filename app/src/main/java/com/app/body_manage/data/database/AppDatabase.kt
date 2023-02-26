@@ -17,7 +17,7 @@ import com.app.body_manage.data.entity.PhotoEntity
 
 @Database(
     entities = [BodyMeasureEntity::class, PhotoEntity::class, ComparePhotoHistoryEntity::class],
-    version = 4,
+    version = 5,
     exportSchema = true
 )
 @TypeConverters(LocalDateConverter::class)
@@ -36,6 +36,7 @@ abstract class AppDatabase : RoomDatabase() {
                             addMigrations(MIGRATION_1_2)
                             addMigrations(MIGRATION_2_3)
                             addMigrations(MIGRATION_3_4)
+                            addMigrations(MIGRATION_4_5)
                         }.build()
                 db = instance
                 instance
@@ -75,6 +76,15 @@ val MIGRATION_3_4 = object : Migration(3, 4) {
         )
         database.execSQL(
             "DROP TABLE `compareBodyMeasureHistory`"
+        )
+    }
+}
+
+/** BodyMeasureテーブルにメモフィールド追加*/
+val MIGRATION_4_5 = object : Migration(4, 5) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            "ALTER TABLE `bodyMeasures` ADD COLUMN memo text"
         )
     }
 }

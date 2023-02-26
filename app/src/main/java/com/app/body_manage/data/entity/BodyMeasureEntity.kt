@@ -22,6 +22,7 @@ data class BodyMeasureEntity(
     @ColumnInfo(name = "fat") val fatRate: Float,
     @ColumnInfo(name = "photo_uri") var photoUri: String?,
     @ColumnInfo(name = "tall") val tall: Float?,
+    @ColumnInfo(name = "memo") val memo: String?,
 ) : Serializable
 
 data class BodyMeasureModel(

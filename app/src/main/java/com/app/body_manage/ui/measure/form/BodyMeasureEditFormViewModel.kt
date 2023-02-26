@@ -61,6 +61,7 @@ class BodyMeasureEditFormViewModel(
     var measureWeight = 50F
     var measureFat = 20.0F
     var tall: Float = 160F
+    val memo = MutableLiveData("")
 
     // coroutineによるローディング取得
     lateinit var bodyMeasureEntity: BodyMeasureEntity
@@ -87,6 +88,7 @@ class BodyMeasureEditFormViewModel(
                     measureTime = it.capturedTime
                     measureWeight = it.weight
                     measureFat = it.fatRate
+                    memo.value = it.memo
                     loadedBodyMeasure.value = true
                 }.also {
                     // ロード中終了
