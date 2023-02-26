@@ -36,7 +36,6 @@ import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.data.entity.BodyMeasureModel
 import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.style.Colors
-import com.app.body_manage.style.Colors.Companion.accentColor
 import com.app.body_manage.style.Colors.Companion.nonAccentColor
 import com.app.body_manage.util.DateUtil
 import kotlinx.coroutines.CoroutineScope
@@ -126,7 +125,6 @@ fun MeasureListScreen(
                         if (showCalendar.value) {
                             Calendar(
                                 selectedDate = uiState.date,
-                                markDayList = uiState.currentMonthRegisteredDayList,
                                 onClickDate = {
                                     scope.launch {
                                         setLocalDate.invoke(it)
@@ -134,12 +132,16 @@ fun MeasureListScreen(
                                     }
                                 },
                                 onChangeCurrentMonth = onChangeCurrentMonth,
+                                markDayList = uiState.currentMonthRegisteredDayList,
                             )
                         }
                         if (showPhotoList.value) {
                             Box(modifier = Modifier.padding(top = 10.dp)) {
                                 if (uiState is MeasureListState.BodyMeasureListState) {
-                                    PhotoList(uiState.photoList, clickPhoto = showPhotoDetail)
+                                    PhotoList(
+                                        uiState.photoList,
+                                        clickPhoto = showPhotoDetail,
+                                    )
                                 }
                             }
                         }

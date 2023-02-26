@@ -36,6 +36,9 @@ class ChoosePhotoActivity : AppCompatActivity() {
                 },
                 onChangeCurrentMonth = {
                     vm.updateCurrentMonth(it)
+                },
+                onClickBackButton = {
+                    finish()
                 }
             )
         }
