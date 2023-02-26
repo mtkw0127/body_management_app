@@ -127,6 +127,7 @@ dependencies {
 
     // 画像加工
     implementation 'com.makeramen:roundedimageview:2.3.0'
+    implementation 'com.github.SmartToolFactory:Compose-Screenshot:1.0.3'
 
     // ロガー
     implementation 'com.jakewharton.timber:timber:5.0.1'

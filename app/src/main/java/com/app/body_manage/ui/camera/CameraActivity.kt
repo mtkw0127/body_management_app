@@ -88,9 +88,6 @@ class CameraActivity : AppCompatActivity() {
             binding.photoNum.text = viewModel.photoList.value?.size.toString()
             requireNotNull(binding.bottomSheetInclude.photoListRecyclerView.adapter).notifyDataSetChanged()
         }
-        viewModel.canTakePhoto.observe(this) {
-
-        }
 
         // バックグラウンドのエグゼキュータ
         cameraExecutor = Executors.newSingleThreadExecutor()

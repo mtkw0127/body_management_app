@@ -32,4 +32,23 @@ class LocalFileRepository {
         contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
         resolver.update(insertedUri, contentValues, null, null)
     }
+
+    fun savePhoto(fileName: String, bitmap: Bitmap, context: Context): Uri? {
+        val contentValues = ContentValues()
+        contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+        contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+        contentValues.put(MediaStore.Images.Media.IS_PENDING, 1)
+
+        val resolver = context.contentResolver
+        val collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
+        val insertedUri = resolver.insert(collection, contentValues)
+        insertedUri ?: return null
+        resolver.openOutputStream(insertedUri).use {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, it)
+        }
+        contentValues.clear()
+        contentValues.put(MediaStore.Images.Media.IS_PENDING, 0)
+        resolver.update(insertedUri, contentValues, null, null)
+        return insertedUri
+    }
 }

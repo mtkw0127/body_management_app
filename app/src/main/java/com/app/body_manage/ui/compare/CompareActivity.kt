@@ -27,6 +27,7 @@ import com.app.body_manage.data.dao.ComparePhotoHistoryDao
 import com.app.body_manage.data.model.PhotoModel
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.CompareHistoryRepository
+import com.app.body_manage.data.repository.LocalFileRepository
 import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.choosePhoto.ChoosePhotoActivity
 import com.app.body_manage.ui.graph.GraphActivity
@@ -142,6 +143,21 @@ class CompareActivity : AppCompatActivity() {
                             PhotoModel.Id(it)
                         )
                     )
+                },
+                onClickShare = {
+                    LocalFileRepository().savePhoto(
+                        "test.test",
+                        it,
+                        this@CompareActivity
+                    )?.let {
+                        val intent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_TEXT, "#体型管理")
+                            putExtra(Intent.EXTRA_STREAM, it)
+                            type = "image/jpeg"
+                        }
+                        startActivity(intent)
+                    }
                 }
             )
             if (showDeleteConfirmDialog) {

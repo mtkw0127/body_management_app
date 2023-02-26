@@ -1,5 +1,6 @@
 package com.app.body_manage.ui.compare
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,10 +11,9 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,6 +35,8 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
+import com.smarttoolfactory.screenshot.ScreenshotBox
+import com.smarttoolfactory.screenshot.rememberScreenshotState
 import kotlinx.coroutines.launch
 
 data class TabRowItem(
@@ -51,6 +53,7 @@ fun CompareScreen(
     loadHistory: () -> Unit,
     onClickDelete: (ComparePhotoHistoryDao.PhotoAndBodyMeasure) -> Unit,
     onClickPhoto: (Int) -> Unit,
+    onClickShare: (Bitmap) -> Unit,
     beforeSearchLauncher: () -> Unit,
     afterSearchLauncher: () -> Unit,
 ) {
@@ -102,6 +105,7 @@ fun CompareScreen(
                                 ) {
                                     HistoryList(
                                         uiState.compareHistory,
+                                        onClickShare,
                                         onClickDelete,
                                         onClickPhoto,
                                     )
@@ -175,6 +179,7 @@ fun CompareScreen(
 @Composable
 private fun HistoryList(
     compareHistory: List<ComparePhotoHistoryDao.PhotoAndBodyMeasure>,
+    onClickShare: (Bitmap) -> Unit,
     onClickDelete: (ComparePhotoHistoryDao.PhotoAndBodyMeasure) -> Unit,
     onClickPhoto: (Int) -> Unit
 ) {
@@ -187,49 +192,76 @@ private fun HistoryList(
                     .background(backgroundColor, RoundedCornerShape(5.dp))
                     .border(1.dp, Color.Transparent, RoundedCornerShape(5.dp)),
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp)
-                ) {
-                    CompareImage(
-                        modifier = Modifier.weight(0.5F),
-                        label = "Before",
-                        photoId = it.beforePhotoId,
-                        photoUri = it.beforePhotoUri,
-                        onClickPhoto = onClickPhoto,
-                    )
-                    CompareImage(
-                        modifier = Modifier.weight(0.5F),
-                        label = "After",
-                        photoId = it.afterPhotoId,
-                        photoUri = it.afterPhotoUri,
-                        onClickPhoto = onClickPhoto,
-                    )
+                val screenShotState = rememberScreenshotState()
+                // スクリーンショットを撮影する箇所の座標を保持し続ける
+                ScreenshotBox(screenshotState = screenShotState) {
+                    Column {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 10.dp)
+                        ) {
+                            CompareImage(
+                                modifier = Modifier.weight(0.5F),
+                                label = "Before",
+                                photoId = it.beforePhotoId,
+                                photoUri = it.beforePhotoUri,
+                                onClickPhoto = onClickPhoto,
+                            )
+                            CompareImage(
+                                modifier = Modifier.weight(0.5F),
+                                label = "After",
+                                photoId = it.afterPhotoId,
+                                photoUri = it.afterPhotoUri,
+                                onClickPhoto = onClickPhoto,
+                            )
+                        }
+                        TableData(compareHistory = it)
+                    }
                 }
-                TableData(compareHistory = it)
                 Box(
                     modifier = Modifier
                         .padding(top = 5.dp, bottom = 10.dp, end = 5.dp)
                         .fillMaxWidth(),
                     contentAlignment = Alignment.CenterEnd
                 ) {
-                    Icon(
-                        Icons.Rounded.Delete,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier
-                            .background(
-                                color = Color.Gray,
-                                shape = CircleShape
-                            )
-                            .padding(5.dp)
-                            .size(26.dp)
-                            .clickable {
-                                onClickDelete.invoke(it)
-                            }
-                    )
+                    Row {
+                        Icon(
+                            Icons.Filled.Share,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier
+                                .background(
+                                    color = Color.Gray,
+                                    shape = CircleShape
+                                )
+                                .padding(5.dp)
+                                .size(26.dp)
+                                .clickable {
+                                    screenShotState.capture()
+                                    screenShotState.bitmap?.let {
+                                        onClickShare(it)
+                                    }
+                                }
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Icon(
+                            Icons.Rounded.Delete,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier
+                                .background(
+                                    color = Color.Gray,
+                                    shape = CircleShape
+                                )
+                                .padding(5.dp)
+                                .size(26.dp)
+                                .clickable {
+                                    onClickDelete.invoke(it)
+                                }
+                        )
+                    }
                 }
             }
         }
