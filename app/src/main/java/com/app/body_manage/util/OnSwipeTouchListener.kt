@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import androidx.annotation.NonNull
 import androidx.core.view.GestureDetectorCompat
 import timber.log.Timber
 import kotlin.math.abs
@@ -66,11 +67,13 @@ abstract class OnSwipeTouchListener(context: Context) : View.OnTouchListener {
         }
 
         override fun onFling(
-            e1: MotionEvent,
+            e1: MotionEvent?,
             e2: MotionEvent,
             velocityX: Float,
             velocityY: Float
         ): Boolean {
+            if(e1 == null) return false
+
             val swipeDirection =
                 SwipeDirection.newInstance(e1, e2, velocityX, velocityY)
             val result = swipeDirection !is SwipeDirection.NONE
