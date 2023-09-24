@@ -23,7 +23,7 @@ class LocalFileRepository {
         val collection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
         val insertedUri = resolver.insert(collection, contentValues)
         insertedUri ?: return
-        resolver.openOutputStream(insertedUri).use {
+        resolver.openOutputStream(insertedUri)?.use {
             val bmp = uri.getBitmapOrNull(resolver)
             bmp ?: return@use
             bmp.compress(Bitmap.CompressFormat.JPEG, 100, it)
