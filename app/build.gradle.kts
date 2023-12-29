@@ -1,67 +1,16 @@
-import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
-
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("kotlin-kapt")
+    id("com.google.devtools.ksp")
     id("de.mannodermaus.android-junit5")
-    id("org.jlleitschuh.gradle.ktlint")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
     id("com.ncorti.ktfmt.gradle")
     id("com.github.triplet.play")
 }
 
-configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
-    version.set("0.22.0")
-    debug.set(true)
-    verbose.set(true)
-    android.set(false)
-    outputToConsole.set(true)
-    outputColorName.set("RED")
-    ignoreFailures.set(true)
-    enableExperimentalRules.set(true)
-    additionalEditorconfigFile.set(file("/some/additional/.editorconfig")) // not supported with ktlint 0.47+
-    disabledRules.set(setOf("final-newline")) // not supported with ktlint 0.48+
-    baseline.set(file("my-project-ktlint-baseline.xml"))
-    reporters {
-        reporter(ReporterType.PLAIN)
-        reporter(ReporterType.CHECKSTYLE)
-
-        customReporters {
-            register("csv") {
-                fileExtension = "csv"
-                dependency = project(":project-reporters:csv-reporter")
-            }
-            register("yaml") {
-                fileExtension = "yml"
-                dependency = "com.example:ktlint-yaml-reporter:1.0.0"
-            }
-        }
-    }
-    kotlinScriptAdditionalPaths {
-        include(fileTree("scripts/"))
-    }
-    filter {
-        exclude("**/generated/**")
-        include("**/kotlin/**")
-    }
-}
-
-kapt {
-    arguments {
-        arg("room.schemaLocation", "$projectDir/schemas".toString())
-    }
-}
-
 android {
     signingConfigs {
-        create("develop") {
-            storePassword = "develop"
-            keyPassword = "develop"
-            storeFile = file("../key/develop.jks")
-            keyAlias = "develop"
-        }
         create("release") {
             storeFile = file("../key/release.jks")
             storePassword = "chekera0127"
@@ -101,13 +50,13 @@ android {
         jvmTarget = "17"
     }
     dataBinding {
-        isEnabled = true
+        enable = true
     }
     buildFeatures {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.0"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
     namespace = "com.app.body_manage"
 }
@@ -138,7 +87,7 @@ dependencies {
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-ktx:$roomVersion")
     implementation("androidx.room:room-runtime:$roomVersion")
-    kapt("androidx.room:room-compiler:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
 
     // Kotlin components
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
