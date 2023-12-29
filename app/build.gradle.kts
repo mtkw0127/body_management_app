@@ -5,7 +5,6 @@ plugins {
     id("de.mannodermaus.android-junit5")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
-    id("com.ncorti.ktfmt.gradle")
     id("com.github.triplet.play")
 }
 
@@ -20,7 +19,7 @@ android {
     }
 
     compileSdk = 34
-
+    compileSdkPreview = "UpsideDownCakePrivacySandbox"
     defaultConfig {
         applicationId = "com.app.calendar"
         minSdk = 26
