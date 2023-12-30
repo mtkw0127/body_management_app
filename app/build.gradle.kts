@@ -72,6 +72,9 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
+    // Android12以降でPendingIntentを利用できるようにするため
+//    implementation("androidx.work:work-runtime-ktx:2.9.0")
+
     // lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
 
