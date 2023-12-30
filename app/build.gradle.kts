@@ -72,9 +72,6 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    // Android12以降でPendingIntentを利用できるようにするため
-//    implementation("androidx.work:work-runtime-ktx:2.9.0")
-
     // lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
 
@@ -94,7 +91,7 @@ dependencies {
     // Kotlin components
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 
     // 画像加工
     implementation("com.makeramen:roundedimageview:2.3.0")
