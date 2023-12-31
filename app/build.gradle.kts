@@ -13,9 +13,9 @@ android {
     signingConfigs {
         create("release") {
             storeFile = file("../key/release.jks")
-            storePassword = "chekera0127"
-            keyPassword = "chekera0127"
-            keyAlias = "key0"
+            storePassword = System.getenv("STORE_PASSWORD")
+            keyPassword = System.getenv("KEY_PASSWORD")
+            keyAlias = System.getenv("KEY_ALIAS")
         }
     }
 
