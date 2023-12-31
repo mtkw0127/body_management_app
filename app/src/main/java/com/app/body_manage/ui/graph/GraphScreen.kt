@@ -1,6 +1,5 @@
 package com.app.body_manage.ui.graph
 
-import android.view.animation.LinearInterpolator
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -28,18 +27,22 @@ import com.app.body_manage.R
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.style.Colors.Companion.disable
+import com.app.body_manage.style.Colors.Companion.secondPrimary
 import com.app.body_manage.style.Colors.Companion.theme
 import com.patrykandpatrick.vico.compose.axis.axisLineComponent
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
+import com.patrykandpatrick.vico.compose.axis.horizontal.rememberTopAxis
+import com.patrykandpatrick.vico.compose.axis.vertical.rememberEndAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
 import com.patrykandpatrick.vico.compose.chart.Chart
 import com.patrykandpatrick.vico.compose.chart.line.lineChart
+import com.patrykandpatrick.vico.compose.chart.line.lineSpec
 import com.patrykandpatrick.vico.compose.component.lineComponent
 import com.patrykandpatrick.vico.core.axis.AxisItemPlacer
-import com.patrykandpatrick.vico.core.chart.edges.FadingEdges
 import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
 import com.patrykandpatrick.vico.core.component.marker.MarkerComponent
 import com.patrykandpatrick.vico.core.component.shape.ShapeComponent
+import com.patrykandpatrick.vico.core.component.shape.Shapes.pillShape
 import com.patrykandpatrick.vico.core.component.text.TextComponent
 import com.patrykandpatrick.vico.core.entry.FloatEntry
 import com.patrykandpatrick.vico.core.entry.entryModelOf
@@ -123,18 +126,22 @@ private fun Graph(state: GraphState.HasData) {
     val model = entryModelOf(dataSet.mapIndexed { _, pair ->
         FloatEntry(pair.first.toEpochDay().toFloat(), pair.second)
     }.sortedBy { it.x })
-
     Chart(
         modifier = Modifier.fillMaxSize(),
         chart = lineChart(
+            lines = listOf(
+                lineSpec(
+                    lineColor = secondPrimary,
+                    point = ShapeComponent(shape = pillShape),
+                    pointSize = 5.dp,
+                    dataLabel = TextComponent.Builder().build() // 各点の側に値を表示する
+                )
+            ),
+            // 縦軸の最大・最小は例えば最低・最低体重の±3kgとする
             axisValuesOverrider = AxisValuesOverrider.fixed(
                 minY = minY - 3,
                 maxY = maxY + 3,
             )
-        ),
-        fadingEdges = FadingEdges(
-            edgeWidthDp = 0F,
-            visibilityInterpolator = LinearInterpolator()
         ),
         marker = MarkerComponent(
             label = TextComponent.Builder().build(),
@@ -153,6 +160,22 @@ private fun Graph(state: GraphState.HasData) {
             title = stringResource(id = R.string.weight_unit),
             titleComponent = TextComponent.Builder().build(),
             itemPlacer = remember { AxisItemPlacer.Vertical.default(maxItemCount = 4) },
+        ),
+        topAxis = rememberTopAxis(
+            axis = axisLineComponent(
+                strokeWidth = 1.dp,
+                strokeColor = Color.Black
+            ), // 縦軸をはっきりさせる
+            valueFormatter = { _, _ -> "" },
+            guideline = null,
+        ),
+        endAxis = rememberEndAxis(
+            axis = axisLineComponent(
+                strokeWidth = 1.dp,
+                strokeColor = Color.Black
+            ), // 縦軸をはっきりさせる
+            valueFormatter = { _, _ -> "" },
+            guideline = null,
         ),
         bottomAxis = rememberBottomAxis(
             axis = axisLineComponent(
