@@ -42,7 +42,6 @@ import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.style.Colors.Companion.accentColor
 import com.app.body_manage.style.Colors.Companion.disable
-import com.app.body_manage.ui.measure.list.PhotoList
 import com.app.body_manage.ui.photoList.PhotoListState.HasPhoto
 import com.app.body_manage.ui.photoList.PhotoListState.NoPhoto
 import kotlinx.coroutines.launch
@@ -152,7 +151,7 @@ fun PhotoListScreen(
                 }
             },
             floatingActionButton = {
-                if(state is HasPhoto) {
+                if (state is HasPhoto) {
                     FloatingActionButton(
                         onClick = {
                             scope.launch {
