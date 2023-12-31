@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -34,6 +35,7 @@ fun SettingScreen(
                         text = stringResource(id = R.string.screen_name_settings),
                     )
                 },
+                backgroundColor = colorResource(id = R.color.app_theme)
             )
         },
         bottomBar = {

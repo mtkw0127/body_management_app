@@ -44,6 +44,13 @@ class DateUtil {
         }
 
         /**
+         * 引数のLocalDateをYYYY年MM月DD日(曜日)のフォーマットに変換して返却.
+         */
+        fun localDateConvertMonthDay(localDate: LocalDate): String {
+            return "${localDate.monthValue}月${localDate.dayOfMonth}日"
+        }
+
+        /**
          * 引数のLocalDateをYYYY年MM月のフォーマットに変換して返却.
          */
         fun localDateConvertJapaneseFormatYearMonth(localDate: LocalDate): String {

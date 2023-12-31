@@ -21,7 +21,7 @@ import com.app.body_manage.R
 import com.app.body_manage.data.entity.BodyMeasureEntity
 import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.model.PhotoModel
-import com.app.body_manage.databinding.TrainingDetailBinding
+import com.app.body_manage.databinding.TrainingFormBinding
 import com.app.body_manage.dialog.FloatNumberPickerDialog
 import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.calendar.CalendarActivity
@@ -42,7 +42,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         ADD, EDIT
     }
 
-    private lateinit var binding: TrainingDetailBinding
+    private lateinit var binding: TrainingFormBinding
 
     // 更新前の測定日時
     private val captureDateTime: LocalDateTime by lazy {
@@ -77,7 +77,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = TrainingDetailBinding.inflate(layoutInflater)
+        binding = TrainingFormBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
         setContentView(binding.root)
 
@@ -99,6 +99,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                     DateUtil.localDateConvertLocalTimeDateToTime(LocalDateTime.now())
                 )
             }
+
             FormType.EDIT -> {
                 // 紐づく測定結果、写真を取得してフィールドに設定
                 vm.loadBodyMeasure()
@@ -244,6 +245,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                     vm.addPhoto(saveModel)
                     setResult(RESULT_CREATE)
                 }
+
                 FormType.EDIT -> {
                     // 測定がロードできていない場合は更新しない
                     if (vm.loadedBodyMeasure.value == false) return@setOnClickListener

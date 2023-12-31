@@ -1,13 +1,36 @@
 package com.app.body_manage.ui.compare
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
+import androidx.compose.material.TabRowDefaults
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircleOutline
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.rounded.Delete
@@ -19,17 +42,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.app.body_manage.R
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.data.dao.ComparePhotoHistoryDao
 import com.app.body_manage.style.Colors.Companion.accentColor
-import com.app.body_manage.style.Colors.Companion.backgroundColor
-import com.app.body_manage.style.Colors.Companion.nonAccentColor
+import com.app.body_manage.style.Colors.Companion.secondPrimary
+import com.app.body_manage.style.Colors.Companion.theme
 import com.app.body_manage.util.DateUtil
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -55,13 +81,28 @@ fun CompareScreen(
     afterSearchLauncher: () -> Unit,
 ) {
     val pagerState = rememberPagerState()
+    val scope = rememberCoroutineScope()
     val coroutineScope = rememberCoroutineScope()
     Scaffold(
         floatingActionButton = {
-            if (pagerState.currentPage == 0) {
+            if (pagerState.currentPage == 0 &&
+                uiState is CompareState.CompareItemsHasSet &&
+                uiState.before != null &&
+                uiState.after != null
+            ) {
                 FloatingActionButton(
-                    onClick = { saveHistory.invoke() },
-                    backgroundColor = nonAccentColor
+                    onClick = {
+                        saveHistory.invoke()
+                        // Move to History
+                        scope.launch {
+                            pagerState.animateScrollToPage(
+                                page = 1,
+                                pageOffset = 0F
+                            )
+                        }
+
+                    },
+                    backgroundColor = accentColor
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Check,
@@ -75,13 +116,12 @@ fun CompareScreen(
         }
     ) {
         Column(
-            modifier = Modifier
-                .padding(it)
+            modifier = Modifier.padding(it)
         ) {
             when (uiState) {
                 is CompareState.CompareItemsHasSet -> {
                     val tabRowItems = listOf(
-                        TabRowItem("比較") {
+                        TabRowItem(stringResource(id = R.string.compare)) {
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -89,11 +129,19 @@ fun CompareScreen(
                                 verticalArrangement = Arrangement.Top,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                CompareItem("Before", uiState.before, beforeSearchLauncher)
-                                CompareItem("After", uiState.after, afterSearchLauncher)
+                                CompareItem(
+                                    stringResource(R.string.before),
+                                    uiState.before,
+                                    beforeSearchLauncher
+                                )
+                                CompareItem(
+                                    stringResource(R.string.after),
+                                    uiState.after,
+                                    afterSearchLauncher
+                                )
                             }
                         },
-                        TabRowItem("履歴") {
+                        TabRowItem(stringResource(id = R.string.history)) {
                             if (uiState.compareHistory.isNotEmpty()) {
                                 Column(
                                     modifier = Modifier.fillMaxSize(),
@@ -113,7 +161,7 @@ fun CompareScreen(
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
                                     Text(
-                                        "体型比較がまだ保存されていません。",
+                                        stringResource(id = R.string.message_not_yet_saved_history),
                                         color = Color.Gray,
                                         fontSize = 16.sp,
                                         textAlign = TextAlign.Center,
@@ -127,10 +175,10 @@ fun CompareScreen(
                         indicator = { tabPositions ->
                             TabRowDefaults.Indicator(
                                 Modifier.pagerTabIndicatorOffset(pagerState, tabPositions),
-                                color = accentColor
+                                color = secondPrimary
                             )
                         },
-                        backgroundColor = nonAccentColor
+                        backgroundColor = theme
                     ) {
                         tabRowItems.forEachIndexed { index, item ->
                             SideEffect {
@@ -164,6 +212,7 @@ fun CompareScreen(
                         tabRowItems[pagerState.currentPage].screen()
                     }
                 }
+
                 is CompareState.CompareItemsError -> {
 
                 }
@@ -184,7 +233,10 @@ private fun HistoryList(
                 Modifier
                     .fillMaxWidth(0.98F)
                     .padding(vertical = 10.dp)
-                    .background(backgroundColor, RoundedCornerShape(5.dp))
+                    .background(
+                        colorResource(id = R.color.compare_history_item_background),
+                        RoundedCornerShape(5.dp)
+                    )
                     .border(1.dp, Color.Transparent, RoundedCornerShape(5.dp)),
             ) {
                 Row(
@@ -195,14 +247,14 @@ private fun HistoryList(
                 ) {
                     CompareImage(
                         modifier = Modifier.weight(0.5F),
-                        label = "Before",
+                        label = stringResource(id = R.string.before),
                         photoId = it.beforePhotoId,
                         photoUri = it.beforePhotoUri,
                         onClickPhoto = onClickPhoto,
                     )
                     CompareImage(
                         modifier = Modifier.weight(0.5F),
-                        label = "After",
+                        label = stringResource(id = R.string.after),
                         photoId = it.afterPhotoId,
                         photoUri = it.afterPhotoUri,
                         onClickPhoto = onClickPhoto,
@@ -277,7 +329,7 @@ private fun TableData(compareHistory: ComparePhotoHistoryDao.PhotoAndBodyMeasure
     ) {
         with(compareHistory) {
             TableRow(
-                label = "日付",
+                label = stringResource(id = R.string.date),
                 before = beforeCalendarDate.toString(),
                 diff = "${getDiffDays()}日",
                 after = afterCalendarDate.toString(),
@@ -286,7 +338,7 @@ private fun TableData(compareHistory: ComparePhotoHistoryDao.PhotoAndBodyMeasure
             val diff = (afterWeight * 10 - beforeWeight * 10) / 10
             TableRow(
                 unit = "kg",
-                label = "体重",
+                label = stringResource(id = R.string.weight),
                 before = beforeWeight.toString(),
                 after = afterWeight.toString(),
                 diff = if (gained) {
@@ -344,7 +396,7 @@ private fun TableRow(
         Box(
             modifier = Modifier
                 .background(
-                    accentColor,
+                    colorResource(R.color.compare_history_diff_background),
                     shape = RoundedCornerShape(topEnd = 25.dp, bottomEnd = 25.dp)
                 )
                 .padding(3.dp)
@@ -373,15 +425,18 @@ private fun CompareItem(label: String, item: CompareItemStruct?, onEditClick: ()
     var date = "-"
     var weight = "-"
     if (item != null) {
-        date = DateUtil.localDateConvertJapaneseFormatYearMonthDay(item.date)
+        date = DateUtil.localDateConvertMonthDay(item.date)
         weight = "${item.weight}kg"
     }
     Box(
         modifier = Modifier
-            .fillMaxWidth(0.95F)
+            .fillMaxWidth(0.98F)
             .height(400.dp)
             .padding(5.dp)
-            .background(color = backgroundColor, shape = RoundedCornerShape(15.dp))
+            .background(
+                color = colorResource(id = R.color.compare_item_background),
+                shape = RoundedCornerShape(5.dp)
+            )
     ) {
         Row {
             Column(
@@ -394,18 +449,23 @@ private fun CompareItem(label: String, item: CompareItemStruct?, onEditClick: ()
                 Text(text = label, fontWeight = FontWeight.Bold)
                 Divider(modifier = Modifier.fillMaxWidth(0.8F))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "日付")
-                    Text(text = date)
+                    Text(text = stringResource(id = R.string.date))
+                    Spacer(modifier = Modifier.size(5.dp))
+                    Text(
+                        text = date,
+                        textAlign = TextAlign.Center,
+                    )
                 }
                 Divider(modifier = Modifier.fillMaxWidth(0.8F))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "体重")
+                    Text(text = stringResource(id = R.string.weight))
+                    Spacer(modifier = Modifier.size(5.dp))
                     Text(text = weight)
                 }
                 Divider(modifier = Modifier.fillMaxWidth(0.8F))
                 Icon(
                     Icons.Filled.Edit,
-                    contentDescription = "体型登録",
+                    contentDescription = null,
                     modifier = Modifier.clickable {
                         onEditClick.invoke()
                     }
@@ -428,11 +488,27 @@ private fun CompareItem(label: String, item: CompareItemStruct?, onEditClick: ()
                         },
                     contentAlignment = Alignment.Center
                 ) {
-                    AsyncImage(
-                        model = item?.photoUri,
-                        contentScale = ContentScale.Crop,
-                        contentDescription = "変更前写真"
-                    )
+                    if (item != null) {
+                        AsyncImage(
+                            model = item.photoUri,
+                            contentScale = ContentScale.Crop,
+                            contentDescription = null
+                        )
+                    } else {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.AddCircleOutline,
+                                contentDescription = null
+                            )
+                            Spacer(modifier = Modifier.size(10.dp))
+                            Text(
+                                text = stringResource(id = R.string.message_please_set_photo_for_compare),
+                                textAlign = TextAlign.Center,
+                            )
+                        }
+                    }
                 }
             }
         }

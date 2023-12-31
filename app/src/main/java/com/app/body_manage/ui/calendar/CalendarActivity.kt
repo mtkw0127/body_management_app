@@ -89,9 +89,11 @@ class CalendarActivity : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     private fun initListener() {
         val navigation = binding.bottomSheetInclude.bottomNavigator
+        val menuCalendar = navigation.menu.findItem(R.id.menu_calendar)
         val menuCompare = navigation.menu.findItem(R.id.menu_compare)
         val menuPhoto = navigation.menu.findItem(R.id.menu_photo)
         val menuGraph = navigation.menu.findItem(R.id.menu_graph)
+        menuCalendar.actionView?.setBackgroundColor(getColor(R.color.app_theme))
         menuCompare.setOnMenuItemClickListener {
             simpleLauncher.launch(CompareActivity.createIntent(this))
             return@setOnMenuItemClickListener true

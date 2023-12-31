@@ -10,6 +10,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
+import java.time.LocalDate
 
 class ChoosePhotoActivity : AppCompatActivity() {
 
@@ -21,6 +22,7 @@ class ChoosePhotoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val vm = ChoosePhotoViewModel(bodyMeasurePhotoRepository)
         vm.loadCurrentMonthHavePhotosDateList()
+        vm.setLocalDate(LocalDate.now())
         setContent {
             val uiState: SelectPhotoState by vm.uiState.collectAsState()
             ChoosePhotoScreen(
@@ -36,7 +38,8 @@ class ChoosePhotoActivity : AppCompatActivity() {
                 },
                 onChangeCurrentMonth = {
                     vm.updateCurrentMonth(it)
-                }
+                },
+                onClickBackPress = ::finish
             )
         }
     }

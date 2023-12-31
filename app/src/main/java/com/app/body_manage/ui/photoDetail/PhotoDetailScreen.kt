@@ -78,11 +78,6 @@ fun PhotoDetailScreen(
                 }
             }
         }
-        is PhotoDetailState.LoadingPhotoDetail -> {
-            CircularProgressIndicator()
-        }
-        is PhotoDetailState.NotFoundPhoto -> {
-            Text(text = "写真が見つかりません。")
-        }
+        else -> {}
     }
 }

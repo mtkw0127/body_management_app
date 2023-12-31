@@ -23,35 +23,36 @@
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
-        <activity
-            android:name="com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity"
-            android:exported="true"
-            android:launchMode="singleInstance"
-            android:screenOrientation="portrait">
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.app.body_manage.ui.measure.list.MeasureListActivity"
-            android:exported="true"
-            android:launchMode="singleInstance"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Material3.Light.NoActionBar" />
-        <activity
-            android:name="com.app.body_manage.ui.graph.GraphActivity"
+            android:name="com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
+            android:name="com.app.body_manage.ui.measure.list.MeasureListActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoBar" />
+        <activity
+            android:name="com.app.body_manage.ui.graph.GraphActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoBar" />
+        <activity
             android:name="com.app.body_manage.ui.camera.CameraActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Material3.Light.NoActionBar" />
+            android:theme="@style/AppThemeNoBar" />
         <activity
             android:name="com.app.body_manage.ui.camera.MeasureCameraActivity"
             android:exported="true"
@@ -63,36 +64,37 @@
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Material3.Light.NoActionBar" />
+            android:theme="@style/AppThemeNoBar" />
         <activity
             android:name=".ui.photoDetail.PhotoDetailActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Material3.Light.NoActionBar" />
+            android:theme="@style/AppThemeNoBar" />
         <activity
             android:name=".ui.setting.SettingActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppThemeNoBar" />
         <activity
             android:name=".ui.compare.CompareActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Material3.Light.NoActionBar" />
+            android:theme="@style/AppThemeNoBar" />
         <activity
             android:name=".ui.choosePhoto.ChoosePhotoActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Material3.Light.NoActionBar" />
+            android:theme="@style/AppThemeNoBar" />
 
         <receiver
             android:name=".ui.alarm.AlarmNotification"
             android:enabled="true"
-            android:exported="false">
+            android:exported="false"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="com.app.body_manage.AlarmAction" />
             </intent-filter>
