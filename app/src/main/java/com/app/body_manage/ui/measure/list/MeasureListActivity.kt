@@ -38,13 +38,6 @@ class MeasureListActivity : AppCompatActivity() {
 
     private val measureFormLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            val message = when (it.resultCode) {
-                BodyMeasureEditFormActivity.RESULT_DELETE -> "削除しました"
-                BodyMeasureEditFormActivity.RESULT_UPDATE -> "更新しました"
-                BodyMeasureEditFormActivity.RESULT_CREATE -> "追加しました"
-                else -> ""
-            }
-            viewModel.updateMessage(message)
             viewModel.reload()
         }
 
@@ -94,15 +87,14 @@ class MeasureListActivity : AppCompatActivity() {
                     when (viewModel.uiState.value.measureType) {
                         MeasureType.BODY -> {
                             measureFormLauncher.launch(
-                                BodyMeasureEditFormActivity.createMeasureFormIntent(
-                                    context = this,
-                                    formDate = viewModel.uiState.value.date,
-                                )
+                                BodyMeasureEditFormActivity.createMeasureFormIntent(context = this)
                             )
                         }
+
                         MeasureType.MEAL -> {
                             Toast.makeText(this, "今後機能追加する！", Toast.LENGTH_LONG).show()
                         }
+
                         else -> {}
                     }
                 },

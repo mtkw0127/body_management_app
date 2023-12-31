@@ -10,29 +10,29 @@ import java.time.LocalDate
 interface BodyMeasurePhotoDao {
     @MapInfo(keyColumn = "calendar_date")
     @Query(
-        "SELECT bodyMeasures.calendar_date as calendar_date, photos.ui as photo_id,  photos.photo_uri as photo_uri, bodyMeasures.weight as weight from photos INNER JOIN bodyMeasures ON bodyMeasures.ui = photos.body_measure_id ORDER BY bodyMeasures.capture_date asc"
+        "SELECT bodyMeasures.calendar_date as calendar_date, photos.id as photo_id,  photos.photo_uri as photo_uri, bodyMeasures.weight as weight from photos INNER JOIN bodyMeasures ON bodyMeasures.ui = photos.body_measure_id ORDER BY bodyMeasures.calendar_date asc"
     )
     suspend fun selectPhotosByDate(): Map<String, List<PhotoData>>
 
     @MapInfo(keyColumn = "weight")
     @Query(
-        "SELECT bodyMeasures.calendar_date as calendar_date,bodyMeasures.weight as weight, photos.ui as photo_id, photos.photo_uri as photo_uri from photos INNER JOIN bodyMeasures ON bodyMeasures.ui = photos.body_measure_id ORDER BY bodyMeasures.weight asc"
+        "SELECT bodyMeasures.calendar_date as calendar_date,bodyMeasures.weight as weight, photos.id as photo_id, photos.photo_uri as photo_uri from photos INNER JOIN bodyMeasures ON bodyMeasures.ui = photos.body_measure_id ORDER BY bodyMeasures.weight asc"
     )
     suspend fun selectPhotosByWeight(): Map<Float, List<PhotoData>>
 
     @MapInfo(keyColumn = "calendar_date")
     @Query(
-        "SELECT bodyMeasures.calendar_date as calendar_date, photos.ui as photo_id,  photos.photo_uri as photo_uri, bodyMeasures.weight as weight from photos INNER JOIN bodyMeasures ON bodyMeasures.ui = photos.body_measure_id WHERE bodyMeasures.calendar_date = :date ORDER BY bodyMeasures.capture_date asc"
+        "SELECT bodyMeasures.calendar_date as calendar_date, photos.id as photo_id,  photos.photo_uri as photo_uri, bodyMeasures.weight as weight from photos INNER JOIN bodyMeasures ON bodyMeasures.ui = photos.body_measure_id WHERE bodyMeasures.calendar_date = :date ORDER BY bodyMeasures.calendar_date asc"
     )
     suspend fun selectPhotosByDateOnlyDate(date: LocalDate): Map<String, List<PhotoData>>
 
     @Query(
-        "SELECT bodyMeasures.calendar_date from photos INNER JOIN bodyMeasures ON bodyMeasures.ui = photos.body_measure_id WHERE bodyMeasures.calendar_date BETWEEN :from AND :to ORDER BY bodyMeasures.capture_date asc"
+        "SELECT bodyMeasures.calendar_date from photos INNER JOIN bodyMeasures ON bodyMeasures.ui = photos.body_measure_id WHERE bodyMeasures.calendar_date BETWEEN :from AND :to ORDER BY bodyMeasures.calendar_date asc"
     )
     suspend fun selectHavePhotoDateList(from: LocalDate, to: LocalDate): List<LocalDate>
 
     @Query(
-        "SELECT bodyMeasures.calendar_date as calendar_date, bodyMeasures.weight as weight, bodyMeasures.fat as fat, photos.photo_uri as photo_uri from photos INNER JOIN bodyMeasures ON bodyMeasures.ui = photos.body_measure_id WHERE photos.ui = :photoId"
+        "SELECT bodyMeasures.calendar_date as calendar_date, bodyMeasures.weight as weight, bodyMeasures.fat as fat, photos.photo_uri as photo_uri from photos INNER JOIN bodyMeasures ON bodyMeasures.ui = photos.body_measure_id WHERE photos.id = :photoId"
     )
     suspend fun selectBodyMeasureByPhotoId(photoId: Int): BodyMeasure?
 

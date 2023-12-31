@@ -65,7 +65,8 @@ import com.app.body_manage.common.Calendar
 import com.app.body_manage.common.LeftTriangleShape
 import com.app.body_manage.common.RightTriangleShape
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
-import com.app.body_manage.data.entity.BodyMeasureModel
+import com.app.body_manage.data.model.BodyMeasureModel
+import com.app.body_manage.domain.BMICalculator
 import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.style.Colors
 import com.app.body_manage.style.Colors.Companion.accentColor
@@ -461,7 +462,7 @@ private fun BodyMeasureList(
                             .weight(1F)
                     ) {
                         Text(
-                            text = item.bmi,
+                            text = BMICalculator().calculate(item.tall, item.weight),
                         )
                     }
                     Icon(

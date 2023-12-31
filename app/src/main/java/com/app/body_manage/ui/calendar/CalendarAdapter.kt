@@ -30,8 +30,8 @@ class CalendarAdapter(
     private val trainingMeasureListLauncher: ActivityResultLauncher<Intent>,
 ) : BaseAdapter() {
     // その月の日付一覧
-    private var dayOfWeek = arrayListOf("日", "月", "火", "水", "木", "金", "土")
-    private var dateList = Array(42) { CellInfo(LocalDate.now(), MonthType.NONE) }
+    private val dayOfWeek = arrayListOf("日", "月", "火", "水", "木", "金", "土")
+    private val dateList = Array(42) { CellInfo(LocalDate.now(), MonthType.NONE) }
 
     private lateinit var inflater: LayoutInflater
 

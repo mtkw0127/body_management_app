@@ -40,7 +40,7 @@ class MeasureListAdapter(
         holder.measureTimeTextView.text =
             DateUtil.localDateConvertLocalTimeDateToTime(trainingEntity.capturedTime)
         holder.measureWeightTextView.text = "体重：${trainingEntity.weight}kg"
-        holder.measureFatTextView.text = "体脂肪率：${trainingEntity.fatRate}%"
+        holder.measureFatTextView.text = "体脂肪率：${trainingEntity.fat}%"
         holder.captureImageView.setImageURI(trainingEntity.photoUri?.toUri())
 
         holder.itemView.setOnClickListener {

@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.app.body_manage.domain.BMICalculator
 import com.app.body_manage.util.DateUtil
 
 @Composable
@@ -75,7 +76,12 @@ fun PhotoDetailScreen(
                         modifier = Modifier.padding(bottom = 5.dp)
                     )
                     Text(
-                        text = "BMI：${state.bodyMeasureModel.bmi}",
+                        text = "BMI：${
+                            BMICalculator().calculate(
+                                state.bodyMeasureModel.tall,
+                                state.bodyMeasureModel.weight
+                            )
+                        }",
                         color = Color.White,
                     )
                 }

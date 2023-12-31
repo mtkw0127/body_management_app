@@ -2,8 +2,9 @@ package com.app.body_manage.data.repository
 
 import com.app.body_manage.data.dao.BodyMeasureDao
 import com.app.body_manage.data.entity.BodyMeasureEntity
-import com.app.body_manage.data.entity.BodyMeasureModel
 import com.app.body_manage.data.entity.toModel
+import com.app.body_manage.data.model.BodyMeasureModel
+import com.app.body_manage.data.model.toEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
@@ -11,8 +12,9 @@ import java.time.LocalDateTime
 
 class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
 
-    suspend fun insert(bodyMeasureEntity: BodyMeasureEntity): BodyMeasureModel.Id {
-        return BodyMeasureModel.Id(trainingDao.insert(bodyMeasureEntity))
+    suspend fun insert(model: BodyMeasureModel): BodyMeasureModel.Id {
+        val id = trainingDao.insert(model.toEntity())
+        return BodyMeasureModel.Id(id.toInt())
     }
 
     suspend fun getEntityListAll(): List<BodyMeasureModel> {
@@ -50,7 +52,9 @@ class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
         return trainingDao.getTrainingEntityListByDate(date).map { it.toModel() }
     }
 
-    suspend fun getEntityByCaptureTime(localDateTime: LocalDateTime): List<BodyMeasureEntity> {
+    suspend fun getEntityByCaptureTime(
+        localDateTime: LocalDateTime
+    ): List<BodyMeasureEntity> {
         return trainingDao.getTrainingEntityByLocalDateTime(localDateTime)
     }
 
@@ -58,11 +62,11 @@ class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
         return trainingDao.deleteBodyMeasure(localDateTime)
     }
 
-    suspend fun update(bodyMeasureEntity: BodyMeasureEntity): Int {
-        return trainingDao.update(bodyMeasureEntity)
+    suspend fun update(model: BodyMeasureModel): Int {
+        return trainingDao.update(model.toEntity())
     }
 
     suspend fun fetch(bodyMeasureId: BodyMeasureModel.Id): BodyMeasureModel {
-        return trainingDao.fetch(bodyMeasureId.ui.toInt()).toModel()
+        return trainingDao.fetch(bodyMeasureId.value).toModel()
     }
 }

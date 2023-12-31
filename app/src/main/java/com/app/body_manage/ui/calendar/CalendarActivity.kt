@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
@@ -18,7 +17,6 @@ import com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.ui.setting.SettingActivity
 import com.app.body_manage.util.DateUtil
-import java.time.LocalDate
 
 class CalendarActivity : AppCompatActivity() {
 
@@ -37,13 +35,6 @@ class CalendarActivity : AppCompatActivity() {
     }
 
     private val registeredFromFab = registerForActivityResult(StartActivityForResult()) {
-        val message = when (it.resultCode) {
-            BodyMeasureEditFormActivity.RESULT_CREATE -> "追加しました"
-            else -> null
-        }
-        message?.let {
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-        }
         adapter.notifyDataSetChanged()
     }
 
@@ -120,11 +111,7 @@ class CalendarActivity : AppCompatActivity() {
         }
         binding.addButton.setOnClickListener {
             registeredFromFab.launch(
-                BodyMeasureEditFormActivity.createMeasureFormIntent(
-                    this,
-                    formType = BodyMeasureEditFormActivity.FormType.ADD,
-                    formDate = LocalDate.now()
-                )
+                BodyMeasureEditFormActivity.createMeasureFormIntent(this)
             )
         }
     }

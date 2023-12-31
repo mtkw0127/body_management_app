@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.TrainingApplication
-import com.app.body_manage.data.entity.BodyMeasureModel
+import com.app.body_manage.data.model.BodyMeasureModel
 import com.app.body_manage.data.model.PhotoModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
