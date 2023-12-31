@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="app_theme">#FFDA7F</color>
+    <color name="primary_second">#800020</color>
+    <color name="accent_color">#5CD5FA</color>
+
+    <!-- 比較 -->
+    <color name="compare_item_background">#B7B7B7</color>
+
+    <!-- 比較履歴-->
+    <color name="compare_history_diff_background">#FFBD1C</color>
+    <color name="compare_history_item_background">#B7B7B7</color>
+
+    <!-- Default color-->
     <color name="purple_200">#E8D6FF</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#3662FF</color>

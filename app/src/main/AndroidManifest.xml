@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.app.body_manage">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-feature android:name="android.hardware.camera" />
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission
@@ -22,75 +22,81 @@
             android:name="com.app.body_manage.ui.calendar.CalendarActivity"
             android:exported="true"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity"
-            android:exported="true"
-            android:launchMode="singleInstance"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
+            android:name="com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity
             android:name="com.app.body_manage.ui.measure.list.MeasureListActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Material3.Light.NoActionBar" />
+            android:theme="@style/AppThemeNoBar" />
         <activity
             android:name="com.app.body_manage.ui.graph.GraphActivity"
             android:exported="true"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoBar" />
         <activity
             android:name="com.app.body_manage.ui.camera.CameraActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Material3.Light.NoActionBar" />
+            android:theme="@style/Theme.MaterialComponents.NoActionBar" />
         <activity
             android:name="com.app.body_manage.ui.camera.MeasureCameraActivity"
             android:exported="true"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
         <activity
             android:name="com.app.body_manage.ui.photoList.PhotoListActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Material3.Light.NoActionBar" />
+            android:theme="@style/AppThemeNoBar" />
         <activity
             android:name=".ui.photoDetail.PhotoDetailActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Material3.Light.NoActionBar" />
+            android:theme="@style/AppThemeNoBar" />
         <activity
             android:name=".ui.setting.SettingActivity"
             android:exported="true"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoBar" />
         <activity
             android:name=".ui.compare.CompareActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Material3.Light.NoActionBar" />
+            android:theme="@style/AppThemeNoBar" />
         <activity
             android:name=".ui.choosePhoto.ChoosePhotoActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Material3.Light.NoActionBar" />
+            android:theme="@style/AppThemeNoBar" />
 
         <receiver
             android:name=".ui.alarm.AlarmNotification"
-            android:exported="true">
+            android:enabled="true"
+            android:exported="false"
+            android:theme="@style/AppTheme">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.INPUT_METHOD_CHANGED" />
+                <action android:name="com.app.body_manage.AlarmAction" />
             </intent-filter>
         </receiver>
     </application>

@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
@@ -14,6 +16,7 @@ import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
+import com.app.body_manage.ui.setting.SettingActivity
 import com.app.body_manage.util.DateUtil
 import java.time.LocalDate
 
@@ -67,12 +70,30 @@ class CalendarActivity : AppCompatActivity() {
         initListener()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.setting_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_setting -> {
+                startActivity(SettingActivity.createIntent(this))
+                return true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private fun initListener() {
         val navigation = binding.bottomSheetInclude.bottomNavigator
+        val menuCalendar = navigation.menu.findItem(R.id.menu_calendar)
         val menuCompare = navigation.menu.findItem(R.id.menu_compare)
         val menuPhoto = navigation.menu.findItem(R.id.menu_photo)
         val menuGraph = navigation.menu.findItem(R.id.menu_graph)
+        menuCalendar.actionView?.setBackgroundColor(getColor(R.color.app_theme))
         menuCompare.setOnMenuItemClickListener {
             simpleLauncher.launch(CompareActivity.createIntent(this))
             return@setOnMenuItemClickListener true

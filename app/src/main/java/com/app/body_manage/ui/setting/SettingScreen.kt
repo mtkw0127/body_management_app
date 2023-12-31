@@ -7,13 +7,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.app.body_manage.R
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
 
@@ -24,6 +28,16 @@ fun SettingScreen(
     notifyAction: (Boolean) -> Unit,
 ) {
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = stringResource(id = R.string.screen_name_settings),
+                    )
+                },
+                backgroundColor = colorResource(id = R.color.app_theme)
+            )
+        },
         bottomBar = {
             BottomSheet(bottomSheetDataList = (bottomSheetDataList))
         }
@@ -39,6 +53,7 @@ fun SettingScreen(
                     TextAndLabel(setting.alarm, notifyAction)
                 }
             }
+
             is SettingUiState.ErrorSettings -> {
                 Column {
                     Text(text = "設定情報の取得に失敗しました。")

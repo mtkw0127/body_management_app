@@ -10,7 +10,11 @@ import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.ui.measure.list.MeasureListState.BodyMeasureListState
 import com.app.body_manage.ui.measure.list.MeasureListState.MealMeasureListState
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
@@ -82,6 +86,7 @@ data class MeasureListViewModelState(
                     message = message,
                 )
             }
+
             MeasureType.MEAL -> {
                 MealMeasureListState(
                     date = date,
@@ -91,6 +96,7 @@ data class MeasureListViewModelState(
                     currentMonthRegisteredDayList = currentMonthRegisteredDayList,
                 )
             }
+
             else -> {
                 MeasureListState.CommonMeasureListState(
                     date = date,
@@ -159,13 +165,14 @@ class MeasureListViewModel(
                     loadRegisteredDayList()
                 }
             }
+
             MeasureType.MEAL -> {
                 loadMealMeasureList()
             }
+
             else -> {}
         }
     }
-
 
     fun updateMessage(message: String) {
         viewModelState.update {
@@ -319,5 +326,4 @@ class MeasureListViewModel(
             )
         }
     }
-
 }

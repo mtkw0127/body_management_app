@@ -15,13 +15,23 @@ class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
         return BodyMeasureModel.Id(trainingDao.insert(bodyMeasureEntity))
     }
 
-    suspend fun getEntityListAll(): List<BodyMeasureEntity> {
-        return trainingDao.getTrainingEntityListAll()
+    suspend fun getEntityListAll(): List<BodyMeasureModel> {
+        return trainingDao.getTrainingEntityListAll().map { it.toModel() }
+    }
+
+    suspend fun getLast(): BodyMeasureEntity? {
+        return trainingDao.getLast()
     }
 
     suspend fun getBetween(from: LocalDate, to: LocalDate): List<BodyMeasureModel> =
         withContext(Dispatchers.IO) {
             return@withContext trainingDao.getTrainingEntityListBetween(from, to)
+                .map { it.toModel() }
+        }
+
+    suspend fun getBetweenGroupByDate(from: LocalDate, to: LocalDate): List<BodyMeasureModel> =
+        withContext(Dispatchers.IO) {
+            return@withContext trainingDao.getTrainingEntityListBetweenGroupByDate(from, to)
                 .map { it.toModel() }
         }
 

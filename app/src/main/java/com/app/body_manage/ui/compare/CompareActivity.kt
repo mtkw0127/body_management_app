@@ -15,7 +15,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -83,23 +87,24 @@ class CompareActivity : AppCompatActivity() {
         )
 
         viewModel =
-            CompareViewModel(bodyMeasurePhotoRepository, compareBodyMeasureHistoryRepository)
+            CompareViewModel(
+                bodyMeasurePhotoRepository,
+                compareBodyMeasureHistoryRepository
+            )
+
+        viewModel.loadPhotoMeasure()
 
         lifecycleScope.launch {
             viewModel.uiState.collect {
-                if (it?.saveFail == true) {
-                    Toast.makeText(this@CompareActivity, "保存に失敗しました", Toast.LENGTH_LONG).show()
-                }
-                if (it?.saveSuccess == true) {
-                    Toast.makeText(this@CompareActivity, "保存に成功しました", Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-        lifecycleScope.launch {
-            viewModel.notSetCompareItem.collect {
-                if (it) {
-                    Toast.makeText(this@CompareActivity, "比較画像を選択してからクリックしてください", Toast.LENGTH_LONG)
-                        .show()
+                if (it is CompareState.CompareItemsHasSet) {
+                    if (it.saveFail) {
+                        Toast.makeText(this@CompareActivity, "保存に失敗しました", Toast.LENGTH_LONG)
+                            .show()
+                    }
+                    if (it.saveSuccess) {
+                        Toast.makeText(this@CompareActivity, "保存に成功しました", Toast.LENGTH_LONG)
+                            .show()
+                    }
                 }
             }
         }
@@ -108,9 +113,7 @@ class CompareActivity : AppCompatActivity() {
             val uiState by viewModel.uiState.collectAsState()
             var showDeleteConfirmDialog by remember { mutableStateOf(false) }
             var deleteTarget by remember {
-                mutableStateOf<ComparePhotoHistoryDao.PhotoAndBodyMeasure?>(
-                    null
-                )
+                mutableStateOf<ComparePhotoHistoryDao.PhotoAndBodyMeasure?>(null)
             }
             CompareScreen(
                 uiState = uiState ?: return@setContent,
@@ -164,17 +167,23 @@ class CompareActivity : AppCompatActivity() {
                                 .padding(20.dp)
                                 .fillMaxWidth()
                         ) {
-                            Text("キャンセル", modifier = Modifier
-                                .padding(5.dp, end = 10.dp)
-                                .clickable {
-                                    showDeleteConfirmDialog = false
-                                })
-                            Text("削除", modifier = Modifier
-                                .padding(5.dp)
-                                .clickable {
-                                    viewModel.deleteHistory(deleteTarget ?: return@clickable)
-                                    showDeleteConfirmDialog = false
-                                })
+                            Text(
+                                "キャンセル",
+                                modifier = Modifier
+                                    .padding(5.dp, end = 10.dp)
+                                    .clickable {
+                                        showDeleteConfirmDialog = false
+                                    }
+                            )
+                            Text(
+                                "削除",
+                                modifier = Modifier
+                                    .padding(5.dp)
+                                    .clickable {
+                                        viewModel.deleteHistory(deleteTarget ?: return@clickable)
+                                        showDeleteConfirmDialog = false
+                                    }
+                            )
                         }
                     }
                 )

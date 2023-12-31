@@ -47,9 +47,13 @@ fun <T : SelectionState> CalendarDay(
             .padding(2.dp),
         elevation = if (state.isFromCurrentMonth) 4.dp else 0.dp,
         border = if (isSelected) BorderStroke(1.dp, currentDayColor) else null,
-        contentColor = if (state.isCurrentDay) selectionColor else contentColorFor(
-            backgroundColor = MaterialTheme.colors.surface
-        )
+        contentColor = if (state.isCurrentDay) {
+            selectionColor
+        } else {
+            contentColorFor(
+                backgroundColor = MaterialTheme.colors.surface
+            )
+        }
     ) {
         Column(
             modifier = Modifier.clickable {

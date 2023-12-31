@@ -46,11 +46,17 @@ abstract class OnSwipeTouchListener(context: Context) : View.OnTouchListener {
                 if (!sideSwipe && abs(velocityY) < SWIPE_VELOCITY_THRESHOLD) return NONE
                 // 上下左右判定
                 return if (sideSwipe) {
-                    if (diffX > 0) RIGHT
-                    else LEFT
+                    if (diffX > 0) {
+                        RIGHT
+                    } else {
+                        LEFT
+                    }
                 } else {
-                    if (diffY > 0) DOWN
-                    else UP
+                    if (diffY > 0) {
+                        DOWN
+                    } else {
+                        UP
+                    }
                 }
             }
         }
@@ -66,11 +72,13 @@ abstract class OnSwipeTouchListener(context: Context) : View.OnTouchListener {
         }
 
         override fun onFling(
-            e1: MotionEvent,
+            e1: MotionEvent?,
             e2: MotionEvent,
             velocityX: Float,
             velocityY: Float
         ): Boolean {
+            if (e1 == null) return false
+
             val swipeDirection =
                 SwipeDirection.newInstance(e1, e2, velocityX, velocityY)
             val result = swipeDirection !is SwipeDirection.NONE

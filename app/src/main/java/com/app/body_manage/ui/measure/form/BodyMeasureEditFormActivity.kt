@@ -21,7 +21,7 @@ import com.app.body_manage.R
 import com.app.body_manage.data.entity.BodyMeasureEntity
 import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.model.PhotoModel
-import com.app.body_manage.databinding.TrainingDetailBinding
+import com.app.body_manage.databinding.TrainingFormBinding
 import com.app.body_manage.dialog.FloatNumberPickerDialog
 import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.calendar.CalendarActivity
@@ -42,13 +42,13 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         ADD, EDIT
     }
 
-    private lateinit var binding: TrainingDetailBinding
+    private lateinit var binding: TrainingFormBinding
 
     // 更新前の測定日時
     private val captureDateTime: LocalDateTime by lazy {
         intent.getSerializableExtra(
             KEY_CAPTURE_TIME
-        ) as? LocalDateTime ?: LocalDateTime.now()//ランチャーの場合は今日
+        ) as? LocalDateTime ?: LocalDateTime.now() // ランチャーの場合は今日
     }
 
     private val formType: FormType by lazy {
@@ -57,7 +57,8 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
 
     // 測定日時
     private val captureDate: LocalDate by lazy {
-        intent.getSerializableExtra(KEY_CAPTURE_DATE) as? LocalDate ?: LocalDate.now()//ランチャーの場合は今日
+        intent.getSerializableExtra(KEY_CAPTURE_DATE) as? LocalDate
+            ?: LocalDate.now() // ランチャーの場合は今日
     }
 
     // カメラ撮影結果コールバック
@@ -77,7 +78,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = TrainingDetailBinding.inflate(layoutInflater)
+        binding = TrainingFormBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
         setContentView(binding.root)
 
@@ -99,6 +100,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                     DateUtil.localDateConvertLocalTimeDateToTime(LocalDateTime.now())
                 )
             }
+
             FormType.EDIT -> {
                 // 紐づく測定結果、写真を取得してフィールドに設定
                 vm.loadBodyMeasure()
@@ -220,7 +222,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         binding.fatField.setOnClickListener {
             val fatPickerFragment =
                 FloatNumberPickerDialog.createDialog(vm.measureFat, "%") { fat ->
-                    (it as TextView).text = "${fat}%"
+                    (it as TextView).text = "$fat%"
                     vm.measureFat = fat
                 }
             fatPickerFragment.show(supportFragmentManager, "FatPicker")
@@ -230,8 +232,8 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         binding.saveBtn.setOnClickListener {
             val saveModel = BodyMeasureEntity(
                 0,
-                captureDate,// カレンダー日付
-                captureDate,// キャプチャ日付
+                captureDate, // カレンダー日付
+                captureDate, // キャプチャ日付
                 vm.measureTime,
                 vm.measureWeight,
                 vm.measureFat,
@@ -244,6 +246,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                     vm.addPhoto(saveModel)
                     setResult(RESULT_CREATE)
                 }
+
                 FormType.EDIT -> {
                     // 測定がロードできていない場合は更新しない
                     if (vm.loadedBodyMeasure.value == false) return@setOnClickListener
@@ -268,7 +271,6 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
             vm.deletePhoto(position)
         }
         val photoDetailAction = View.OnClickListener {
-            // TODO: 編集でもタップできるようにする
             if (formType == FormType.ADD) return@OnClickListener
             val position = (it as RoundedImageView).tooltipText.toString().toInt()
             val photo = vm.photoList.value?.get(position)
@@ -322,7 +324,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                 Intent(context.applicationContext, BodyMeasureEditFormActivity::class.java)
             intent.putExtra(FORM_TYPE, formType)
             intent.putExtra(KEY_CAPTURE_DATE, formDate)
-            //登録日の現在時刻
+            // 登録日の現在時刻
             intent.putExtra(KEY_CAPTURE_TIME, LocalDateTime.of(formDate, LocalTime.now()))
             return intent
         }

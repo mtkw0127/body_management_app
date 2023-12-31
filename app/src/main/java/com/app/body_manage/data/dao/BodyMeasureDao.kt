@@ -11,15 +11,37 @@ import java.time.LocalDateTime
 @Dao
 interface BodyMeasureDao {
     @Query("SELECT * FROM bodyMeasures WHERE calendar_date = :calendarDate ORDER BY capture_time ASC")
-    suspend fun getTrainingEntityListByDate(calendarDate: LocalDate): List<BodyMeasureEntity>
+    suspend fun getTrainingEntityListByDate(
+        calendarDate: LocalDate
+    ): List<BodyMeasureEntity>
+
+    @Query(
+        "SELECT ui, " +
+            "calendar_date, " +
+            "capture_date, " +
+            "capture_time, " +
+            "AVG(weight) as weight, " +
+            "AVG(fat) as fat " +
+            "FROM bodyMeasures " +
+            "WHERE calendar_date " +
+            "BETWEEN :from AND :to " +
+            "GROUP BY bodyMeasures.calendar_date " +
+            "ORDER BY capture_time ASC"
+    )
+    suspend fun getTrainingEntityListBetweenGroupByDate(
+        from: LocalDate,
+        to: LocalDate,
+    ): List<BodyMeasureEntity>
 
     @Query("SELECT * FROM bodyMeasures WHERE calendar_date BETWEEN :from AND :to ORDER BY capture_time ASC")
     suspend fun getTrainingEntityListBetween(
         from: LocalDate,
-        to: LocalDate
+        to: LocalDate,
     ): List<BodyMeasureEntity>
 
-    @Query("SELECT ui, calendar_date, capture_date, capture_time, AVG(weight) as weight, AVG(fat) as fat, photo_uri, tall FROM bodyMeasures GROUP BY bodyMeasures.calendar_date")
+    @Query(
+        "SELECT ui, calendar_date, capture_date, capture_time, AVG(weight) as weight, AVG(fat) as fat, photo_uri, tall FROM bodyMeasures GROUP BY bodyMeasures.calendar_date"
+    )
     suspend fun getTrainingEntityListAll(): List<BodyMeasureEntity>
 
     @Query("UPDATE bodyMeasures SET tall = :tall WHERE calendar_date = :calendarDate")
@@ -39,4 +61,7 @@ interface BodyMeasureDao {
 
     @Query("SELECT * FROM bodyMeasures WHERE ui = :bodyMeasureId")
     suspend fun fetch(bodyMeasureId: Int): BodyMeasureEntity
+
+    @Query("SELECT * FROM bodyMeasures ORDER BY capture_time DESC")
+    suspend fun getLast(): BodyMeasureEntity?
 }

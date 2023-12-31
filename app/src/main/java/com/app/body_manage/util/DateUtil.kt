@@ -9,13 +9,13 @@ class DateUtil {
     // 休み種別
     enum class DateType {
         // 休日
-        HOLIDAY {},
+        HOLIDAY,
 
         // 代休
-        COMPENSATION {},
+        COMPENSATION,
 
         // 平日
-        WEEKDAY {},
+        WEEKDAY,
     }
 
     companion object {
@@ -40,7 +40,14 @@ class DateUtil {
                 DayOfWeek.FRIDAY -> "金"
                 DayOfWeek.SATURDAY -> "土"
             }
-            return "${localDate.year}年${localDate.monthValue}月${localDate.dayOfMonth}日(${japaneseDayOfWeek})"
+            return "${localDate.year}年${localDate.monthValue}月${localDate.dayOfMonth}日($japaneseDayOfWeek)"
+        }
+
+        /**
+         * 引数のLocalDateをYYYY年MM月DD日(曜日)のフォーマットに変換して返却.
+         */
+        fun localDateConvertMonthDay(localDate: LocalDate): String {
+            return "${localDate.monthValue}月${localDate.dayOfMonth}日"
         }
 
         /**
@@ -109,7 +116,6 @@ class DateUtil {
             if (localDate.month == Month.JULY) {
                 when (localDate.dayOfMonth) {
                     // 海の日
-                    // TODO: 第3月曜判定
                     18 -> return DateType.HOLIDAY
                 }
             }
@@ -124,7 +130,6 @@ class DateUtil {
             if (localDate.month == Month.SEPTEMBER) {
                 when (localDate.dayOfMonth) {
                     // 敬老の日, 秋分の日
-                    // TODO: 第3月曜日判定
                     19, 23 -> return DateType.HOLIDAY
                 }
             }
@@ -132,7 +137,6 @@ class DateUtil {
             if (localDate.month == Month.OCTOBER) {
                 when (localDate.dayOfMonth) {
                     // スポーツの日
-                    // TODO: 第2月曜日
                     10 -> return DateType.HOLIDAY
                 }
             }
@@ -145,7 +149,7 @@ class DateUtil {
             }
             // 12月
             if (localDate.month == Month.DECEMBER) {
-                //　天皇誕生日(2018まで）
+                // 　天皇誕生日(2018まで）
                 if (localDate.year <= 2018 && localDate.dayOfMonth == 23) {
                     return DateType.HOLIDAY
                 }

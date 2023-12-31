@@ -8,7 +8,11 @@ import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.ui.photoList.PhotoListState.HasPhoto
 import com.app.body_manage.ui.photoList.PhotoListState.NoPhoto
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -39,12 +43,12 @@ internal data class PhotoListViewModelState(
             photos.isEmpty() -> {
                 NoPhoto(message = "写真はまだ登録されていません。", sortType)
             }
+
             else -> {
                 HasPhoto(photos = photos, sortType)
             }
         }
 }
-
 
 class PhotoListViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -66,6 +70,7 @@ class PhotoListViewModel(application: Application) : AndroidViewModel(applicatio
             SortType.DATE -> {
                 loadPhotoRegisteredDates()
             }
+
             SortType.WEIGHT -> {
                 loadPhotoRegisteredWeight()
             }
