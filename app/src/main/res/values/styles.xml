@@ -6,6 +6,11 @@
         <item name="colorPrimaryDark">@color/app_theme</item>
     </style>
 
+    <style name="AppThemeNoBar" parent="@style/Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/app_theme</item>
+        <item name="colorPrimaryDark">@color/app_theme</item>
+    </style>
+
     <style name="CustomBottomNavigationStyle" parent="Widget.Design.BottomNavigationView">
         <item name="android:background">@color/app_theme</item>
         <item name="itemIconTint">@color/black</item>

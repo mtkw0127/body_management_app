@@ -4,7 +4,24 @@
     <string name="prev_month">先月</string>
     <string name="next_month">翌月</string>
     <string name="settings">設定</string>
+    <string name="back">戻る</string>
+    <string name="record">記録する</string>
+    <string name="date">日付</string>
+    <string name="weight">体重</string>
 
-    <!-- -->
-    <string name="screen_name_settings">設定画面</string>
+    <!-- 投稿画面 -->
+    <string name="hint_fat">体脂肪率</string>
+    <string name="hint_weight">体重</string>
+    <string name="hint_time">計測時間</string>
+
+    <!-- 比較画面 -->
+    <string name="before">Before</string>
+    <string name="after">After</string>
+    <string name="history">履歴</string>
+    <string name="message_not_yet_saved_history">体型比較がまだ保存されていません</string>
+
+    <!-- 画面タイトル-->
+    <string name="screen_name_settings">設定</string>
+    <string name="screen_name_graph">グラフ</string>
+    <string name="screen_name_choose_compare_photo">比較写真を選択してください</string>
 </resources>

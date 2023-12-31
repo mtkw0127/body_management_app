@@ -38,7 +38,8 @@ class GraphActivity : AppCompatActivity() {
             binding.pager.adapter = PagerAdapter(fa = this, entryList = it.toList())
 
             TabLayoutMediator(binding.tabLayout, binding.pager) { tab, position ->
-                tab.text = if (position == 0) "体重" else "体脂肪率"
+                tab.text =
+                    if (position == 0) getString(R.string.weight) else getString(R.string.hint_fat)
             }.attach()
         }
 
