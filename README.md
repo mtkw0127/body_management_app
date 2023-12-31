@@ -19,7 +19,4 @@ AndoirdStudioでクローンすれば動きます。
 
 | カレンダー管理| 日付ごとに写真管理| 写真と計測内容を登録| グラフで表示|
 | ------------- | -------------| -------------| -------------|
-|<img src="https://user-images.githubusercontent.com/36796492/176981309-9f564277-cabb-4430-a717-66ce7f6e0c25.png" width="200px"/>|<img src="https://user-images.githubusercontent.com/36796492/176981306-cc24e705-55d2-4e40-b78a-726c9027fbbc.png" width="200px"/>|<img src="https://user-images.githubusercontent.com/36796492/176981533-33384077-ca79-484d-9d69-69a4d8415249.png" width="200px"/>|<img src="https://user-images.githubusercontent.com/36796492/176981311-d226852b-847b-4c9b-84ed-6bd7896a4371.png" width="200px"/>|
-
-
-
+|<img src="[https://user-images.githubusercontent.com/36796492/176981309-9f564277-cabb-4430-a717-66ce7f6e0c25.png](https://github.com/mtkw0127/training_management_app/assets/36796492/3fc2bc39-ffb7-41d5-9951-b3172c18e147)" width="200px"/>|<img src="https://user-images.githubusercontent.com/36796492/176981306-cc24e705-55d2-4e40-b78a-726c9027fbbc.png" width="200px"/>|<img src="https://user-images.githubusercontent.com/36796492/176981533-33384077-ca79-484d-9d69-69a4d8415249.png" width="200px"/>|<img src="https://user-images.githubusercontent.com/36796492/176981311-d226852b-847b-4c9b-84ed-6bd7896a4371.png" width="200px"/>|
