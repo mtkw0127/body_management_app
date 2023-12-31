@@ -6,6 +6,7 @@ plugins {
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
     id("com.github.triplet.play")
+    id("io.gitlab.arturbosch.detekt") version "1.23.3"
 }
 
 android {
@@ -60,12 +61,20 @@ android {
     namespace = "com.app.body_manage"
 }
 
+detekt {
+    config.setFrom("${rootProject.projectDir}/config/detekt/detekt.yml")
+    buildUponDefaultConfig = true
+    autoCorrect = true
+}
+
 play {
     track.set("internal")
     serviceAccountCredentials.set(file("../key/play-service-key.json"))
 }
 
 dependencies {
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.3")
+
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")

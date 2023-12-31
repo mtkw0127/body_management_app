@@ -11,5 +11,4 @@ class CalendarListViewModel : ViewModel() {
         get() {
             return DateUtil.localDateConvertJapaneseFormatYearMonth(today)
         }
-
 }

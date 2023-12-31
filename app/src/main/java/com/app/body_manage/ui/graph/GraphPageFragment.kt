@@ -38,32 +38,32 @@ class GraphPageFragment : Fragment() {
         myEntryList: List<MyEntry>,
         label: String
     ) {
-        //LineDataSetのList
+        // LineDataSetのList
         val lineDataSets = mutableListOf<ILineDataSet>()
-        //②DataSetにデータ格納
-        val entryList = myEntryList.mapIndexed { index, it ->
+        // ②DataSetにデータ格納
+        val entryList = myEntryList.mapIndexed { index, data ->
             Entry().apply {
                 x = index.toFloat()
-                y = it.y
+                y = data.y
             }
         }.toList()
         val xAxisLabels =
             myEntryList.map { DateUtil.localDateConvertMMDD(it.axisLocalDateTime) }.toList()
         val lineDataSet = LineDataSet(entryList, label)
 
-        //③DataSetにフォーマット指定(3章で詳説)
+        // ③DataSetにフォーマット指定(3章で詳説)
         lineDataSet.color = Color.BLUE
-        //リストに格納
+        // リストに格納
         lineDataSets.add(lineDataSet)
 
-        //④LineDataにLineDataSet格納
+        // ④LineDataにLineDataSet格納
         val lineData = LineData(lineDataSets)
-        //⑤LineChartにLineData格納
+        // ⑤LineChartにLineData格納
         // yの最大値取得
         val yMax = entryList.map { it.y }.maxOrNull() ?: 0F
 
-        //⑥Chartのフォーマット指定(3章で詳説)
-        //X軸の設定
+        // ⑥Chartのフォーマット指定(3章で詳説)
+        // X軸の設定
         val chart = lineChart.apply {
             data = lineData
             with(xAxis) {

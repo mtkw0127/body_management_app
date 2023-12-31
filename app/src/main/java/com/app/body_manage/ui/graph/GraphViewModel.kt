@@ -7,10 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.entity.BodyMeasureEntity
 import com.app.body_manage.data.repository.BodyMeasureRepository
-import java.io.Serializable
-import java.time.LocalDateTime
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.Serializable
+import java.time.LocalDateTime
 
 class GraphViewModel(application: Application) : AndroidViewModel(application) {
 

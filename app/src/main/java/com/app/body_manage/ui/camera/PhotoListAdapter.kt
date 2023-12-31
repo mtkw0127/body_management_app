@@ -51,5 +51,4 @@ class PhotoListAdapter(private val dataSet: List<Uri>, private val deletePhoto: 
     }
 
     override fun getItemCount(): Int = dataSet.size
-
 }

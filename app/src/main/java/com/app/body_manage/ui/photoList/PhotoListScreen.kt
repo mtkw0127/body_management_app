@@ -175,14 +175,15 @@ private fun PhotoList(
     photoDetailAction: (Int) -> Unit,
     state: HasPhoto
 ) {
+    val columns = 3
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
-        columns = GridCells.Fixed(3),
+        columns = GridCells.Fixed(columns),
         horizontalArrangement = Arrangement.spacedBy(1.dp),
         verticalArrangement = Arrangement.spacedBy(1.dp),
     ) {
         state.photos.forEach { (label, photos) ->
-            item(span = { GridItemSpan(3) }) {
+            item(span = { GridItemSpan(columns) }) {
                 val labelWithUnit = when (state.type) {
                     SortType.WEIGHT -> {
                         label + "kg"

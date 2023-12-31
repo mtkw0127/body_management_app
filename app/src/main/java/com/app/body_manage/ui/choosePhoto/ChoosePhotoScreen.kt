@@ -74,7 +74,8 @@ fun ChoosePhotoScreen(
                     is SelectPhotoState.Error -> {
                     }
                 }
-            }) {
+            }
+        ) {
             when (state) {
                 is SelectPhotoState.SelectedPhoto -> {
                     Column {
@@ -93,7 +94,6 @@ fun ChoosePhotoScreen(
                 }
 
                 is SelectPhotoState.Error -> {
-
                 }
             }
         }

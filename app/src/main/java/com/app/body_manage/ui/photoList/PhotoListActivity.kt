@@ -28,7 +28,6 @@ class PhotoListActivity : AppCompatActivity() {
     private val photoDetailLauncher =
         registerForActivityResult(StartActivityForResult()) {}
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val vm = PhotoListViewModel(application = application)

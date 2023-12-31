@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import androidx.annotation.NonNull
 import androidx.core.view.GestureDetectorCompat
 import timber.log.Timber
 import kotlin.math.abs
@@ -47,11 +46,17 @@ abstract class OnSwipeTouchListener(context: Context) : View.OnTouchListener {
                 if (!sideSwipe && abs(velocityY) < SWIPE_VELOCITY_THRESHOLD) return NONE
                 // 上下左右判定
                 return if (sideSwipe) {
-                    if (diffX > 0) RIGHT
-                    else LEFT
+                    if (diffX > 0) {
+                        RIGHT
+                    } else {
+                        LEFT
+                    }
                 } else {
-                    if (diffY > 0) DOWN
-                    else UP
+                    if (diffY > 0) {
+                        DOWN
+                    } else {
+                        UP
+                    }
                 }
             }
         }
@@ -72,7 +77,7 @@ abstract class OnSwipeTouchListener(context: Context) : View.OnTouchListener {
             velocityX: Float,
             velocityY: Float
         ): Boolean {
-            if(e1 == null) return false
+            if (e1 == null) return false
 
             val swipeDirection =
                 SwipeDirection.newInstance(e1, e2, velocityX, velocityY)
