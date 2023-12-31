@@ -121,7 +121,7 @@ fun CompareScreen(
             when (uiState) {
                 is CompareState.CompareItemsHasSet -> {
                     val tabRowItems = listOf(
-                        TabRowItem("比較") {
+                        TabRowItem(stringResource(id = R.string.compare)) {
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -247,14 +247,14 @@ private fun HistoryList(
                 ) {
                     CompareImage(
                         modifier = Modifier.weight(0.5F),
-                        label = "Before",
+                        label = stringResource(id = R.string.before),
                         photoId = it.beforePhotoId,
                         photoUri = it.beforePhotoUri,
                         onClickPhoto = onClickPhoto,
                     )
                     CompareImage(
                         modifier = Modifier.weight(0.5F),
-                        label = "After",
+                        label = stringResource(id = R.string.after),
                         photoId = it.afterPhotoId,
                         photoUri = it.afterPhotoUri,
                         onClickPhoto = onClickPhoto,
@@ -329,7 +329,7 @@ private fun TableData(compareHistory: ComparePhotoHistoryDao.PhotoAndBodyMeasure
     ) {
         with(compareHistory) {
             TableRow(
-                label = "日付",
+                label = stringResource(id = R.string.date),
                 before = beforeCalendarDate.toString(),
                 diff = "${getDiffDays()}日",
                 after = afterCalendarDate.toString(),
@@ -338,7 +338,7 @@ private fun TableData(compareHistory: ComparePhotoHistoryDao.PhotoAndBodyMeasure
             val diff = (afterWeight * 10 - beforeWeight * 10) / 10
             TableRow(
                 unit = "kg",
-                label = "体重",
+                label = stringResource(id = R.string.weight),
                 before = beforeWeight.toString(),
                 after = afterWeight.toString(),
                 diff = if (gained) {
@@ -504,7 +504,7 @@ private fun CompareItem(label: String, item: CompareItemStruct?, onEditClick: ()
                             )
                             Spacer(modifier = Modifier.size(10.dp))
                             Text(
-                                text = "比較する写真を\n設定してください",
+                                text = stringResource(id = R.string.message_please_set_photo_for_compare),
                                 textAlign = TextAlign.Center,
                             )
                         }

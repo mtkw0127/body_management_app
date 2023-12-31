@@ -17,7 +17,10 @@
     <!-- 比較画面 -->
     <string name="before">Before</string>
     <string name="after">After</string>
+    <string name="compare">比較</string>
     <string name="history">履歴</string>
+    <string name="message_please_set_photo_for_compare">比較する写真を
+設定してください</string>
     <string name="message_not_yet_saved_history">体型比較がまだ保存されていません</string>
 
     <!-- 画面タイトル-->
