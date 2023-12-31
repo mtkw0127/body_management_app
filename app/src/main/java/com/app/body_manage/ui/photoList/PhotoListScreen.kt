@@ -7,7 +7,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -206,29 +209,42 @@ private fun PhotoList(
                 )
             }
             items(photos) { photo ->
-                AsyncImage(
-                    model = photo.photoUri,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .clickable {
-                            photoDetailAction.invoke(photo.photoId)
-                        }
-                )
-                Text(
-                    text = when (state.type) {
-                        SortType.DATE -> {
-                            "${photo.weight}kg"
-                        }
+                Box(modifier = Modifier.sizeIn(maxHeight = 150.dp)) {
+                    AsyncImage(
+                        model = photo.photoUri,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .clickable {
+                                photoDetailAction.invoke(photo.photoId)
+                            }
+                    )
+                    Box(
+                        modifier = Modifier.offset(x = 5.dp, y = 5.dp),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        Text(
+                            text = when (state.type) {
+                                SortType.DATE -> {
+                                    "${photo.weight}kg"
+                                }
 
-                        SortType.WEIGHT -> {
-                            "${photo.calendarDate}"
-                        }
-                    },
-                    color = Color.White,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(3.dp)
-                )
+                                SortType.WEIGHT -> {
+                                    "${photo.calendarDate}"
+                                }
+                            },
+                            color = Color.Black,
+                            fontSize = 16.sp,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier
+                                .width(70.dp)
+                                .background(
+                                    color = Color.White,
+                                    shape = RoundedCornerShape(3.dp)
+                                )
+                        )
+                    }
+                }
             }
         }
     }
