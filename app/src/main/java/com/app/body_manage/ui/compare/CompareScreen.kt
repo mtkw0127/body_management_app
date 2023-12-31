@@ -209,8 +209,28 @@ fun CompareScreen(
 
                 is CompareState.CompareItemsError -> {
                 }
+
+                is CompareState.NoPhotos -> {
+                    NoPhotos()
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun NoPhotos() {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Text(
+            text = stringResource(id = R.string.message_not_yet_taken_measure_with_photo),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Gray,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 

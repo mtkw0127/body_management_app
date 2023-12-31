@@ -55,6 +55,7 @@
                     android:layout_height="30dp"
                     android:layout_marginStart="30dp"
                     android:background="@drawable/ic_baseline_cameraswitch_24"
+                    android:contentDescription="@null"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -81,7 +82,8 @@
                         android:id="@+id/captured"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/border_radius_5" />
+                        android:background="@drawable/border_radius_5"
+                        android:contentDescription="@null" />
                 </com.google.android.material.card.MaterialCardView>
 
 
@@ -101,7 +103,8 @@
                     android:id="@+id/back_from_camera_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="戻る"
+                    android:backgroundTint="@color/app_theme"
+                    android:text="@string/label_back"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toLeftOf="@id/shutter_btn"
@@ -113,6 +116,7 @@
                     android:layout_height="80dp"
                     android:background="@drawable/ic_capture"
                     android:clickable="@{viewModel.canTakePhoto}"
+                    android:contentDescription="@null"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/back_from_camera_btn"
                     app:layout_constraintRight_toLeftOf="@id/next_btn"
@@ -122,7 +126,9 @@
                     android:id="@+id/next_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="次へ"
+                    android:backgroundTint="@color/app_theme"
+                    android:text="@string/label_next"
+                    android:visibility="@{viewModel.showNext}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toRightOf="@id/shutter_btn"
                     app:layout_constraintRight_toRightOf="parent"

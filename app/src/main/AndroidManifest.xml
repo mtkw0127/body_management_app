@@ -52,7 +52,7 @@
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoBar" />
+            android:theme="@style/Theme.MaterialComponents.NoActionBar" />
         <activity
             android:name="com.app.body_manage.ui.camera.MeasureCameraActivity"
             android:exported="true"

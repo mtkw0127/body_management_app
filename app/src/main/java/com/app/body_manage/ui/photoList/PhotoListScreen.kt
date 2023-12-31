@@ -151,19 +151,21 @@ fun PhotoListScreen(
                 }
             },
             floatingActionButton = {
-                FloatingActionButton(
-                    onClick = {
-                        scope.launch {
-                            if (modalSheetState.currentValue == ModalBottomSheetValue.Hidden) {
-                                modalSheetState.show()
-                            } else {
-                                modalSheetState.hide()
+                if (state is HasPhoto) {
+                    FloatingActionButton(
+                        onClick = {
+                            scope.launch {
+                                if (modalSheetState.currentValue == ModalBottomSheetValue.Hidden) {
+                                    modalSheetState.show()
+                                } else {
+                                    modalSheetState.hide()
+                                }
                             }
-                        }
-                    },
-                    backgroundColor = accentColor
-                ) {
-                    Icon(Icons.Filled.Sort, contentDescription = null)
+                        },
+                        backgroundColor = accentColor
+                    ) {
+                        Icon(Icons.Filled.Sort, contentDescription = null)
+                    }
                 }
             }
         )
@@ -236,11 +238,11 @@ private fun PhotoList(
 private fun NoPhotoMessage() {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .fillMaxSize()
+        modifier = Modifier.fillMaxSize()
     ) {
         Text(
-            text = "未登録です\n体型登録時に撮影した写真がここに表示されます",
+            text = stringResource(id = R.string.message_no_photo),
+            fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Gray,
             textAlign = TextAlign.Center,
