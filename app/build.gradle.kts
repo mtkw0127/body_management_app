@@ -70,6 +70,7 @@ detekt {
 play {
     track.set("internal")
     serviceAccountCredentials.set(file("../key/play-service-key.json"))
+    defaultToAppBundles.set(true)
 }
 
 dependencies {
