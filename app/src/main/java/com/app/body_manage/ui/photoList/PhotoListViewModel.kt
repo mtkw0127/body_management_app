@@ -50,7 +50,6 @@ internal data class PhotoListViewModelState(
         }
 }
 
-
 class PhotoListViewModel(application: Application) : AndroidViewModel(application) {
 
     private val bmpRepository: BodyMeasurePhotoRepository by lazy {

@@ -70,7 +70,8 @@ class CameraActivity : AppCompatActivity() {
             arrayOf(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.CAMERA
-            ), 1
+            ),
+            1
         )
 
         viewModel.photoList.observe(this) {
@@ -89,7 +90,6 @@ class CameraActivity : AppCompatActivity() {
             requireNotNull(binding.bottomSheetInclude.photoListRecyclerView.adapter).notifyDataSetChanged()
         }
         viewModel.canTakePhoto.observe(this) {
-
         }
 
         // バックグラウンドのエグゼキュータ
@@ -156,10 +156,13 @@ class CameraActivity : AppCompatActivity() {
                     }
 
                     override fun onError(exception: ImageCaptureException) {
-                        // TODO: シャッター音をならす
                         Handler(Looper.getMainLooper()).post {
                             Timber.e(exception)
-                            Toast.makeText(applicationContext, "写真の撮影に失敗しました。", Toast.LENGTH_SHORT)
+                            Toast.makeText(
+                                applicationContext,
+                                "写真の撮影に失敗しました。",
+                                Toast.LENGTH_SHORT
+                            )
                                 .show()
                         }
                         viewModel.setCanTakePhoto(true)
@@ -185,30 +188,36 @@ class CameraActivity : AppCompatActivity() {
      */
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-        cameraProviderFuture.addListener(Runnable {
-            // Camera provider is now guaranteed to be available
-            val cameraProvider = cameraProviderFuture.get()
+        cameraProviderFuture.addListener(
+            Runnable {
+                // Camera provider is now guaranteed to be available
+                val cameraProvider = cameraProviderFuture.get()
 
-            // Set up the preview use case to display camera preview.
-            val preview = Preview.Builder().build()
+                // Set up the preview use case to display camera preview.
+                val preview = Preview.Builder().build()
 
-            // Set up the capture use case to allow users to take photos.
-            imageCapture = ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                .build()
+                // Set up the capture use case to allow users to take photos.
+                imageCapture = ImageCapture.Builder()
+                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                    .build()
 
-            cameraProvider.unbindAll()
+                cameraProvider.unbindAll()
 
-            // Attach use cases to the camera with the same lifecycle owner
-            cameraProvider.bindToLifecycle(
-                this as LifecycleOwner, cameraSelector, preview, imageCapture
-            )
+                // Attach use cases to the camera with the same lifecycle owner
+                cameraProvider.bindToLifecycle(
+                    this as LifecycleOwner,
+                    cameraSelector,
+                    preview,
+                    imageCapture
+                )
 
-            // Connect the preview use case to the previewView
-            preview.setSurfaceProvider(
-                binding.cameraPreview.surfaceProvider
-            )
-        }, ContextCompat.getMainExecutor(this))
+                // Connect the preview use case to the previewView
+                preview.setSurfaceProvider(
+                    binding.cameraPreview.surfaceProvider
+                )
+            },
+            ContextCompat.getMainExecutor(this)
+        )
     }
 
     private fun permissionCheck() {

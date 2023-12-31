@@ -48,7 +48,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
     private val captureDateTime: LocalDateTime by lazy {
         intent.getSerializableExtra(
             KEY_CAPTURE_TIME
-        ) as? LocalDateTime ?: LocalDateTime.now()//ランチャーの場合は今日
+        ) as? LocalDateTime ?: LocalDateTime.now() // ランチャーの場合は今日
     }
 
     private val formType: FormType by lazy {
@@ -57,7 +57,8 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
 
     // 測定日時
     private val captureDate: LocalDate by lazy {
-        intent.getSerializableExtra(KEY_CAPTURE_DATE) as? LocalDate ?: LocalDate.now()//ランチャーの場合は今日
+        intent.getSerializableExtra(KEY_CAPTURE_DATE) as? LocalDate
+            ?: LocalDate.now() // ランチャーの場合は今日
     }
 
     // カメラ撮影結果コールバック
@@ -221,7 +222,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         binding.fatField.setOnClickListener {
             val fatPickerFragment =
                 FloatNumberPickerDialog.createDialog(vm.measureFat, "%") { fat ->
-                    (it as TextView).text = "${fat}%"
+                    (it as TextView).text = "$fat%"
                     vm.measureFat = fat
                 }
             fatPickerFragment.show(supportFragmentManager, "FatPicker")
@@ -231,8 +232,8 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         binding.saveBtn.setOnClickListener {
             val saveModel = BodyMeasureEntity(
                 0,
-                captureDate,// カレンダー日付
-                captureDate,// キャプチャ日付
+                captureDate, // カレンダー日付
+                captureDate, // キャプチャ日付
                 vm.measureTime,
                 vm.measureWeight,
                 vm.measureFat,
@@ -270,7 +271,6 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
             vm.deletePhoto(position)
         }
         val photoDetailAction = View.OnClickListener {
-            // TODO: 編集でもタップできるようにする
             if (formType == FormType.ADD) return@OnClickListener
             val position = (it as RoundedImageView).tooltipText.toString().toInt()
             val photo = vm.photoList.value?.get(position)
@@ -324,7 +324,7 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                 Intent(context.applicationContext, BodyMeasureEditFormActivity::class.java)
             intent.putExtra(FORM_TYPE, formType)
             intent.putExtra(KEY_CAPTURE_DATE, formDate)
-            //登録日の現在時刻
+            // 登録日の現在時刻
             intent.putExtra(KEY_CAPTURE_TIME, LocalDateTime.of(formDate, LocalTime.now()))
             return intent
         }

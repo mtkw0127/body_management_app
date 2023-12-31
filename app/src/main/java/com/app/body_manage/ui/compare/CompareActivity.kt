@@ -15,7 +15,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -98,7 +102,11 @@ class CompareActivity : AppCompatActivity() {
         lifecycleScope.launch {
             viewModel.notSetCompareItem.collect {
                 if (it) {
-                    Toast.makeText(this@CompareActivity, "比較画像を選択してからクリックしてください", Toast.LENGTH_LONG)
+                    Toast.makeText(
+                        this@CompareActivity,
+                        "比較画像を選択してからクリックしてください",
+                        Toast.LENGTH_LONG
+                    )
                         .show()
                 }
             }
@@ -164,17 +172,23 @@ class CompareActivity : AppCompatActivity() {
                                 .padding(20.dp)
                                 .fillMaxWidth()
                         ) {
-                            Text("キャンセル", modifier = Modifier
-                                .padding(5.dp, end = 10.dp)
-                                .clickable {
-                                    showDeleteConfirmDialog = false
-                                })
-                            Text("削除", modifier = Modifier
-                                .padding(5.dp)
-                                .clickable {
-                                    viewModel.deleteHistory(deleteTarget ?: return@clickable)
-                                    showDeleteConfirmDialog = false
-                                })
+                            Text(
+                                "キャンセル",
+                                modifier = Modifier
+                                    .padding(5.dp, end = 10.dp)
+                                    .clickable {
+                                        showDeleteConfirmDialog = false
+                                    }
+                            )
+                            Text(
+                                "削除",
+                                modifier = Modifier
+                                    .padding(5.dp)
+                                    .clickable {
+                                        viewModel.deleteHistory(deleteTarget ?: return@clickable)
+                                        showDeleteConfirmDialog = false
+                                    }
+                            )
                         }
                     }
                 )

@@ -175,7 +175,8 @@ fun MeasureListScreen(
                             }
                         }
                     }
-                }) {
+                }
+            ) {
                 Column {
                     Column(
                         modifier = Modifier
@@ -395,7 +396,7 @@ private fun BodyMeasureList(
         content = {
             stickyHeader {
                 Row {
-                    DisplayMeasureColumn.values().forEach {
+                    DisplayMeasureColumn.entries.forEach {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier

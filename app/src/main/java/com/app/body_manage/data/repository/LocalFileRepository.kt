@@ -9,10 +9,6 @@ import androidx.core.net.toFile
 import com.app.body_manage.extension.getBitmapOrNull
 
 class LocalFileRepository {
-    companion object {
-        private const val APP_EXTERNAL_PHOTO_DIR_NAME = "体型管理"
-    }
-
     fun savePhotoToExternalDir(uri: Uri, context: Context) {
         val contentValues = ContentValues()
         contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, uri.toFile().name)

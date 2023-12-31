@@ -23,7 +23,6 @@ class SliderAdapter(
         return SliderViewHolder(binding.root, binding)
     }
 
-
     override fun onBindViewHolder(holder: SliderViewHolder, position: Int) {
         holder.binding.imageSlide.setImageURI(sliderItems[position].uri)
         // 位置をtoolTipに設定

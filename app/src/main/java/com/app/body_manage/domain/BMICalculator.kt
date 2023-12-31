@@ -5,7 +5,10 @@ import kotlin.math.pow
 
 class BMICalculator {
     fun calculate(tall: Float, weight: Float): Double {
-        val tall2 = (tall.toDouble() / 100).pow(2)
-        return ceil(weight / tall2 * 100) / 100
+        val tall2 = (tall.toDouble() / MAX).pow(ROOT)
+        return ceil(weight / tall2 * MAX) / MAX
     }
 }
+
+private const val MAX = 100
+private const val ROOT = 2

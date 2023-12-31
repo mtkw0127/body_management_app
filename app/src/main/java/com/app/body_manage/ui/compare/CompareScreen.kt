@@ -63,11 +63,6 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
-data class TabRowItem(
-    val title: String,
-    val screen: @Composable () -> Unit
-)
-
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun CompareScreen(
@@ -100,7 +95,6 @@ fun CompareScreen(
                                 pageOffset = 0F
                             )
                         }
-
                     },
                     backgroundColor = accentColor
                 ) {
@@ -214,7 +208,6 @@ fun CompareScreen(
                 }
 
                 is CompareState.CompareItemsError -> {
-
                 }
             }
         }
@@ -287,6 +280,11 @@ private fun HistoryList(
         }
     }
 }
+
+data class TabRowItem(
+    val title: String,
+    val screen: @Composable () -> Unit
+)
 
 @Composable
 private fun CompareImage(

@@ -7,7 +7,12 @@ import com.app.body_manage.data.dao.ComparePhotoHistoryDao
 import com.app.body_manage.data.entity.ComparePhotoHistoryEntity
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.CompareHistoryRepository
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.LocalDate
@@ -162,6 +167,7 @@ class CompareViewModel(
                                 CompareItemType.BEFORE -> {
                                     it.copy(before = compareItem)
                                 }
+
                                 CompareItemType.AFTER -> {
                                     it.copy(after = compareItem)
                                 }

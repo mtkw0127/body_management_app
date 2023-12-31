@@ -32,16 +32,14 @@ import androidx.lifecycle.LifecycleOwner
 import com.app.body_manage.R
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
-import com.google.mlkit.vision.text.TextRecognizerOptionsInterface
 import com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions
+import timber.log.Timber
 import java.lang.Double.parseDouble
 import java.nio.file.Path
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import timber.log.Timber
-
 
 class MeasureCameraActivity : AppCompatActivity() {
     private lateinit var imageCapture: ImageCapture
@@ -102,11 +100,12 @@ class MeasureCameraActivity : AppCompatActivity() {
             val imageSavedCapture: ImageCapture.OnImageSavedCallback =
                 object : ImageCapture.OnImageSavedCallback {
                     override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                        // TODO: シャッター音をならす
                         Handler(Looper.getMainLooper()).post {
                             // 古い写真を削除
-                            if (this@MeasureCameraActivity::photoUri.isInitialized) photoUri.toFile()
-                                .delete()
+                            if (this@MeasureCameraActivity::photoUri.isInitialized) {
+                                photoUri.toFile()
+                                    .delete()
+                            }
                             photoUri = checkNotNull(outputFileResults.savedUri)
                             val imageView = findViewById<ImageView>(R.id.captured_img)
                             imageView?.setImageURI(photoUri)
@@ -114,10 +113,13 @@ class MeasureCameraActivity : AppCompatActivity() {
                     }
 
                     override fun onError(exception: ImageCaptureException) {
-                        // TODO: シャッター音をならす
                         Handler(Looper.getMainLooper()).post {
                             Timber.e(exception)
-                            Toast.makeText(applicationContext, "写真の撮影に失敗しました。", Toast.LENGTH_SHORT)
+                            Toast.makeText(
+                                applicationContext,
+                                "写真の撮影に失敗しました。",
+                                Toast.LENGTH_SHORT
+                            )
                                 .show()
                         }
                     }
@@ -139,117 +141,128 @@ class MeasureCameraActivity : AppCompatActivity() {
     private fun startCamera() {
         val previewView = findViewById<PreviewView>(R.id.camera_preview)
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-        cameraProviderFuture.addListener(Runnable {
-            // Camera provider is now guaranteed to be available
-            val cameraProvider = cameraProviderFuture.get()
+        cameraProviderFuture.addListener(
+            Runnable {
+                // Camera provider is now guaranteed to be available
+                val cameraProvider = cameraProviderFuture.get()
 
-            // Set up the preview use case to display camera preview.
-            val preview = Preview.Builder().build()
+                // Set up the preview use case to display camera preview.
+                val preview = Preview.Builder().build()
 
-            val imageAnalyzer = ImageAnalysis.Builder()
-                // enable the following line if RGBA output is needed.
-                // .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
-                .setTargetResolution(Size(1280, 720))
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .build()
-                .also { it ->
-                    it.setAnalyzer(cameraExecutor) { imageProxy ->
-                        val mediaImage = imageProxy.image
-                        if (mediaImage != null) {
-                            val image = InputImage.fromMediaImage(
-                                mediaImage,
-                                imageProxy.imageInfo.rotationDegrees
-                            )
-                            val recognizer = TextRecognition.getClient(
-                                JapaneseTextRecognizerOptions.Builder().build()
-                            )
-                            recognizer.process(image)
-                                .addOnSuccessListener { result ->
-                                    if (result.textBlocks.isNotEmpty()) {
-                                        val textList = result.textBlocks
-                                            .asSequence()
-                                            .map {
-                                                it.text.replace("S", "5")
-                                                    .replace("s", "5")
-                                                    .replace("o", "0")
-                                                    .replace("O", "0")
-                                                    .replace("H", "4")
-                                            }.filter {
-                                                if (it.contains("E") ||
-                                                    it.contains("e") ||
-                                                    it.contains("D")
-                                                ) return@filter false
+                val imageAnalyzer = ImageAnalysis.Builder()
+                    // enable the following line if RGBA output is needed.
+                    // .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
+                    .setTargetResolution(Size(1280, 720))
+                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                    .build()
+                    .also { it ->
+                        it.setAnalyzer(cameraExecutor) { imageProxy ->
+                            val mediaImage = imageProxy.image
+                            if (mediaImage != null) {
+                                val image = InputImage.fromMediaImage(
+                                    mediaImage,
+                                    imageProxy.imageInfo.rotationDegrees
+                                )
+                                val recognizer = TextRecognition.getClient(
+                                    JapaneseTextRecognizerOptions.Builder().build()
+                                )
+                                recognizer.process(image)
+                                    .addOnSuccessListener { result ->
+                                        if (result.textBlocks.isNotEmpty()) {
+                                            val textList = result.textBlocks
+                                                .asSequence()
+                                                .map {
+                                                    it.text.replace("S", "5")
+                                                        .replace("s", "5")
+                                                        .replace("o", "0")
+                                                        .replace("O", "0")
+                                                        .replace("H", "4")
+                                                }.filter {
+                                                    if (it.contains("E") ||
+                                                        it.contains("e") ||
+                                                        it.contains("D")
+                                                    ) {
+                                                        return@filter false
+                                                    }
 
-                                                var numCheck = false
-                                                try {
-                                                    val parsed = parseDouble(it)
-                                                    numCheck = parsed != 0.0
-                                                } catch (e: Throwable) {
+                                                    var numCheck = false
+                                                    try {
+                                                        val parsed = parseDouble(it)
+                                                        numCheck = parsed != 0.0
+                                                    } catch (_: Throwable) {
+                                                    }
+                                                    return@filter numCheck
+                                                }.map {
+                                                    parseDouble(it)
+                                                }.map {
+                                                    when (it) {
+                                                        in 10.0..99.9 -> {
+                                                            it
+                                                        }
+
+                                                        in 100.0..999.9 -> {
+                                                            it / 10
+                                                        }
+
+                                                        else -> {
+                                                            it / 100
+                                                        }
+                                                    }
                                                 }
-                                                return@filter numCheck
-                                            }.map {
-                                                parseDouble(it)
-                                            }.map {
-                                                when (it) {
-                                                    in 10.0..99.9 -> {
-                                                        it
-                                                    }
-                                                    in 100.0..999.9 -> {
-                                                        it / 10
-                                                    }
-                                                    else -> {
-                                                        it / 100
-                                                    }
+                                                .toList()
+                                            textList.forEach {
+                                                if (recognitionMap.containsKey(it)) {
+                                                    recognitionMap[it] =
+                                                        checkNotNull(recognitionMap[it]) + 1
+                                                } else {
+                                                    recognitionMap[it] = 1
                                                 }
                                             }
-                                            .toList()
-                                        textList.forEach {
-                                            if (recognitionMap.containsKey(it)) {
-                                                recognitionMap[it] =
-                                                    checkNotNull(recognitionMap[it]) + 1
-                                            } else {
-                                                recognitionMap[it] = 1
-                                            }
+
+                                            val recognitionResultView =
+                                                findViewById<TextView>(R.id.recognized)
+                                            recognitionResultView.text =
+                                                recognitionMap.map {
+                                                    "${it.key}kg -> ${it.value}回"
+                                                }.toList().joinToString("\r\n")
                                         }
-
-                                        val recognitionResultView =
-                                            findViewById<TextView>(R.id.recognized)
-                                        recognitionResultView.text =
-                                            recognitionMap.map {
-                                                "${it.key}kg -> ${it.value}回"
-                                            }.toList().joinToString("\r\n")
+                                        imageProxy.close()
+                                    }.addOnFailureListener {
+                                        Timber.e(it)
+                                        imageProxy.close()
                                     }
-                                    imageProxy.close()
-                                }.addOnFailureListener {
-                                    Timber.e(it)
-                                    imageProxy.close()
-                                }
-                        }
+                            }
 
 //                        val rotationDegrees = imageProxy.imageInfo.rotationDegrees
 //                        // insert your code here.
 //                        // after done, release the ImageProxy object
 //                        imageProxy.close()
+                        }
                     }
-                }
 
-            // Set up the capture use case to allow users to take photos.
-            imageCapture = ImageCapture.Builder()
-                .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-                .build()
+                // Set up the capture use case to allow users to take photos.
+                imageCapture = ImageCapture.Builder()
+                    .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+                    .build()
 
-            cameraProvider.unbindAll()
+                cameraProvider.unbindAll()
 
-            // Attach use cases to the camera with the same lifecycle owner
-            cameraProvider.bindToLifecycle(
-                this as LifecycleOwner, cameraSelector, preview, imageCapture, imageAnalyzer
-            )
+                // Attach use cases to the camera with the same lifecycle owner
+                cameraProvider.bindToLifecycle(
+                    this as LifecycleOwner,
+                    cameraSelector,
+                    preview,
+                    imageCapture,
+                    imageAnalyzer
+                )
 
-            // Connect the preview use case to the previewView
-            preview.setSurfaceProvider(
-                previewView.surfaceProvider
-            )
-        }, ContextCompat.getMainExecutor(this))
+                // Connect the preview use case to the previewView
+                preview.setSurfaceProvider(
+                    previewView.surfaceProvider
+                )
+            },
+            ContextCompat.getMainExecutor(this)
+        )
     }
 
     private fun permissionCheck() {
