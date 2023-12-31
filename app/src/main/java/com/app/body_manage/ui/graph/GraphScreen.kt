@@ -123,9 +123,11 @@ private fun Graph(state: GraphState.HasData) {
     val maxY = dataSet.maxBy { it.second }.second
 
     // 横軸を原点からデータをスタートするためにminXで引く
-    val model = entryModelOf(dataSet.mapIndexed { _, pair ->
-        FloatEntry(pair.first.toEpochDay().toFloat(), pair.second)
-    }.sortedBy { it.x })
+    val model = entryModelOf(
+        dataSet.mapIndexed { _, pair ->
+            FloatEntry(pair.first.toEpochDay().toFloat(), pair.second)
+        }.sortedBy { it.x }
+    )
     Chart(
         modifier = Modifier.fillMaxSize(),
         chart = lineChart(

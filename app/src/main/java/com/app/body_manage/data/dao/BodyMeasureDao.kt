@@ -11,18 +11,32 @@ import java.time.LocalDateTime
 @Dao
 interface BodyMeasureDao {
     @Query("SELECT * FROM bodyMeasures WHERE calendar_date = :calendarDate ORDER BY capture_time ASC")
-    suspend fun getTrainingEntityListByDate(calendarDate: LocalDate): List<BodyMeasureEntity>
+    suspend fun getTrainingEntityListByDate(
+        calendarDate: LocalDate
+    ): List<BodyMeasureEntity>
 
-    @Query("SELECT ui, calendar_date, capture_date, capture_time, AVG(weight) as weight, AVG(fat) as fat FROM bodyMeasures WHERE calendar_date BETWEEN :from AND :to GROUP BY bodyMeasures.calendar_date ORDER BY capture_time ASC ")
+    @Query(
+        "SELECT ui, " +
+            "calendar_date, " +
+            "capture_date, " +
+            "capture_time, " +
+            "AVG(weight) as weight, " +
+            "AVG(fat) as fat " +
+            "FROM bodyMeasures " +
+            "WHERE calendar_date " +
+            "BETWEEN :from AND :to " +
+            "GROUP BY bodyMeasures.calendar_date " +
+            "ORDER BY capture_time ASC"
+    )
     suspend fun getTrainingEntityListBetweenGroupByDate(
         from: LocalDate,
-        to: LocalDate
+        to: LocalDate,
     ): List<BodyMeasureEntity>
 
     @Query("SELECT * FROM bodyMeasures WHERE calendar_date BETWEEN :from AND :to ORDER BY capture_time ASC")
     suspend fun getTrainingEntityListBetween(
         from: LocalDate,
-        to: LocalDate
+        to: LocalDate,
     ): List<BodyMeasureEntity>
 
     @Query(
