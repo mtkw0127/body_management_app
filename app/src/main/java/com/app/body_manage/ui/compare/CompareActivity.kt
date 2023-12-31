@@ -87,27 +87,24 @@ class CompareActivity : AppCompatActivity() {
         )
 
         viewModel =
-            CompareViewModel(bodyMeasurePhotoRepository, compareBodyMeasureHistoryRepository)
+            CompareViewModel(
+                bodyMeasurePhotoRepository,
+                compareBodyMeasureHistoryRepository
+            )
+
+        viewModel.loadPhotoMeasure()
 
         lifecycleScope.launch {
             viewModel.uiState.collect {
-                if (it?.saveFail == true) {
-                    Toast.makeText(this@CompareActivity, "保存に失敗しました", Toast.LENGTH_LONG).show()
-                }
-                if (it?.saveSuccess == true) {
-                    Toast.makeText(this@CompareActivity, "保存に成功しました", Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-        lifecycleScope.launch {
-            viewModel.notSetCompareItem.collect {
-                if (it) {
-                    Toast.makeText(
-                        this@CompareActivity,
-                        "比較画像を選択してからクリックしてください",
-                        Toast.LENGTH_LONG
-                    )
-                        .show()
+                if (it is CompareState.CompareItemsHasSet) {
+                    if (it.saveFail) {
+                        Toast.makeText(this@CompareActivity, "保存に失敗しました", Toast.LENGTH_LONG)
+                            .show()
+                    }
+                    if (it.saveSuccess) {
+                        Toast.makeText(this@CompareActivity, "保存に成功しました", Toast.LENGTH_LONG)
+                            .show()
+                    }
                 }
             }
         }
@@ -116,9 +113,7 @@ class CompareActivity : AppCompatActivity() {
             val uiState by viewModel.uiState.collectAsState()
             var showDeleteConfirmDialog by remember { mutableStateOf(false) }
             var deleteTarget by remember {
-                mutableStateOf<ComparePhotoHistoryDao.PhotoAndBodyMeasure?>(
-                    null
-                )
+                mutableStateOf<ComparePhotoHistoryDao.PhotoAndBodyMeasure?>(null)
             }
             CompareScreen(
                 uiState = uiState ?: return@setContent,

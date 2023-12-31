@@ -16,10 +16,14 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.app.body_manage.R
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
@@ -74,7 +78,7 @@ fun GraphScreen(
                     }
 
                     GraphState.NoData -> {
-                        Text(text = stringResource(id = R.string.message_empty))
+                        NoGraph()
                     }
 
                     GraphState.Initial -> {}
@@ -85,7 +89,23 @@ fun GraphScreen(
 }
 
 @Composable
-fun Graph(state: GraphState.HasData) {
+private fun NoGraph() {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Text(
+            text = stringResource(id = R.string.message_empty),
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            color = Color.Gray,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+@Composable
+private fun Graph(state: GraphState.HasData) {
     // 横軸の日付フォーマット
     val dateTimeFormatter: DateTimeFormatter =
         DateTimeFormatter.ofPattern("MM月dd日")

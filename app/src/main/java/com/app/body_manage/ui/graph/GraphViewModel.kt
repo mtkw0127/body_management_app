@@ -106,6 +106,13 @@ class GraphViewModel(
                                 timelineFat = timelineForFat
                             )
                         }
+                    } else {
+                        viewModelState.update {
+                            it.copy(
+                                timelineWeight = emptyList(),
+                                timelineFat = emptyList(),
+                            )
+                        }
                     }
                 }
         }

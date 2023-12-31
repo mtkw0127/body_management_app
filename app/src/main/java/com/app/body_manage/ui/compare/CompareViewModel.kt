@@ -9,7 +9,6 @@ import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.CompareHistoryRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -19,28 +18,22 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 sealed interface CompareState {
-    val saveSuccess: Boolean
-    val saveFail: Boolean
-    val compareHistory: List<ComparePhotoHistoryDao.PhotoAndBodyMeasure>
+    data object NoPhotos : CompareState
 
     data class CompareItemsHasSet(
         val before: CompareItemStruct?,
         val after: CompareItemStruct?,
         val saveButtonVisibility: Boolean,
-        override val saveSuccess: Boolean,
-        override val saveFail: Boolean,
-        override val compareHistory: List<ComparePhotoHistoryDao.PhotoAndBodyMeasure>
+        val saveSuccess: Boolean,
+        val saveFail: Boolean,
+        val compareHistory: List<ComparePhotoHistoryDao.PhotoAndBodyMeasure>
     ) : CompareState
 
-    data class CompareItemsError(
-        val error: Throwable,
-        override val saveSuccess: Boolean,
-        override val saveFail: Boolean,
-        override val compareHistory: List<ComparePhotoHistoryDao.PhotoAndBodyMeasure>
-    ) : CompareState
+    data object CompareItemsError : CompareState
 }
 
 data class CompareViewModelState(
+    val hasMeasureWithPhotos: Boolean = false,
     val before: CompareItemStruct? = null,
     val after: CompareItemStruct? = null,
     val histories: List<ComparePhotoHistoryDao.PhotoAndBodyMeasure> = listOf(),
@@ -49,13 +42,10 @@ data class CompareViewModelState(
     val saveFail: Boolean = false
 ) {
     fun toUiSate(): CompareState {
-        return if (error != null) {
-            CompareState.CompareItemsError(
-                error,
-                saveFail = saveFail,
-                saveSuccess = saveSuccess,
-                compareHistory = histories,
-            )
+        return if (hasMeasureWithPhotos.not()) {
+            CompareState.NoPhotos
+        } else if (error != null) {
+            CompareState.CompareItemsError
         } else {
             CompareState.CompareItemsHasSet(
                 before = before,
@@ -96,12 +86,8 @@ class CompareViewModel(
 
     private val isLoadingHistory = MutableLiveData(false)
 
-    private val _notSetCompareItem = MutableStateFlow(false)
-    val notSetCompareItem = _notSetCompareItem.asStateFlow()
-
     fun saveHistory() {
         if (viewModelState.value.before == null && viewModelState.value.after == null) {
-            _notSetCompareItem.value = true
             return
         }
         viewModelScope.launch {
@@ -186,6 +172,18 @@ class CompareViewModel(
                 Timber.e(it)
             }.onSuccess {
                 loadHistory()
+            }
+        }
+    }
+
+    fun loadPhotoMeasure() {
+        viewModelScope.launch {
+            runCatching {
+                bodyMeasurePhotoRepository.selectPhotosByDate()
+            }.onSuccess { response ->
+                viewModelState.update {
+                    it.copy(hasMeasureWithPhotos = response.isNotEmpty())
+                }
             }
         }
     }

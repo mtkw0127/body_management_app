@@ -25,6 +25,7 @@
     <string name="message_please_set_photo_for_compare">比較する写真を
 設定してください</string>
     <string name="message_not_yet_saved_history">体型比較がまだ保存されていません</string>
+    <string name="message_not_yet_taken_measure_with_photo">写真付きの登録がまだありません。\nまずは写真付きの体型を記録しましょう。</string>
 
     <!-- グラフ画面 -->
     <string name="message_empty">体型を登録するとグラフが表示されます</string>
@@ -38,6 +39,9 @@
     <!-- カメラ画面 -->
     <string name="label_back">戻る</string>
     <string name="label_next">次へ</string>
+
+    <!-- 写真一覧 -->
+    <string name="message_no_photo">未登録です\n体型登録時に撮影した写真がここに表示されます</string>
 
     <!-- 画面タイトル-->
     <string name="screen_name_settings">設定</string>
