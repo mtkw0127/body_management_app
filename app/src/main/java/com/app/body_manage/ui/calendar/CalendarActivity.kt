@@ -63,9 +63,10 @@ class CalendarActivity : AppCompatActivity() {
             measureListLauncher
         )
         binding.calendarGridView.adapter = adapter
-
-        // 初期画面の年月設定
-        supportActionBar?.title = viewModel.yearMonth
+        // Show menu
+        setSupportActionBar(binding.toolbar)
+        supportActionBar?.title =
+            DateUtil.localDateConvertJapaneseFormatYearMonth(LocalDate.now())
 
         initListener()
     }

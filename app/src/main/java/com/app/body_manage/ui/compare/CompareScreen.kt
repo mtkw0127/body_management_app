@@ -156,7 +156,7 @@ fun CompareScreen(
                                 ) {
                                     Text(
                                         stringResource(id = R.string.message_not_yet_saved_history),
-                                        color = Color.Gray,
+                                        color = Color.DarkGray,
                                         fontSize = 16.sp,
                                         textAlign = TextAlign.Center,
                                     )
@@ -228,7 +228,7 @@ private fun NoPhotos() {
             text = stringResource(id = R.string.message_not_yet_taken_measure_with_photo),
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Gray,
+            color = Color.DarkGray,
             textAlign = TextAlign.Center,
         )
     }

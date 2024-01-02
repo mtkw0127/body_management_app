@@ -101,7 +101,7 @@ private fun NoGraph() {
             text = stringResource(id = R.string.message_empty),
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
-            color = Color.Gray,
+            color = Color.DarkGray,
             textAlign = TextAlign.Center,
         )
     }

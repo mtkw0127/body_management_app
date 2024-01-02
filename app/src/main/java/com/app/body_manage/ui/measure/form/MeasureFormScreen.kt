@@ -15,11 +15,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -39,6 +39,7 @@ import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -53,6 +54,7 @@ import com.app.body_manage.data.model.PhotoModel
 import com.app.body_manage.extension.toFat
 import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.extension.toWeight
+import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
 import com.app.body_manage.util.DateUtil
 
@@ -233,17 +235,12 @@ fun BodyMeasureFormScreen(
                             }
                         }
                     }
-                    Divider(
-                        modifier = Modifier
-                            .background(Color.Black)
-                            .fillMaxWidth()
-                            .height(1.dp)
-                    )
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp)
-                            .background(Color.White),
+                            .background(background)
+                            .shadow(1.dp, clip = true),
                         contentAlignment = Alignment.Center,
                     ) {
                         Row(
@@ -252,7 +249,7 @@ fun BodyMeasureFormScreen(
                                 .padding(horizontal = 20.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            CustomButton(onClickBackPress, R.string.back)
+                            CustomButton(onClickBackPress, R.string.back, Color.White)
                             Spacer(modifier = Modifier.weight(1F))
                             CustomButton(onClickSave, R.string.save, theme)
                             Spacer(modifier = Modifier.size(20.dp))
@@ -278,14 +275,11 @@ private fun CustomButton(
     @StringRes valueResourceId: Int,
     backgroundColor: Color = Color.White,
 ) {
-    Box(
-        modifier = Modifier
-            .width(60.dp)
-            .height(35.dp)
-            .background(backgroundColor, RoundedCornerShape(10.dp))
-            .border(1.dp, Color.Gray, RoundedCornerShape(10.dp))
-            .clickable { onClick() },
-        contentAlignment = Alignment.Center,
+    Button(
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = backgroundColor
+        )
     ) {
         Text(
             text = stringResource(id = valueResourceId),

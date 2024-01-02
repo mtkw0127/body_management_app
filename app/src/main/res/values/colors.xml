@@ -20,6 +20,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="grey">#88888888</color>
+    <color name="light_grey">#EDEDED</color>
     <color name="accent">#6241f7</color>
     <color name="nonAccent">#d3dbfc</color>
 </resources>
