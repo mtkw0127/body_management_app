@@ -224,6 +224,12 @@ class BodyMeasureEditFormViewModel(
                 }
             }
         }
+
+        viewModelScope.launch {
+            // Update Default Value
+            userPreferenceRepository.putWeight(model.weight)
+            userPreferenceRepository.putFat(model.fat)
+        }
     }
 
     fun deleteBodyMeasure() {
