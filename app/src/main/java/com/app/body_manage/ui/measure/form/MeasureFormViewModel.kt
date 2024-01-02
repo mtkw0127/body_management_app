@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 sealed interface FormState {
@@ -26,21 +27,18 @@ sealed interface FormState {
     sealed interface HasData : FormState {
         val model: BodyMeasureModel
         val photos: List<PhotoModel>
-        val showWeightDialog: Boolean
-        val showFatDialog: Boolean
+        val measureDate: LocalDate // 登録する日付アプリバー用
 
         data class Add(
             override val model: BodyMeasureModel,
             override val photos: List<PhotoModel>,
-            override val showWeightDialog: Boolean,
-            override val showFatDialog: Boolean,
+            override val measureDate: LocalDate,
         ) : HasData
 
         data class Edit(
             override val model: BodyMeasureModel,
             override val photos: List<PhotoModel>,
-            override val showWeightDialog: Boolean,
-            override val showFatDialog: Boolean,
+            override val measureDate: LocalDate,
         ) : HasData
     }
 }
@@ -49,18 +47,30 @@ data class FormViewModelState(
     val model: BodyMeasureModel? = null,
     val photos: List<PhotoModel> = emptyList(),
     val type: Type? = null,
-    val showWeightDialog: Boolean = false,
-    val showFatDialog: Boolean = false,
+    val measureDate: LocalDate? = null,
 ) {
     enum class Type {
         Add, Edit
     }
 
     fun toState(): FormState {
-        if (type == null || model == null) return FormState.Init
+        if (type == null || model == null || measureDate == null) return FormState.Init
         return when (type) {
-            Type.Add -> FormState.HasData.Add(model, photos, showWeightDialog, showFatDialog)
-            Type.Edit -> FormState.HasData.Edit(model, photos, showWeightDialog, showFatDialog)
+            Type.Add -> {
+                FormState.HasData.Add(
+                    model = model,
+                    photos = photos,
+                    measureDate = measureDate,
+                )
+            }
+
+            Type.Edit -> {
+                FormState.HasData.Edit(
+                    model = model,
+                    photos = photos,
+                    measureDate = measureDate,
+                )
+            }
         }
     }
 }
@@ -85,10 +95,18 @@ class BodyMeasureEditFormViewModel(
         viewModelState.update { it.copy(type = type) }
     }
 
+    fun setMeasureDate(date: LocalDate) {
+        viewModelState.update { it.copy(measureDate = date) }
+    }
+
     fun loadFromUserPref() {
         assert(viewModelState.value.type == FormViewModelState.Type.Add)
+        val measureDate = checkNotNull(viewModelState.value.measureDate)
         viewModelScope.launch {
-            val bodyMeasureModel = userPreferenceRepository.userPref.first().toBodyMeasureForAdd()
+            val bodyMeasureModel = userPreferenceRepository
+                .userPref
+                .first()
+                .toBodyMeasureForAdd(measureDate)
             viewModelState.update {
                 it.copy(model = bodyMeasureModel)
             }
@@ -108,15 +126,46 @@ class BodyMeasureEditFormViewModel(
         }
     }
 
-    fun setWeightDialogVisibility(isShown: Boolean) {
+    fun setFat(fat: Float) {
         viewModelState.update {
-            it.copy(showWeightDialog = isShown)
+            val model = checkNotNull(it.model).copy(fat = fat)
+            it.copy(model = model)
         }
     }
 
-    fun setFatDialogVisibility(isShown: Boolean) {
+    fun setTime(time: LocalDateTime) {
         viewModelState.update {
-            it.copy(showFatDialog = isShown)
+            val model = checkNotNull(it.model).copy(capturedLocalDateTime = time)
+            it.copy(model = model)
+        }
+    }
+
+    fun setPreviousDay() {
+        viewModelState.update {
+            val model = checkNotNull(it.model)
+            val updatedModel =
+                model.copy(capturedLocalDateTime = model.capturedLocalDateTime.minusDays(1))
+            val updatedMeasureDate = checkNotNull(it.measureDate).minusDays(1)
+
+            it.copy(model = updatedModel, measureDate = updatedMeasureDate)
+        }
+    }
+
+    fun setNextDay() {
+        viewModelState.update {
+            val model = checkNotNull(it.model)
+            val updatedModel =
+                model.copy(capturedLocalDateTime = model.capturedLocalDateTime.plusDays(1))
+            val updatedMeasureDate = checkNotNull(it.measureDate).plusDays(1)
+
+            it.copy(model = updatedModel, measureDate = updatedMeasureDate)
+        }
+    }
+
+    fun setWeight(weight: Float) {
+        viewModelState.update {
+            val model = checkNotNull(it.model).copy(weight = weight)
+            it.copy(model = model)
         }
     }
 
@@ -177,9 +226,11 @@ class BodyMeasureEditFormViewModel(
         }
     }
 
-    fun deleteBodyMeasure(measureTime: LocalDateTime) {
+    fun deleteBodyMeasure() {
+        assert(viewModelState.value.type == FormViewModelState.Type.Edit)
+        val target = viewModelState.value.model?.capturedLocalDateTime ?: return
         viewModelScope.launch {
-            runCatching { bodyMeasureRepository.deleteBodyMeasure(measureTime) }
+            runCatching { bodyMeasureRepository.deleteBodyMeasure(target) }
                 .onFailure {
                     Timber.e(it)
                 }.onSuccess {}

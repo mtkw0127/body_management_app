@@ -1,7 +1,8 @@
 package com.app.body_manage.data.local
 
 import com.app.body_manage.data.model.BodyMeasureModel
-import java.time.LocalDateTime
+import java.time.LocalDate
+import java.time.LocalTime
 
 data class UserPreference(
     val tall: Float?,
@@ -10,9 +11,9 @@ data class UserPreference(
     val alarm: Boolean?,
 )
 
-fun UserPreference.toBodyMeasureForAdd() = BodyMeasureModel(
+fun UserPreference.toBodyMeasureForAdd(date: LocalDate) = BodyMeasureModel(
     id = BodyMeasureModel.Id(0),
-    capturedLocalDateTime = LocalDateTime.now(),
+    capturedLocalDateTime = date.atTime(LocalTime.now()), // その日付の現在時刻
     weight = weight ?: 50F,
     fat = fat ?: 20F,
     photoUri = null,

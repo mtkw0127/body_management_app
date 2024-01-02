@@ -10,18 +10,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -38,10 +35,10 @@ import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -50,14 +47,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.app.body_manage.R
 import com.app.body_manage.data.model.PhotoModel
 import com.app.body_manage.extension.toFat
 import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.extension.toWeight
-import com.app.body_manage.style.Colors.Companion.secondPrimary
 import com.app.body_manage.style.Colors.Companion.theme
 import com.app.body_manage.util.DateUtil
 
@@ -66,13 +61,15 @@ fun BodyMeasureFormScreen(
     uiState: FormState,
     onClickBackPress: () -> Unit = {},
     onClickTakePhoto: () -> Unit = {},
+    onClickDelete: () -> Unit = {},
     onClickSave: () -> Unit = {},
-    onClickNextMonth: () -> Unit = {},
-    onClickPreviousMonth: () -> Unit = {},
+    onClickNextDay: () -> Unit = {},
+    onClickPreviousDay: () -> Unit = {},
     onClickPhotoDetail: (PhotoModel) -> Unit = {},
     onClickDeletePhoto: (PhotoModel) -> Unit = {},
-    onChangeWeightDialog: (Boolean) -> Unit = {},
-    onChangeFatDialog: (Boolean) -> Unit = {},
+    onClickTime: () -> Unit = {},
+    onChangeWeightDialog: () -> Unit = {},
+    onChangeFatDialog: () -> Unit = {},
 ) {
     Scaffold(
         topBar = {
@@ -83,23 +80,41 @@ fun BodyMeasureFormScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Icon(
-                                imageVector = Icons.Filled.ArrowBackIosNew,
-                                contentDescription = null,
-                                modifier = Modifier.clickable { onClickPreviousMonth() }
-                            )
-                            Spacer(modifier = Modifier.size(10.dp))
+                            val isAdd = uiState is FormState.HasData.Add
+                            val isEdit = uiState is FormState.HasData.Edit
+                            if (isAdd) {
+                                Icon(
+                                    imageVector = Icons.Filled.ArrowBackIosNew,
+                                    contentDescription = null,
+                                    tint = Color.Black,
+                                    modifier = Modifier.clickable { onClickPreviousDay() }
+                                )
+                                Spacer(modifier = Modifier.size(10.dp))
+                            }
                             Text(
                                 text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(
-                                    uiState.model.capturedLocalDateTime.toLocalDate()
+                                    uiState.measureDate
                                 )
                             )
-                            Spacer(modifier = Modifier.size(10.dp))
-                            Icon(
-                                imageVector = Icons.Filled.ArrowForwardIos,
-                                contentDescription = null,
-                                modifier = Modifier.clickable { onClickNextMonth() }
-                            )
+                            if (isAdd) {
+                                Spacer(modifier = Modifier.size(10.dp))
+                                Icon(
+                                    imageVector = Icons.Filled.ArrowForwardIos,
+                                    contentDescription = null,
+                                    tint = Color.Black,
+                                    modifier = Modifier.clickable { onClickNextDay() }
+                                )
+                            }
+                            if (isEdit) {
+                                Spacer(modifier = Modifier.weight(1F))
+                                Icon(
+                                    imageVector = Icons.Filled.DeleteForever,
+                                    tint = Color.Black,
+                                    contentDescription = null,
+                                    modifier = Modifier.clickable { onClickDelete() }
+                                )
+                                Spacer(modifier = Modifier.size(10.dp))
+                            }
                         }
                     }
                 },
@@ -133,7 +148,7 @@ fun BodyMeasureFormScreen(
                                         contentDescription = null
                                     )
                                 },
-                                onClick = {}
+                                onClick = { onClickTime() }
                             )
                             Spacer(modifier = Modifier.size(10.dp))
                         }
@@ -147,21 +162,21 @@ fun BodyMeasureFormScreen(
                                         contentDescription = null
                                     )
                                 },
-                                onClick = { onChangeWeightDialog(true) }
+                                onClick = { onChangeWeightDialog() }
                             )
                             Spacer(modifier = Modifier.size(10.dp))
                         }
                         item {
                             CustomTextField(
                                 labelTextResourceId = R.string.hint_fat,
-                                value = uiState.model.weight.toFat(),
+                                value = uiState.model.fat.toFat(),
                                 leadingIcon = {
                                     Icon(
                                         painter = painterResource(id = R.drawable.ic_baseline_opacity_24),
                                         contentDescription = null
                                     )
                                 },
-                                onClick = { onChangeFatDialog(true) }
+                                onClick = { onChangeFatDialog() }
                             )
                             Spacer(modifier = Modifier.size(15.dp))
                         }
@@ -248,55 +263,11 @@ fun BodyMeasureFormScreen(
                             )
                         }
                     }
-                    Dialogs(
-                        uiState = uiState,
-                        onChangeWeight = onChangeWeightDialog,
-                        onChangeFat = onChangeFatDialog,
-                    )
                 }
             }
 
             else -> {
             }
-        }
-    }
-}
-
-@Composable
-private fun Dialogs(
-    uiState: FormState.HasData,
-    onChangeWeight: (Boolean) -> Unit,
-    onChangeFat: (Boolean) -> Unit,
-) {
-    if (uiState.showWeightDialog) {
-        CustomDialog(
-            onChangeWeight
-        )
-    }
-    if (uiState.showFatDialog) {
-        CustomDialog(
-            onChangeFat
-        )
-    }
-}
-
-@Composable
-private fun CustomDialog(onChangeVisibility: (Boolean) -> Unit) {
-    Dialog(onDismissRequest = { onChangeVisibility(false) }) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .padding(16.dp),
-            shape = RoundedCornerShape(16.dp),
-        ) {
-            Text(
-                text = "This is a minimal dialog",
-                modifier = Modifier
-                    .fillMaxSize()
-                    .wrapContentSize(Alignment.Center),
-                textAlign = TextAlign.Center,
-            )
         }
     }
 }
@@ -341,15 +312,17 @@ private fun CustomTextField(
         },
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = Color.Transparent,
-            focusedIndicatorColor = secondPrimary,
+            disabledTextColor = Color.Black,
+            disabledLabelColor = Color.Black,
+            disabledIndicatorColor = Color.Black,
+            disabledLeadingIconColor = Color.Black
         ),
         readOnly = true,
+        enabled = false,
         modifier = Modifier
             .fillMaxWidth()
-            .onFocusChanged { focus ->
-                if (focus.hasFocus) {
-                    onClick()
-                }
+            .clickable {
+                onClick()
             }
     )
 }

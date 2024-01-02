@@ -210,9 +210,7 @@ class MeasureListViewModel(
 
     fun updateDate(diff: Int) {
         viewModelState.update {
-            it.copy(
-                date = viewModelState.value.date.plusDays(diff.toLong())
-            )
+            it.copy(date = viewModelState.value.date.plusDays(diff.toLong()))
         }
         reload()
     }

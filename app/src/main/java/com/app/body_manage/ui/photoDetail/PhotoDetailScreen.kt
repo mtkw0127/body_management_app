@@ -26,7 +26,7 @@ fun PhotoDetailScreen(
     onClickBackPress: () -> Unit
 ) {
     when (state) {
-        is PhotoDetailState.ShowPhotoDetail -> {
+        is PhotoDetailState.ShowPhotoDetailWithDetail -> {
             Box(
                 modifier = Modifier
                     .background(Color.Black)
@@ -85,6 +85,34 @@ fun PhotoDetailScreen(
                         color = Color.White,
                     )
                 }
+            }
+        }
+
+        is PhotoDetailState.ShowPhotoDetailFromUri -> {
+            Box(
+                modifier = Modifier
+                    .background(Color.Black)
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                AsyncImage(
+                    model = state.uri,
+                    contentDescription = "写真詳細",
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .padding(top = 15.dp)
+            ) {
+                Icon(
+                    Icons.Filled.ArrowBack,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.clickable {
+                        onClickBackPress()
+                    }
+                )
             }
         }
 

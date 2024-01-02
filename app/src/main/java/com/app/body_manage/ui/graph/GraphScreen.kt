@@ -192,11 +192,19 @@ private fun Graph(state: GraphState.HasData) {
         ),
         getXStep = {
             when (state.duration) {
-                Duration.ONE_YEAR, Duration.HALF_YEAR -> {
-                    30F // 30日単位で表示する
+                Duration.ALL,
+                Duration.ONE_YEAR,
+                Duration.HALF_YEAR -> {
+                    30F // 30日単位で表示
                 }
 
-                else -> 10F
+                Duration.THREE_MONTH -> {
+                    10F // 10日単位で表示
+                }
+
+                Duration.ONE_MONTH -> {
+                    3F // 3日単位で表示
+                }
             }
         } // 横軸の直近のデータ
     )

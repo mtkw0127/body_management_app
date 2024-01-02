@@ -53,12 +53,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.app.body_manage.R
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.common.Calendar
@@ -70,6 +72,7 @@ import com.app.body_manage.domain.BMICalculator
 import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.style.Colors
 import com.app.body_manage.style.Colors.Companion.accentColor
+import com.app.body_manage.style.Colors.Companion.theme
 import com.app.body_manage.util.DateUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -109,7 +112,7 @@ fun MeasureListScreen(
                             .offset(x = 8.dp, y = 1.dp)
                             .size(10.dp)
                             .background(
-                                color = Color.Gray,
+                                color = Color.Black,
                                 shape = LeftTriangleShape
                             )
                             .clickable {
@@ -136,7 +139,7 @@ fun MeasureListScreen(
                             .offset(x = 28.dp, y = 1.dp)
                             .size(10.dp)
                             .background(
-                                color = Color.Gray,
+                                color = Color.Black,
                                 shape = RightTriangleShape
                             )
                             .clickable {
@@ -357,18 +360,18 @@ private fun TallSetField(
             ) {
                 Button(
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = accentColor
+                        backgroundColor = theme
                     ),
                     onClick = {
                         keyboardController?.hide()
                         clickSaveBodyInfo.invoke()
                     }
                 ) {
-                    Text(text = "保存")
+                    Text(text = stringResource(id = R.string.save))
                 }
                 Button(
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = accentColor
+                        backgroundColor = theme
                     ),
                     onClick = {
                         clickShowPhotoList.invoke()
@@ -391,9 +394,7 @@ private fun BodyMeasureList(
     clickBodyMeasureEdit: (LocalDateTime) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier
-            .wrapContentWidth()
-            .heightIn(min = 200.dp, max = 300.dp),
+        modifier = Modifier.wrapContentWidth(),
         content = {
             stickyHeader {
                 Row {

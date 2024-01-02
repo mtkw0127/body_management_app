@@ -11,6 +11,16 @@
     <string name="fat">体脂肪</string>
     <string name="weight_unit">体重 [kg]</string>
     <string name="fat_unit">体脂肪率 [%]</string>
+    <string name="dot">.</string>
+    <string name="unit_kg">kg</string>
+    <string name="unit_percent">%</string>
+    <string name="unit_hour">時</string>
+    <string name="unit_minute">分</string>
+
+    <!-- 測定一覧-->
+
+    <!-- 設定 -->
+    <string name="label_notify_at_seven">毎朝7時に通知</string>
 
     <!-- 投稿画面 -->
     <string name="hint_fat">体脂肪率</string>

@@ -1,6 +1,7 @@
 package com.app.body_manage.ui.photoDetail
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.TrainingApplication
@@ -15,13 +16,13 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 sealed interface PhotoDetailState {
-    data class ShowPhotoDetail(
+    data class ShowPhotoDetailWithDetail(
         val photoModel: PhotoModel,
         val bodyMeasureModel: BodyMeasureModel?
     ) : PhotoDetailState
 
-    data class LoadingPhotoDetail(
-        val loading: Boolean
+    data class ShowPhotoDetailFromUri(
+        val uri: Uri
     ) : PhotoDetailState
 
     data class NotFoundPhoto(val err: Throwable) : PhotoDetailState
@@ -30,19 +31,21 @@ sealed interface PhotoDetailState {
 data class PhotoDetailViewModelState(
     val photoModel: PhotoModel? = null,
     val bodyMeasureModel: BodyMeasureModel? = null,
-    val loading: Boolean = true,
     val err: Throwable? = null,
+    val uri: Uri? = null,
 ) {
     fun toUiState(): PhotoDetailState {
         return if (photoModel != null) {
-            PhotoDetailState.ShowPhotoDetail(
+            PhotoDetailState.ShowPhotoDetailWithDetail(
                 photoModel,
                 bodyMeasureModel,
             )
+        } else if (uri != null) {
+            PhotoDetailState.ShowPhotoDetailFromUri(
+                uri = uri
+            )
         } else if (err != null) {
             PhotoDetailState.NotFoundPhoto(err)
-        } else if (loading) {
-            PhotoDetailState.LoadingPhotoDetail(loading)
         } else {
             val err = IllegalArgumentException("写真詳細で写真を表示できません。")
             Timber.e(err)
@@ -63,11 +66,7 @@ class PhotoDetailViewModel(
         (application as TrainingApplication).bodyMeasureRepository
     }
 
-    private val viewModelState = MutableStateFlow(
-        PhotoDetailViewModelState(
-            loading = true,
-        )
-    )
+    private val viewModelState = MutableStateFlow(PhotoDetailViewModelState())
 
     val uiState = viewModelState.map { it.toUiState() }
         .stateIn(
@@ -77,16 +76,10 @@ class PhotoDetailViewModel(
         )
 
     fun loadPhoto(photoId: PhotoModel.Id) {
-        viewModelState.update {
-            it.copy(loading = true)
-        }
         viewModelScope.launch {
             runCatching { photoDetailRepository.selectPhoto(photoId) }
                 .onFailure {
                     Timber.e(it)
-                    viewModelState.update { viewModelState ->
-                        viewModelState.copy(loading = false)
-                    }
                 }
                 .onSuccess { photoModel ->
                     viewModelState.update {
@@ -110,11 +103,13 @@ class PhotoDetailViewModel(
                 viewModelState.update {
                     it.copy(bodyMeasureModel = fetchedResult)
                 }
-            }.also {
-                viewModelState.update {
-                    it.copy(loading = false)
-                }
             }
+        }
+    }
+
+    fun setUri(uri: Uri) {
+        viewModelState.update {
+            it.copy(uri = uri)
         }
     }
 }

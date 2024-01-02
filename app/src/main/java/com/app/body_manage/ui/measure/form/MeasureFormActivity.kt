@@ -9,13 +9,17 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.app.body_manage.R
 import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.model.PhotoModel
+import com.app.body_manage.dialog.FloatNumberPickerDialog
+import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.camera.CameraActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
+import java.time.LocalDate
 import java.time.LocalDateTime
 
-class BodyMeasureEditFormActivity : AppCompatActivity() {
+class MeasureFormActivity : AppCompatActivity() {
     // 更新前の測定日時
     private val captureDateTime: LocalDateTime by lazy {
         intent.getSerializableExtra(
@@ -49,6 +53,16 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
             val uiState by viewModel.uiState.collectAsState()
             BodyMeasureFormScreen(
                 uiState = uiState,
+                onClickNextDay = {
+                    viewModel.setNextDay()
+                },
+                onClickPreviousDay = {
+                    viewModel.setPreviousDay()
+                },
+                onClickDelete = {
+                    viewModel.deleteBodyMeasure()
+                    finish()
+                },
                 onClickBackPress = { finish() },
                 onClickTakePhoto = {
                     cameraActivityLauncher.launch(CameraActivity.createCameraActivityIntent(this))
@@ -58,16 +72,43 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
                     finish()
                 },
                 onClickPhotoDetail = {
-                    photoDetailLauncher.launch(PhotoDetailActivity.createIntent(this, it.id))
+                    photoDetailLauncher.launch(PhotoDetailActivity.createIntent(this, it.uri))
                 },
                 onClickDeletePhoto = {
                     viewModel.deletePhoto(it)
                 },
-                onChangeWeightDialog = { isShown ->
-                    viewModel.setWeightDialogVisibility(isShown)
+                onClickTime = {
+                    val time = (uiState as FormState.HasData).model.capturedLocalDateTime
+                    TimePickerDialog.createTimePickerDialog(
+                        hour = time.hour,
+                        minute = time.minute,
+                    ) { hour, minute ->
+                        viewModel.setTime(
+                            LocalDateTime.of(
+                                time.year,
+                                time.monthValue,
+                                time.dayOfMonth,
+                                hour,
+                                minute
+                            )
+                        )
+                    }.show(supportFragmentManager, null)
                 },
-                onChangeFatDialog = { isShown ->
-                    viewModel.setFatDialogVisibility(isShown)
+                onChangeWeightDialog = {
+                    FloatNumberPickerDialog.createDialog(
+                        (uiState as FormState.HasData).model.weight,
+                        getString(R.string.unit_kg)
+                    ) {
+                        viewModel.setWeight(it)
+                    }.show(supportFragmentManager, null)
+                },
+                onChangeFatDialog = {
+                    FloatNumberPickerDialog.createDialog(
+                        (uiState as FormState.HasData).model.fat,
+                        getString(R.string.unit_percent)
+                    ) {
+                        viewModel.setFat(it)
+                    }.show(supportFragmentManager, null)
                 }
             )
         }
@@ -78,12 +119,16 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
         when (formType) {
             FormType.ADD -> {
                 viewModel.setType(FormViewModelState.Type.Add)
+                val measureDate =
+                    checkNotNull(intent.getSerializableExtra(KEY_CAPTURE_TIME) as? LocalDate)
+                viewModel.setMeasureDate(measureDate)
                 viewModel.loadFromUserPref()
             }
 
             FormType.EDIT -> {
                 viewModel.loadBodyMeasure(captureDateTime)
                 viewModel.setType(FormViewModelState.Type.Edit)
+                viewModel.setMeasureDate(captureDateTime.toLocalDate())
             }
         }
     }
@@ -98,21 +143,18 @@ class BodyMeasureEditFormActivity : AppCompatActivity() {
 
         fun createMeasureEditIntent(
             context: Context,
-            formType: FormType = FormType.EDIT,
-            captureTime: LocalDateTime,
+            measureTime: LocalDateTime,
         ): Intent {
-            return Intent(context, BodyMeasureEditFormActivity::class.java).apply {
-                putExtra(FORM_TYPE, formType)
-                putExtra(KEY_CAPTURE_TIME, captureTime)
+            return Intent(context, MeasureFormActivity::class.java).apply {
+                putExtra(FORM_TYPE, FormType.EDIT)
+                putExtra(KEY_CAPTURE_TIME, measureTime)
             }
         }
 
-        fun createMeasureFormIntent(
-            context: Context,
-            formType: FormType = FormType.ADD,
-        ): Intent {
-            return Intent(context, BodyMeasureEditFormActivity::class.java).apply {
-                putExtra(FORM_TYPE, formType)
+        fun createMeasureFormIntent(context: Context, measureDate: LocalDate): Intent {
+            return Intent(context, MeasureFormActivity::class.java).apply {
+                putExtra(FORM_TYPE, FormType.ADD)
+                putExtra(KEY_CAPTURE_TIME, measureDate)
             }
         }
     }

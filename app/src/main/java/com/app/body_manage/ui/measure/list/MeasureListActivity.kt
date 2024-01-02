@@ -18,7 +18,7 @@ import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
-import com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity
+import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import java.time.LocalDate
@@ -71,9 +71,9 @@ class MeasureListActivity : AppCompatActivity() {
                 },
                 clickBodyMeasureEdit = {
                     measureFormLauncher.launch(
-                        BodyMeasureEditFormActivity.createMeasureEditIntent(
+                        MeasureFormActivity.createMeasureEditIntent(
                             context = this,
-                            captureTime = it,
+                            measureTime = it,
                         )
                     )
                 },
@@ -87,7 +87,10 @@ class MeasureListActivity : AppCompatActivity() {
                     when (viewModel.uiState.value.measureType) {
                         MeasureType.BODY -> {
                             measureFormLauncher.launch(
-                                BodyMeasureEditFormActivity.createMeasureFormIntent(context = this)
+                                MeasureFormActivity.createMeasureFormIntent(
+                                    context = this,
+                                    measureDate = viewModel.uiState.value.date
+                                )
                             )
                         }
 

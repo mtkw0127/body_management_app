@@ -69,9 +69,8 @@ private fun TextAndLabel(checked: Boolean, notifyAction: (Boolean) -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "毎朝7時に通知",
+            text = stringResource(id = R.string.label_notify_at_seven),
             fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(start = 0.dp, end = 10.dp, top = 0.dp, bottom = 0.dp)
         )
         Switch(

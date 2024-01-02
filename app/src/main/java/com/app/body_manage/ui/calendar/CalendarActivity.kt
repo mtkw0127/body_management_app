@@ -13,10 +13,11 @@ import com.app.body_manage.R
 import com.app.body_manage.databinding.ActivityMainBinding
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
-import com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity
+import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.ui.setting.SettingActivity
 import com.app.body_manage.util.DateUtil
+import java.time.LocalDate
 
 class CalendarActivity : AppCompatActivity() {
 
@@ -111,7 +112,10 @@ class CalendarActivity : AppCompatActivity() {
         }
         binding.addButton.setOnClickListener {
             registeredFromFab.launch(
-                BodyMeasureEditFormActivity.createMeasureFormIntent(this)
+                MeasureFormActivity.createMeasureFormIntent(
+                    this,
+                    LocalDate.now()
+                )
             )
         }
     }

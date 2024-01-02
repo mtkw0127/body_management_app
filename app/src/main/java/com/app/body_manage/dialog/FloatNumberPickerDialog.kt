@@ -10,7 +10,7 @@ import androidx.fragment.app.DialogFragment
 import com.app.body_manage.R
 
 class FloatNumberPickerDialog : DialogFragment() {
-    private var number: Float = 0.0F
+    private var number: Float = 50F
     private var unit: String = ""
     private lateinit var bigPicker: NumberPicker
     private lateinit var smallPicker: NumberPicker
@@ -28,12 +28,11 @@ class FloatNumberPickerDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         super.onCreateDialog(savedInstanceState)
-        val activity = requireActivity()
+        val activity = requireContext()
         val dialogBuilder = AlertDialog.Builder(activity)
-        val inflater = activity.layoutInflater
-        val dialogLayout = inflater.inflate(R.layout.float_number_picker_dialog, null)
-        bigPicker = dialogLayout.findViewById(R.id.weight)
-        smallPicker = dialogLayout.findViewById(R.id.small_weight)
+        val dialogLayout = layoutInflater.inflate(R.layout.float_number_picker_dialog, null)
+        bigPicker = dialogLayout.findViewById(R.id.big)
+        smallPicker = dialogLayout.findViewById(R.id.small)
 
         bigPicker.minValue = 0
         bigPicker.maxValue = 200
@@ -52,22 +51,22 @@ class FloatNumberPickerDialog : DialogFragment() {
             callBack(number)
             this.dismiss()
         }
-
         return dialogBuilder.setView(dialogLayout).create()
     }
 
     companion object {
-        const val NUMBER = "NUMBER"
-        const val UNIT = "UNIT"
+        private const val NUMBER = "NUMBER"
+        private const val UNIT = "UNIT"
         fun createDialog(
             number: Float,
             unit: String,
             callBack: (weight: Float) -> Unit
         ): FloatNumberPickerDialog {
             val numberPickerDialog = FloatNumberPickerDialog()
-            val bundle = Bundle()
-            bundle.putFloat(NUMBER, number)
-            bundle.putString(UNIT, unit)
+            val bundle = Bundle().apply {
+                putFloat(NUMBER, number)
+                putString(UNIT, unit)
+            }
             numberPickerDialog.arguments = bundle
             numberPickerDialog.callBack = callBack
             return numberPickerDialog
