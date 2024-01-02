@@ -159,7 +159,15 @@ private fun Graph(state: GraphState.HasData) {
                 strokeWidth = 1.dp,
                 strokeColor = Color.Black
             ), // 縦軸をはっきりさせる
-            title = stringResource(id = R.string.weight_unit),
+            title = when (state.currentType) {
+                DataType.WEIGHT -> {
+                    stringResource(id = R.string.weight_unit)
+                }
+
+                DataType.FAT -> {
+                    stringResource(id = R.string.fat_unit)
+                }
+            },
             titleComponent = TextComponent.Builder().build(),
             itemPlacer = remember { AxisItemPlacer.Vertical.default(maxItemCount = 4) },
         ),
@@ -192,11 +200,19 @@ private fun Graph(state: GraphState.HasData) {
         ),
         getXStep = {
             when (state.duration) {
-                Duration.ONE_YEAR, Duration.HALF_YEAR -> {
-                    30F // 30日単位で表示する
+                Duration.ALL,
+                Duration.ONE_YEAR,
+                Duration.HALF_YEAR -> {
+                    30F // 30日単位で表示
                 }
 
-                else -> 10F
+                Duration.THREE_MONTH -> {
+                    10F // 10日単位で表示
+                }
+
+                Duration.ONE_MONTH -> {
+                    3F // 3日単位で表示
+                }
             }
         } // 横軸の直近のデータ
     )

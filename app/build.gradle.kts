@@ -13,9 +13,9 @@ android {
     signingConfigs {
         create("release") {
             storeFile = file("../key/release.jks")
-            storePassword = "chekera0127"
-            keyPassword = "chekera0127"
-            keyAlias = "key0"
+            storePassword = System.getenv("STORE_PASSWORD")
+            keyPassword = System.getenv("KEY_PASSWORD")
+            keyAlias = System.getenv("KEY_ALIAS")
         }
     }
 
@@ -25,8 +25,8 @@ android {
         applicationId = "com.app.calendar"
         minSdk = 26
         targetSdk = 34
-        versionCode = 17
-        versionName = "1.17.0"
+        versionCode = 18
+        versionName = "1.18.0"
         applicationId = "com.app.body_manage"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

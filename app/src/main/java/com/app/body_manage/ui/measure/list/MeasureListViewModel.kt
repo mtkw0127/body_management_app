@@ -3,9 +3,9 @@ package com.app.body_manage.ui.measure.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
-import com.app.body_manage.data.entity.BodyMeasureModel
 import com.app.body_manage.data.entity.MealMeasureEntity
 import com.app.body_manage.data.local.UserPreferenceRepository
+import com.app.body_manage.data.model.BodyMeasureModel
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.ui.measure.list.MeasureListState.BodyMeasureListState
@@ -210,9 +210,7 @@ class MeasureListViewModel(
 
     fun updateDate(diff: Int) {
         viewModelState.update {
-            it.copy(
-                date = viewModelState.value.date.plusDays(diff.toLong())
-            )
+            it.copy(date = viewModelState.value.date.plusDays(diff.toLong()))
         }
         reload()
     }

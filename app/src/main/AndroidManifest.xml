@@ -30,11 +30,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity"
+            android:name="com.app.body_manage.ui.measure.form.MeasureFormActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppThemeNoBar" />
         <activity
             android:name="com.app.body_manage.ui.measure.list.MeasureListActivity"
             android:exported="true"

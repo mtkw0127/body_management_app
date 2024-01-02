@@ -5,7 +5,7 @@
     <color name="accent_color">#5CD5FA</color>
 
     <!-- 比較 -->
-    <color name="compare_item_background">#B7B7B7</color>
+    <color name="compare_item_background">#EFEFEF</color>
 
     <!-- 比較履歴-->
     <color name="compare_history_diff_background">#FFBD1C</color>

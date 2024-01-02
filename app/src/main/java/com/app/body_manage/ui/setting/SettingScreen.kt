@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.body_manage.R
@@ -69,9 +68,8 @@ private fun TextAndLabel(checked: Boolean, notifyAction: (Boolean) -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "毎朝7時に通知",
+            text = stringResource(id = R.string.label_notify_at_seven),
             fontSize = 16.sp,
-            fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(start = 0.dp, end = 10.dp, top = 0.dp, bottom = 0.dp)
         )
         Switch(

@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import com.app.body_manage.data.model.BodyMeasureModel
 import com.app.body_manage.data.model.PhotoModel
 import java.io.Serializable
 
@@ -20,13 +21,13 @@ import java.io.Serializable
     ]
 )
 class PhotoEntity(
-    @PrimaryKey(autoGenerate = true) var ui: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(name = "body_measure_id", index = true) val bodyMeasureId: Int,
     @ColumnInfo(name = "photo_uri") val photoUri: String
 ) : Serializable
 
 fun PhotoEntity.toModel() = PhotoModel(
-    id = PhotoModel.Id(ui),
-    bodyMeasureId = BodyMeasureModel.Id(bodyMeasureId.toLong()),
+    id = PhotoModel.Id(id),
+    bodyMeasureId = BodyMeasureModel.Id(bodyMeasureId),
     uri = photoUri.toUri(),
 )

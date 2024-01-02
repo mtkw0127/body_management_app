@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.common.createBottomDataList
 import com.app.body_manage.data.local.UserPreferenceRepository
@@ -18,7 +19,7 @@ import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
-import com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity
+import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import java.time.LocalDate
@@ -39,12 +40,14 @@ class MeasureListActivity : AppCompatActivity() {
     private val measureFormLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             val message = when (it.resultCode) {
-                BodyMeasureEditFormActivity.RESULT_DELETE -> "削除しました"
-                BodyMeasureEditFormActivity.RESULT_UPDATE -> "更新しました"
-                BodyMeasureEditFormActivity.RESULT_CREATE -> "追加しました"
-                else -> ""
+                MeasureFormActivity.RESULT_CODE_ADD -> getString(R.string.message_saved)
+                MeasureFormActivity.RESULT_CODE_EDIT -> getString(R.string.message_edited)
+                MeasureFormActivity.RESULT_CODE_DELETE -> getString(R.string.message_deleted)
+                else -> null
             }
-            viewModel.updateMessage(message)
+            message?.let {
+                Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+            }
             viewModel.reload()
         }
 
@@ -78,9 +81,9 @@ class MeasureListActivity : AppCompatActivity() {
                 },
                 clickBodyMeasureEdit = {
                     measureFormLauncher.launch(
-                        BodyMeasureEditFormActivity.createMeasureEditIntent(
+                        MeasureFormActivity.createMeasureEditIntent(
                             context = this,
-                            captureTime = it,
+                            measureTime = it,
                         )
                     )
                 },
@@ -94,15 +97,17 @@ class MeasureListActivity : AppCompatActivity() {
                     when (viewModel.uiState.value.measureType) {
                         MeasureType.BODY -> {
                             measureFormLauncher.launch(
-                                BodyMeasureEditFormActivity.createMeasureFormIntent(
+                                MeasureFormActivity.createMeasureFormIntent(
                                     context = this,
-                                    formDate = viewModel.uiState.value.date,
+                                    measureDate = viewModel.uiState.value.date
                                 )
                             )
                         }
+
                         MeasureType.MEAL -> {
                             Toast.makeText(this, "今後機能追加する！", Toast.LENGTH_LONG).show()
                         }
+
                         else -> {}
                     }
                 },

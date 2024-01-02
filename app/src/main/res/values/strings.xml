@@ -11,11 +11,26 @@
     <string name="fat">体脂肪</string>
     <string name="weight_unit">体重 [kg]</string>
     <string name="fat_unit">体脂肪率 [%]</string>
+    <string name="dot">.</string>
+    <string name="unit_kg">kg</string>
+    <string name="unit_percent">%</string>
+    <string name="unit_hour">時</string>
+    <string name="unit_minute">分</string>
+
+    <!-- 測定一覧-->
+    <string name="message_saved">保存しました</string>
+    <string name="message_edited">編集しました</string>
+    <string name="message_deleted">削除しました</string>
+
+    <!-- 設定 -->
+    <string name="label_notify_at_seven">毎朝7時に通知</string>
 
     <!-- 投稿画面 -->
     <string name="hint_fat">体脂肪率</string>
     <string name="hint_weight">体重</string>
     <string name="hint_time">計測時間</string>
+    <string name="save">保存</string>
+    <string name="message_tap_and_add_photo">タップで写真を追加</string>
 
     <!-- 比較画面 -->
     <string name="before">Before</string>
