@@ -36,6 +36,7 @@ import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.Notes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,6 +73,7 @@ fun BodyMeasureFormScreen(
     onClickTime: () -> Unit = {},
     onChangeWeightDialog: () -> Unit = {},
     onChangeFatDialog: () -> Unit = {},
+    onChangeMemo: (String) -> Unit = {},
 ) {
     Scaffold(
         topBar = {
@@ -179,6 +181,20 @@ fun BodyMeasureFormScreen(
                                     )
                                 },
                                 onClick = { onChangeFatDialog() }
+                            )
+                            Spacer(modifier = Modifier.size(15.dp))
+                        }
+                        item {
+                            CustomMultiTextField(
+                                labelTextResourceId = R.string.hint_memo,
+                                value = uiState.model.memo,
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Notes,
+                                        contentDescription = null
+                                    )
+                                },
+                                onChangeValue = onChangeMemo
                             )
                             Spacer(modifier = Modifier.size(15.dp))
                         }
@@ -318,5 +334,39 @@ private fun CustomTextField(
             .clickable {
                 onClick()
             }
+    )
+}
+
+@Composable
+private fun CustomMultiTextField(
+    @StringRes labelTextResourceId: Int,
+    value: String,
+    leadingIcon: @Composable () -> Unit,
+    onChangeValue: (String) -> Unit,
+) {
+    TextField(
+        label = {
+            Text(text = stringResource(id = labelTextResourceId), color = Color.Black)
+        },
+        value = value,
+        onValueChange = onChangeValue,
+        leadingIcon = {
+            leadingIcon()
+        },
+        maxLines = Integer.MAX_VALUE,
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color.Transparent,
+            textColor = Color.Black,
+            focusedLabelColor = Color.Black,
+            unfocusedIndicatorColor = Color.Black,
+            focusedIndicatorColor = Color.Gray,
+            leadingIconColor = Color.Black
+        ),
+        placeholder = {
+            Text(text = stringResource(R.string.hint_memo_placeholder))
+        },
+        enabled = true,
+        modifier = Modifier
+            .fillMaxWidth()
     )
 }

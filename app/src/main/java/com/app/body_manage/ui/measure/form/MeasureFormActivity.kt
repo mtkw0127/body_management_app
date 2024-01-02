@@ -112,6 +112,9 @@ class MeasureFormActivity : AppCompatActivity() {
                         viewModel.setWeight(it)
                     }.show(supportFragmentManager, null)
                 },
+                onChangeMemo = {
+                    viewModel.updateMemo(it)
+                },
                 onChangeFatDialog = {
                     FloatNumberPickerDialog.createDialog(
                         (uiState as FormState.HasData).model.fat,
