@@ -61,5 +61,5 @@
     <!-- 画面タイトル-->
     <string name="screen_name_settings">設定</string>
     <string name="screen_name_graph">グラフ</string>
-    <string name="screen_name_choose_compare_photo">比較写真を選択してください</string>
+    <string name="screen_name_choose_compare_photo">写真を選択してください</string>
 </resources>
