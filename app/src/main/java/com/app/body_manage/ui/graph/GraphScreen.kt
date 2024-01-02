@@ -46,6 +46,7 @@ import com.patrykandpatrick.vico.core.component.shape.Shapes.pillShape
 import com.patrykandpatrick.vico.core.component.text.TextComponent
 import com.patrykandpatrick.vico.core.entry.FloatEntry
 import com.patrykandpatrick.vico.core.entry.entryModelOf
+import com.patrykandpatrick.vico.core.marker.MarkerLabelFormatter
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -152,7 +153,15 @@ private fun Graph(state: GraphState.HasData) {
                 color = theme,
                 thickness = 2.dp,
             )
-        ),
+        ).apply {
+            // グラフタップ時に出るガイドの値を横軸（日付）に変更する
+            labelFormatter =
+                MarkerLabelFormatter { markedEntries, _ ->
+                    return@MarkerLabelFormatter LocalDate.ofEpochDay(
+                        markedEntries.first().entry.x.toLong()
+                    ).toString()
+                }
+        },
         model = model,
         startAxis = rememberStartAxis(
             axis = axisLineComponent(
