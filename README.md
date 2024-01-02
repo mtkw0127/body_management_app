@@ -13,7 +13,7 @@
 
 ## :blue_book: 使い方
 
-AndoirdStudioでクローンすれば動きます。
+AndroidStudioでクローンすれば動きます。
 
 ## :package: 機能
 
