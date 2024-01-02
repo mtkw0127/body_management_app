@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">体型管理</string>
     <string name="not_yet_measure_message">まだ記録がありません。</string>
+    <string name="prev_day">前日</string>
+    <string name="next_day">翌日</string>
     <string name="prev_month">先月</string>
     <string name="next_month">翌月</string>
     <string name="settings">設定</string>
@@ -28,7 +30,7 @@
     <!-- 投稿画面 -->
     <string name="hint_fat">体脂肪率</string>
     <string name="hint_weight">体重</string>
-    <string name="hint_time">計測時間</string>
+    <string name="hint_time">時間</string>
     <string name="hint_memo">メモ</string>
     <string name="hint_memo_placeholder">ここにメモを記入することができます</string>
     <string name="save">保存</string>
