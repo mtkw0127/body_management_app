@@ -159,7 +159,15 @@ private fun Graph(state: GraphState.HasData) {
                 strokeWidth = 1.dp,
                 strokeColor = Color.Black
             ), // 縦軸をはっきりさせる
-            title = stringResource(id = R.string.weight_unit),
+            title = when (state.currentType) {
+                DataType.WEIGHT -> {
+                    stringResource(id = R.string.weight_unit)
+                }
+
+                DataType.FAT -> {
+                    stringResource(id = R.string.fat_unit)
+                }
+            },
             titleComponent = TextComponent.Builder().build(),
             itemPlacer = remember { AxisItemPlacer.Vertical.default(maxItemCount = 4) },
         ),
