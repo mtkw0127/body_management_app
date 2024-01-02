@@ -9,6 +9,10 @@
     <style name="AppThemeNoBar" parent="@style/Theme.AppCompat.NoActionBar">
         <item name="colorPrimary">@color/app_theme</item>
         <item name="colorPrimaryDark">@color/app_theme</item>
+        <!-- メニューのDotの色-->
+        <item name="android:textColorSecondary">@color/black</item>
+        <item name="android:itemBackground">@color/white</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="Picker" parent="@style/Theme.AppCompat.NoActionBar">
@@ -25,9 +29,18 @@
     <style name="CustomButton" parent="Widget.AppCompat.Button">
         <item name="android:background">@drawable/button_style</item>
         <item name="android:minHeight">36dp</item>
-        <item name="android:minWidth">88dip</item>
+        <item name="android:minWidth">60dp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:backgroundTint">@color/primary_second</item>
+    </style>
+
+    <style name="SimpleButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/button_style</item>
+        <item name="android:minHeight">36dp</item>
+        <item name="android:minWidth">60dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:backgroundTint">@color/light_grey</item>
+        <item name="android:elevation">100dp</item>
     </style>
 
     <style name="BottomNavigationView" parent="@style/TextAppearance.AppCompat.Caption">

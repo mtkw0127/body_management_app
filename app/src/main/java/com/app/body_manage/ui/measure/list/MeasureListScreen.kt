@@ -47,7 +47,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -70,7 +69,6 @@ import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.data.model.BodyMeasureModel
 import com.app.body_manage.domain.BMICalculator
 import com.app.body_manage.extension.toJapaneseTime
-import com.app.body_manage.style.Colors
 import com.app.body_manage.style.Colors.Companion.accentColor
 import com.app.body_manage.style.Colors.Companion.theme
 import com.app.body_manage.util.DateUtil
@@ -105,7 +103,7 @@ fun MeasureListScreen(
     Scaffold(
         scaffoldState = state,
         topBar = {
-            TopAppBar(backgroundColor = Colors.theme) {
+            TopAppBar(backgroundColor = theme) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(
                         modifier = Modifier
@@ -224,10 +222,10 @@ fun MeasureListScreen(
                                         modifier = Modifier.fillMaxSize()
                                     ) {
                                         Text(
-                                            text = "未登録です\n右下のボタンから登録してください",
+                                            text = "右下のボタンから登録してください",
                                             fontWeight = FontWeight.Bold,
                                             fontSize = 16.sp,
-                                            color = Color.Gray,
+                                            color = Color.DarkGray,
                                             textAlign = TextAlign.Center,
                                         )
                                     }
@@ -270,7 +268,7 @@ fun PhotoList(
                 Text(
                     text = "写真が未登録です",
                     fontWeight = FontWeight.Bold,
-                    color = Color.Gray,
+                    color = Color.Black,
                 )
             }
         } else {
@@ -307,7 +305,6 @@ fun PhotoList(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun TallSetField(
     tall: String,

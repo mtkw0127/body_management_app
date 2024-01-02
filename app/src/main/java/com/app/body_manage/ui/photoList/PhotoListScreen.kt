@@ -260,7 +260,7 @@ private fun NoPhotoMessage() {
             text = stringResource(id = R.string.message_no_photo),
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Gray,
+            color = Color.DarkGray,
             textAlign = TextAlign.Center,
         )
     }
