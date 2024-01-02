@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.app.body_manage.domain.BMICalculator
 import com.app.body_manage.util.DateUtil
 
 @Composable
@@ -25,7 +26,7 @@ fun PhotoDetailScreen(
     onClickBackPress: () -> Unit
 ) {
     when (state) {
-        is PhotoDetailState.ShowPhotoDetail -> {
+        is PhotoDetailState.ShowPhotoDetailWithDetail -> {
             Box(
                 modifier = Modifier
                     .background(Color.Black)
@@ -75,10 +76,43 @@ fun PhotoDetailScreen(
                         modifier = Modifier.padding(bottom = 5.dp)
                     )
                     Text(
-                        text = "BMI：${state.bodyMeasureModel.bmi}",
+                        text = "BMI：${
+                            BMICalculator().calculate(
+                                state.bodyMeasureModel.tall,
+                                state.bodyMeasureModel.weight
+                            )
+                        }",
                         color = Color.White,
                     )
                 }
+            }
+        }
+
+        is PhotoDetailState.ShowPhotoDetailFromUri -> {
+            Box(
+                modifier = Modifier
+                    .background(Color.Black)
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                AsyncImage(
+                    model = state.uri,
+                    contentDescription = "写真詳細",
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .padding(10.dp)
+                    .padding(top = 15.dp)
+            ) {
+                Icon(
+                    Icons.Filled.ArrowBack,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.clickable {
+                        onClickBackPress()
+                    }
+                )
             }
         }
 

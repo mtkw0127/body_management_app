@@ -14,7 +14,7 @@ import com.app.body_manage.R
 import com.app.body_manage.databinding.ActivityMainBinding
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
-import com.app.body_manage.ui.measure.form.BodyMeasureEditFormActivity
+import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.ui.setting.SettingActivity
 import com.app.body_manage.util.DateUtil
@@ -38,7 +38,7 @@ class CalendarActivity : AppCompatActivity() {
 
     private val registeredFromFab = registerForActivityResult(StartActivityForResult()) {
         val message = when (it.resultCode) {
-            BodyMeasureEditFormActivity.RESULT_CREATE -> "追加しました"
+            MeasureFormActivity.RESULT_CODE_ADD -> getString(R.string.message_saved)
             else -> null
         }
         message?.let {
@@ -120,10 +120,9 @@ class CalendarActivity : AppCompatActivity() {
         }
         binding.addButton.setOnClickListener {
             registeredFromFab.launch(
-                BodyMeasureEditFormActivity.createMeasureFormIntent(
+                MeasureFormActivity.createMeasureFormIntent(
                     this,
-                    formType = BodyMeasureEditFormActivity.FormType.ADD,
-                    formDate = LocalDate.now()
+                    LocalDate.now()
                 )
             )
         }

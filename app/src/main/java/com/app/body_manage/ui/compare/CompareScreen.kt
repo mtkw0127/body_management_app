@@ -451,6 +451,7 @@ private fun CompareItem(label: String, item: CompareItemStruct?, onEditClick: ()
             .fillMaxWidth(0.98F)
             .height(400.dp)
             .padding(5.dp)
+            .border(1.dp, Color.Black, RoundedCornerShape(5.dp))
             .background(
                 color = colorResource(id = R.color.compare_item_background),
                 shape = RoundedCornerShape(5.dp)

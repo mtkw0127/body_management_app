@@ -18,7 +18,6 @@ interface BodyMeasureDao {
     @Query(
         "SELECT ui, " +
             "calendar_date, " +
-            "capture_date, " +
             "capture_time, " +
             "AVG(weight) as weight, " +
             "AVG(fat) as fat " +
@@ -40,7 +39,7 @@ interface BodyMeasureDao {
     ): List<BodyMeasureEntity>
 
     @Query(
-        "SELECT ui, calendar_date, capture_date, capture_time, AVG(weight) as weight, AVG(fat) as fat, photo_uri, tall FROM bodyMeasures GROUP BY bodyMeasures.calendar_date"
+        "SELECT ui, calendar_date, capture_time, AVG(weight) as weight, AVG(fat) as fat, photo_uri, tall FROM bodyMeasures GROUP BY bodyMeasures.calendar_date"
     )
     suspend fun getTrainingEntityListAll(): List<BodyMeasureEntity>
 

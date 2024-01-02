@@ -17,15 +17,15 @@ interface ComparePhotoHistoryDao {
         "SELECT photos1.photo_uri as beforePhotoUri, " +
             "comparePhotoHistory.ui as compareHistoryId, " +
             "photos2.photo_uri as afterPhotoUri, " +
-            "photos1.ui as beforePhotoId, " +
-            "photos2.ui as afterPhotoId, " +
+            "photos1.id as beforePhotoId, " +
+            "photos2.id as afterPhotoId, " +
             "beforeBodyMeasure.weight as beforeWeight, " +
             "afterBodyMeasure.weight as afterWeight, " +
             "beforeBodyMeasure.calendar_date as beforeCalendarDate, " +
             "afterBodyMeasure.calendar_date as afterCalendarDate " +
             "FROM comparePhotoHistory " +
-            "INNER JOIN photos as photos1 ON photos1.ui = comparePhotoHistory.beforePhotoId " +
-            "INNER JOIN photos as photos2 ON photos2.ui = comparePhotoHistory.afterPhotoId " +
+            "INNER JOIN photos as photos1 ON photos1.id = comparePhotoHistory.beforePhotoId " +
+            "INNER JOIN photos as photos2 ON photos2.id = comparePhotoHistory.afterPhotoId " +
             "INNER JOIN bodyMeasures as beforeBodyMeasure ON photos1.body_measure_id = beforeBodyMeasure.ui " +
             "INNER JOIN bodyMeasures as afterBodyMeasure ON photos2.body_measure_id = afterBodyMeasure.ui " +
             "ORDER BY comparePhotoHistory.createdAt DESC"
