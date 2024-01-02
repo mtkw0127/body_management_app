@@ -9,6 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.common.createBottomDataList
 import com.app.body_manage.data.local.UserPreferenceRepository
@@ -38,6 +39,15 @@ class MeasureListActivity : AppCompatActivity() {
 
     private val measureFormLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            val message = when (it.resultCode) {
+                MeasureFormActivity.RESULT_CODE_ADD -> getString(R.string.message_saved)
+                MeasureFormActivity.RESULT_CODE_EDIT -> getString(R.string.message_edited)
+                MeasureFormActivity.RESULT_CODE_DELETE -> getString(R.string.message_deleted)
+                else -> null
+            }
+            message?.let {
+                Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+            }
             viewModel.reload()
         }
 

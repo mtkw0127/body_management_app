@@ -61,6 +61,7 @@ class MeasureFormActivity : AppCompatActivity() {
                 },
                 onClickDelete = {
                     viewModel.deleteBodyMeasure()
+                    setResult(RESULT_CODE_DELETE)
                     finish()
                 },
                 onClickBackPress = { finish() },
@@ -69,6 +70,15 @@ class MeasureFormActivity : AppCompatActivity() {
                 },
                 onClickSave = {
                     viewModel.save()
+                    when (formType) {
+                        FormType.ADD -> {
+                            setResult(RESULT_CODE_ADD)
+                        }
+
+                        FormType.EDIT -> {
+                            setResult(RESULT_CODE_EDIT)
+                        }
+                    }
                     finish()
                 },
                 onClickPhotoDetail = {
@@ -136,6 +146,10 @@ class MeasureFormActivity : AppCompatActivity() {
     companion object {
         private const val FORM_TYPE = "FORM_TYPE"
         private const val KEY_CAPTURE_TIME = "KEY_CAPTURE_TIME"
+
+        const val RESULT_CODE_DELETE = Activity.RESULT_FIRST_USER
+        const val RESULT_CODE_ADD = Activity.RESULT_FIRST_USER + 1
+        const val RESULT_CODE_EDIT = Activity.RESULT_FIRST_USER + 2
 
         enum class FormType {
             ADD, EDIT

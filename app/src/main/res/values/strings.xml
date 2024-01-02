@@ -18,6 +18,9 @@
     <string name="unit_minute">分</string>
 
     <!-- 測定一覧-->
+    <string name="message_saved">保存しました</string>
+    <string name="message_edited">編集しました</string>
+    <string name="message_deleted">削除しました</string>
 
     <!-- 設定 -->
     <string name="label_notify_at_seven">毎朝7時に通知</string>

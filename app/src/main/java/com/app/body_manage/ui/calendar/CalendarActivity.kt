@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
@@ -36,6 +37,13 @@ class CalendarActivity : AppCompatActivity() {
     }
 
     private val registeredFromFab = registerForActivityResult(StartActivityForResult()) {
+        val message = when (it.resultCode) {
+            MeasureFormActivity.RESULT_CODE_ADD -> getString(R.string.message_saved)
+            else -> null
+        }
+        message?.let {
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        }
         adapter.notifyDataSetChanged()
     }
 
