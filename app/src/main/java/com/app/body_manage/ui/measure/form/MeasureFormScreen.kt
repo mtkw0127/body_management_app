@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -31,8 +29,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.AccessibilityNew
 import androidx.compose.material.icons.filled.AddCircleOutline
-import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.DeleteForever
@@ -42,7 +38,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -51,13 +46,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.app.body_manage.R
+import com.app.body_manage.common.CustomButton
 import com.app.body_manage.data.model.PhotoModel
 import com.app.body_manage.extension.toFat
 import com.app.body_manage.extension.toJapaneseTime
+import com.app.body_manage.extension.toMMDDEE
 import com.app.body_manage.extension.toWeight
 import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
-import com.app.body_manage.util.DateUtil
 
 @Composable
 fun BodyMeasureFormScreen(
@@ -77,53 +73,43 @@ fun BodyMeasureFormScreen(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    if (uiState is FormState.HasData) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            val isAdd = uiState is FormState.HasData.Add
-                            val isEdit = uiState is FormState.HasData.Edit
-                            if (isAdd) {
-                                Icon(
-                                    imageVector = Icons.Filled.ArrowBackIosNew,
-                                    contentDescription = null,
-                                    tint = Color.Black,
-                                    modifier = Modifier.clickable { onClickPreviousDay() }
-                                )
-                                Spacer(modifier = Modifier.size(10.dp))
-                            }
-                            Text(
-                                text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(
-                                    uiState.measureDate
-                                )
+            TopAppBar(backgroundColor = theme) {
+                if (uiState is FormState.HasData) {
+                    val isAdd = uiState is FormState.HasData.Add
+                    val isEdit = uiState is FormState.HasData.Edit
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = uiState.measureDate.toMMDDEE(),
+                            modifier = Modifier.offset(x = 10.dp),
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                        Spacer(modifier = Modifier.size(40.dp))
+                        if (isAdd) {
+                            CustomButton(
+                                onClick = { onClickPreviousDay() },
+                                valueResourceId = R.string.prev_day
                             )
-                            if (isAdd) {
-                                Spacer(modifier = Modifier.size(10.dp))
-                                Icon(
-                                    imageVector = Icons.Filled.ArrowForwardIos,
-                                    contentDescription = null,
-                                    tint = Color.Black,
-                                    modifier = Modifier.clickable { onClickNextDay() }
-                                )
-                            }
-                            if (isEdit) {
-                                Spacer(modifier = Modifier.weight(1F))
-                                Icon(
-                                    imageVector = Icons.Filled.DeleteForever,
-                                    tint = Color.Black,
-                                    contentDescription = null,
-                                    modifier = Modifier.clickable { onClickDelete() }
-                                )
-                                Spacer(modifier = Modifier.size(10.dp))
-                            }
+                            Spacer(modifier = Modifier.size(10.dp))
+                            CustomButton(
+                                onClick = { onClickNextDay() },
+                                valueResourceId = R.string.next_day
+                            )
+                        }
+                        if (isEdit) {
+                            Spacer(modifier = Modifier.weight(1F))
+                            Icon(
+                                imageVector = Icons.Filled.DeleteForever,
+                                tint = Color.Black,
+                                contentDescription = null,
+                                modifier = Modifier.clickable { onClickDelete() }
+                            )
+                            Spacer(modifier = Modifier.size(10.dp))
                         }
                     }
-                },
-                backgroundColor = colorResource(id = R.color.app_theme)
-            )
+                }
+            }
         },
     ) {
         when (uiState) {
@@ -282,25 +268,6 @@ fun BodyMeasureFormScreen(
             else -> {
             }
         }
-    }
-}
-
-@Composable
-private fun CustomButton(
-    onClick: () -> Unit,
-    @StringRes valueResourceId: Int,
-    backgroundColor: Color = Color.White,
-) {
-    Button(
-        onClick = onClick,
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = backgroundColor
-        )
-    ) {
-        Text(
-            text = stringResource(id = valueResourceId),
-            textAlign = TextAlign.Center,
-        )
     }
 }
 

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -63,15 +64,14 @@ import com.app.body_manage.R
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.common.Calendar
-import com.app.body_manage.common.LeftTriangleShape
-import com.app.body_manage.common.RightTriangleShape
+import com.app.body_manage.common.CustomButton
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.data.model.BodyMeasureModel
 import com.app.body_manage.domain.BMICalculator
 import com.app.body_manage.extension.toJapaneseTime
+import com.app.body_manage.extension.toMMDDEE
 import com.app.body_manage.style.Colors.Companion.accentColor
 import com.app.body_manage.style.Colors.Companion.theme
-import com.app.body_manage.util.DateUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -105,22 +105,10 @@ fun MeasureListScreen(
         topBar = {
             TopAppBar(backgroundColor = theme) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .offset(x = 8.dp, y = 1.dp)
-                            .size(10.dp)
-                            .background(
-                                color = Color.Black,
-                                shape = LeftTriangleShape
-                            )
-                            .clickable {
-                                updateDate.invoke(-1)
-                            }
-                    )
                     Text(
-                        text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(uiState.date),
+                        text = uiState.date.toMMDDEE(),
                         modifier = Modifier
-                            .offset(x = 20.dp)
+                            .offset(x = 10.dp)
                             .clickable {
                                 scope.launch {
                                     showCalendar.value = true
@@ -128,21 +116,19 @@ fun MeasureListScreen(
                                     sheetState.show()
                                 }
                             },
-                        fontSize = 16.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
-                    Box(
-                        modifier = Modifier
-                            .offset(x = 28.dp, y = 1.dp)
-                            .size(10.dp)
-                            .background(
-                                color = Color.Black,
-                                shape = RightTriangleShape
-                            )
-                            .clickable {
-                                updateDate.invoke(1)
-                            }
+                    Spacer(modifier = Modifier.size(40.dp))
+                    CustomButton(
+                        onClick = { updateDate.invoke(-1) },
+                        valueResourceId = R.string.prev_day
+                    )
+                    Spacer(modifier = Modifier.size(10.dp))
+                    CustomButton(
+                        onClick = { updateDate.invoke(1) },
+                        valueResourceId = R.string.next_day
                     )
                 }
             }
