@@ -18,4 +18,5 @@ fun UserPreference.toBodyMeasureForAdd(date: LocalDate) = BodyMeasureModel(
     fat = fat ?: 20F,
     photoUri = null,
     tall = tall ?: 150F,
+    memo = "",
 )

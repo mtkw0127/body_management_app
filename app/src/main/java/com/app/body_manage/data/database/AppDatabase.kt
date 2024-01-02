@@ -17,14 +17,13 @@ import com.app.body_manage.data.entity.PhotoEntity
 
 @Database(
     entities = [BodyMeasureEntity::class, PhotoEntity::class, ComparePhotoHistoryEntity::class],
-    version = 4,
+    version = 5,
     exportSchema = true
 )
 @TypeConverters(LocalDateConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 
     companion object {
-
         private var db: AppDatabase? = null
 
         fun createDatabase(applicationContext: Context): AppDatabase {
@@ -36,6 +35,7 @@ abstract class AppDatabase : RoomDatabase() {
                             addMigrations(MIGRATION_1_2)
                             addMigrations(MIGRATION_2_3)
                             addMigrations(MIGRATION_3_4)
+                            addMigrations(MIGRATION_4_5)
                         }.build()
                 db = instance
                 instance
@@ -51,8 +51,8 @@ abstract class AppDatabase : RoomDatabase() {
 
 /** 体重カラムをBodyMeasureTableに追加*/
 val MIGRATION_1_2 = object : Migration(1, 2) {
-    override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL(
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
             "ALTER TABLE bodyMeasures ADD COLUMN tall FLOAT"
         )
     }
@@ -60,8 +60,8 @@ val MIGRATION_1_2 = object : Migration(1, 2) {
 
 /** 比較履歴のテーブルを追加*/
 val MIGRATION_2_3 = object : Migration(2, 3) {
-    override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL(
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
             "CREATE TABLE IF NOT EXISTS `compareBodyMeasureHistory` (`ui` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `beforeBodyMeasureId` INTEGER NOT NULL, `afterBodyMeasureId` INTEGER NOT NULL)",
         )
     }
@@ -69,12 +69,21 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
 
 /** 比較履歴のテーブルを変更*/
 val MIGRATION_3_4 = object : Migration(3, 4) {
-    override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL(
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
             "CREATE TABLE IF NOT EXISTS `comparePhotoHistory` (`ui` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `beforePhotoId` INTEGER NOT NULL, `afterPhotoId` INTEGER NOT NULL, `createdAt` TEXT NOT NULL)"
         )
-        database.execSQL(
+        db.execSQL(
             "DROP TABLE `compareBodyMeasureHistory`"
+        )
+    }
+}
+
+/** メモカラムの追加*/
+val MIGRATION_4_5 = object : Migration(4, 5) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "ALTER TABLE bodyMeasures ADD COLUMN memo TEXT DEFAULT \"\" NOT NULL "
         )
     }
 }

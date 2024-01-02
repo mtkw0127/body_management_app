@@ -9,6 +9,7 @@ data class BodyMeasureModel(
     val capturedLocalDateTime: LocalDateTime,
     val weight: Float,
     val fat: Float,
+    val memo: String,
     val photoUri: Uri?,
     val tall: Float?,
 ) {
@@ -22,6 +23,7 @@ fun BodyMeasureModel.toEntity() = BodyMeasureEntity(
     capturedTime = capturedLocalDateTime,
     weight = weight,
     fat = fat,
+    memo = memo,
     photoUri = photoUri.toString(),
     tall = tall,
 )

@@ -169,6 +169,13 @@ class BodyMeasureEditFormViewModel(
         }
     }
 
+    fun updateMemo(memo: String) {
+        viewModelState.update {
+            val model = checkNotNull(it.model).copy(memo = memo)
+            it.copy(model = model)
+        }
+    }
+
     fun loadBodyMeasure(measureTime: LocalDateTime) {
         viewModelScope.launch {
             runCatching {
