@@ -2,7 +2,7 @@
 <resources>
     <color name="app_theme">#FFDA7F</color>
     <color name="primary_second">#800020</color>
-    <color name="accent_color">#5CD5FA</color>
+    <color name="accent_color">#FF5CA8FA</color>
 
     <!-- 比較 -->
     <color name="compare_item_background">#EFEFEF</color>
