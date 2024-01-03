@@ -92,7 +92,7 @@ class UserPreferenceRepository(
                 gender = when (checkNotNull(it[KEY_GENDER])) {
                     Gender.MALE.value -> Gender.MALE
                     Gender.MALE.value -> Gender.FEMALE
-                    else -> throw IllegalStateException()
+                    else -> error("IllegalState ${it[KEY_GENDER]}")
                 },
                 birth = checkNotNull(it[KEY_BIRTH]).let {
                     val split = it.split("-")

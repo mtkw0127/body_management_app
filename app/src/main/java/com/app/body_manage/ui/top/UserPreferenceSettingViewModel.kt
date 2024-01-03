@@ -97,7 +97,7 @@ class UserPreferenceSettingViewModel(
                     } else {
                         tall.toFloat()
                     }
-                } catch (e: Throwable) {
+                } catch (_: Throwable) {
                     return
                 }
             )
@@ -113,7 +113,7 @@ class UserPreferenceSettingViewModel(
                     } else {
                         weight.toFloat()
                     }
-                } catch (e: Throwable) {
+                } catch (_: Throwable) {
                     return
                 }
             )
@@ -162,7 +162,7 @@ class UserPreferenceSettingViewModel(
                 SimpleDateFormat("yyyyMMdd", Locale.getDefault()).apply {
                     isLenient = false
                 }.parse(tempBirth)
-            } catch (e: Throwable) {
+            } catch (_: Throwable) {
                 return
             }
         }

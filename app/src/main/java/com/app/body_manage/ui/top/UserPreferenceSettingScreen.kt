@@ -33,7 +33,6 @@ import com.app.body_manage.data.local.Gender
 import com.app.body_manage.extension.toYYYYMMDD
 import com.app.body_manage.style.Colors.Companion.theme
 
-
 @Composable
 fun UserPreferenceSettingScreen(
     uiState: UiState,

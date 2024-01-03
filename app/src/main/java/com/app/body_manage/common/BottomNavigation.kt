@@ -38,7 +38,9 @@ fun BottomSheet(bottomSheetDataList: List<BottomSheetData>) {
                             modifier = Modifier.padding(0.dp)
                         )
                     }
-                } else null,
+                } else {
+                    null
+                },
                 onClick = item.action,
                 selected = item.isSelected
             )

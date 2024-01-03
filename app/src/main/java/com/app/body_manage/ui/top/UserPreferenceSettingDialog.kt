@@ -27,7 +27,7 @@ class UserPreferenceSettingDialog : DialogFragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 val uiState by viewModel.uiState.collectAsState()
-                Dialog(onDismissRequest = { /** Not to close*/ }) {
+                Dialog(onDismissRequest = { /* Not to close*/ }) {
                     UserPreferenceSettingScreen(
                         uiState = uiState,
                         onChangeName = viewModel::setName,

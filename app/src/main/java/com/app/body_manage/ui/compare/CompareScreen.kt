@@ -127,7 +127,7 @@ fun CompareScreen(
                                 verticalArrangement = Arrangement.Top,
                                 horizontalAlignment = Alignment.CenterHorizontally,
 
-                                ) {
+                            ) {
                                 CompareItem(
                                     stringResource(R.string.before),
                                     uiState.before,

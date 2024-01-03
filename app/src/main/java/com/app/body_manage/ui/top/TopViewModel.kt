@@ -17,8 +17,7 @@ import kotlinx.coroutines.launch
 class TopViewModel(
     private val userPreferenceRepository: UserPreferenceRepository,
     private val bodyMeasureRepository: BodyMeasureRepository,
-) : ViewModel(
-) {
+) : ViewModel() {
     private val _userPreference: MutableStateFlow<UserPreference?> = MutableStateFlow(null)
     val userPreference = _userPreference.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 

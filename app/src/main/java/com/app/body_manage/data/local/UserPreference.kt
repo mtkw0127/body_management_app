@@ -1,7 +1,5 @@
 package com.app.body_manage.data.local
 
-import androidx.annotation.StringRes
-import com.app.body_manage.R
 import com.app.body_manage.data.model.BodyMeasureModel
 import com.app.body_manage.domain.BMICalculator
 import com.app.body_manage.domain.FatCalculator
@@ -66,8 +64,8 @@ data class UserPreference(
         }
 }
 
-enum class Gender(@StringRes labelResource: Int, val value: Int) {
-    MALE(R.string.gender_male, 0), FEMALE(R.string.gender_female, 1)
+enum class Gender(val value: Int) {
+    MALE(0), FEMALE(1)
 }
 
 fun UserPreference.toBodyMeasureForAdd(date: LocalDate) = BodyMeasureModel(

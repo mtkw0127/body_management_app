@@ -3,6 +3,7 @@ package com.app.body_manage.ui.top
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,6 +29,9 @@ import java.time.LocalDate
 class TopActivity : AppCompatActivity() {
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == MeasureFormActivity.RESULT_CODE_ADD) {
+                Toast.makeText(this, getString(R.string.message_saved), Toast.LENGTH_LONG).show()
+            }
             viewModel.load()
         }
 

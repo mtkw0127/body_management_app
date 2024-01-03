@@ -22,9 +22,6 @@ class CalendarActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: CalendarAdapter
 
-    // シンプルなランチャー
-    private val simpleLauncher = registerForActivityResult(StartActivityForResult()) {}
-
     private val measureListLauncher = registerForActivityResult(StartActivityForResult()) {
         adapter.notifyDataSetChanged()
     }
