@@ -20,8 +20,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import io.github.boguszpawlowski.composecalendar.header.MonthState
 import java.time.YearMonth
-import java.time.format.TextStyle
-import java.util.Locale
 
 @Composable
 fun CalendarMonthHeader(
@@ -55,10 +53,7 @@ fun CalendarMonthHeader(
         )
         Text(
             modifier = Modifier.testTag("MonthLabel"),
-            text = monthState.currentMonth.month
-                .getDisplayName(TextStyle.FULL, Locale.getDefault())
-                .lowercase()
-                .replaceFirstChar { it.titlecase() },
+            text = monthState.currentMonth.month.value.toString() + "月",
             style = MaterialTheme.typography.h5,
         )
         IconButton(

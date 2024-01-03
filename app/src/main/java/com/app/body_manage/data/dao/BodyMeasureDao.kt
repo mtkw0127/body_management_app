@@ -10,7 +10,12 @@ import java.time.LocalDateTime
 
 @Dao
 interface BodyMeasureDao {
-    @Query("SELECT * FROM bodyMeasures WHERE calendar_date = :calendarDate ORDER BY capture_time ASC")
+    @Query(
+        "SELECT * " +
+            "FROM bodyMeasures " +
+            "WHERE calendar_date = :calendarDate " +
+            "ORDER BY capture_time ASC"
+    )
     suspend fun getTrainingEntityListByDate(
         calendarDate: LocalDate
     ): List<BodyMeasureEntity>
@@ -20,7 +25,8 @@ interface BodyMeasureDao {
             "calendar_date, " +
             "capture_time, " +
             "AVG(weight) as weight, " +
-            "AVG(fat) as fat " +
+            "AVG(fat) as fat," +
+            "memo " +
             "FROM bodyMeasures " +
             "WHERE calendar_date " +
             "BETWEEN :from AND :to " +
@@ -32,14 +38,29 @@ interface BodyMeasureDao {
         to: LocalDate,
     ): List<BodyMeasureEntity>
 
-    @Query("SELECT * FROM bodyMeasures WHERE calendar_date BETWEEN :from AND :to ORDER BY capture_time ASC")
+    @Query(
+        "SELECT * " +
+            "FROM bodyMeasures " +
+            "WHERE calendar_date " +
+            "BETWEEN :from AND :to " +
+            "ORDER BY capture_time ASC"
+    )
     suspend fun getTrainingEntityListBetween(
         from: LocalDate,
         to: LocalDate,
     ): List<BodyMeasureEntity>
 
     @Query(
-        "SELECT ui, calendar_date, capture_time, AVG(weight) as weight, AVG(fat) as fat, photo_uri, tall FROM bodyMeasures GROUP BY bodyMeasures.calendar_date"
+        "SELECT " +
+            "ui, " +
+            "calendar_date, " +
+            "capture_time, " +
+            "AVG(weight) as weight, " +
+            "AVG(fat) as fat, " +
+            "memo, " +
+            "photo_uri, " +
+            "tall " +
+            "FROM bodyMeasures GROUP BY bodyMeasures.calendar_date"
     )
     suspend fun getTrainingEntityListAll(): List<BodyMeasureEntity>
 

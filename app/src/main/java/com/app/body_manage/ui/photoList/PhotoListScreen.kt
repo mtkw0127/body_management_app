@@ -43,6 +43,8 @@ import coil.compose.AsyncImage
 import com.app.body_manage.R
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
+import com.app.body_manage.extension.toMMDD
+import com.app.body_manage.extension.toWeight
 import com.app.body_manage.style.Colors.Companion.accentColor
 import com.app.body_manage.style.Colors.Companion.disable
 import com.app.body_manage.ui.photoList.PhotoListState.HasPhoto
@@ -226,11 +228,11 @@ private fun PhotoList(
                         Text(
                             text = when (state.type) {
                                 SortType.DATE -> {
-                                    "${photo.weight}kg"
+                                    photo.weight.toWeight()
                                 }
 
                                 SortType.WEIGHT -> {
-                                    "${photo.calendarDate}"
+                                    photo.calendarDate.toMMDD()
                                 }
                             },
                             color = Color.Black,
@@ -260,7 +262,7 @@ private fun NoPhotoMessage() {
             text = stringResource(id = R.string.message_no_photo),
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
-            color = Color.Gray,
+            color = Color.DarkGray,
             textAlign = TextAlign.Center,
         )
     }

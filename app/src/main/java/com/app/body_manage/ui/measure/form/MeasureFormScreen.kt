@@ -15,11 +15,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
@@ -31,16 +29,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.AccessibilityNew
 import androidx.compose.material.icons.filled.AddCircleOutline
-import androidx.compose.material.icons.filled.ArrowBackIosNew
-import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.Notes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -49,12 +46,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.app.body_manage.R
+import com.app.body_manage.common.CustomButton
 import com.app.body_manage.data.model.PhotoModel
 import com.app.body_manage.extension.toFat
 import com.app.body_manage.extension.toJapaneseTime
+import com.app.body_manage.extension.toMMDDEE
 import com.app.body_manage.extension.toWeight
+import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
-import com.app.body_manage.util.DateUtil
 
 @Composable
 fun BodyMeasureFormScreen(
@@ -70,56 +69,47 @@ fun BodyMeasureFormScreen(
     onClickTime: () -> Unit = {},
     onChangeWeightDialog: () -> Unit = {},
     onChangeFatDialog: () -> Unit = {},
+    onChangeMemo: (String) -> Unit = {},
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    if (uiState is FormState.HasData) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            val isAdd = uiState is FormState.HasData.Add
-                            val isEdit = uiState is FormState.HasData.Edit
-                            if (isAdd) {
-                                Icon(
-                                    imageVector = Icons.Filled.ArrowBackIosNew,
-                                    contentDescription = null,
-                                    tint = Color.Black,
-                                    modifier = Modifier.clickable { onClickPreviousDay() }
-                                )
-                                Spacer(modifier = Modifier.size(10.dp))
-                            }
-                            Text(
-                                text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(
-                                    uiState.measureDate
-                                )
+            TopAppBar(backgroundColor = theme) {
+                if (uiState is FormState.HasData) {
+                    val isAdd = uiState is FormState.HasData.Add
+                    val isEdit = uiState is FormState.HasData.Edit
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = uiState.measureDate.toMMDDEE(),
+                            modifier = Modifier.offset(x = 10.dp),
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                        Spacer(modifier = Modifier.size(40.dp))
+                        if (isAdd) {
+                            CustomButton(
+                                onClick = { onClickPreviousDay() },
+                                valueResourceId = R.string.prev_day
                             )
-                            if (isAdd) {
-                                Spacer(modifier = Modifier.size(10.dp))
-                                Icon(
-                                    imageVector = Icons.Filled.ArrowForwardIos,
-                                    contentDescription = null,
-                                    tint = Color.Black,
-                                    modifier = Modifier.clickable { onClickNextDay() }
-                                )
-                            }
-                            if (isEdit) {
-                                Spacer(modifier = Modifier.weight(1F))
-                                Icon(
-                                    imageVector = Icons.Filled.DeleteForever,
-                                    tint = Color.Black,
-                                    contentDescription = null,
-                                    modifier = Modifier.clickable { onClickDelete() }
-                                )
-                                Spacer(modifier = Modifier.size(10.dp))
-                            }
+                            Spacer(modifier = Modifier.size(10.dp))
+                            CustomButton(
+                                onClick = { onClickNextDay() },
+                                valueResourceId = R.string.next_day
+                            )
+                        }
+                        if (isEdit) {
+                            Spacer(modifier = Modifier.weight(1F))
+                            Icon(
+                                imageVector = Icons.Filled.DeleteForever,
+                                tint = Color.Black,
+                                contentDescription = null,
+                                modifier = Modifier.clickable { onClickDelete() }
+                            )
+                            Spacer(modifier = Modifier.size(10.dp))
                         }
                     }
-                },
-                backgroundColor = colorResource(id = R.color.app_theme)
-            )
+                }
+            }
         },
     ) {
         when (uiState) {
@@ -180,6 +170,20 @@ fun BodyMeasureFormScreen(
                             )
                             Spacer(modifier = Modifier.size(15.dp))
                         }
+                        item {
+                            CustomMultiTextField(
+                                labelTextResourceId = R.string.hint_memo,
+                                value = uiState.model.memo,
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Notes,
+                                        contentDescription = null
+                                    )
+                                },
+                                onChangeValue = onChangeMemo
+                            )
+                            Spacer(modifier = Modifier.size(15.dp))
+                        }
                         if (uiState.photos.isEmpty()) {
                             item {
                                 Box(
@@ -233,17 +237,12 @@ fun BodyMeasureFormScreen(
                             }
                         }
                     }
-                    Divider(
-                        modifier = Modifier
-                            .background(Color.Black)
-                            .fillMaxWidth()
-                            .height(1.dp)
-                    )
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(50.dp)
-                            .background(Color.White),
+                            .background(background)
+                            .shadow(1.dp, clip = true),
                         contentAlignment = Alignment.Center,
                     ) {
                         Row(
@@ -252,7 +251,7 @@ fun BodyMeasureFormScreen(
                                 .padding(horizontal = 20.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            CustomButton(onClickBackPress, R.string.back)
+                            CustomButton(onClickBackPress, R.string.back, Color.White)
                             Spacer(modifier = Modifier.weight(1F))
                             CustomButton(onClickSave, R.string.save, theme)
                             Spacer(modifier = Modifier.size(20.dp))
@@ -269,28 +268,6 @@ fun BodyMeasureFormScreen(
             else -> {
             }
         }
-    }
-}
-
-@Composable
-private fun CustomButton(
-    onClick: () -> Unit,
-    @StringRes valueResourceId: Int,
-    backgroundColor: Color = Color.White,
-) {
-    Box(
-        modifier = Modifier
-            .width(60.dp)
-            .height(35.dp)
-            .background(backgroundColor, RoundedCornerShape(10.dp))
-            .border(1.dp, Color.Gray, RoundedCornerShape(10.dp))
-            .clickable { onClick() },
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(
-            text = stringResource(id = valueResourceId),
-            textAlign = TextAlign.Center,
-        )
     }
 }
 
@@ -324,5 +301,39 @@ private fun CustomTextField(
             .clickable {
                 onClick()
             }
+    )
+}
+
+@Composable
+private fun CustomMultiTextField(
+    @StringRes labelTextResourceId: Int,
+    value: String,
+    leadingIcon: @Composable () -> Unit,
+    onChangeValue: (String) -> Unit,
+) {
+    TextField(
+        label = {
+            Text(text = stringResource(id = labelTextResourceId), color = Color.Black)
+        },
+        value = value,
+        onValueChange = onChangeValue,
+        leadingIcon = {
+            leadingIcon()
+        },
+        maxLines = Integer.MAX_VALUE,
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color.Transparent,
+            textColor = Color.Black,
+            focusedLabelColor = Color.Black,
+            unfocusedIndicatorColor = Color.Black,
+            focusedIndicatorColor = Color.Gray,
+            leadingIconColor = Color.Black
+        ),
+        placeholder = {
+            Text(text = stringResource(R.string.hint_memo_placeholder))
+        },
+        enabled = true,
+        modifier = Modifier
+            .fillMaxWidth()
     )
 }

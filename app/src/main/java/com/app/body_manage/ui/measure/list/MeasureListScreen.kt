@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,6 +38,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material.rememberModalBottomSheetState
@@ -47,7 +49,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -61,19 +62,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.app.body_manage.R
-import com.app.body_manage.common.BottomSheet
-import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.common.Calendar
-import com.app.body_manage.common.LeftTriangleShape
-import com.app.body_manage.common.RightTriangleShape
+import com.app.body_manage.common.CustomButton
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.data.model.BodyMeasureModel
 import com.app.body_manage.domain.BMICalculator
 import com.app.body_manage.extension.toJapaneseTime
-import com.app.body_manage.style.Colors
+import com.app.body_manage.extension.toMMDDEE
 import com.app.body_manage.style.Colors.Companion.accentColor
 import com.app.body_manage.style.Colors.Companion.theme
-import com.app.body_manage.util.DateUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -85,7 +82,6 @@ import java.time.YearMonth
 fun MeasureListScreen(
     uiState: MeasureListState,
     clickSaveBodyInfo: () -> Unit,
-    bottomSheetDataList: List<BottomSheetData>,
     setTall: (String) -> Unit,
     resetSnackBarMessage: () -> Unit,
     setLocalDate: (LocalDate) -> Unit,
@@ -94,6 +90,7 @@ fun MeasureListScreen(
     updateDate: (Int) -> Unit,
     showPhotoDetail: (Int) -> Unit,
     onChangeCurrentMonth: (YearMonth) -> Unit,
+    onClickBack: () -> Unit,
 ) {
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     val state = rememberScaffoldState()
@@ -105,24 +102,19 @@ fun MeasureListScreen(
     Scaffold(
         scaffoldState = state,
         topBar = {
-            TopAppBar(backgroundColor = Colors.theme) {
+            TopAppBar(backgroundColor = theme) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .offset(x = 8.dp, y = 1.dp)
-                            .size(10.dp)
-                            .background(
-                                color = Color.Black,
-                                shape = LeftTriangleShape
-                            )
-                            .clickable {
-                                updateDate.invoke(-1)
-                            }
+                    Spacer(modifier = Modifier.size(10.dp))
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = null,
+                        modifier = Modifier.clickable { onClickBack() },
+                        tint = Color.Black
                     )
                     Text(
-                        text = DateUtil.localDateConvertJapaneseFormatYearMonthDay(uiState.date),
+                        text = uiState.date.toMMDDEE(),
                         modifier = Modifier
-                            .offset(x = 20.dp)
+                            .offset(x = 10.dp)
                             .clickable {
                                 scope.launch {
                                     showCalendar.value = true
@@ -130,21 +122,19 @@ fun MeasureListScreen(
                                     sheetState.show()
                                 }
                             },
-                        fontSize = 16.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
-                    Box(
-                        modifier = Modifier
-                            .offset(x = 28.dp, y = 1.dp)
-                            .size(10.dp)
-                            .background(
-                                color = Color.Black,
-                                shape = RightTriangleShape
-                            )
-                            .clickable {
-                                updateDate.invoke(1)
-                            }
+                    Spacer(modifier = Modifier.size(40.dp))
+                    CustomButton(
+                        onClick = { updateDate.invoke(-1) },
+                        valueResourceId = R.string.prev_day
+                    )
+                    Spacer(modifier = Modifier.size(10.dp))
+                    CustomButton(
+                        onClick = { updateDate.invoke(1) },
+                        valueResourceId = R.string.next_day
                     )
                 }
             }
@@ -224,10 +214,10 @@ fun MeasureListScreen(
                                         modifier = Modifier.fillMaxSize()
                                     ) {
                                         Text(
-                                            text = "未登録です\n右下のボタンから登録してください",
+                                            text = "右下のボタンから登録してください",
                                             fontWeight = FontWeight.Bold,
                                             fontSize = 16.sp,
-                                            color = Color.Gray,
+                                            color = Color.DarkGray,
                                             textAlign = TextAlign.Center,
                                         )
                                     }
@@ -244,12 +234,9 @@ fun MeasureListScreen(
             FloatingActionButton(onClick = clickFab, backgroundColor = accentColor) {
                 Icon(
                     Icons.Filled.Add,
-                    contentDescription = "体型登録",
+                    contentDescription = null,
                 )
             }
-        },
-        bottomBar = {
-            BottomSheet(bottomSheetDataList)
         }
     )
 }
@@ -270,7 +257,7 @@ fun PhotoList(
                 Text(
                     text = "写真が未登録です",
                     fontWeight = FontWeight.Bold,
-                    color = Color.Gray,
+                    color = Color.Black,
                 )
             }
         } else {
@@ -307,7 +294,6 @@ fun PhotoList(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun TallSetField(
     tall: String,

@@ -6,6 +6,10 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.CompareArrows
+import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,56 +29,94 @@ fun BottomSheet(bottomSheetDataList: List<BottomSheetData>) {
     ) {
         bottomSheetDataList.forEach { item ->
             BottomNavigationItem(
-                icon = {
-                    Icon(
-                        painter = painterResource(id = item.resourceId),
-                        contentDescription = item.name,
-                        modifier = Modifier.padding(bottom = 5.dp),
-                        tint = Color.Black.copy(alpha = 0.7f)
-                    )
-                },
-                label = {
-                    Text(
-                        text = item.name,
-                        fontSize = 12.sp,
-                        modifier = Modifier.padding(0.dp)
-                    )
+                icon = item.icon,
+                label = if (item.isSelected) {
+                    {
+                        Text(
+                            text = item.name,
+                            fontSize = 12.sp,
+                            modifier = Modifier.padding(0.dp)
+                        )
+                    }
+                } else {
+                    null
                 },
                 onClick = item.action,
-                selected = false
+                selected = item.isSelected
             )
         }
     }
 }
 
-data class BottomSheetData(val name: String, val resourceId: Int, val action: () -> Unit)
+data class BottomSheetData(
+    val name: String,
+    val icon: @Composable () -> Unit,
+    val action: () -> Unit,
+    val isSelected: Boolean,
+)
 
 fun createBottomDataList(
-    calendarAction: () -> Unit,
+    topAction: () -> Unit,
     compareAction: () -> Unit,
     photoListAction: () -> Unit,
     graphAction: () -> Unit,
+    isTop: Boolean = false,
+    isCompare: Boolean = false,
+    isPhotos: Boolean = false,
+    isGraph: Boolean = false,
 ): List<BottomSheetData> {
     return listOf(
         BottomSheetData(
-            "カレンダー",
-            R.drawable.ic_baseline_calendar_month_24,
-            calendarAction
+            "トップ",
+            {
+                Icon(
+                    imageVector = Icons.Default.AccountCircle,
+                    contentDescription = null,
+                    modifier = Modifier.padding(bottom = 5.dp),
+                    tint = Color.Black.copy(alpha = 0.7f)
+                )
+            },
+            topAction,
+            isTop,
         ),
         BottomSheetData(
             "比較",
-            R.drawable.ic_baseline_compare_arrows_24,
+            {
+                Icon(
+                    imageVector = Icons.Default.CompareArrows,
+                    contentDescription = null,
+                    modifier = Modifier.padding(bottom = 5.dp),
+                    tint = Color.Black.copy(alpha = 0.7f)
+                )
+            },
             compareAction,
+            isCompare,
         ),
         BottomSheetData(
             "写真",
-            R.drawable.ic_baseline_photo_library_24,
-            photoListAction
+            {
+                Icon(
+                    imageVector = Icons.Default.PhotoLibrary,
+                    contentDescription = null,
+                    modifier = Modifier.padding(bottom = 5.dp),
+                    tint = Color.Black.copy(alpha = 0.7f)
+                )
+            },
+            photoListAction,
+            isPhotos
         ),
         BottomSheetData(
             "グラフ",
-            R.drawable.ic_baseline_show_chart_24,
-            graphAction
+            {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_baseline_show_chart_24),
+                    contentDescription = null,
+                    modifier = Modifier.padding(bottom = 5.dp),
+                    tint = Color.Black.copy(alpha = 0.7f)
+                )
+            },
+            graphAction,
+            isGraph
         ),
     )
 }

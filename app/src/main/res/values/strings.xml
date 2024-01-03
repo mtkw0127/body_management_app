@@ -1,12 +1,15 @@
 <resources>
     <string name="app_name">体型管理</string>
     <string name="not_yet_measure_message">まだ記録がありません。</string>
+    <string name="prev_day">前日</string>
+    <string name="next_day">翌日</string>
     <string name="prev_month">先月</string>
     <string name="next_month">翌月</string>
     <string name="settings">設定</string>
     <string name="back">戻る</string>
     <string name="record">記録する</string>
     <string name="date">日付</string>
+    <string name="tall">身長</string>
     <string name="weight">体重</string>
     <string name="fat">体脂肪</string>
     <string name="weight_unit">体重 [kg]</string>
@@ -16,6 +19,33 @@
     <string name="unit_percent">%</string>
     <string name="unit_hour">時</string>
     <string name="unit_minute">分</string>
+
+    <!-- ユーザ設定 -->
+    <string name="label_user_name">ユーザ名</string>
+    <string name="placeholder_user_name">ユーザ名</string>
+    <string name="placeholder_birth">例：1999年01月1日</string>
+    <string name="placeholder_tall">例：168.5 cm</string>
+    <string name="placeholder_current_weight">例：50.5 kg</string>
+    <string name="birth">誕生日</string>
+    <string name="current_weight">現在の体重</string>
+    <string name="gender">性別</string>
+    <string name="gender_male">男性</string>
+    <string name="gender_female">女性</string>
+
+    <!-- トップ画面 -->
+    <string name="title_set_object">目標を設定</string>
+    <string name="message_set_object">目標を設定すると、モチベーションの維持に役立ちます</string>
+    <string name="label_set_object">目標を設定</string>
+    <string name="label_update_object">目標を更新</string>
+    <string name="label_bmi">BMI</string>
+    <string name="label_kcal">kcal/日</string>
+    <string name="label_fat">体脂肪率 [%]</string>
+    <string name="label_see_by_calendar">カレンダーで見る</string>
+    <string name="label_see_statistic">統計</string>
+    <string name="label_start_point">開始点</string>
+    <string name="label_good_weight">適正な体重</string>
+    <string name="label_healthy_weight">健康的な体重</string>
+    <string name="label_ideal_weight">理想的な体重</string>
 
     <!-- 測定一覧-->
     <string name="message_saved">保存しました</string>
@@ -28,7 +58,9 @@
     <!-- 投稿画面 -->
     <string name="hint_fat">体脂肪率</string>
     <string name="hint_weight">体重</string>
-    <string name="hint_time">計測時間</string>
+    <string name="hint_time">時間</string>
+    <string name="hint_memo">メモ</string>
+    <string name="hint_memo_placeholder">ここにメモを記入することができます</string>
     <string name="save">保存</string>
     <string name="message_tap_and_add_photo">タップで写真を追加</string>
 
@@ -37,10 +69,9 @@
     <string name="after">After</string>
     <string name="compare">比較</string>
     <string name="history">履歴</string>
-    <string name="message_please_set_photo_for_compare">比較する写真を
-設定してください</string>
-    <string name="message_not_yet_saved_history">体型比較がまだ保存されていません</string>
-    <string name="message_not_yet_taken_measure_with_photo">写真付きの登録がまだありません。\nまずは写真付きの体型を記録しましょう。</string>
+    <string name="message_please_set_photo_for_compare">比較する写真を設定してください</string>
+    <string name="message_not_yet_saved_history">比較がまだ保存されていません</string>
+    <string name="message_not_yet_taken_measure_with_photo">写真付きの登録がまだありません\nまずは写真付きの体型を記録しましょう</string>
 
     <!-- グラフ画面 -->
     <string name="message_empty">体型を登録するとグラフが表示されます</string>
@@ -56,10 +87,10 @@
     <string name="label_next">次へ</string>
 
     <!-- 写真一覧 -->
-    <string name="message_no_photo">未登録です\n体型登録時に撮影した写真がここに表示されます</string>
+    <string name="message_no_photo">写真を登録すると表示されます</string>
 
     <!-- 画面タイトル-->
     <string name="screen_name_settings">設定</string>
     <string name="screen_name_graph">グラフ</string>
-    <string name="screen_name_choose_compare_photo">比較写真を選択してください</string>
+    <string name="screen_name_choose_compare_photo">写真を選択してください</string>
 </resources>

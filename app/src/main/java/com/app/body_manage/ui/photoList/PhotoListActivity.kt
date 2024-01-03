@@ -11,10 +11,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.app.body_manage.common.createBottomDataList
 import com.app.body_manage.data.model.PhotoModel
-import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
+import com.app.body_manage.ui.top.TopActivity
 
 class PhotoListActivity : AppCompatActivity() {
 
@@ -36,10 +36,11 @@ class PhotoListActivity : AppCompatActivity() {
             MaterialTheme {
                 val state: PhotoListState by vm.uiState.collectAsState()
                 val bottomSheetDataList = createBottomDataList(
-                    calendarAction = { launcher.launch(CalendarActivity.createIntent(this)) },
+                    topAction = { launcher.launch(TopActivity.createIntent(this)) },
                     compareAction = { launcher.launch(CompareActivity.createIntent(this)) },
                     graphAction = { launcher.launch(GraphActivity.createIntent(this)) },
-                    photoListAction = {}
+                    photoListAction = {},
+                    isPhotos = true,
                 )
                 PhotoListScreen(
                     state = state,

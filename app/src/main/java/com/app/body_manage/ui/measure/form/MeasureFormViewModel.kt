@@ -169,6 +169,13 @@ class BodyMeasureEditFormViewModel(
         }
     }
 
+    fun updateMemo(memo: String) {
+        viewModelState.update {
+            val model = checkNotNull(it.model).copy(memo = memo)
+            it.copy(model = model)
+        }
+    }
+
     fun loadBodyMeasure(measureTime: LocalDateTime) {
         viewModelScope.launch {
             runCatching {
@@ -221,6 +228,22 @@ class BodyMeasureEditFormViewModel(
                     val photoModels = viewModelState.value
                         .photos.map { it.copy(bodyMeasureId = modelId) }
                     photoRepository.insert(photoModels)
+                }
+            }
+        }
+
+        viewModelScope.launch {
+            // 最新の更新の場合、デフォルト値を更新する
+            bodyMeasureRepository.getLast().let { last ->
+                if (last != null) {
+                    if (last.capturedTime <= viewModelState.value.model?.capturedLocalDateTime) {
+                        userPreferenceRepository.putWeight(model.weight)
+                        userPreferenceRepository.putFat(model.fat)
+                    }
+                } else {
+                    // 初回登録の場合はデフォルト値にする
+                    userPreferenceRepository.putWeight(model.weight)
+                    userPreferenceRepository.putFat(model.fat)
                 }
             }
         }
