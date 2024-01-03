@@ -40,15 +40,18 @@ import com.app.body_manage.R
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.common.CustomButton
+import com.app.body_manage.data.local.UserPreference
 import com.app.body_manage.style.Colors.Companion.accentColor
 import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
 
 @Composable
 fun TopScreen(
+    userPreference: UserPreference?,
+    healthyDuration: String,
     bottomSheetDataList: List<BottomSheetData>,
     onClickCalendar: () -> Unit = {},
-    onClickAdd: () -> Unit = {}
+    onClickAdd: () -> Unit = {},
 ) {
     Scaffold(
         bottomBar = {
@@ -76,7 +79,7 @@ fun TopScreen(
             item {
                 Row(verticalAlignment = Alignment.Bottom) {
                     Text(
-                        text = "63.2",
+                        text = userPreference?.weight?.toString() ?: "-",
                         fontSize = 32.sp,
                         color = Color.Black,
                     )
@@ -131,7 +134,7 @@ fun TopScreen(
                 PanelRow {
                     ColumTextWithLabelAndIcon(
                         title = stringResource(id = R.string.label_bmi),
-                        value = "22",
+                        value = userPreference?.bim ?: "-",
                     )
                     VerticalLine()
                     ColumTextWithLabelAndIcon(
@@ -141,7 +144,7 @@ fun TopScreen(
                     VerticalLine()
                     ColumTextWithLabelAndIcon(
                         title = stringResource(id = R.string.label_fat),
-                        value = "22%",
+                        value = userPreference?.calcFat ?: "-",
                     )
                 }
                 Spacer(modifier = Modifier.size(10.dp))
@@ -174,6 +177,7 @@ fun TopScreen(
                         icon = Icons.Default.AccessibilityNew,
                         text = stringResource(id = R.string.label_healthy_weight),
                         withArrow = false,
+                        message = healthyDuration,
                     )
                 }
             }

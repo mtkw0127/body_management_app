@@ -3,12 +3,13 @@ package com.app.body_manage.ui.top
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.RadioButton
@@ -36,32 +37,48 @@ import com.app.body_manage.style.Colors.Companion.theme
 @Composable
 fun UserPreferenceSettingScreen(
     uiState: UiState,
+    onChangeName: (String) -> Unit,
     onChangeGender: (Gender) -> Unit,
     onChangeBirth: (String) -> Unit,
     onChangeTall: (String) -> Unit,
     onChangeWeight: (String) -> Unit,
     onClickSet: () -> Unit,
 ) {
-    Column(
+    LazyColumn(
         modifier = Modifier
             .background(Color.White, RoundedCornerShape(10.dp))
             .fillMaxWidth(0.95F)
+            .fillMaxHeight(0.7F)
             .padding(30.dp)
     ) {
-        Gender(uiState.gender, onChangeGender)
-        Birth(uiState.birth, onChangeBirth)
-        Tall(onChangeTall)
-        Weight(onChangeWeight)
-        Spacer(modifier = Modifier.size(10.dp))
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.CenterEnd
-        ) {
-            CustomButton(
-                onClick = { onClickSet() },
-                valueResourceId = R.string.settings,
-                backgroundColor = theme
-            )
+        item {
+            Name(uiState.name, onChangeName)
+        }
+        item {
+            Gender(uiState.gender, onChangeGender)
+        }
+        item {
+            Birth(uiState.birth, onChangeBirth)
+        }
+        item {
+            Weight(uiState.weight, onChangeWeight)
+        }
+        item {
+            Tall(uiState.tall, onChangeTall)
+        }
+        item {
+            Spacer(modifier = Modifier.size(10.dp))
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                CustomButton(
+                    onClick = { onClickSet() },
+                    valueResourceId = R.string.settings,
+                    backgroundColor = theme,
+                    enable = uiState is UiState.Done
+                )
+            }
         }
     }
 }
@@ -119,10 +136,23 @@ private fun Birth(birthText: String?, onChangeBirth: (String) -> Unit) {
 }
 
 @Composable
-private fun Tall(onChangeTall: (String) -> Unit) {
+private fun Name(string: String?, onChangeName: (String) -> Unit) {
+    Label(R.string.label_user_name)
+    CustomTextField(
+        value = string.orEmpty(),
+        onValueChange = onChangeName,
+        placeholder = {
+            Text(text = stringResource(id = R.string.placeholder_user_name))
+        },
+        keyboardType = KeyboardType.Text,
+    )
+}
+
+@Composable
+private fun Tall(value: Float?, onChangeTall: (String) -> Unit) {
     Label(R.string.tall)
     CustomTextField(
-        value = "",
+        value = value?.toString() ?: "",
         onValueChange = onChangeTall,
         placeholder = {
             Text(text = stringResource(id = R.string.placeholder_tall))
@@ -131,10 +161,10 @@ private fun Tall(onChangeTall: (String) -> Unit) {
 }
 
 @Composable
-private fun Weight(onChangeWeight: (String) -> Unit) {
+private fun Weight(value: Float?, onChangeWeight: (String) -> Unit) {
     Label(R.string.current_weight)
     CustomTextField(
-        value = "",
+        value = value?.toString() ?: "",
         onValueChange = onChangeWeight,
         placeholder = {
             Text(text = stringResource(id = R.string.placeholder_current_weight))
@@ -152,7 +182,8 @@ private fun CustomTextField(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: @Composable () -> Unit,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    keyboardType: KeyboardType = KeyboardType.Number,
 ) {
     TextField(
         value = value,
@@ -161,7 +192,7 @@ private fun CustomTextField(
             backgroundColor = Color.Transparent,
         ),
         keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number
+            keyboardType = keyboardType
         ),
         placeholder = placeholder,
         visualTransformation = visualTransformation,

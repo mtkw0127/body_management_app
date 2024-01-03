@@ -9,7 +9,9 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.ZoneId
 import java.util.Locale
 
 sealed interface UiState {
@@ -17,7 +19,6 @@ sealed interface UiState {
     val gender: Gender
     val birth: String?
     val tall: Float?
-    val fat: Float?
     val weight: Float?
 
     data class NotYet(
@@ -25,7 +26,6 @@ sealed interface UiState {
         override val gender: Gender,
         override val birth: String?,
         override val tall: Float?,
-        override val fat: Float?,
         override val weight: Float?,
     ) : UiState
 
@@ -34,7 +34,6 @@ sealed interface UiState {
         override val gender: Gender,
         override val birth: String,
         override val tall: Float,
-        override val fat: Float,
         override val weight: Float,
     ) : UiState
 }
@@ -44,14 +43,12 @@ data class UserPreferenceSettingViewModelState(
     val gender: Gender = Gender.MALE,
     val birth: String? = null,
     val tall: Float? = null,
-    val fat: Float? = null,
     val weight: Float? = null,
 ) {
     fun toUiState(): UiState {
         return if (name == null ||
             birth == null ||
             tall == null ||
-            fat == null ||
             weight == null
         ) {
             UiState.NotYet(
@@ -59,7 +56,6 @@ data class UserPreferenceSettingViewModelState(
                 gender = gender,
                 birth = birth,
                 tall = tall,
-                fat = fat,
                 weight = weight
             )
         } else {
@@ -68,8 +64,7 @@ data class UserPreferenceSettingViewModelState(
                 gender = gender,
                 birth = birth,
                 tall = tall,
-                fat = fat,
-                weight = weight
+                weight = weight,
             )
         }
     }
@@ -87,6 +82,42 @@ class UserPreferenceSettingViewModel(
 
     fun setGender(gender: Gender) {
         viewModelState.update { it.copy(gender = gender) }
+    }
+
+    fun setName(name: String) {
+        viewModelState.update { it.copy(name = name.ifBlank { null }) }
+    }
+
+    fun setTall(tall: String) {
+        viewModelState.update {
+            it.copy(
+                tall = try {
+                    if (tall.isEmpty()) {
+                        null
+                    } else {
+                        tall.toFloat()
+                    }
+                } catch (e: Throwable) {
+                    return
+                }
+            )
+        }
+    }
+
+    fun setWeight(weight: String) {
+        viewModelState.update {
+            it.copy(
+                weight = try {
+                    if (weight.isEmpty()) {
+                        null
+                    } else {
+                        weight.toFloat()
+                    }
+                } catch (e: Throwable) {
+                    return
+                }
+            )
+        }
     }
 
     fun setBirth(birth: String) {
@@ -137,6 +168,25 @@ class UserPreferenceSettingViewModel(
         }
         if (birth.startsWith("0").not()) {
             viewModelState.update { it.copy(birth = tempBirth) }
+        }
+    }
+
+    fun save() {
+        with(viewModelState.value) {
+            val birth = birth ?: return
+            val date = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+                .parse(birth)
+                ?.toInstant()
+                ?.atZone(ZoneId.systemDefault())
+                ?.toLocalDate() ?: return@with
+
+            viewModelScope.launch {
+                userPreferenceRepository.setBirth(date)
+                userPreferenceRepository.setGender(gender)
+                userPreferenceRepository.setName(name.orEmpty())
+                userPreferenceRepository.putTall(checkNotNull(tall))
+                userPreferenceRepository.putWeight(checkNotNull(weight))
+            }
         }
     }
 }

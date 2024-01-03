@@ -13,7 +13,6 @@ import androidx.fragment.app.DialogFragment
 import com.app.body_manage.data.local.UserPreferenceRepository
 
 class UserPreferenceSettingDialog : DialogFragment() {
-
     private lateinit var viewModel: UserPreferenceSettingViewModel
 
     override fun onCreateView(
@@ -31,11 +30,15 @@ class UserPreferenceSettingDialog : DialogFragment() {
                 Dialog(onDismissRequest = { /** Not to close*/ }) {
                     UserPreferenceSettingScreen(
                         uiState = uiState,
+                        onChangeName = viewModel::setName,
                         onChangeGender = viewModel::setGender,
                         onChangeBirth = viewModel::setBirth,
-                        onChangeTall = {},
-                        onChangeWeight = {},
-                        onClickSet = {},
+                        onChangeTall = viewModel::setTall,
+                        onChangeWeight = viewModel::setWeight,
+                        onClickSet = {
+                            viewModel.save()
+                            dismiss()
+                        },
                     )
                 }
             }

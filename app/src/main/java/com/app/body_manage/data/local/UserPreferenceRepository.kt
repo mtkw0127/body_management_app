@@ -36,9 +36,9 @@ class UserPreferenceRepository(
         }
     }
 
-    suspend fun setGender(gender: Int) {
+    suspend fun setGender(gender: Gender) {
         context.dataStore.edit { preferences ->
-            preferences[KEY_GENDER] = gender
+            preferences[KEY_GENDER] = gender.value
         }
     }
 
@@ -83,8 +83,8 @@ class UserPreferenceRepository(
             UserPreference(
                 name = checkNotNull(it[KEY_NAME]),
                 gender = when (checkNotNull(it[KEY_GENDER])) {
-                    0 -> Gender.MALE
-                    1 -> Gender.FEMALE
+                    Gender.MALE.value -> Gender.MALE
+                    Gender.MALE.value -> Gender.FEMALE
                     else -> throw IllegalStateException()
                 },
                 birth = checkNotNull(it[KEY_BIRTH]).let {

@@ -21,6 +21,8 @@
     <string name="unit_minute">分</string>
 
     <!-- ユーザ設定 -->
+    <string name="label_user_name">ユーザ名</string>
+    <string name="placeholder_user_name">ユーザ名</string>
     <string name="placeholder_birth">例：1999年01月1日</string>
     <string name="placeholder_tall">例：168.5 cm</string>
     <string name="placeholder_current_weight">例：50.5 kg</string>
@@ -36,7 +38,7 @@
     <string name="label_set_object">目標を設定</string>
     <string name="label_bmi">BMI</string>
     <string name="label_kcal">kcal/日</string>
-    <string name="label_fat">体脂肪率</string>
+    <string name="label_fat">体脂肪率 [%]</string>
     <string name="label_see_by_calendar">カレンダーで見る</string>
     <string name="label_see_statistic">統計</string>
     <string name="label_start_point">開始点</string>

@@ -19,13 +19,15 @@ fun CustomButton(
     backgroundColor: Color = Color.White,
     modifier: Modifier = Modifier,
     fontSize: TextUnit = 12.sp,
+    enable: Boolean = true,
 ) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
             backgroundColor = backgroundColor
         ),
-        modifier = modifier
+        modifier = modifier,
+        enabled = enable
     ) {
         Text(
             text = stringResource(id = valueResourceId),
