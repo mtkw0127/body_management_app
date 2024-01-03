@@ -10,8 +10,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.lifecycleScope
+import com.app.body_manage.R
+import com.app.body_manage.TrainingApplication
 import com.app.body_manage.common.createBottomDataList
 import com.app.body_manage.data.local.UserPreferenceRepository
+import com.app.body_manage.data.repository.BodyMeasureRepository
+import com.app.body_manage.dialog.FloatNumberPickerDialog
 import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
@@ -26,6 +30,10 @@ class TopActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             viewModel.load()
         }
+
+    private val bodyMeasureRepository: BodyMeasureRepository by lazy {
+        (application as TrainingApplication).bodyMeasureRepository
+    }
 
     private lateinit var viewModel: TopViewModel
 
@@ -42,9 +50,11 @@ class TopActivity : AppCompatActivity() {
             photoListAction = { launcher.launch(PhotoListActivity.createIntent(this)) },
             isTop = true,
         )
-        viewModel = TopViewModel(UserPreferenceRepository(this))
+        viewModel = TopViewModel(
+            UserPreferenceRepository(this),
+            bodyMeasureRepository,
+        )
         viewModel.checkSetUpUserPref()
-        viewModel.load()
         lifecycleScope.launch {
             viewModel.showUserPrefDialog.collectLatest { show ->
                 if (show) {
@@ -56,10 +66,10 @@ class TopActivity : AppCompatActivity() {
         }
         setContent {
             val userPreference by viewModel.userPreference.collectAsState()
-            val healthyDuration by viewModel.healthyDuration.collectAsState()
+            val lastMeasure by viewModel.lastMeasure.collectAsState()
             TopScreen(
                 userPreference = userPreference,
-                healthyDuration = healthyDuration,
+                lastMeasure = lastMeasure,
                 bottomSheetDataList = bottomSheetDataList,
                 onClickCalendar = {
                     launcher.launch(CalendarActivity.createIntent(this))
@@ -71,6 +81,15 @@ class TopActivity : AppCompatActivity() {
                             LocalDate.now()
                         )
                     )
+                },
+                onClickSetGoat = {
+                    val weight = userPreference?.weight ?: return@TopScreen
+                    FloatNumberPickerDialog.createDialog(
+                        weight,
+                        getString(R.string.unit_kg),
+                    ) {
+                        viewModel.setGoalWeight(it)
+                    }.show(supportFragmentManager, null)
                 }
             )
         }

@@ -18,15 +18,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessibilityNew
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowForwardIos
-import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Flag
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +41,9 @@ import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.common.CustomButton
 import com.app.body_manage.data.local.UserPreference
+import com.app.body_manage.data.model.BodyMeasureModel
+import com.app.body_manage.extension.toCentiMeter
+import com.app.body_manage.extension.toMMDDEE
 import com.app.body_manage.style.Colors.Companion.accentColor
 import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
@@ -48,10 +51,11 @@ import com.app.body_manage.style.Colors.Companion.theme
 @Composable
 fun TopScreen(
     userPreference: UserPreference?,
-    healthyDuration: String,
+    lastMeasure: BodyMeasureModel?,
     bottomSheetDataList: List<BottomSheetData>,
     onClickCalendar: () -> Unit = {},
     onClickAdd: () -> Unit = {},
+    onClickSetGoat: () -> Unit = {},
 ) {
     Scaffold(
         bottomBar = {
@@ -79,7 +83,9 @@ fun TopScreen(
             item {
                 Row(verticalAlignment = Alignment.Bottom) {
                     Text(
-                        text = userPreference?.weight?.toString() ?: "-",
+                        text = lastMeasure?.weight?.toString()
+                            ?: userPreference?.weight?.toString()
+                            ?: "-",
                         fontSize = 32.sp,
                         color = Color.Black,
                     )
@@ -89,46 +95,96 @@ fun TopScreen(
                         fontSize = 18.sp,
                         color = Color.Gray,
                     )
+                    Spacer(modifier = Modifier.size(10.dp))
+                    lastMeasure?.capturedLocalDateTime?.toLocalDate()?.toMMDDEE()?.let { mmdd ->
+                        Text(
+                            text = "登録日: $mmdd",
+                            fontSize = 14.sp,
+                            color = Color.Gray,
+                        )
+                    }
+                    Spacer(modifier = Modifier.weight(1F))
+                    lastMeasure?.tall?.let { tall ->
+                        Text(
+                            text = tall.toCentiMeter(),
+                            fontSize = 14.sp,
+                            color = Color.Gray,
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.size(10.dp))
             }
-            item {
-                Box(
-                    modifier = Modifier
-                        .shadow(2.dp)
-                        .background(
-                            Color.White,
-                            RoundedCornerShape(5.dp)
-                        )
-                        .fillMaxWidth()
-                        .height(120.dp)
-                        .padding(5.dp),
-                    contentAlignment = Alignment.BottomEnd
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.Start,
+            if (userPreference?.goalWeight == null) {
+                item {
+                    Box(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(20.dp),
+                            .shadow(2.dp)
+                            .background(
+                                Color.White,
+                                RoundedCornerShape(5.dp)
+                            )
+                            .fillMaxWidth()
+                            .height(120.dp)
+                            .padding(5.dp),
+                        contentAlignment = Alignment.BottomEnd
                     ) {
-                        Text(
-                            text = stringResource(id = R.string.label_set_object),
-                            fontSize = 12.sp,
-                        )
-                        Spacer(modifier = Modifier.size(5.dp))
-                        Text(
-                            text = stringResource(id = R.string.message_set_object),
-                            fontSize = 12.sp,
+                        Column(
+                            horizontalAlignment = Alignment.Start,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(20.dp),
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.label_set_object),
+                                fontSize = 12.sp,
+                            )
+                            Spacer(modifier = Modifier.size(5.dp))
+                            Text(
+                                text = stringResource(id = R.string.message_set_object),
+                                fontSize = 12.sp,
+                            )
+                        }
+                        CustomButton(
+                            modifier = Modifier.height(35.dp),
+                            onClick = { onClickSetGoat() },
+                            valueResourceId = R.string.label_set_object,
+                            backgroundColor = theme
                         )
                     }
-                    CustomButton(
-                        modifier = Modifier.height(35.dp),
-                        onClick = { /*TODO*/ },
-                        valueResourceId = R.string.label_set_object,
-                        backgroundColor = theme
-                    )
+                    Spacer(modifier = Modifier.size(10.dp))
                 }
-                Spacer(modifier = Modifier.size(10.dp))
+            } else {
+                item {
+                    PanelColumn {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(text = "目標体重 ${userPreference.goalWeight} kg")
+                            Spacer(Modifier.weight(1F))
+                            Text(text = userPreference.progressText)
+                        }
+                        Spacer(modifier = Modifier.size(10.dp))
+                        LinearProgressIndicator(
+                            progress = userPreference.progress,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(modifier = Modifier.size(10.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            CustomButton(
+                                modifier = Modifier.height(35.dp),
+                                onClick = { onClickSetGoat() },
+                                valueResourceId = R.string.label_update_object,
+                                backgroundColor = theme
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.size(10.dp))
+                }
             }
             item {
                 PanelRow {
@@ -156,28 +212,25 @@ fun TopScreen(
                         onClick = { onClickCalendar() },
                         text = stringResource(id = R.string.label_see_by_calendar),
                     )
-                    HorizontalLine()
-                    IconAndText(
-                        icon = Icons.Default.Calculate,
-                        onClick = { onClickCalendar() },
-                        text = stringResource(id = R.string.label_see_statistic),
-                    )
                 }
                 Spacer(modifier = Modifier.size(10.dp))
             }
             item {
                 PanelColumn {
                     IconAndText(
-                        icon = Icons.Default.Flag,
-                        onClick = { onClickCalendar() },
-                        text = stringResource(id = R.string.label_start_point)
+                        icon = Icons.Default.Check,
+                        text = stringResource(id = R.string.label_good_weight),
+                        withArrow = false,
+                        message = userPreference?.goodWeight ?: "-",
+                        subTitle = "BMIが22の場合の体重"
                     )
                     HorizontalLine()
                     IconAndText(
                         icon = Icons.Default.AccessibilityNew,
                         text = stringResource(id = R.string.label_healthy_weight),
                         withArrow = false,
-                        message = healthyDuration,
+                        message = userPreference?.healthyDuration ?: "-",
+                        subTitle = "BMIが18.5から24.9の体重"
                     )
                 }
             }
@@ -228,6 +281,7 @@ private fun IconAndText(
     onClick: () -> Unit = {},
     withArrow: Boolean = true,
     message: String? = null,
+    subTitle: String? = null,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -239,9 +293,17 @@ private fun IconAndText(
             tint = Color.Gray,
         )
         Spacer(modifier = Modifier.size(10.dp))
-        Text(
-            text = text,
-        )
+        Column {
+            Text(text = text)
+            subTitle?.let {
+                Text(
+                    text = subTitle,
+                    color = Color.Gray,
+                    fontSize = 12.sp
+                )
+            }
+        }
+
         Spacer(modifier = Modifier.weight(1F))
         if (withArrow) {
             Icon(

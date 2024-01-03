@@ -8,6 +8,7 @@ import com.app.body_manage.domain.FatCalculator
 import com.app.body_manage.extension.age
 import java.time.LocalDate
 import java.time.LocalTime
+import kotlin.math.pow
 
 data class UserPreference(
     val name: String,
@@ -16,6 +17,7 @@ data class UserPreference(
     val tall: Float?,
     val fat: Float?,
     val weight: Float?,
+    val goalWeight: Float?,
     val alarm: Boolean?,
 ) {
     val bim: String
@@ -31,6 +33,36 @@ data class UserPreference(
                 birth.age(),
                 gender
             )
+        }
+
+    val healthyDuration: String
+        get() {
+            if (tall == null) return "-"
+            val tallCalc = (tall / 100F).toDouble().pow(2.0)
+            val min = (18.5F * tallCalc * 100).toInt() / 100F
+            val max = (24.9F * tallCalc * 100).toInt() / 100F
+            return "${min}kg - ${max}kg"
+        }
+
+    val goodWeight: String
+        get() {
+            if (tall == null) return "-"
+            val doubleTall = (tall / 100F).toDouble().pow(2.0)
+            val result = doubleTall * 22
+            return "${(result * 100).toInt() / 100F} kg"
+        }
+
+    val progress: Float
+        get() {
+            if (weight == null || goalWeight == null) {
+                return 0F
+            }
+            return goalWeight / weight
+        }
+
+    val progressText: String
+        get() {
+            return "${(progress * 100).toInt()} %"
         }
 }
 

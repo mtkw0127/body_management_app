@@ -26,6 +26,7 @@ class UserPreferenceRepository(
         val KEY_BIRTH = stringPreferencesKey("key_birth")
         val KEY_TALL = floatPreferencesKey("key_tall")
         val KEY_WEIGHT = floatPreferencesKey("key_weight")
+        val KEY_GOAL_WEIGHT = floatPreferencesKey("key_goal_weight")
         val KEY_FAT = floatPreferencesKey("key_fat")
         val KEY_ALARM = booleanPreferencesKey("key_alarm")
     }
@@ -72,6 +73,12 @@ class UserPreferenceRepository(
         }
     }
 
+    suspend fun setGoatWeight(goalWeight: Float) {
+        context.dataStore.edit { preferences ->
+            preferences[KEY_GOAL_WEIGHT] = goalWeight
+        }
+    }
+
     val userPref: Flow<UserPreference> = context.dataStore.data
         .catch { exception ->
             if (exception is IOException) {
@@ -97,6 +104,7 @@ class UserPreferenceRepository(
                 },
                 tall = it[KEY_TALL],
                 weight = it[KEY_WEIGHT],
+                goalWeight = it[KEY_GOAL_WEIGHT],
                 fat = it[KEY_FAT],
                 alarm = it[KEY_ALARM],
             )
