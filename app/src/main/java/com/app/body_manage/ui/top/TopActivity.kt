@@ -7,17 +7,23 @@ import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.app.body_manage.common.createBottomDataList
+import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 class TopActivity : AppCompatActivity() {
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
+
+    private lateinit var viewModel: TopViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +35,15 @@ class TopActivity : AppCompatActivity() {
             photoListAction = { launcher.launch(PhotoListActivity.createIntent(this)) },
             isTop = true,
         )
+        viewModel = TopViewModel(UserPreferenceRepository(this))
+        viewModel.checkSetUpUserPref()
+        lifecycleScope.launch {
+            viewModel.showUserPrefDialog.collectLatest { show ->
+                if (show) {
+                    UserPreferenceSettingDialog.createInstance().show(supportFragmentManager, null)
+                }
+            }
+        }
         setContent {
             TopScreen(
                 bottomSheetDataList = bottomSheetDataList,

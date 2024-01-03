@@ -9,6 +9,7 @@
     <string name="back">戻る</string>
     <string name="record">記録する</string>
     <string name="date">日付</string>
+    <string name="tall">身長</string>
     <string name="weight">体重</string>
     <string name="fat">体脂肪</string>
     <string name="weight_unit">体重 [kg]</string>
@@ -18,6 +19,16 @@
     <string name="unit_percent">%</string>
     <string name="unit_hour">時</string>
     <string name="unit_minute">分</string>
+
+    <!-- ユーザ設定 -->
+    <string name="placeholder_birth">例：1999年01月1日</string>
+    <string name="placeholder_tall">例：168.5 cm</string>
+    <string name="placeholder_current_weight">例：50.5 kg</string>
+    <string name="birth">誕生日</string>
+    <string name="current_weight">現在の体重</string>
+    <string name="gender">性別</string>
+    <string name="gender_male">男性</string>
+    <string name="gender_female">女性</string>
 
     <!-- トップ画面 -->
     <string name="title_set_object">目標を設定</string>
@@ -30,6 +41,7 @@
     <string name="label_see_statistic">統計</string>
     <string name="label_start_point">開始点</string>
     <string name="label_healthy_weight">健康的な体重</string>
+    <string name="label_ideal_weight">理想的な体重</string>
 
     <!-- 測定一覧-->
     <string name="message_saved">保存しました</string>

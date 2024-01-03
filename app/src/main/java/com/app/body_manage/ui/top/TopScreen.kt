@@ -21,11 +21,11 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessibilityNew
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Calculate
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Flag
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -171,8 +171,7 @@ fun TopScreen(
                     )
                     HorizontalLine()
                     IconAndText(
-                        icon = Icons.Default.Check,
-                        onClick = { onClickCalendar() },
+                        icon = Icons.Default.AccessibilityNew,
                         text = stringResource(id = R.string.label_healthy_weight),
                         withArrow = false,
                     )
@@ -222,8 +221,9 @@ private fun HorizontalLine() {
 private fun IconAndText(
     text: String,
     icon: ImageVector,
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
     withArrow: Boolean = true,
+    message: String? = null,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -246,6 +246,11 @@ private fun IconAndText(
                 modifier = Modifier.size(10.dp)
             )
             Spacer(modifier = Modifier.size(10.dp))
+        }
+        if (message != null) {
+            Text(
+                text = message,
+            )
         }
     }
 }
