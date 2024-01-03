@@ -233,9 +233,19 @@ class BodyMeasureEditFormViewModel(
         }
 
         viewModelScope.launch {
-            // Update Default Value
-            userPreferenceRepository.putWeight(model.weight)
-            userPreferenceRepository.putFat(model.fat)
+            // 最新の更新の場合、デフォルト値を更新する
+            bodyMeasureRepository.getLast().let { last ->
+                if (last != null) {
+                    if (last.capturedTime <= viewModelState.value.model?.capturedLocalDateTime) {
+                        userPreferenceRepository.putWeight(model.weight)
+                        userPreferenceRepository.putFat(model.fat)
+                    }
+                } else {
+                    // 初回登録の場合はデフォルト値にする
+                    userPreferenceRepository.putWeight(model.weight)
+                    userPreferenceRepository.putFat(model.fat)
+                }
+            }
         }
     }
 

@@ -16,10 +16,10 @@ import androidx.compose.runtime.collectAsState
 import com.app.body_manage.common.createBottomDataList
 import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.ui.alarm.AlarmNotification
-import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
+import com.app.body_manage.ui.top.TopActivity
 import java.util.Calendar
 
 class SettingActivity : AppCompatActivity() {
@@ -55,7 +55,7 @@ class SettingActivity : AppCompatActivity() {
         viewModel = SettingViewModel(UserPreferenceRepository(this))
 
         val bottomSheetDataList = createBottomDataList(
-            calendarAction = { launcher.launch(CalendarActivity.createIntent(this)) },
+            topAction = { launcher.launch(TopActivity.createIntent(this)) },
             compareAction = { launcher.launch(CompareActivity.createIntent(this)) },
             photoListAction = { launcher.launch(PhotoListActivity.createIntent(this)) },
             graphAction = { launcher.launch(GraphActivity.createIntent(this)) }

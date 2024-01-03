@@ -2,6 +2,7 @@ package com.app.body_manage.extension
 
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.Period
 
 fun LocalDate.toMMDD(): String = "${monthValue}月${dayOfMonth}日"
 
@@ -16,4 +17,9 @@ fun LocalDate.toMMDDEE(): String {
         DayOfWeek.SATURDAY -> "土"
     }
     return "${monthValue}月${dayOfMonth}日($japaneseDayOfWeek)"
+}
+
+fun LocalDate.age(): Int {
+    val currentDate = LocalDate.now()
+    return Period.between(this, currentDate).years
 }

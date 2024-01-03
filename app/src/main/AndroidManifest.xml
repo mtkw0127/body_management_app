@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CalendarApp">
         <activity
-            android:name="com.app.body_manage.ui.calendar.CalendarActivity"
+            android:name=".ui.top.TopActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
@@ -30,37 +30,43 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ui.calendar.CalendarActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoBar" />
+        <activity
             android:name="com.app.body_manage.ui.measure.form.MeasureFormActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoBar" />
         <activity
-            android:name="com.app.body_manage.ui.measure.list.MeasureListActivity"
+            android:name=".ui.measure.list.MeasureListActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoBar" />
         <activity
-            android:name="com.app.body_manage.ui.graph.GraphActivity"
+            android:name=".ui.graph.GraphActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoBar" />
         <activity
-            android:name="com.app.body_manage.ui.camera.CameraActivity"
+            android:name=".ui.camera.CameraActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MaterialComponents.NoActionBar" />
         <activity
-            android:name="com.app.body_manage.ui.camera.MeasureCameraActivity"
+            android:name=".ui.camera.MeasureCameraActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
         <activity
-            android:name="com.app.body_manage.ui.photoList.PhotoListActivity"
+            android:name=".ui.photoList.PhotoListActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
@@ -96,7 +102,7 @@
             android:exported="false"
             android:theme="@style/AppTheme">
             <intent-filter>
-                <action android:name="com.app.body_manage.AlarmAction" />
+                <action android:name="AlarmAction" />
             </intent-filter>
         </receiver>
     </application>
