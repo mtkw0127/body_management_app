@@ -141,9 +141,12 @@ private fun Name(string: String?, onChangeName: (String) -> Unit) {
         value = string.orEmpty(),
         onValueChange = onChangeName,
         placeholder = {
-            Text(text = stringResource(id = R.string.placeholder_user_name))
+            Text(
+                text = stringResource(id = R.string.placeholder_user_name)
+            )
         },
         keyboardType = KeyboardType.Text,
+        singleLine = true,
     )
 }
 
@@ -183,6 +186,7 @@ private fun CustomTextField(
     placeholder: @Composable () -> Unit,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardType: KeyboardType = KeyboardType.Number,
+    singleLine: Boolean = false,
 ) {
     TextField(
         value = value,
@@ -195,5 +199,6 @@ private fun CustomTextField(
         ),
         placeholder = placeholder,
         visualTransformation = visualTransformation,
+        singleLine = singleLine,
     )
 }

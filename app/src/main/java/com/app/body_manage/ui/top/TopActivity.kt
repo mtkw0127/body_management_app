@@ -44,7 +44,7 @@ class TopActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         onBackPressedDispatcher.addCallback {}
-        supportFragmentManager.addOnBackStackChangedListener {
+        supportFragmentManager.setFragmentResultListener("TEST", this) { key, bundle ->
             viewModel.load()
         }
         val bottomSheetDataList = createBottomDataList(
