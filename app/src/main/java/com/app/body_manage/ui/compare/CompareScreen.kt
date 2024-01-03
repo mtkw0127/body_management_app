@@ -40,6 +40,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
@@ -54,6 +55,7 @@ import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.data.dao.ComparePhotoHistoryDao
 import com.app.body_manage.style.Colors.Companion.accentColor
+import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.secondPrimary
 import com.app.body_manage.style.Colors.Companion.theme
 import com.app.body_manage.util.DateUtil
@@ -118,11 +120,14 @@ fun CompareScreen(
                         TabRowItem(stringResource(id = R.string.compare)) {
                             Column(
                                 modifier = Modifier
+                                    .padding(top = 5.dp)
+                                    .background(background)
                                     .fillMaxWidth()
                                     .verticalScroll(rememberScrollState()),
                                 verticalArrangement = Arrangement.Top,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
+                                horizontalAlignment = Alignment.CenterHorizontally,
+
+                                ) {
                                 CompareItem(
                                     stringResource(R.string.before),
                                     uiState.before,
@@ -138,7 +143,9 @@ fun CompareScreen(
                         TabRowItem(stringResource(id = R.string.history)) {
                             if (uiState.compareHistory.isNotEmpty()) {
                                 Column(
-                                    modifier = Modifier.fillMaxSize(),
+                                    modifier = Modifier
+                                        .background(background)
+                                        .fillMaxSize(),
                                     verticalArrangement = Arrangement.Top,
                                     horizontalAlignment = Alignment.CenterHorizontally
                                 ) {
@@ -448,12 +455,12 @@ private fun CompareItem(label: String, item: CompareItemStruct?, onEditClick: ()
     }
     Box(
         modifier = Modifier
-            .fillMaxWidth(0.98F)
+            .shadow(3.dp)
+            .fillMaxWidth(0.95F)
             .height(400.dp)
             .padding(5.dp)
-            .border(1.dp, Color.Black, RoundedCornerShape(5.dp))
             .background(
-                color = colorResource(id = R.color.compare_item_background),
+                color = Color.White,
                 shape = RoundedCornerShape(5.dp)
             )
     ) {
@@ -499,7 +506,8 @@ private fun CompareItem(label: String, item: CompareItemStruct?, onEditClick: ()
             ) {
                 Box(
                     modifier = Modifier
-                        .background(Color.White)
+                        .background(Color.White, RoundedCornerShape(5.dp))
+                        .border(0.2.dp, Color.DarkGray, RoundedCornerShape(5.dp))
                         .fillMaxWidth()
                         .fillMaxHeight(0.95F)
                         .clickable {
@@ -515,7 +523,7 @@ private fun CompareItem(label: String, item: CompareItemStruct?, onEditClick: ()
                         )
                     } else {
                         Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.AddCircleOutline,

@@ -31,11 +31,11 @@ import com.app.body_manage.data.dao.ComparePhotoHistoryDao
 import com.app.body_manage.data.model.PhotoModel
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.CompareHistoryRepository
-import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.choosePhoto.ChoosePhotoActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
+import com.app.body_manage.ui.top.TopActivity
 import kotlinx.coroutines.launch
 
 class CompareActivity : AppCompatActivity() {
@@ -80,10 +80,11 @@ class CompareActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val bottomSheetDataList = createBottomDataList(
-            calendarAction = { simpleLauncher.launch(CalendarActivity.createIntent(this)) },
+            topAction = { simpleLauncher.launch(TopActivity.createIntent(this)) },
             compareAction = { simpleLauncher.launch(createIntent(this)) },
             photoListAction = { simpleLauncher.launch(PhotoListActivity.createIntent(this)) },
-            graphAction = { simpleLauncher.launch(GraphActivity.createIntent(this)) }
+            graphAction = { simpleLauncher.launch(GraphActivity.createIntent(this)) },
+            isCompare = true
         )
 
         viewModel =

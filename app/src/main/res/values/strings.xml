@@ -41,8 +41,7 @@
     <string name="after">After</string>
     <string name="compare">比較</string>
     <string name="history">履歴</string>
-    <string name="message_please_set_photo_for_compare">比較する写真を
-設定してください</string>
+    <string name="message_please_set_photo_for_compare">比較する写真を設定してください</string>
     <string name="message_not_yet_saved_history">比較がまだ保存されていません</string>
     <string name="message_not_yet_taken_measure_with_photo">写真付きの登録がまだありません\nまずは写真付きの体型を記録しましょう</string>
 

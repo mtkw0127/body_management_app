@@ -38,6 +38,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material.rememberModalBottomSheetState
@@ -61,8 +62,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.app.body_manage.R
-import com.app.body_manage.common.BottomSheet
-import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.common.Calendar
 import com.app.body_manage.common.CustomButton
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
@@ -83,7 +82,6 @@ import java.time.YearMonth
 fun MeasureListScreen(
     uiState: MeasureListState,
     clickSaveBodyInfo: () -> Unit,
-    bottomSheetDataList: List<BottomSheetData>,
     setTall: (String) -> Unit,
     resetSnackBarMessage: () -> Unit,
     setLocalDate: (LocalDate) -> Unit,
@@ -92,6 +90,7 @@ fun MeasureListScreen(
     updateDate: (Int) -> Unit,
     showPhotoDetail: (Int) -> Unit,
     onChangeCurrentMonth: (YearMonth) -> Unit,
+    onClickBack: () -> Unit,
 ) {
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     val state = rememberScaffoldState()
@@ -105,6 +104,13 @@ fun MeasureListScreen(
         topBar = {
             TopAppBar(backgroundColor = theme) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    Spacer(modifier = Modifier.size(10.dp))
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = null,
+                        modifier = Modifier.clickable { onClickBack() },
+                        tint = Color.Black
+                    )
                     Text(
                         text = uiState.date.toMMDDEE(),
                         modifier = Modifier
@@ -228,12 +234,9 @@ fun MeasureListScreen(
             FloatingActionButton(onClick = clickFab, backgroundColor = accentColor) {
                 Icon(
                     Icons.Filled.Add,
-                    contentDescription = "体型登録",
+                    contentDescription = null,
                 )
             }
-        },
-        bottomBar = {
-            BottomSheet(bottomSheetDataList)
         }
     )
 }
