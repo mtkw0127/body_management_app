@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,12 +33,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.app.body_manage.R
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
+import com.app.body_manage.common.CustomButton
 import com.app.body_manage.style.Colors.Companion.accentColor
 import com.app.body_manage.style.Colors.Companion.background
+import com.app.body_manage.style.Colors.Companion.theme
 
 @Composable
 fun TopScreen(
@@ -77,7 +82,7 @@ fun TopScreen(
                     )
                     Spacer(modifier = Modifier.size(10.dp))
                     Text(
-                        text = "kg",
+                        text = stringResource(id = R.string.unit_kg),
                         fontSize = 18.sp,
                         color = Color.Gray,
                     )
@@ -85,25 +90,57 @@ fun TopScreen(
                 Spacer(modifier = Modifier.size(10.dp))
             }
             item {
-                Box(contentAlignment = Alignment.Center) {
-                    Text(text = "目標を設定しましょう。")
+                Box(
+                    modifier = Modifier
+                        .shadow(2.dp)
+                        .background(
+                            Color.White,
+                            RoundedCornerShape(5.dp)
+                        )
+                        .fillMaxWidth()
+                        .height(120.dp)
+                        .padding(5.dp),
+                    contentAlignment = Alignment.BottomEnd
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.Start,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(20.dp),
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.label_set_object),
+                            fontSize = 12.sp,
+                        )
+                        Spacer(modifier = Modifier.size(5.dp))
+                        Text(
+                            text = stringResource(id = R.string.message_set_object),
+                            fontSize = 12.sp,
+                        )
+                    }
+                    CustomButton(
+                        modifier = Modifier.height(35.dp),
+                        onClick = { /*TODO*/ },
+                        valueResourceId = R.string.label_set_object,
+                        backgroundColor = theme
+                    )
                 }
                 Spacer(modifier = Modifier.size(10.dp))
             }
             item {
                 PanelRow {
                     ColumTextWithLabelAndIcon(
-                        title = "BMI",
+                        title = stringResource(id = R.string.label_bmi),
                         value = "22",
                     )
                     VerticalLine()
                     ColumTextWithLabelAndIcon(
-                        title = "kcal/日",
+                        title = stringResource(id = R.string.label_kcal),
                         value = "1900",
                     )
                     VerticalLine()
                     ColumTextWithLabelAndIcon(
-                        title = "体脂肪率",
+                        title = stringResource(id = R.string.label_fat),
                         value = "22%",
                     )
                 }
@@ -114,13 +151,13 @@ fun TopScreen(
                     IconAndText(
                         icon = Icons.Default.CalendarMonth,
                         onClick = { onClickCalendar() },
-                        text = "カレンダーで見る"
+                        text = stringResource(id = R.string.label_see_by_calendar),
                     )
                     HorizontalLine()
                     IconAndText(
                         icon = Icons.Default.Calculate,
                         onClick = { onClickCalendar() },
-                        text = "統計"
+                        text = stringResource(id = R.string.label_see_statistic),
                     )
                 }
                 Spacer(modifier = Modifier.size(10.dp))
@@ -130,13 +167,14 @@ fun TopScreen(
                     IconAndText(
                         icon = Icons.Default.Flag,
                         onClick = { onClickCalendar() },
-                        text = "開始点"
+                        text = stringResource(id = R.string.label_start_point)
                     )
                     HorizontalLine()
                     IconAndText(
                         icon = Icons.Default.Check,
                         onClick = { onClickCalendar() },
-                        text = "理想体重"
+                        text = stringResource(id = R.string.label_healthy_weight),
+                        withArrow = false,
                     )
                 }
             }
@@ -185,6 +223,7 @@ private fun IconAndText(
     text: String,
     icon: ImageVector,
     onClick: () -> Unit,
+    withArrow: Boolean = true,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -200,12 +239,14 @@ private fun IconAndText(
             text = text,
         )
         Spacer(modifier = Modifier.weight(1F))
-        Icon(
-            imageVector = Icons.Default.ArrowForwardIos,
-            contentDescription = null,
-            modifier = Modifier.size(10.dp)
-        )
-        Spacer(modifier = Modifier.size(10.dp))
+        if (withArrow) {
+            Icon(
+                imageVector = Icons.Default.ArrowForwardIos,
+                contentDescription = null,
+                modifier = Modifier.size(10.dp)
+            )
+            Spacer(modifier = Modifier.size(10.dp))
+        }
     }
 }
 

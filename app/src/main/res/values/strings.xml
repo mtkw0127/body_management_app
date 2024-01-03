@@ -19,6 +19,18 @@
     <string name="unit_hour">時</string>
     <string name="unit_minute">分</string>
 
+    <!-- トップ画面 -->
+    <string name="title_set_object">目標を設定</string>
+    <string name="message_set_object">目標を設定すると、モチベーションの維持に役立ちます</string>
+    <string name="label_set_object">目標を設定</string>
+    <string name="label_bmi">BMI</string>
+    <string name="label_kcal">kcal/日</string>
+    <string name="label_fat">体脂肪率</string>
+    <string name="label_see_by_calendar">カレンダーで見る</string>
+    <string name="label_see_statistic">統計</string>
+    <string name="label_start_point">開始点</string>
+    <string name="label_healthy_weight">健康的な体重</string>
+
     <!-- 測定一覧-->
     <string name="message_saved">保存しました</string>
     <string name="message_edited">編集しました</string>
