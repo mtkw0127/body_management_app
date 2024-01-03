@@ -19,7 +19,6 @@ import androidx.camera.core.ImageCapture.Metadata
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.app.body_manage.data.repository.LocalFileRepository
@@ -189,7 +188,7 @@ class CameraActivity : AppCompatActivity() {
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
         cameraProviderFuture.addListener(
-            Runnable {
+            {
                 // Camera provider is now guaranteed to be available
                 val cameraProvider = cameraProviderFuture.get()
 
@@ -221,10 +220,9 @@ class CameraActivity : AppCompatActivity() {
     }
 
     private fun permissionCheck() {
-        ActivityCompat.requestPermissions(
+        ContextCompat.checkSelfPermission(
             this,
-            REQUIRED_PERMISSIONS,
-            REQUEST_CODE_PERMISSIONS
+            Manifest.permission.CAMERA,
         )
     }
 
@@ -234,15 +232,13 @@ class CameraActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            for (i in grantResults.indices) {
-                val checkResult = grantResults[i] == PackageManager.PERMISSION_GRANTED
-                if (!checkResult) {
-                    finish()
-                }
+        for (i in grantResults.indices) {
+            if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                startCamera()
+                return
             }
-            startCamera()
         }
+        finish()
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
