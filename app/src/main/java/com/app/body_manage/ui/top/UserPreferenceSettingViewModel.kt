@@ -6,6 +6,7 @@ import com.app.body_manage.data.local.Gender
 import com.app.body_manage.data.local.UserPreferenceRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -46,7 +47,20 @@ data class UserPreferenceSettingViewModelState(
     val weight: Float? = null,
 ) {
     fun toUiState(): UiState {
+        val setBirth = try {
+            if (birth != null) {
+                SimpleDateFormat("yyyyMMdd", Locale.getDefault()).apply {
+                    isLenient = false
+                }.parse(birth)
+                true
+            } else {
+                false
+            }
+        } catch (_: Throwable) {
+            false
+        }
         return if (name == null ||
+            setBirth.not() ||
             birth == null ||
             tall == null ||
             weight == null
@@ -79,6 +93,9 @@ class UserPreferenceSettingViewModel(
         SharingStarted.Eagerly,
         UserPreferenceSettingViewModelState().toUiState()
     )
+
+    private val _saved = MutableStateFlow(false)
+    val saved: StateFlow<Boolean> = _saved
 
     fun setGender(gender: Gender) {
         viewModelState.update { it.copy(gender = gender) }
@@ -186,6 +203,7 @@ class UserPreferenceSettingViewModel(
                 userPreferenceRepository.setName(name.orEmpty())
                 userPreferenceRepository.putTall(checkNotNull(tall))
                 userPreferenceRepository.putWeight(checkNotNull(weight))
+                _saved.value = true
             }
         }
     }
