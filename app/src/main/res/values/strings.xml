@@ -22,7 +22,7 @@
 
     <!-- ユーザ設定 -->
     <string name="label_user_name">ユーザ名</string>
-    <string name="placeholder_user_name">ユーザ名</string>
+    <string name="placeholder_user_name">名前</string>
     <string name="placeholder_birth">例：1999年01月1日</string>
     <string name="placeholder_tall">例：168.5 cm</string>
     <string name="placeholder_current_weight">例：50.5 kg</string>

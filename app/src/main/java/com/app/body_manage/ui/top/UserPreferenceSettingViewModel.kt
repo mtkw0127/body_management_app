@@ -1,11 +1,14 @@
 package com.app.body_manage.ui.top
 
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.data.local.Gender
 import com.app.body_manage.data.local.UserPreferenceRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -17,46 +20,64 @@ import java.util.Locale
 sealed interface UiState {
     val name: String?
     val gender: Gender
-    val birth: String?
-    val tall: Float?
-    val weight: Float?
+    val birth: TextFieldValue
+    val tall: TextFieldValue
+    val weight: TextFieldValue
 
     data class NotYet(
         override val name: String?,
         override val gender: Gender,
-        override val birth: String?,
-        override val tall: Float?,
-        override val weight: Float?,
+        override val birth: TextFieldValue,
+        override val tall: TextFieldValue,
+        override val weight: TextFieldValue,
     ) : UiState
 
     data class Done(
         override val name: String,
         override val gender: Gender,
-        override val birth: String,
-        override val tall: Float,
-        override val weight: Float,
+        override val birth: TextFieldValue,
+        override val tall: TextFieldValue,
+        override val weight: TextFieldValue,
     ) : UiState
 }
 
 data class UserPreferenceSettingViewModelState(
     val name: String? = null,
     val gender: Gender = Gender.MALE,
-    val birth: String? = null,
-    val tall: Float? = null,
-    val weight: Float? = null,
+    val birth: TextFieldValue = TextFieldValue(),
+    val tall: TextFieldValue = TextFieldValue(),
+    val weight: TextFieldValue = TextFieldValue(),
 ) {
     fun toUiState(): UiState {
+        val setBirth = try {
+            run {
+                SimpleDateFormat("yyyyMMdd", Locale.getDefault()).apply {
+                    isLenient = false
+                }.parse(birth.text)
+                true
+            }
+        } catch (_: Throwable) {
+            false
+        }
+
         return if (name == null ||
-            birth == null ||
+            setBirth.not() ||
+            birth.text.isEmpty() ||
             tall == null ||
-            weight == null
+            weight.text.isEmpty()
         ) {
             UiState.NotYet(
                 name = name,
                 gender = gender,
-                birth = birth,
+                birth = TextFieldValue(
+                    birth.text,
+                    TextRange(birth.text.length, birth.text.length)
+                ),
                 tall = tall,
-                weight = weight
+                weight = TextFieldValue(
+                    weight.text,
+                    TextRange(weight.text.length, weight.text.length)
+                ),
             )
         } else {
             UiState.Done(
@@ -64,7 +85,10 @@ data class UserPreferenceSettingViewModelState(
                 gender = gender,
                 birth = birth,
                 tall = tall,
-                weight = weight,
+                weight = TextFieldValue(
+                    weight.text,
+                    TextRange(weight.text.length, birth.text.length)
+                ),
             )
         }
     }
@@ -80,22 +104,25 @@ class UserPreferenceSettingViewModel(
         UserPreferenceSettingViewModelState().toUiState()
     )
 
+    private val _saved = MutableStateFlow(false)
+    val saved: StateFlow<Boolean> = _saved
+
     fun setGender(gender: Gender) {
         viewModelState.update { it.copy(gender = gender) }
     }
 
-    fun setName(name: String) {
-        viewModelState.update { it.copy(name = name.ifBlank { null }) }
+    fun setName(name: TextFieldValue) {
+        viewModelState.update { it.copy(name = name.text.ifBlank { null }) }
     }
 
-    fun setTall(tall: String) {
+    fun setTall(tall: TextFieldValue) {
         viewModelState.update {
             it.copy(
                 tall = try {
-                    if (tall.isEmpty()) {
-                        null
+                    if (tall.text.isEmpty()) {
+                        TextFieldValue()
                     } else {
-                        tall.toFloat()
+                        tall
                     }
                 } catch (_: Throwable) {
                     return
@@ -104,14 +131,14 @@ class UserPreferenceSettingViewModel(
         }
     }
 
-    fun setWeight(weight: String) {
+    fun setWeight(weight: TextFieldValue) {
         viewModelState.update {
             it.copy(
                 weight = try {
-                    if (weight.isEmpty()) {
-                        null
+                    if (weight.text.isEmpty()) {
+                        TextFieldValue()
                     } else {
-                        weight.toFloat()
+                        weight
                     }
                 } catch (_: Throwable) {
                     return
@@ -120,62 +147,62 @@ class UserPreferenceSettingViewModel(
         }
     }
 
-    fun setBirth(birth: String) {
+    fun setBirth(birth: TextFieldValue) {
         // 空文字はクリアしてリターン
-        if (birth.isBlank()) {
+        if (birth.text.isBlank()) {
             viewModelState.update {
                 it.copy(birth = birth)
             }
             return
         }
         try {
-            birth.substring(0, birth.lastIndex + 1).toInt()
+            birth.text.substring(0, birth.text.lastIndex + 1).toInt()
         } catch (e: NumberFormatException) {
             // 数値以外はセットしない
             return
         }
         var tempBirth = birth
-        val isAdd = (birth.length - (viewModelState.value.birth?.length ?: 0)) > 0
+        val isAdd = (birth.text.length - (viewModelState.value.birth?.text?.length ?: 0)) > 0
         if (isAdd) {
             // 月を取得する
-            if (birth.length == 5) {
+            if (birth.text.length == 5) {
                 // 3-9で始まる場合は03-09として処理する
-                val month = birth.substring(4, 5).toInt()
+                val month = birth.text.substring(4, 5).toInt()
+                val year = birth.text.substring(0, 4)
                 if (month in 2..9) {
-                    tempBirth = "0$month"
+                    tempBirth = TextFieldValue("${year}0$month")
                 }
             }
-            if (birth.length == 6) {
+            if (birth.text.length == 6) {
                 // 13月以降は無効とする
-                val month = birth.substring(4, 6).toInt()
+                val month = birth.text.substring(4, 6).toInt()
                 if (12 < month) {
                     return
                 }
             }
         }
-        if (8 < birth.length) {
+        if (8 < birth.text.length) {
             return
         }
         // 日付に変換できるかチェック
-        if (birth.length in 7..8) {
+        if (birth.text.length in 7..8) {
             try {
                 SimpleDateFormat("yyyyMMdd", Locale.getDefault()).apply {
                     isLenient = false
-                }.parse(tempBirth)
+                }.parse(tempBirth.text)
             } catch (_: Throwable) {
                 return
             }
         }
-        if (birth.startsWith("0").not()) {
+        if (birth.text.startsWith("0").not()) {
             viewModelState.update { it.copy(birth = tempBirth) }
         }
     }
 
     fun save() {
         with(viewModelState.value) {
-            val birth = birth ?: return
             val date = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
-                .parse(birth)
+                .parse(birth.text)
                 ?.toInstant()
                 ?.atZone(ZoneId.systemDefault())
                 ?.toLocalDate() ?: return@with
@@ -184,8 +211,9 @@ class UserPreferenceSettingViewModel(
                 userPreferenceRepository.setBirth(date)
                 userPreferenceRepository.setGender(gender)
                 userPreferenceRepository.setName(name.orEmpty())
-                userPreferenceRepository.putTall(checkNotNull(tall))
-                userPreferenceRepository.putWeight(checkNotNull(weight))
+                userPreferenceRepository.putTall(tall.text.toFloat())
+                userPreferenceRepository.putWeight(weight.text.toFloat())
+                _saved.value = true
             }
         }
     }

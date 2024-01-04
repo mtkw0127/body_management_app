@@ -22,8 +22,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -36,11 +38,11 @@ import com.app.body_manage.style.Colors.Companion.theme
 @Composable
 fun UserPreferenceSettingScreen(
     uiState: UiState,
-    onChangeName: (String) -> Unit,
+    onChangeName: (TextFieldValue) -> Unit,
     onChangeGender: (Gender) -> Unit,
-    onChangeBirth: (String) -> Unit,
-    onChangeTall: (String) -> Unit,
-    onChangeWeight: (String) -> Unit,
+    onChangeBirth: (TextFieldValue) -> Unit,
+    onChangeTall: (TextFieldValue) -> Unit,
+    onChangeWeight: (TextFieldValue) -> Unit,
     onClickSet: () -> Unit,
 ) {
     LazyColumn(
@@ -100,33 +102,29 @@ private fun Gender(
 }
 
 @Composable
-private fun Birth(birthText: String?, onChangeBirth: (String) -> Unit) {
+private fun Birth(birthText: TextFieldValue?, onChangeBirth: (TextFieldValue) -> Unit) {
     Label(R.string.birth)
     CustomTextField(
-        value = birthText.orEmpty(),
+        value = birthText,
         onValueChange = onChangeBirth,
         placeholder = {
             Text(text = stringResource(id = R.string.placeholder_birth))
         },
         visualTransformation = { text ->
+            val transformedText = text.text.toYYYYMMDD()
             TransformedText(
-                AnnotatedString(text.text.toYYYYMMDD()),
+                AnnotatedString(transformedText),
                 object : OffsetMapping {
                     override fun originalToTransformed(offset: Int): Int {
-                        val charNum = if (offset in 0..3) {
-                            0
-                        } else if (offset in 4..5) {
-                            1
-                        } else {
-                            2
-                        }
-                        return offset + charNum
+                        return transformedText.length
                     }
 
                     override fun transformedToOriginal(offset: Int): Int {
-                        var charNum = (offset - 4) / 2
-                        if (charNum < 0) charNum = 0
-                        return offset - charNum
+                        var length = transformedText.length
+                        if (transformedText.contains("年")) length = -1
+                        if (transformedText.contains("月")) length = -1
+                        if (transformedText.contains("日")) length = -1
+                        return length
                     }
                 }
             )
@@ -135,39 +133,82 @@ private fun Birth(birthText: String?, onChangeBirth: (String) -> Unit) {
 }
 
 @Composable
-private fun Name(string: String?, onChangeName: (String) -> Unit) {
+private fun Name(string: String?, onChangeName: (TextFieldValue) -> Unit) {
     Label(R.string.label_user_name)
     CustomTextField(
-        value = string.orEmpty(),
+        value = TextFieldValue(string.orEmpty(), selection = TextRange(string?.length ?: 0)),
         onValueChange = onChangeName,
         placeholder = {
-            Text(text = stringResource(id = R.string.placeholder_user_name))
+            Text(
+                text = stringResource(id = R.string.placeholder_user_name)
+            )
         },
         keyboardType = KeyboardType.Text,
+        singleLine = true,
     )
 }
 
 @Composable
-private fun Tall(value: Float?, onChangeTall: (String) -> Unit) {
+private fun Tall(value: TextFieldValue, onChangeTall: (TextFieldValue) -> Unit) {
     Label(R.string.tall)
     CustomTextField(
-        value = value?.toString() ?: "",
+        value = value,
         onValueChange = onChangeTall,
         placeholder = {
             Text(text = stringResource(id = R.string.placeholder_tall))
         },
+        visualTransformation = { text ->
+            val textWithUnit = if (text.text.isNotBlank()) {
+                text.text + "cm"
+            } else {
+                ""
+            }
+            TransformedText(
+                AnnotatedString(textWithUnit),
+                object : OffsetMapping {
+                    override fun originalToTransformed(offset: Int): Int {
+                        return textWithUnit.length
+                    }
+
+                    override fun transformedToOriginal(offset: Int): Int {
+                        val length = text.text.length
+                        return if (length == 0) 0 else length - 2
+                    }
+                }
+            )
+        }
     )
 }
 
 @Composable
-private fun Weight(value: Float?, onChangeWeight: (String) -> Unit) {
+private fun Weight(value: TextFieldValue, onChangeWeight: (TextFieldValue) -> Unit) {
     Label(R.string.current_weight)
     CustomTextField(
-        value = value?.toString() ?: "",
+        value = value,
         onValueChange = onChangeWeight,
         placeholder = {
             Text(text = stringResource(id = R.string.placeholder_current_weight))
         },
+        visualTransformation = { text ->
+            val textWithUnit = if (text.text.isNotBlank()) {
+                text.text + "kg"
+            } else {
+                ""
+            }
+            TransformedText(
+                AnnotatedString(textWithUnit),
+                object : OffsetMapping {
+                    override fun originalToTransformed(offset: Int): Int {
+                        return textWithUnit.length
+                    }
+
+                    override fun transformedToOriginal(offset: Int): Int {
+                        val length = text.text.length
+                        return if (length == 0) 0 else length - 2
+                    }
+                }
+            )
+        }
     )
 }
 
@@ -178,14 +219,15 @@ private fun Label(textResource: Int) {
 
 @Composable
 private fun CustomTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
+    value: TextFieldValue?,
+    onValueChange: (TextFieldValue) -> Unit,
     placeholder: @Composable () -> Unit,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardType: KeyboardType = KeyboardType.Number,
+    singleLine: Boolean = false,
 ) {
     TextField(
-        value = value,
+        value = value ?: TextFieldValue(""),
         onValueChange = onValueChange,
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = Color.Transparent,
@@ -195,5 +237,6 @@ private fun CustomTextField(
         ),
         placeholder = placeholder,
         visualTransformation = visualTransformation,
+        singleLine = singleLine,
     )
 }
