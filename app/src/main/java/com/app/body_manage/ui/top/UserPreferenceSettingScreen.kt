@@ -160,7 +160,9 @@ private fun Tall(value: TextFieldValue, onChangeTall: (TextFieldValue) -> Unit) 
         visualTransformation = { text ->
             val textWithUnit = if (text.text.isNotBlank()) {
                 text.text + "cm"
-            } else ""
+            } else {
+                ""
+            }
             TransformedText(
                 AnnotatedString(textWithUnit),
                 object : OffsetMapping {
@@ -190,7 +192,9 @@ private fun Weight(value: TextFieldValue, onChangeWeight: (TextFieldValue) -> Un
         visualTransformation = { text ->
             val textWithUnit = if (text.text.isNotBlank()) {
                 text.text + "kg"
-            } else ""
+            } else {
+                ""
+            }
             TransformedText(
                 AnnotatedString(textWithUnit),
                 object : OffsetMapping {
