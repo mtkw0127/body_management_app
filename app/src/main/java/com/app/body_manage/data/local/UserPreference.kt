@@ -69,15 +69,17 @@ data class UserPreference(
             val height = checkNotNull(tall) * 100 / 100F
             val weight = checkNotNull(weight) * 100 / 100F
             val age = birth.age()
-            val consumedEnergy = (when (gender) {
-                Gender.MALE -> {
-                    (0.0481 * weight + 0.0234 * height - 0.0138 * age - 0.4235) * 1000 / 4.186
-                }
+            val consumedEnergy = (
+                when (gender) {
+                    Gender.MALE -> {
+                        (0.0481 * weight + 0.0234 * height - 0.0138 * age - 0.4235) * 1000 / 4.186
+                    }
 
-                Gender.FEMALE -> {
-                    (0.0481 * weight + 0.0234 * height - 0.0138 * age - 0.9708) * 1000 / 4.186
-                }
-            } * 100).toInt() / 100F
+                    Gender.FEMALE -> {
+                        (0.0481 * weight + 0.0234 * height - 0.0138 * age - 0.9708) * 1000 / 4.186
+                    }
+                } * 100
+                ).toInt() / 100F
 
             return consumedEnergy.toKcal()
         }
