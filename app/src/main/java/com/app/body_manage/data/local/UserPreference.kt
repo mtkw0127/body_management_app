@@ -4,6 +4,7 @@ import com.app.body_manage.data.model.BodyMeasureModel
 import com.app.body_manage.domain.BMICalculator
 import com.app.body_manage.domain.FatCalculator
 import com.app.body_manage.extension.age
+import com.app.body_manage.extension.toKcal
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.math.pow
@@ -61,6 +62,24 @@ data class UserPreference(
     val progressText: String
         get() {
             return "${(progress * 100).toInt()} %"
+        }
+
+    val basicConsumeEnergy: String
+        get() {
+            val height = checkNotNull(tall) * 100 / 100F
+            val weight = checkNotNull(weight) * 100 / 100F
+            val age = birth.age()
+            val consumedEnergy = (when (gender) {
+                Gender.MALE -> {
+                    (0.0481 * weight + 0.0234 * height - 0.0138 * age - 0.4235) * 1000 / 4.186
+                }
+
+                Gender.FEMALE -> {
+                    (0.0481 * weight + 0.0234 * height - 0.0138 * age - 0.9708) * 1000 / 4.186
+                }
+            } * 100).toInt() / 100F
+
+            return consumedEnergy.toKcal()
         }
 }
 

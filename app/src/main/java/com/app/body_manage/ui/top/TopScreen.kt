@@ -44,6 +44,7 @@ import com.app.body_manage.data.local.UserPreference
 import com.app.body_manage.data.model.BodyMeasureModel
 import com.app.body_manage.extension.toCentiMeter
 import com.app.body_manage.extension.toMMDDEE
+import com.app.body_manage.extension.withPercent
 import com.app.body_manage.style.Colors.Companion.accentColor
 import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
@@ -187,20 +188,27 @@ fun TopScreen(
                 }
             }
             item {
-                PanelRow {
+                Panel(content = {
                     ColumTextWithLabelAndIcon(
                         title = stringResource(id = R.string.label_bmi),
                         value = userPreference?.bim ?: "-",
                     )
                     VerticalLine()
                     ColumTextWithLabelAndIcon(
-                        title = stringResource(id = R.string.label_kcal),
-                        value = "1900",
+                        title = stringResource(id = R.string.label_kcal) + "※",
+                        value = userPreference?.basicConsumeEnergy ?: "-",
                     )
                     VerticalLine()
                     ColumTextWithLabelAndIcon(
                         title = stringResource(id = R.string.label_fat),
-                        value = userPreference?.calcFat ?: "-",
+                        value = userPreference?.calcFat?.withPercent() ?: "-",
+                    )
+                }) {
+                    Spacer(modifier = Modifier.size(5.dp))
+                    Text(
+                        stringResource(id = R.string.message_this_is_estimated_value),
+                        fontSize = 11.sp,
+                        color = Color.DarkGray
                     )
                 }
                 Spacer(modifier = Modifier.size(10.dp))
@@ -340,10 +348,11 @@ private fun PanelColumn(
 }
 
 @Composable
-private fun PanelRow(
+private fun Panel(
     content: @Composable () -> Unit,
+    bottom: @Composable () -> Unit = {}
 ) {
-    Row(
+    Column(
         modifier = Modifier
             .shadow(2.dp)
             .background(
@@ -351,10 +360,15 @@ private fun PanelRow(
                 RoundedCornerShape(5.dp)
             )
             .fillMaxWidth()
-            .padding(20.dp),
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically,
+            .padding(20.dp)
     ) {
-        content()
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            content()
+        }
+        bottom()
     }
 }

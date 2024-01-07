@@ -23,3 +23,5 @@ fun String.toYYYYMMDD(): String {
     }
     return stringBuilder.toString()
 }
+
+fun String.withPercent() = "$this %"
