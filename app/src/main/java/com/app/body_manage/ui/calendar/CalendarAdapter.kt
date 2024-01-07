@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.repository.BodyMeasureRepository
+import com.app.body_manage.extension.toWeight
 import com.app.body_manage.ui.measure.list.MeasureListActivity
 import com.app.body_manage.util.DateUtil
 import kotlinx.coroutines.CoroutineScope
@@ -197,11 +198,11 @@ class CalendarAdapter(
             runCatching { bodyMeasureRepository.getEntityListByDate(cellInfo.localDate) }
                 .onFailure { Timber.e(it) }
                 .onSuccess {
-                    if (it.isNotEmpty()) {
+                    val minWeight = it.minByOrNull { measure -> measure.weight }
+                    if (it.isNotEmpty() && minWeight != null) {
                         val measureCntView =
                             calendarCellView.findViewById<TextView>(R.id.measure_cnt)
-                        measureCntView.background =
-                            context.resources.getDrawable(R.drawable.icons8_checkmark, null)
+                        measureCntView.text = minWeight.weight.toWeight()
                     }
                 }
         }
