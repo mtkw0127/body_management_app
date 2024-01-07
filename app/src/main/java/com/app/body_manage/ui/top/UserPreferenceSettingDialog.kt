@@ -28,9 +28,12 @@ class UserPreferenceSettingDialog : DialogFragment() {
             userPreferenceRepository = UserPreferenceRepository(requireContext())
         )
         lifecycleScope.launch {
-            viewModel.saved.collectLatest { saved ->
-                if (saved) {
-                    parentFragmentManager.setFragmentResult("TEST", bundleOf())
+            viewModel.saved.collectLatest {
+                if (it) {
+                    this@UserPreferenceSettingDialog.parentFragmentManager.setFragmentResult(
+                        REQUEST_KEY,
+                        bundleOf()
+                    )
                     dismiss()
                 }
             }
@@ -58,6 +61,7 @@ class UserPreferenceSettingDialog : DialogFragment() {
     }
 
     companion object {
+        const val REQUEST_KEY = "INITIAL_SETTING_DIALOG_KEY"
         fun createInstance(): UserPreferenceSettingDialog {
             return UserPreferenceSettingDialog()
         }
