@@ -9,8 +9,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.window.Dialog
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
 import com.app.body_manage.data.local.UserPreferenceRepository
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class UserPreferenceSettingDialog : DialogFragment() {
     private lateinit var viewModel: UserPreferenceSettingViewModel
@@ -23,6 +27,17 @@ class UserPreferenceSettingDialog : DialogFragment() {
         viewModel = UserPreferenceSettingViewModel(
             userPreferenceRepository = UserPreferenceRepository(requireContext())
         )
+        lifecycleScope.launch {
+            viewModel.saved.collectLatest {
+                if (it) {
+                    this@UserPreferenceSettingDialog.parentFragmentManager.setFragmentResult(
+                        REQUEST_KEY,
+                        bundleOf()
+                    )
+                    dismiss()
+                }
+            }
+        }
         val view = ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
@@ -37,7 +52,6 @@ class UserPreferenceSettingDialog : DialogFragment() {
                         onChangeWeight = viewModel::setWeight,
                         onClickSet = {
                             viewModel.save()
-                            dismiss()
                         },
                     )
                 }
@@ -47,6 +61,7 @@ class UserPreferenceSettingDialog : DialogFragment() {
     }
 
     companion object {
+        const val REQUEST_KEY = "INITIAL_SETTING_DIALOG_KEY"
         fun createInstance(): UserPreferenceSettingDialog {
             return UserPreferenceSettingDialog()
         }

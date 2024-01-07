@@ -22,6 +22,7 @@ import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
+import com.app.body_manage.ui.top.UserPreferenceSettingDialog.Companion.REQUEST_KEY
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -44,7 +45,7 @@ class TopActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         onBackPressedDispatcher.addCallback {}
-        supportFragmentManager.addOnBackStackChangedListener {
+        supportFragmentManager.setFragmentResultListener(REQUEST_KEY, this) { _, _ ->
             viewModel.load()
         }
         val bottomSheetDataList = createBottomDataList(

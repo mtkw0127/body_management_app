@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -40,8 +41,13 @@ class TopViewModel(
 
     fun load() {
         viewModelScope.launch {
-            _userPreference.value = userPreferenceRepository.userPref.first()
-            _lastMeasure.value = bodyMeasureRepository.getLast()?.toModel()
+            runCatching {
+                _userPreference.value = userPreferenceRepository.userPref.firstOrNull()
+                _lastMeasure.value = bodyMeasureRepository.getLast()?.toModel()
+            }.onFailure {
+                // データがない可能性があるため再設定
+                checkSetUpUserPref()
+            }
         }
     }
 
