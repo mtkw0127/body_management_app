@@ -91,7 +91,7 @@ class UserPreferenceRepository(
                 name = checkNotNull(it[KEY_NAME]),
                 gender = when (checkNotNull(it[KEY_GENDER])) {
                     Gender.MALE.value -> Gender.MALE
-                    Gender.MALE.value -> Gender.FEMALE
+                    Gender.FEMALE.value -> Gender.FEMALE
                     else -> error("IllegalState ${it[KEY_GENDER]}")
                 },
                 birth = checkNotNull(it[KEY_BIRTH]).let {
