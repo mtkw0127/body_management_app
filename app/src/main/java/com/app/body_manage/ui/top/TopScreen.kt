@@ -104,7 +104,7 @@ fun TopScreen(
                         )
                     }
                     Spacer(modifier = Modifier.weight(1F))
-                    lastMeasure?.tall ?: userPreference?.tall?.let { tall ->
+                    (lastMeasure?.tall ?: userPreference?.tall)?.let { tall ->
                         Text(
                             text = tall.toCentiMeter(),
                             fontSize = 14.sp,
