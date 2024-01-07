@@ -83,8 +83,8 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     // flipper
-    debugImplementation("com.facebook.flipper:flipper:0.244.0")
-    debugImplementation("com.facebook.soloader:soloader:0.10.5")
+    implementation("com.facebook.flipper:flipper:0.244.0")
+    implementation("com.facebook.soloader:soloader:0.10.5")
 
     // lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
