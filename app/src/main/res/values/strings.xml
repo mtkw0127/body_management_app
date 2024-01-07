@@ -38,14 +38,15 @@
     <string name="label_set_object">目標を設定</string>
     <string name="label_update_object">目標を更新</string>
     <string name="label_bmi">BMI</string>
-    <string name="label_kcal">kcal/日</string>
-    <string name="label_fat">体脂肪率 [%]</string>
+    <string name="label_kcal">基礎代謝</string>
+    <string name="label_fat">体脂肪率</string>
     <string name="label_see_by_calendar">カレンダーで見る</string>
     <string name="label_see_statistic">統計</string>
     <string name="label_start_point">開始点</string>
     <string name="label_good_weight">適正な体重</string>
     <string name="label_healthy_weight">健康的な体重</string>
     <string name="label_ideal_weight">理想的な体重</string>
+    <string name="message_this_is_estimated_value">※ 18歳から79歳の方に妥当性が認められた推定値です</string>
 
     <!-- 測定一覧-->
     <string name="message_saved">保存しました</string>
