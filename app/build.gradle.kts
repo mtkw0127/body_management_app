@@ -25,8 +25,8 @@ android {
         applicationId = "com.app.calendar"
         minSdk = 26
         targetSdk = 34
-        versionCode = 20
-        versionName = "1.20.0"
+        versionCode = 21
+        versionName = "1.21.0"
         applicationId = "com.app.body_manage"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -81,6 +81,10 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
+    // flipper
+    debugImplementation("com.facebook.flipper:flipper:0.244.0")
+    debugImplementation("com.facebook.soloader:soloader:0.10.5")
 
     // lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")

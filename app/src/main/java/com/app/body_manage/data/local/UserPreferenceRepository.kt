@@ -87,26 +87,29 @@ class UserPreferenceRepository(
                 throw exception
             }
         }.map {
+            val name = checkNotNull(it[KEY_NAME])
+            val gender = when (checkNotNull(it[KEY_GENDER])) {
+                Gender.MALE.value -> Gender.MALE
+                Gender.FEMALE.value -> Gender.FEMALE
+                else -> error("IllegalState ${it[KEY_GENDER]}")
+            }
+            val birth = checkNotNull(it[KEY_BIRTH]).let {
+                val split = it.split("-")
+                LocalDate.of(
+                    split[0].toInt(),
+                    split[1].toInt(),
+                    split[2].toInt(),
+                )
+            }
             UserPreference(
-                name = checkNotNull(it[KEY_NAME]),
-                gender = when (checkNotNull(it[KEY_GENDER])) {
-                    Gender.MALE.value -> Gender.MALE
-                    Gender.MALE.value -> Gender.FEMALE
-                    else -> error("IllegalState ${it[KEY_GENDER]}")
-                },
-                birth = checkNotNull(it[KEY_BIRTH]).let {
-                    val split = it.split("-")
-                    LocalDate.of(
-                        split[0].toInt(),
-                        split[1].toInt(),
-                        split[2].toInt(),
-                    )
-                },
+                name = name,
+                gender = gender,
+                birth = birth,
                 tall = it[KEY_TALL],
                 weight = it[KEY_WEIGHT],
                 goalWeight = it[KEY_GOAL_WEIGHT],
                 fat = it[KEY_FAT],
-                alarm = it[KEY_ALARM],
+                alarm = it[KEY_ALARM] ?: false,
             )
         }
 }

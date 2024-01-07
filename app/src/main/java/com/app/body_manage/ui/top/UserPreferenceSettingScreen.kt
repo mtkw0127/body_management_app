@@ -121,9 +121,9 @@ private fun Birth(birthText: TextFieldValue?, onChangeBirth: (TextFieldValue) ->
 
                     override fun transformedToOriginal(offset: Int): Int {
                         var length = transformedText.length
-                        if (transformedText.contains("年")) length = -1
-                        if (transformedText.contains("月")) length = -1
-                        if (transformedText.contains("日")) length = -1
+                        if (transformedText.contains("年")) length -= 1
+                        if (transformedText.contains("月")) length -= 1
+                        if (transformedText.contains("日")) length -= 1
                         return length
                     }
                 }

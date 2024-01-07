@@ -6,6 +6,11 @@ import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.CompareHistoryRepository
 import com.app.body_manage.data.repository.PhotoRepository
+import com.facebook.flipper.android.AndroidFlipperClient
+import com.facebook.flipper.android.utils.FlipperUtils
+import com.facebook.flipper.plugins.inspector.DescriptorMapping
+import com.facebook.flipper.plugins.inspector.InspectorFlipperPlugin
+import com.facebook.soloader.SoLoader
 
 class TrainingApplication : Application() {
     private val database by lazy { AppDatabase.createDatabase(this) }
@@ -16,5 +21,16 @@ class TrainingApplication : Application() {
         CompareHistoryRepository(
             database.compareBodyMeasureHistoryDao()
         )
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        SoLoader.init(this, false)
+
+        if (BuildConfig.DEBUG && FlipperUtils.shouldEnableFlipper(this)) {
+            val client = AndroidFlipperClient.getInstance(this)
+            client.addPlugin(InspectorFlipperPlugin(this, DescriptorMapping.withDefaults()))
+            client.start()
+        }
     }
 }
