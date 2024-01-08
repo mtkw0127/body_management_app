@@ -15,6 +15,7 @@ import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.model.PhotoModel
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
+import com.app.body_manage.data.repository.MealRepository
 import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import java.time.LocalDate
@@ -27,6 +28,10 @@ class MeasureListActivity : AppCompatActivity() {
 
     private val bodyMeasurePhotoRepository: BodyMeasurePhotoRepository by lazy {
         (application as TrainingApplication).bodyMeasurePhotoRepository
+    }
+
+    private val mealRepository: MealRepository by lazy {
+        (application as TrainingApplication).mealFoodsRepository
     }
 
     private val launcher =
@@ -81,22 +86,12 @@ class MeasureListActivity : AppCompatActivity() {
                     viewModel.updateDate(it)
                 },
                 clickFab = {
-                    when (viewModel.uiState.value.measureType) {
-                        MeasureType.BODY -> {
-                            measureFormLauncher.launch(
-                                MeasureFormActivity.createMeasureFormIntent(
-                                    context = this,
-                                    measureDate = viewModel.uiState.value.date
-                                )
-                            )
-                        }
-
-                        MeasureType.MEAL -> {
-                            Toast.makeText(this, "今後機能追加する！", Toast.LENGTH_LONG).show()
-                        }
-
-                        else -> {}
-                    }
+                    measureFormLauncher.launch(
+                        MeasureFormActivity.createMeasureFormIntent(
+                            context = this,
+                            measureDate = viewModel.uiState.value.date
+                        )
+                    )
                 },
                 showPhotoDetail = {
                     val intent = PhotoDetailActivity.createIntent(
@@ -116,10 +111,10 @@ class MeasureListActivity : AppCompatActivity() {
     private fun initViewModel() {
         viewModel = MeasureListViewModel(
             localDate = intent.getSerializableExtra(INTENT_KEY) as LocalDate,
-            mealType = MeasureType.BODY,
             bodyMeasureRepository = bodyMeasureRepository,
             bodyMeasurePhotoRepository = bodyMeasurePhotoRepository,
             userPreferenceRepository = UserPreferenceRepository(this),
+            mealRepository = mealRepository
         )
         viewModel.reload()
     }
