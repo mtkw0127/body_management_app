@@ -52,7 +52,7 @@
 
 
     <!-- 測定一覧-->
-    <string name="message_saved">保存しました</string>
+    <string name="message_saved">登録しました</string>
     <string name="message_edited">編集しました</string>
     <string name="message_deleted">削除しました</string>
 

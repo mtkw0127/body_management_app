@@ -1,5 +1,6 @@
 package com.app.body_manage.ui.mealForm
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -42,6 +43,7 @@ class MealFormActivity : AppCompatActivity() {
         lifecycleScope.launch {
             viewModel.saved.collectLatest {
                 if (it) {
+                    setResult(RESULT_KEY_MEAL_ADD)
                     finish()
                 }
             }
@@ -74,6 +76,8 @@ class MealFormActivity : AppCompatActivity() {
     companion object {
         private const val KEY_DATE = "KEY_DATE"
         private const val KEY_TYPE = "KEY_TYPE"
+
+        const val RESULT_KEY_MEAL_ADD = Activity.RESULT_FIRST_USER + 100
 
         fun createIntentAdd(
             context: Context,

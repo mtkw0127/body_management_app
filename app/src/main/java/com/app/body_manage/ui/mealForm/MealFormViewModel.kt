@@ -78,7 +78,7 @@ class MealFormViewModel(
             return
         }
         viewModelScope.launch {
-            val searchResults = mealRepository.getFoods(text).toMutableList()
+            var searchResults = mealRepository.getFoods(text).toMutableList()
             // 完全に一致したものがない場合は新規追加として追加
             if (
                 searchResults.any { it.name == text }.not() &&
@@ -86,6 +86,9 @@ class MealFormViewModel(
             ) {
                 searchResults.add(Food.createNewFood(text))
             }
+            // その日の食事に登録済みのものは除く
+            searchResults =
+                searchResults.filterNot { _mealFoods.value.foods.contains(it) }.toMutableList()
             _foodCandidates.value = searchResults
         }
     }

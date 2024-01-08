@@ -34,6 +34,9 @@ class TopActivity : AppCompatActivity() {
             if (it.resultCode == MeasureFormActivity.RESULT_CODE_ADD) {
                 Toast.makeText(this, getString(R.string.message_saved), Toast.LENGTH_LONG).show()
             }
+            if (it.resultCode == MealFormActivity.RESULT_KEY_MEAL_ADD) {
+                Toast.makeText(this, getString(R.string.message_saved), Toast.LENGTH_LONG).show()
+            }
             viewModel.load()
         }
 
