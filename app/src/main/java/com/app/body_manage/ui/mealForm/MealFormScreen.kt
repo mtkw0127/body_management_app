@@ -106,6 +106,7 @@ fun MealFormScreen(
                 onClickBackPress = onClickBackPress,
                 onClickSave = onClickSave,
                 onClickTakePhoto = onClickTakePhoto,
+                enable = mealFoods.foods.isNotEmpty(),
             )
         }
     }
@@ -332,6 +333,7 @@ private fun SaveForm(
     onClickBackPress: () -> Unit,
     onClickSave: () -> Unit,
     onClickTakePhoto: () -> Unit,
+    enable: Boolean = false,
 ) {
     Box(
         modifier = Modifier
@@ -349,7 +351,7 @@ private fun SaveForm(
         ) {
             CustomButton(onClickBackPress, R.string.back, Color.White)
             Spacer(modifier = Modifier.weight(1F))
-            CustomButton(onClickSave, R.string.save, Colors.theme)
+            CustomButton(onClickSave, R.string.save, Colors.theme, enable = enable)
             Spacer(modifier = Modifier.size(20.dp))
             Icon(
                 imageVector = Icons.Filled.CameraAlt,
