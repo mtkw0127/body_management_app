@@ -25,6 +25,7 @@ import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.CameraAlt
@@ -50,6 +51,7 @@ import com.app.body_manage.common.toKcal
 import com.app.body_manage.data.model.Food
 import com.app.body_manage.data.model.Meal
 import com.app.body_manage.extension.toJapaneseTime
+import com.app.body_manage.extension.toMMDDEE
 import com.app.body_manage.style.Colors
 import java.time.LocalDateTime
 
@@ -66,7 +68,21 @@ fun MealFormScreen(
     onClickDeleteFood: (Food) -> Unit,
     onClickTakePhoto: () -> Unit,
 ) {
-    Scaffold {
+    Scaffold(
+        topBar = {
+            TopAppBar(backgroundColor = Colors.theme) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = mealFoods.time.toLocalDate().toMMDDEE(),
+                        modifier = Modifier.offset(x = 10.dp),
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                }
+            }
+        }
+    ) {
         Column(modifier = Modifier.padding(it)) {
             Column(
                 Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
