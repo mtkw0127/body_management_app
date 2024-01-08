@@ -11,7 +11,7 @@ data class FoodEntity(
     @ColumnInfo(name = "name") val name: String, // 食べ物の名前
     @ColumnInfo(name = "name_jp") val nameJp: String, // 食べ物の名前（ひらがな）
     @ColumnInfo(name = "name_kana") val nameKana: String, // 食べ物の名前（かな）
-    @ColumnInfo(name = "kcal") val kcal: Int?, // カロリー
+    @ColumnInfo(name = "kcal") val kcal: Int, // カロリー
 )
 
 fun FoodEntity.toModel() = Food(

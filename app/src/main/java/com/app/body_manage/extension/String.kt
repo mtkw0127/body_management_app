@@ -26,6 +26,8 @@ fun String.toYYYYMMDD(): String {
 
 fun String.withPercent() = "$this %"
 
+fun String.withKcal() = "$this kcal"
+
 // ひらがなをカナに変換
 fun String.toKana(): String {
     return this.map {

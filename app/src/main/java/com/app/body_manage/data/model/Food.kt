@@ -9,13 +9,13 @@ data class Food(
     val name: String,
     val nameJp: String,
     val nameKana: String,
-    val kcal: Int?,
+    val kcal: Int,
 ) {
     data class Id(val value: Int)
 
     val nameWithKcal: String
         get() {
-            return name + "(${kcal ?: "-"})"
+            return name + "(${kcal})"
         }
 
     companion object {
@@ -27,7 +27,7 @@ data class Food(
                 name = name,
                 nameJp = name.toJp(),
                 nameKana = name.toKana(),
-                kcal = null
+                kcal = 0,
             )
         }
     }

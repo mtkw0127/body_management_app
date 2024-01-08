@@ -59,7 +59,10 @@ class MealFormActivity : AppCompatActivity() {
                 onClickTakePhoto = {
                     cameraLauncher.launch(CameraActivity.createCameraActivityIntent(this))
                 },
-                onClickDeleteForm = viewModel::deleteForm
+                onClickDeleteForm = viewModel::deleteForm,
+                onUpdateMealKcal = { food, kcal ->
+                    viewModel.updateFood(food, kcal)
+                }
             )
         }
     }

@@ -130,4 +130,17 @@ class MealFormViewModel(
             _deleted.value = true
         }
     }
+
+    fun updateFood(targetFood: Food, kcal: Int) {
+        _mealFoods.update {
+            val updatedFoods = it.foods.map { food ->
+                if (targetFood.name == food.name && targetFood.id == food.id) {
+                    food.copy(kcal = kcal)
+                } else {
+                    food
+                }
+            }
+            it.copy(foods = updatedFoods)
+        }
+    }
 }
