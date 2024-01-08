@@ -1,5 +1,7 @@
 package com.app.body_manage.ui.measure.list
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,7 +17,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -25,6 +26,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ExposedDropdownMenuDefaults.textFieldColors
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.ModalBottomSheetLayout
@@ -37,7 +39,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.rememberScaffoldState
@@ -49,6 +51,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -62,13 +65,18 @@ import coil.compose.AsyncImage
 import com.app.body_manage.R
 import com.app.body_manage.common.Calendar
 import com.app.body_manage.common.CustomButton
+import com.app.body_manage.common.toKcal
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.data.model.Meal
+import com.app.body_manage.data.model.Measure
 import com.app.body_manage.domain.BMICalculator
+import com.app.body_manage.extension.toFat
 import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.extension.toMMDDEE
+import com.app.body_manage.extension.toWeight
 import com.app.body_manage.style.Colors.Companion.accentColor
+import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -90,6 +98,7 @@ fun MeasureListScreen(
     showPhotoDetail: (Int) -> Unit,
     onChangeCurrentMonth: (YearMonth) -> Unit,
     onClickBack: () -> Unit,
+    onClickMeal: (Meal) -> Unit,
 ) {
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     val state = rememberScaffoldState()
@@ -168,61 +177,56 @@ fun MeasureListScreen(
                     }
                 }
             ) {
-                Column {
-                    Column(
-                        modifier = Modifier
-                            .padding(padding)
-                            .padding(top = 10.dp)
-                            .fillMaxHeight()
-                    ) {
-                        if (uiState.message.isNotEmpty()) {
-                            LaunchedEffect(uiState.message) {
-                                coroutineScope.launch {
-                                    state.snackbarHostState.showSnackbar(
-                                        message = uiState.message,
-                                        duration = SnackbarDuration.Short
-                                    )
-                                    resetSnackBarMessage.invoke()
-                                }
-                            }
-                        }
-                        TallSetField(
-                            tall = uiState.tall,
-                            setTall = setTall,
-                            clickSaveBodyInfo = clickSaveBodyInfo
-                        ) {
-                            showCalendar.value = false
-                            showPhotoList.value = true
-                            scope.launch {
-                                sheetState.show()
-                            }
-                        }
-                        Divider(modifier = Modifier.padding(12.dp))
-
-                        if (uiState.list.isNotEmpty()) {
-                            BodyMeasureList(
-                                list = uiState.list,
-                                clickBodyMeasureEdit = clickBodyMeasureEdit,
-                            )
-                        }
-                        if (uiState.meals.isNotEmpty()) {
-                            MealList(
-                                meals = uiState.meals
-                            )
-                        }
-                        if (uiState.list.isEmpty() && uiState.meals.isEmpty()) {
-                            Box(
-                                contentAlignment = Alignment.Center,
-                                modifier = Modifier.fillMaxSize()
-                            ) {
-                                Text(
-                                    text = stringResource(id = R.string.message_empty_so_add),
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 16.sp,
-                                    color = Color.DarkGray,
-                                    textAlign = TextAlign.Center,
+                Column(
+                    modifier = Modifier
+                        .padding(padding)
+                        .fillMaxHeight()
+                        .background(background)
+                        .padding(top = 10.dp)
+                ) {
+                    if (uiState.message.isNotEmpty()) {
+                        LaunchedEffect(uiState.message) {
+                            coroutineScope.launch {
+                                state.snackbarHostState.showSnackbar(
+                                    message = uiState.message,
+                                    duration = SnackbarDuration.Short
                                 )
+                                resetSnackBarMessage.invoke()
                             }
+                        }
+                    }
+                    TallSetField(
+                        tall = uiState.tall,
+                        setTall = setTall,
+                        clickSaveBodyInfo = clickSaveBodyInfo
+                    ) {
+                        showCalendar.value = false
+                        showPhotoList.value = true
+                        scope.launch {
+                            sheetState.show()
+                        }
+                    }
+                    Divider(modifier = Modifier.padding(12.dp))
+
+                    if (uiState.list.isNotEmpty()) {
+                        MeasureList(
+                            list = uiState.list,
+                            clickBodyMeasureEdit = clickBodyMeasureEdit,
+                            onClickMeal = onClickMeal,
+                        )
+                    }
+                    if (uiState.list.isEmpty()) {
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.message_empty_so_add),
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp,
+                                color = Color.DarkGray,
+                                textAlign = TextAlign.Center,
+                            )
                         }
                     }
                 }
@@ -240,25 +244,6 @@ fun MeasureListScreen(
 }
 
 @Composable
-private fun MealList(meals: List<Meal>) {
-    LazyColumn(
-        modifier = Modifier.wrapContentWidth(),
-        content = {
-            items(meals) { meal ->
-                ResultItem(time = meal.time) {
-                    Column {
-                        Text(stringResource(meal.timing.textResourceId))
-                        meal.foods.forEach { food ->
-                            Text(food.name)
-                        }
-                    }
-                }
-            }
-        },
-    )
-}
-
-@Composable
 fun PhotoList(
     photoList: List<BodyMeasurePhotoDao.PhotoData>,
     clickPhoto: (Int) -> Unit
@@ -272,14 +257,14 @@ fun PhotoList(
                     .padding(top = 100.dp),
             ) {
                 Text(
-                    text = "写真が未登録です",
+                    text = stringResource(id = R.string.message_empty_photo),
                     fontWeight = FontWeight.Bold,
                     color = Color.Black,
                 )
             }
         } else {
             Text(
-                text = "この日撮影した写真",
+                text = stringResource(id = R.string.label_this_day_photos),
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(start = 12.dp, bottom = 10.dp)
             )
@@ -295,7 +280,7 @@ fun PhotoList(
                     items(photoList) {
                         AsyncImage(
                             model = it.photoUri,
-                            contentDescription = "当日の写真一覧",
+                            contentDescription = null,
                             contentScale = ContentScale.Inside,
                             modifier = Modifier
                                 .padding(3.dp)
@@ -311,6 +296,7 @@ fun PhotoList(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun TallSetField(
     tall: String,
@@ -331,7 +317,7 @@ private fun TallSetField(
                     .fillMaxHeight()
                     .padding(end = 16.dp)
             ) {
-                Text(text = "身長[cm]")
+                Text(text = stringResource(id = R.string.label_tall_with_unit))
             }
             Box(
                 contentAlignment = Alignment.Center,
@@ -351,6 +337,9 @@ private fun TallSetField(
                             setTall.invoke(it)
                         }
                     },
+                    colors = textFieldColors(
+                        backgroundColor = Color.White,
+                    ),
                     modifier = Modifier
                         .width(120.dp)
                         .height(48.dp)
@@ -391,56 +380,129 @@ private fun TallSetField(
 }
 
 @Composable
-private fun BodyMeasureList(
-    list: List<BodyMeasure>,
-    clickBodyMeasureEdit: (LocalDateTime) -> Unit
+private fun MeasureList(
+    list: List<Measure>,
+    clickBodyMeasureEdit: (LocalDateTime) -> Unit,
+    onClickMeal: (Meal) -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.wrapContentWidth(),
+        modifier = Modifier
+            .wrapContentWidth()
+            .padding(horizontal = 12.dp),
         content = {
             items(list) { item ->
                 ResultItem(
-                    time = item.time
+                    time = item.time,
+                    onClick = {
+                        when (item) {
+                            is BodyMeasure -> clickBodyMeasureEdit(item.time)
+                            is Meal -> onClickMeal(item)
+                        }
+                    }
                 ) {
-                    Text(
-                        text = item.weight.toString() + "Kg",
-                    )
-                    Text(
-                        text = item.fat.toString() + "%",
-                    )
-                    Text(
-                        text = BMICalculator().calculate(item.tall, item.weight),
-                    )
-                    Icon(
-                        Icons.Filled.Edit,
-                        contentDescription = null,
-                        modifier = Modifier.clickable {
-                            clickBodyMeasureEdit.invoke(
-                                item.time
-                            )
-                        },
-                        tint = Color.Gray,
-                    )
+                    when (item) {
+                        is BodyMeasure -> {
+                            BodyItem(item)
+                        }
+
+                        is Meal -> {
+                            MealItem(item)
+                        }
+                    }
                 }
+                Spacer(modifier = Modifier.size(15.dp))
             }
         },
     )
 }
 
 @Composable
+private fun BodyItem(
+    measure: BodyMeasure,
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Column {
+            LabelAndText(
+                label = stringResource(id = R.string.weight),
+                text = measure.weight.toWeight(),
+            )
+            LabelAndText(
+                label = stringResource(id = R.string.label_fat),
+                text = measure.fat.toFat(),
+            )
+            LabelAndText(
+                label = stringResource(id = R.string.label_bmi),
+                text = BMICalculator().calculate(measure.tall, measure.weight),
+            )
+        }
+    }
+}
+
+@Composable
+private fun MealItem(
+    meal: Meal,
+) {
+    Column {
+        Text(text = stringResource(meal.timing.textResourceId))
+        LabelAndText(
+            label = stringResource(id = R.string.label_total_kcal),
+            text = meal.foods.mapNotNull { it.kcal }.sumOf { it }.toKcal()
+        )
+        Row {
+            Text(
+                text = stringResource(id = R.string.label_meals),
+                modifier = Modifier.width(100.dp)
+            )
+            Spacer(modifier = Modifier.size(10.dp))
+            meal.foods.forEach {
+                Text(text = it.nameWithKcal)
+            }
+        }
+    }
+}
+
+@Composable
 fun ResultItem(
     time: LocalDateTime,
+    onClick: () -> Unit,
     content: @Composable () -> Unit,
 ) {
     Row(
-        Modifier.wrapContentHeight()
+        Modifier
+            .clickable { onClick() }
+            .shadow(2.dp, RoundedCornerShape(5.dp))
+            .border(0.5.dp, Color.DarkGray, RoundedCornerShape(5.dp))
+            .background(Color.White, RoundedCornerShape(5.dp))
+            .fillMaxWidth()
+            .padding(start = 12.dp)
+            .padding(vertical = 10.dp)
     ) {
         Text(
             text = time.toJapaneseTime(),
         )
-        Spacer(modifier = Modifier.size(10.dp))
-        Column {
+        Spacer(modifier = Modifier.size(15.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
             content()
+            Spacer(modifier = Modifier.weight(1F))
+            Icon(
+                Icons.Filled.ArrowForwardIos,
+                contentDescription = null,
+                modifier = Modifier.size(10.dp),
+                tint = Color.DarkGray,
+            )
+            Spacer(modifier = Modifier.size(20.dp))
         }
+    }
+}
+
+@Composable
+private fun LabelAndText(label: String, text: String) {
+    Row {
+        Text(
+            text = label,
+            modifier = Modifier.width(100.dp)
+        )
+        Spacer(modifier = Modifier.size(10.dp))
+        Text(text = text)
     }
 }

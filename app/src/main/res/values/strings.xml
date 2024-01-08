@@ -50,13 +50,16 @@
     <string name="label_add_meal">食事を登録</string>
     <string name="label_add_measure">体型を登録</string>
 
-
     <!-- 測定一覧-->
     <string name="message_saved">登録しました</string>
     <string name="message_edited">編集しました</string>
     <string name="message_deleted">削除しました</string>
     <string name="message_empty_so_add">この日の登録はありません</string>
-
+    <string name="label_meals">食事内容</string>
+    <string name="label_total_kcal">合計カロリー</string>
+    <string name="message_empty_photo">写真が未登録です</string>
+    <string name="label_this_day_photos">この日撮影した写真</string>
+    <string name="label_tall_with_unit">身長[cm]</string>
     <!-- 設定 -->
     <string name="label_notify_at_seven">毎朝7時に通知</string>
 

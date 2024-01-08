@@ -17,6 +17,10 @@ interface MealFoodsDao {
     @Query("SELECT * FROM MEALS WHERE dateTime BETWEEN :from AND :to")
     suspend fun getMeals(from: LocalDateTime, to: LocalDateTime): List<MealFoodsEntity>
 
+    @Transaction
+    @Query("SELECT * FROM MEALS WHERE mealId = :id")
+    suspend fun getMeal(id: Long): MealFoodsEntity?
+
     @Insert
     suspend fun saveMeal(mealFoods: MealEntity): Long
 

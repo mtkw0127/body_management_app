@@ -3,6 +3,7 @@ package com.app.body_manage.data.model
 import androidx.annotation.StringRes
 import com.app.body_manage.R
 import com.app.body_manage.data.entity.MealEntity
+import java.io.Serializable
 import java.time.LocalDateTime
 
 data class Meal(
@@ -11,7 +12,7 @@ data class Meal(
     override val time: LocalDateTime,
     val foods: List<Food>,
 ) : Measure {
-    data class Id(val value: Int)
+    data class Id(val value: Int) : Serializable
     enum class Timing(@StringRes val textResourceId: Int) {
         BREAKFAST(R.string.label_breakfast),
         LUNCH(R.string.label_lunch),

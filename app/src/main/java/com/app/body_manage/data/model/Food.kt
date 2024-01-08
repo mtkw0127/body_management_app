@@ -13,6 +13,11 @@ data class Food(
 ) {
     data class Id(val value: Int)
 
+    val nameWithKcal: String
+        get() {
+            return name + "(${kcal ?: "-"})"
+        }
+
     companion object {
         private val NEW_ID: Id = Id(0)
 

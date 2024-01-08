@@ -1,5 +1,6 @@
 package com.app.body_manage.ui.mealForm
 
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.data.model.Food
@@ -33,15 +34,24 @@ class MealFormViewModel(
     private val _saved = MutableStateFlow(false)
     val saved: StateFlow<Boolean> = _saved
 
-    fun init(type: Type, date: LocalDate) {
-        when (type) {
+    fun init(intent: Intent) {
+        when (checkNotNull(intent.getSerializableExtra(MealFormActivity.KEY_TYPE) as? Type)) {
             Type.Add -> {
+                val date =
+                    checkNotNull(intent.getSerializableExtra(MealFormActivity.KEY_DATE) as? LocalDate)
                 _mealFoods.update {
                     it.copy(time = LocalDateTime.of(date, it.time.toLocalTime()))
                 }
             }
 
-            else -> {}
+            Type.Edit -> {
+                viewModelScope.launch {
+                    val id =
+                        checkNotNull(intent.getSerializableExtra(MealFormActivity.KEY_MEAL_ID) as? Meal.Id)
+                    val meal = checkNotNull(mealRepository.getMeal(id))
+                    _mealFoods.update { meal }
+                }
+            }
         }
     }
 

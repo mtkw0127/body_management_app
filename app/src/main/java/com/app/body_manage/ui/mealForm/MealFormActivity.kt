@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.lifecycleScope
 import com.app.body_manage.TrainingApplication
+import com.app.body_manage.data.model.Meal
 import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.camera.CameraActivity
 import kotlinx.coroutines.flow.collectLatest
@@ -32,13 +33,8 @@ class MealFormActivity : AppCompatActivity() {
         viewModel = MealFormViewModel(
             mealRepository = (application as TrainingApplication).mealFoodsRepository
         )
-        val type = checkNotNull(intent.getSerializableExtra(KEY_TYPE) as? MealFormViewModel.Type)
-        val date = checkNotNull(intent.getSerializableExtra(KEY_DATE) as? LocalDate)
 
-        viewModel.init(
-            type,
-            date,
-        )
+        viewModel.init(intent)
 
         lifecycleScope.launch {
             viewModel.saved.collectLatest {
@@ -74,8 +70,9 @@ class MealFormActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val KEY_DATE = "KEY_DATE"
-        private const val KEY_TYPE = "KEY_TYPE"
+        const val KEY_DATE = "KEY_DATE"
+        const val KEY_MEAL_ID = "KEY_MEAL_ID"
+        const val KEY_TYPE = "KEY_TYPE"
 
         const val RESULT_KEY_MEAL_ADD = Activity.RESULT_FIRST_USER + 100
 
@@ -92,12 +89,12 @@ class MealFormActivity : AppCompatActivity() {
 
         fun createIntentEdit(
             context: Context,
-            localDate: LocalDate,
+            mealId: Meal.Id,
         ) = Intent(
             context,
             MealFormActivity::class.java
         ).apply {
-            putExtra(KEY_DATE, localDate)
+            putExtra(KEY_MEAL_ID, mealId)
             putExtra(KEY_TYPE, MealFormViewModel.Type.Edit)
         }
     }

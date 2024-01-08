@@ -18,6 +18,10 @@ class MealRepository(
         return mealFoodsDao.getMeals(from, to).map { it.toModel() }
     }
 
+    suspend fun getMeal(id: Meal.Id): Meal? {
+        return mealFoodsDao.getMeal(id.value.toLong())?.toModel()
+    }
+
     suspend fun getFoods(text: String): List<Food> {
         return mealFoodsDao.getFoods(text).map { it.toModel() }
     }

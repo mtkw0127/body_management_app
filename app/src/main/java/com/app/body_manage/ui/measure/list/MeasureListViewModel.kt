@@ -3,10 +3,10 @@ package com.app.body_manage.ui.measure.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
-import com.app.body_manage.data.entity.MealEntity
 import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.data.model.Meal
+import com.app.body_manage.data.model.Measure
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.MealRepository
@@ -27,8 +27,7 @@ sealed interface MeasureListState {
     val currentMonthRegisteredDayList: List<LocalDate>
 
     data class BodyMeasureListState(
-        val list: List<BodyMeasure>,
-        val meals: List<Meal>,
+        val list: List<Measure>,
         val tall: String,
         val loading: Boolean,
         val message: String,
@@ -43,10 +42,9 @@ data class MeasureListViewModelState(
     val date: LocalDate,
     val currentMonth: YearMonth,
     val currentMonthRegisteredDayList: List<LocalDate> = emptyList(),
-    val bodyMeasureList: List<BodyMeasure> = emptyList(),
-    val mealMeasureList: List<MealEntity> = emptyList(),
-    val photoList: List<BodyMeasurePhotoDao.PhotoData> = emptyList(),
+    val bodies: List<BodyMeasure> = emptyList(),
     val meals: List<Meal> = emptyList(),
+    val photoList: List<BodyMeasurePhotoDao.PhotoData> = emptyList(),
     val tall: String = 150.0F.toString(),
     val updateTall: Boolean = false,
     val loadingTall: Boolean = false,
@@ -57,8 +55,7 @@ data class MeasureListViewModelState(
     fun toUiState(): BodyMeasureListState {
         return BodyMeasureListState(
             date = date,
-            list = bodyMeasureList,
-            meals = meals,
+            list = (bodies + meals).sortedBy { it.time }, // 時刻が早い順に並べる
             photoList = photoList,
             tall = tall,
             currentMonth = currentMonth,
@@ -235,8 +232,7 @@ class MeasureListViewModel(
                 viewModelState.update {
                     it.copy(
                         date = viewModelState.value.date,
-                        bodyMeasureList = loadedResult,
-                        mealMeasureList = mutableListOf(),
+                        bodies = loadedResult,
                         tall = tall.toString()
                     )
                 }

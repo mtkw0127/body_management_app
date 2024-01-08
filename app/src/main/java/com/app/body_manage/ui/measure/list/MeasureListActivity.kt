@@ -16,6 +16,7 @@ import com.app.body_manage.data.model.PhotoModel
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.MealRepository
+import com.app.body_manage.ui.mealForm.MealFormActivity
 import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import java.time.LocalDate
@@ -103,7 +104,11 @@ class MeasureListActivity : AppCompatActivity() {
                 onChangeCurrentMonth = {
                     viewModel.setCurrentYearMonth(it)
                 },
-                onClickBack = { finish() }
+                onClickBack = { finish() },
+                onClickMeal = {
+                    val intent = MealFormActivity.createIntentEdit(this, it.id)
+                    launcher.launch(intent)
+                }
             )
         }
     }
