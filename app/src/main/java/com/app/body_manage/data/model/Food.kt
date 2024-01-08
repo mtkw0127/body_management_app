@@ -15,7 +15,7 @@ data class Food(
 
     val nameWithKcal: String
         get() {
-            return name + "(${kcal})"
+            return name + "($kcal)"
         }
 
     companion object {
