@@ -442,7 +442,7 @@ private fun MealItem(
         Text(text = stringResource(meal.timing.textResourceId))
         LabelAndText(
             label = stringResource(id = R.string.label_total_kcal),
-            text = meal.foods.mapNotNull { it.kcal }.sumOf { it }.toKcal()
+            text = meal.foods.map { it.kcal }.sumOf { it }.toKcal()
         )
         Row {
             Text(
