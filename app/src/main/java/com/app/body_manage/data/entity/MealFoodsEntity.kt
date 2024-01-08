@@ -18,6 +18,6 @@ data class MealFoodsEntity(
 fun MealFoodsEntity.toModel() = Meal(
     id = Meal.Id(meal.mealId),
     timing = checkNotNull(Meal.Timing.entries.find { it.name == this.meal.timing }),
-    dateTime = this.meal.dateTime,
+    time = this.meal.dateTime,
     foods = this.foods.map { it.toModel() }
 )

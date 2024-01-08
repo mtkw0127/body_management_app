@@ -73,7 +73,7 @@ fun MealFormScreen(
             ) {
                 SelectMealTiming(mealFoods.timing, onClickMealTiming)
                 Spacer(modifier = Modifier.size(10.dp))
-                Time(mealFoods.dateTime, onClickTime)
+                Time(mealFoods.time, onClickTime)
                 Spacer(modifier = Modifier.size(10.dp))
                 EatenFoods(
                     mealFoods.foods,

@@ -41,7 +41,7 @@ import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.common.CustomButton
 import com.app.body_manage.data.local.UserPreference
-import com.app.body_manage.data.model.BodyMeasureModel
+import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.extension.toCentiMeter
 import com.app.body_manage.extension.toMMDDEE
 import com.app.body_manage.extension.withPercent
@@ -51,7 +51,7 @@ import com.app.body_manage.style.Colors.Companion.theme
 @Composable
 fun TopScreen(
     userPreference: UserPreference?,
-    lastMeasure: BodyMeasureModel?,
+    lastMeasure: BodyMeasure?,
     bottomSheetDataList: List<BottomSheetData>,
     onClickCalendar: () -> Unit = {},
     onClickAddMeasure: () -> Unit = {},
@@ -89,7 +89,7 @@ fun TopScreen(
                         color = Color.Gray,
                     )
                     Spacer(modifier = Modifier.size(10.dp))
-                    lastMeasure?.capturedLocalDateTime?.toLocalDate()?.toMMDDEE()?.let { mmdd ->
+                    lastMeasure?.time?.toLocalDate()?.toMMDDEE()?.let { mmdd ->
                         Text(
                             text = "登録日: $mmdd",
                             fontSize = 14.sp,

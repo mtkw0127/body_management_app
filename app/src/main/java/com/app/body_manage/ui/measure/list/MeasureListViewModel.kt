@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.data.entity.MealEntity
 import com.app.body_manage.data.local.UserPreferenceRepository
-import com.app.body_manage.data.model.BodyMeasureModel
+import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.data.model.Meal
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
@@ -27,8 +27,8 @@ sealed interface MeasureListState {
     val currentMonthRegisteredDayList: List<LocalDate>
 
     data class BodyMeasureListState(
-        val list: List<BodyMeasureModel>,
-        val meas: List<Meal>,
+        val list: List<BodyMeasure>,
+        val meals: List<Meal>,
         val tall: String,
         val loading: Boolean,
         val message: String,
@@ -43,7 +43,7 @@ data class MeasureListViewModelState(
     val date: LocalDate,
     val currentMonth: YearMonth,
     val currentMonthRegisteredDayList: List<LocalDate> = emptyList(),
-    val bodyMeasureList: List<BodyMeasureModel> = emptyList(),
+    val bodyMeasureList: List<BodyMeasure> = emptyList(),
     val mealMeasureList: List<MealEntity> = emptyList(),
     val photoList: List<BodyMeasurePhotoDao.PhotoData> = emptyList(),
     val meals: List<Meal> = emptyList(),
@@ -54,11 +54,11 @@ data class MeasureListViewModelState(
 ) {
     private val someLoading = updateTall || loadingTall
 
-    fun toUiState(): MeasureListState {
+    fun toUiState(): BodyMeasureListState {
         return BodyMeasureListState(
             date = date,
             list = bodyMeasureList,
-            meas = meals,
+            meals = meals,
             photoList = photoList,
             tall = tall,
             currentMonth = currentMonth,
@@ -258,7 +258,7 @@ class MeasureListViewModel(
                 .onFailure { Timber.e(it) }
                 .onSuccess {
                     val dayList =
-                        it.map { bodyMeasure -> bodyMeasure.capturedLocalDateTime.toLocalDate() }
+                        it.map { bodyMeasure -> bodyMeasure.time.toLocalDate() }
                             .distinct()
                     viewModelState.update { vmState ->
                         vmState.copy(currentMonthRegisteredDayList = dayList)

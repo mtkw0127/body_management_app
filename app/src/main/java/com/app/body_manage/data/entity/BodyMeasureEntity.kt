@@ -4,7 +4,7 @@ import androidx.core.net.toUri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.app.body_manage.data.model.BodyMeasureModel
+import com.app.body_manage.data.model.BodyMeasure
 import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -21,10 +21,10 @@ data class BodyMeasureEntity(
     @ColumnInfo(name = "tall") val tall: Float?,
 ) : Serializable
 
-fun BodyMeasureEntity.toModel(): BodyMeasureModel =
-    BodyMeasureModel(
-        id = BodyMeasureModel.Id(this.ui),
-        capturedLocalDateTime = this.capturedTime,
+fun BodyMeasureEntity.toModel(): BodyMeasure =
+    BodyMeasure(
+        id = BodyMeasure.Id(this.ui),
+        time = this.capturedTime,
         weight = this.weight,
         fat = this.fat,
         memo = this.memo,

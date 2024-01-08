@@ -1,7 +1,5 @@
 package com.app.body_manage.ui.measure.list
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -65,7 +63,8 @@ import com.app.body_manage.R
 import com.app.body_manage.common.Calendar
 import com.app.body_manage.common.CustomButton
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
-import com.app.body_manage.data.model.BodyMeasureModel
+import com.app.body_manage.data.model.BodyMeasure
+import com.app.body_manage.data.model.Meal
 import com.app.body_manage.domain.BMICalculator
 import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.extension.toMMDDEE
@@ -80,7 +79,7 @@ import java.time.YearMonth
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MeasureListScreen(
-    uiState: MeasureListState,
+    uiState: MeasureListState.BodyMeasureListState,
     clickSaveBodyInfo: () -> Unit,
     setTall: (String) -> Unit,
     resetSnackBarMessage: () -> Unit,
@@ -163,9 +162,7 @@ fun MeasureListScreen(
                         }
                         if (showPhotoList.value) {
                             Box(modifier = Modifier.padding(top = 10.dp)) {
-                                if (uiState is MeasureListState.BodyMeasureListState) {
-                                    PhotoList(uiState.photoList, clickPhoto = showPhotoDetail)
-                                }
+                                PhotoList(uiState.photoList, clickPhoto = showPhotoDetail)
                             }
                         }
                     }
@@ -178,53 +175,54 @@ fun MeasureListScreen(
                             .padding(top = 10.dp)
                             .fillMaxHeight()
                     ) {
-                        when (uiState) {
-                            is MeasureListState.BodyMeasureListState -> {
-                                if (uiState.message.isNotEmpty()) {
-                                    LaunchedEffect(uiState.message) {
-                                        coroutineScope.launch {
-                                            state.snackbarHostState.showSnackbar(
-                                                message = uiState.message,
-                                                duration = SnackbarDuration.Short
-                                            )
-                                            resetSnackBarMessage.invoke()
-                                        }
-                                    }
-                                }
-                                if (uiState.list.isNotEmpty()) {
-                                    TallSetField(
-                                        tall = uiState.tall,
-                                        setTall = setTall,
-                                        clickSaveBodyInfo = clickSaveBodyInfo
-                                    ) {
-                                        showCalendar.value = false
-                                        showPhotoList.value = true
-                                        scope.launch {
-                                            sheetState.show()
-                                        }
-                                    }
-                                    Divider(modifier = Modifier.padding(12.dp))
-                                    BodyMeasureList(
-                                        list = uiState.list,
-                                        clickBodyMeasureEdit = clickBodyMeasureEdit,
+                        if (uiState.message.isNotEmpty()) {
+                            LaunchedEffect(uiState.message) {
+                                coroutineScope.launch {
+                                    state.snackbarHostState.showSnackbar(
+                                        message = uiState.message,
+                                        duration = SnackbarDuration.Short
                                     )
-                                } else {
-                                    Box(
-                                        contentAlignment = Alignment.Center,
-                                        modifier = Modifier.fillMaxSize()
-                                    ) {
-                                        Text(
-                                            text = "右下のボタンから登録してください",
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 16.sp,
-                                            color = Color.DarkGray,
-                                            textAlign = TextAlign.Center,
-                                        )
-                                    }
+                                    resetSnackBarMessage.invoke()
                                 }
                             }
+                        }
+                        TallSetField(
+                            tall = uiState.tall,
+                            setTall = setTall,
+                            clickSaveBodyInfo = clickSaveBodyInfo
+                        ) {
+                            showCalendar.value = false
+                            showPhotoList.value = true
+                            scope.launch {
+                                sheetState.show()
+                            }
+                        }
+                        Divider(modifier = Modifier.padding(12.dp))
 
-                            else -> {}
+                        if (uiState.list.isNotEmpty()) {
+                            BodyMeasureList(
+                                list = uiState.list,
+                                clickBodyMeasureEdit = clickBodyMeasureEdit,
+                            )
+                        }
+                        if (uiState.meals.isNotEmpty()) {
+                            MealList(
+                                meals = uiState.meals
+                            )
+                        }
+                        if (uiState.list.isEmpty() && uiState.meals.isEmpty()) {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                Text(
+                                    text = stringResource(id = R.string.message_empty_so_add),
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 16.sp,
+                                    color = Color.DarkGray,
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
                         }
                     }
                 }
@@ -238,6 +236,25 @@ fun MeasureListScreen(
                 )
             }
         }
+    )
+}
+
+@Composable
+private fun MealList(meals: List<Meal>) {
+    LazyColumn(
+        modifier = Modifier.wrapContentWidth(),
+        content = {
+            items(meals) { meal ->
+                ResultItem(time = meal.time) {
+                    Column {
+                        Text(stringResource(meal.timing.textResourceId))
+                        meal.foods.forEach { food ->
+                            Text(food.name)
+                        }
+                    }
+                }
+            }
+        },
     )
 }
 
@@ -373,100 +390,57 @@ private fun TallSetField(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun BodyMeasureList(
-    list: List<BodyMeasureModel>,
+    list: List<BodyMeasure>,
     clickBodyMeasureEdit: (LocalDateTime) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier.wrapContentWidth(),
         content = {
-            stickyHeader {
-                Row {
-                    DisplayMeasureColumn.entries.forEach {
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier
-                                .weight(1F)
-                                .background(Color.White)
-                                .padding(
-                                    start = 3.dp,
-                                    end = 3.dp,
-                                    bottom = 3.dp,
-                                ),
-                        ) {
-                            Text(
-                                text = it.display,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                            )
-                        }
-                    }
-                }
-            }
             items(list) { item ->
-                Row(
-                    Modifier
-                        .wrapContentHeight()
-                        .padding(top = 3.dp)
+                ResultItem(
+                    time = item.time
                 ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .padding(top = 6.dp)
-                            .weight(1F)
-                    ) {
-                        Text(
-                            text = item.capturedLocalDateTime.toJapaneseTime(),
-                        )
-                    }
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .padding(top = 6.dp)
-                            .weight(1F)
-                    ) {
-                        Text(
-                            text = item.weight.toString() + "Kg",
-                        )
-                    }
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .padding(top = 6.dp)
-                            .weight(1F)
-                    ) {
-                        Text(
-                            text = item.fat.toString() + "%",
-                        )
-                    }
-
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .padding(top = 6.dp)
-                            .weight(1F)
-                    ) {
-                        Text(
-                            text = BMICalculator().calculate(item.tall, item.weight),
-                        )
-                    }
+                    Text(
+                        text = item.weight.toString() + "Kg",
+                    )
+                    Text(
+                        text = item.fat.toString() + "%",
+                    )
+                    Text(
+                        text = BMICalculator().calculate(item.tall, item.weight),
+                    )
                     Icon(
                         Icons.Filled.Edit,
-                        contentDescription = "体型登録",
-                        modifier = Modifier
-                            .weight(1F)
-                            .padding(3.dp)
-                            .clickable {
-                                clickBodyMeasureEdit.invoke(
-                                    item.capturedLocalDateTime
-                                )
-                            },
+                        contentDescription = null,
+                        modifier = Modifier.clickable {
+                            clickBodyMeasureEdit.invoke(
+                                item.time
+                            )
+                        },
                         tint = Color.Gray,
                     )
                 }
             }
         },
     )
+}
+
+@Composable
+fun ResultItem(
+    time: LocalDateTime,
+    content: @Composable () -> Unit,
+) {
+    Row(
+        Modifier.wrapContentHeight()
+    ) {
+        Text(
+            text = time.toJapaneseTime(),
+        )
+        Spacer(modifier = Modifier.size(10.dp))
+        Column {
+            content()
+        }
+    }
 }

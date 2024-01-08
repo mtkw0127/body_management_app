@@ -5,7 +5,7 @@ import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.TrainingApplication
-import com.app.body_manage.data.model.BodyMeasureModel
+import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.data.model.PhotoModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,7 +18,7 @@ import timber.log.Timber
 sealed interface PhotoDetailState {
     data class ShowPhotoDetailWithDetail(
         val photoModel: PhotoModel,
-        val bodyMeasureModel: BodyMeasureModel?
+        val bodyMeasureModel: BodyMeasure?
     ) : PhotoDetailState
 
     data class ShowPhotoDetailFromUri(
@@ -30,7 +30,7 @@ sealed interface PhotoDetailState {
 
 data class PhotoDetailViewModelState(
     val photoModel: PhotoModel? = null,
-    val bodyMeasureModel: BodyMeasureModel? = null,
+    val bodyMeasureModel: BodyMeasure? = null,
     val err: Throwable? = null,
     val uri: Uri? = null,
 ) {

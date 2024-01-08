@@ -131,7 +131,7 @@ fun BodyMeasureFormScreen(
                         item {
                             CustomTextField(
                                 labelTextResourceId = R.string.hint_time,
-                                value = uiState.model.capturedLocalDateTime.toJapaneseTime(),
+                                value = uiState.model.time.toJapaneseTime(),
                                 leadingIcon = {
                                     Icon(
                                         imageVector = Icons.Default.AccessTime,

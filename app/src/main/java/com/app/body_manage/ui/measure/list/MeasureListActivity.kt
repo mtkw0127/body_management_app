@@ -58,7 +58,7 @@ class MeasureListActivity : AppCompatActivity() {
         initViewModel()
 
         setContent {
-            val state: MeasureListState by viewModel.uiState.collectAsState()
+            val state: MeasureListState.BodyMeasureListState by viewModel.uiState.collectAsState()
 
             MeasureListScreen(
                 uiState = state,

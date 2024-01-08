@@ -8,9 +8,9 @@ import java.time.LocalDateTime
 data class Meal(
     val id: Id,
     val timing: Timing,
-    val dateTime: LocalDateTime,
+    override val time: LocalDateTime,
     val foods: List<Food>,
-) {
+) : Measure {
     data class Id(val value: Int)
     enum class Timing(@StringRes val textResourceId: Int) {
         BREAKFAST(R.string.label_breakfast),
@@ -23,7 +23,7 @@ data class Meal(
         fun init() = Meal(
             id = Meal.Id(0),
             timing = Meal.Timing.BREAKFAST,
-            dateTime = LocalDateTime.now(),
+            time = LocalDateTime.now(),
             foods = emptyList(),
         )
     }
@@ -32,5 +32,5 @@ data class Meal(
 fun Meal.toEntity() = MealEntity(
     mealId = this.id.value,
     timing = this.timing.name,
-    dateTime = this.dateTime,
+    dateTime = this.time,
 )

@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.body_manage.data.entity.toModel
 import com.app.body_manage.data.local.UserPreference
 import com.app.body_manage.data.local.UserPreferenceRepository
-import com.app.body_manage.data.model.BodyMeasureModel
+import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +25,7 @@ class TopViewModel(
     private val _showUserPrefDialog = MutableStateFlow(false)
     val showUserPrefDialog: Flow<Boolean> = _showUserPrefDialog
 
-    private val _lastMeasure: MutableStateFlow<BodyMeasureModel?> = MutableStateFlow(null)
+    private val _lastMeasure: MutableStateFlow<BodyMeasure?> = MutableStateFlow(null)
     val lastMeasure = _lastMeasure.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun checkSetUpUserPref() {

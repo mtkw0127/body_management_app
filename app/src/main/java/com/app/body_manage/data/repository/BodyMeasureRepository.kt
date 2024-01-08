@@ -3,7 +3,7 @@ package com.app.body_manage.data.repository
 import com.app.body_manage.data.dao.BodyMeasureDao
 import com.app.body_manage.data.entity.BodyMeasureEntity
 import com.app.body_manage.data.entity.toModel
-import com.app.body_manage.data.model.BodyMeasureModel
+import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.data.model.toEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,12 +12,12 @@ import java.time.LocalDateTime
 
 class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
 
-    suspend fun insert(model: BodyMeasureModel): BodyMeasureModel.Id {
+    suspend fun insert(model: BodyMeasure): BodyMeasure.Id {
         val id = trainingDao.insert(model.toEntity())
-        return BodyMeasureModel.Id(id.toInt())
+        return BodyMeasure.Id(id.toInt())
     }
 
-    suspend fun getEntityListAll(): List<BodyMeasureModel> {
+    suspend fun getEntityListAll(): List<BodyMeasure> {
         return trainingDao.getTrainingEntityListAll().map { it.toModel() }
     }
 
@@ -25,13 +25,13 @@ class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
         return trainingDao.getLast()
     }
 
-    suspend fun getBetween(from: LocalDate, to: LocalDate): List<BodyMeasureModel> =
+    suspend fun getBetween(from: LocalDate, to: LocalDate): List<BodyMeasure> =
         withContext(Dispatchers.IO) {
             return@withContext trainingDao.getTrainingEntityListBetween(from, to)
                 .map { it.toModel() }
         }
 
-    suspend fun getBetweenGroupByDate(from: LocalDate, to: LocalDate): List<BodyMeasureModel> =
+    suspend fun getBetweenGroupByDate(from: LocalDate, to: LocalDate): List<BodyMeasure> =
         withContext(Dispatchers.IO) {
             return@withContext trainingDao.getTrainingEntityListBetweenGroupByDate(from, to)
                 .map { it.toModel() }
@@ -48,7 +48,7 @@ class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
                 .firstOrNull()?.tall
         }
 
-    suspend fun getEntityListByDate(date: LocalDate): List<BodyMeasureModel> {
+    suspend fun getEntityListByDate(date: LocalDate): List<BodyMeasure> {
         return trainingDao.getTrainingEntityListByDate(date).map { it.toModel() }
     }
 
@@ -62,11 +62,11 @@ class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
         return trainingDao.deleteBodyMeasure(localDateTime)
     }
 
-    suspend fun update(model: BodyMeasureModel): Int {
+    suspend fun update(model: BodyMeasure): Int {
         return trainingDao.update(model.toEntity())
     }
 
-    suspend fun fetch(bodyMeasureId: BodyMeasureModel.Id): BodyMeasureModel {
+    suspend fun fetch(bodyMeasureId: BodyMeasure.Id): BodyMeasure {
         return trainingDao.fetch(bodyMeasureId.value).toModel()
     }
 }

@@ -37,7 +37,7 @@ class MealFormViewModel(
         when (type) {
             Type.Add -> {
                 _mealFoods.update {
-                    it.copy(dateTime = LocalDateTime.of(date, it.dateTime.toLocalTime()))
+                    it.copy(time = LocalDateTime.of(date, it.time.toLocalTime()))
                 }
             }
 
@@ -95,8 +95,8 @@ class MealFormViewModel(
 
     fun updateTime(time: LocalTime) {
         _mealFoods.update {
-            val dateTime = LocalDateTime.of(it.dateTime.toLocalDate(), time)
-            it.copy(dateTime = dateTime)
+            val dateTime = LocalDateTime.of(it.time.toLocalDate(), time)
+            it.copy(time = dateTime)
         }
     }
 }

@@ -56,7 +56,7 @@ class MealFormActivity : AppCompatActivity() {
                 mealFoods = mealFoods,
                 foodCandidates = foodCandidates,
                 onClickTime = {
-                    TimePickerDialog.createTimePickerDialog(mealFoods.dateTime) { hour, minute ->
+                    TimePickerDialog.createTimePickerDialog(mealFoods.time) { hour, minute ->
                         viewModel.updateTime(LocalTime.of(hour, minute))
                     }.show(supportFragmentManager, null)
                 },
