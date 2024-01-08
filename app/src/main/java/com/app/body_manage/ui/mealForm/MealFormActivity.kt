@@ -8,9 +8,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.lifecycleScope
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.camera.CameraActivity
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -35,6 +38,14 @@ class MealFormActivity : AppCompatActivity() {
             type,
             date,
         )
+
+        lifecycleScope.launch {
+            viewModel.saved.collectLatest {
+                if (it) {
+                    finish()
+                }
+            }
+        }
 
         setContent {
             val mealFoods by viewModel.mealFoods.collectAsState()

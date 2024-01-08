@@ -7,6 +7,7 @@ import com.app.body_manage.data.model.Meal
 import com.app.body_manage.data.repository.MealRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -29,6 +30,9 @@ class MealFormViewModel(
     val foodCandidates =
         _foodCandidates.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
+    private val _saved = MutableStateFlow(false)
+    val saved: StateFlow<Boolean> = _saved
+
     fun init(type: Type, date: LocalDate) {
         when (type) {
             Type.Add -> {
@@ -44,6 +48,7 @@ class MealFormViewModel(
     fun save() {
         viewModelScope.launch {
             mealRepository.saveMeal(_mealFoods.value)
+            _saved.value = true
         }
     }
 
