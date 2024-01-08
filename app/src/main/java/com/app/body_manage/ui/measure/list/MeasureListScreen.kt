@@ -454,8 +454,10 @@ private fun MealItem(
                 modifier = Modifier.width(100.dp)
             )
             Spacer(modifier = Modifier.size(10.dp))
-            meal.foods.forEach {
-                Text(text = it.nameWithKcal)
+            Column {
+                meal.foods.forEach {
+                    Text(text = it.nameWithKcal)
+                }
             }
         }
     }

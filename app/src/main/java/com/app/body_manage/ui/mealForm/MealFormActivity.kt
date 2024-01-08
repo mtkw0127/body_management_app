@@ -39,7 +39,11 @@ class MealFormActivity : AppCompatActivity() {
         lifecycleScope.launch {
             viewModel.saved.collectLatest {
                 if (it) {
-                    setResult(RESULT_KEY_MEAL_ADD)
+                    val resultCode = when (viewModel.type) {
+                        MealFormViewModel.Type.Add -> RESULT_KEY_MEAL_ADD
+                        MealFormViewModel.Type.Edit -> RESULT_KEY_MEAL_EDIT
+                    }
+                    setResult(resultCode)
                     finish()
                 }
             }
@@ -75,6 +79,7 @@ class MealFormActivity : AppCompatActivity() {
         const val KEY_TYPE = "KEY_TYPE"
 
         const val RESULT_KEY_MEAL_ADD = Activity.RESULT_FIRST_USER + 100
+        const val RESULT_KEY_MEAL_EDIT = Activity.RESULT_FIRST_USER + 101
 
         fun createIntentAdd(
             context: Context,

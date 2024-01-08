@@ -19,7 +19,7 @@ data class Food(
         }
 
     companion object {
-        private val NEW_ID: Id = Id(0)
+        val NEW_ID: Id = Id(0)
 
         fun createNewFood(name: String): Food {
             return Food(

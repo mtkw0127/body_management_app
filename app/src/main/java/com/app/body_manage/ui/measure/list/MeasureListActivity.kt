@@ -36,7 +36,15 @@ class MeasureListActivity : AppCompatActivity() {
     }
 
     private val launcher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == MealFormActivity.RESULT_KEY_MEAL_ADD) {
+                Toast.makeText(this, getString(R.string.message_saved), Toast.LENGTH_LONG).show()
+            }
+            if (it.resultCode == MealFormActivity.RESULT_KEY_MEAL_EDIT) {
+                Toast.makeText(this, getString(R.string.message_edited), Toast.LENGTH_LONG).show()
+            }
+            viewModel.reload()
+        }
 
     private val measureFormLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {

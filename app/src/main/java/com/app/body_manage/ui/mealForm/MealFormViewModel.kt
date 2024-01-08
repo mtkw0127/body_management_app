@@ -34,8 +34,11 @@ class MealFormViewModel(
     private val _saved = MutableStateFlow(false)
     val saved: StateFlow<Boolean> = _saved
 
+    lateinit var type: Type
+
     fun init(intent: Intent) {
-        when (checkNotNull(intent.getSerializableExtra(MealFormActivity.KEY_TYPE) as? Type)) {
+        type = checkNotNull(intent.getSerializableExtra(MealFormActivity.KEY_TYPE) as? Type)
+        when (type) {
             Type.Add -> {
                 val date =
                     checkNotNull(intent.getSerializableExtra(MealFormActivity.KEY_DATE) as? LocalDate)
@@ -57,7 +60,15 @@ class MealFormViewModel(
 
     fun save() {
         viewModelScope.launch {
-            mealRepository.saveMeal(_mealFoods.value)
+            when (type) {
+                Type.Add -> {
+                    mealRepository.saveMeal(_mealFoods.value)
+                }
+
+                Type.Edit -> {
+                    mealRepository.updateMeal(_mealFoods.value)
+                }
+            }
             _saved.value = true
         }
     }

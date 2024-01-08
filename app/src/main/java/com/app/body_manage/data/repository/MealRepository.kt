@@ -29,8 +29,34 @@ class MealRepository(
     @Transaction
     suspend fun saveMeal(meal: Meal) {
         val mealId = mealFoodsDao.saveMeal(meal.toEntity())
-        val foodIds = mealFoodsDao.saveFoods(meal.foods.map { it.toEntity() })
+        val foodIds = mealFoodsDao.saveFoods(
+            // NEW_IDのものを新規登録する
+            meal.foods.filter { it.id == Food.NEW_ID }.map { it.toEntity() }
+        )
         foodIds.forEach { foodId ->
+            mealFoodsDao.saveMealFoods(MealFoodCrossRef(mealId, foodId))
+        }
+    }
+
+    @Transaction
+    suspend fun updateMeal(meal: Meal) {
+        mealFoodsDao.deleteMeal(meal.toEntity())
+        val mealId = mealFoodsDao.saveMeal(meal.toEntity())
+
+        // 食事と食べ物の関係性を一度削除する
+        mealFoodsDao.deleteMealFoods(mealId)
+
+        // 新しい食事を新規登録する
+        val newFoodIds = mealFoodsDao.saveFoods(
+            meal.foods.filter { it.id == Food.NEW_ID }.map { it.toEntity() }
+        )
+
+        // 再登録する
+        val registeredFoodIds =
+            meal.foods.filterNot { it.id == Food.NEW_ID }.map { it.id.value.toLong() }
+
+        // 関係性を再構築する
+        (newFoodIds + registeredFoodIds).forEach { foodId ->
             mealFoodsDao.saveMealFoods(MealFoodCrossRef(mealId, foodId))
         }
     }
