@@ -219,7 +219,7 @@ class CalendarAdapter(
                             .joinToString("\n")
                     val measureCntView =
                         calendarCellView.findViewById<TextView>(R.id.measure_cnt)
-                    measureCntView.text = "${measureCntView.text}\n${text}"
+                    measureCntView.text = "${measureCntView.text}\n$text"
                 }
         }
         return calendarCellView
