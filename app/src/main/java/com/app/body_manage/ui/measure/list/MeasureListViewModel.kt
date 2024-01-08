@@ -3,7 +3,7 @@ package com.app.body_manage.ui.measure.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
-import com.app.body_manage.data.entity.MealMeasureEntity
+import com.app.body_manage.data.entity.MealEntity
 import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.model.BodyMeasureModel
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
@@ -40,7 +40,7 @@ sealed interface MeasureListState {
     ) : MeasureListState
 
     data class MealMeasureListState(
-        val list: List<MealMeasureEntity>,
+        val list: List<MealEntity>,
         override val measureType: MeasureType,
         override val date: LocalDate,
         override val currentMonth: YearMonth,
@@ -48,7 +48,7 @@ sealed interface MeasureListState {
     ) : MeasureListState
 
     data class CommonMeasureListState(
-        val list: List<MealMeasureEntity>,
+        val list: List<MealEntity>,
         override val measureType: MeasureType,
         override val date: LocalDate,
         override val currentMonth: YearMonth,
@@ -59,11 +59,11 @@ sealed interface MeasureListState {
 data class MeasureListViewModelState(
     val date: LocalDate,
     val currentMonth: YearMonth,
-    val currentMonthRegisteredDayList: List<LocalDate> = listOf(),
+    val currentMonthRegisteredDayList: List<LocalDate> = emptyList(),
     val measureType: MeasureType,
-    val bodyMeasureList: List<BodyMeasureModel> = listOf(),
-    val mealMeasureList: List<MealMeasureEntity> = listOf(),
-    val photoList: List<BodyMeasurePhotoDao.PhotoData> = listOf(),
+    val bodyMeasureList: List<BodyMeasureModel> = emptyList(),
+    val mealMeasureList: List<MealEntity> = emptyList(),
+    val photoList: List<BodyMeasurePhotoDao.PhotoData> = emptyList(),
     val tall: String = 150.0F.toString(),
     val updateTall: Boolean = false,
     val loadingTall: Boolean = false,
@@ -164,10 +164,6 @@ class MeasureListViewModel(
                     loadPhoto()
                     loadRegisteredDayList()
                 }
-            }
-
-            MeasureType.MEAL -> {
-                loadMealMeasureList()
             }
 
             else -> {}
@@ -309,19 +305,6 @@ class MeasureListViewModel(
                         vmState.copy(currentMonthRegisteredDayList = dayList)
                     }
                 }
-        }
-    }
-
-    private fun loadMealMeasureList() {
-        val result = listOf(
-            MealMeasureEntity(ui = 1),
-            MealMeasureEntity(ui = 2),
-            MealMeasureEntity(ui = 3)
-        )
-        viewModelState.update {
-            it.copy(
-                mealMeasureList = result
-            )
         }
     }
 }

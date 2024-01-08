@@ -20,12 +20,12 @@ import com.app.body_manage.dialog.FloatNumberPickerDialog
 import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
+import com.app.body_manage.ui.mealForm.MealFormActivity
 import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.ui.top.UserPreferenceSettingDialog.Companion.REQUEST_KEY
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 class TopActivity : AppCompatActivity() {
     private val launcher =
@@ -80,11 +80,14 @@ class TopActivity : AppCompatActivity() {
                     launcher.launch(CalendarActivity.createIntent(this))
                 },
                 onClickAdd = {
+//                    launcher.launch(
+//                        MeasureFormActivity.createMeasureFormIntent(
+//                            this,
+//                            LocalDate.now()
+//                        )
+//                    )
                     launcher.launch(
-                        MeasureFormActivity.createMeasureFormIntent(
-                            this,
-                            LocalDate.now()
-                        )
+                        MealFormActivity.createIntent(this)
                     )
                 },
                 onClickSetGoat = {

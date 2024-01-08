@@ -9,9 +9,7 @@ import java.io.Serializable
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-@Entity(
-    tableName = "bodyMeasures"
-)
+@Entity(tableName = "bodyMeasures")
 data class BodyMeasureEntity(
     @PrimaryKey(autoGenerate = true) var ui: Int,
     @ColumnInfo(name = "calendar_date") val calendarDate: LocalDate, // 登録日
