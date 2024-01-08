@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Scaffold
@@ -33,7 +32,6 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.body_manage.R
@@ -239,36 +237,30 @@ fun TopScreen(
 }
 
 @Composable
-private fun BottomButtons(
+fun BottomButtons(
     onClickAddMeasure: () -> Unit,
     onClickAddMeal: () -> Unit
 ) {
     Row(
         modifier = Modifier
-            .shadow(0.5.dp)
+            .shadow(2.dp)
             .height(50.dp)
             .fillMaxWidth()
             .background(Color.White),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-        Button(
-            onClick = onClickAddMeal
-        ) {
-            Text(
-                text = stringResource(id = R.string.label_add_meal),
-                textAlign = TextAlign.Center,
-            )
-        }
+        CustomButton(
+            onClick = onClickAddMeal,
+            valueResourceId = R.string.label_add_meal,
+            backgroundColor = theme,
+        )
         VerticalLine()
-        Button(
-            onClick = onClickAddMeasure
-        ) {
-            Text(
-                text = stringResource(id = R.string.label_add_measure),
-                textAlign = TextAlign.Center,
-            )
-        }
+        CustomButton(
+            onClick = onClickAddMeasure,
+            valueResourceId = R.string.label_add_measure,
+            backgroundColor = theme,
+        )
     }
 }
 

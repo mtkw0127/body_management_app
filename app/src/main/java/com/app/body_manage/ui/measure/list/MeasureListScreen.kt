@@ -27,7 +27,6 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuDefaults.textFieldColors
-import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
@@ -37,7 +36,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Photo
@@ -75,9 +73,9 @@ import com.app.body_manage.extension.toFat
 import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.extension.toMMDDEE
 import com.app.body_manage.extension.toWeight
-import com.app.body_manage.style.Colors.Companion.accentColor
 import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
+import com.app.body_manage.ui.top.BottomButtons
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -93,7 +91,8 @@ fun MeasureListScreen(
     resetSnackBarMessage: () -> Unit,
     setLocalDate: (LocalDate) -> Unit,
     clickBodyMeasureEdit: (LocalDateTime) -> Unit,
-    clickFab: () -> Unit,
+    onClickAddMeasure: () -> Unit,
+    onClickAddMeal: () -> Unit,
     updateDate: (Int) -> Unit,
     showPhotoDetail: (Int) -> Unit,
     onChangeCurrentMonth: (YearMonth) -> Unit,
@@ -108,6 +107,11 @@ fun MeasureListScreen(
     val showPhotoList = rememberSaveable { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     Scaffold(
+        bottomBar = {
+            Column {
+                BottomButtons(onClickAddMeasure, onClickAddMeal)
+            }
+        },
         scaffoldState = state,
         topBar = {
             TopAppBar(backgroundColor = theme) {
@@ -232,14 +236,6 @@ fun MeasureListScreen(
                 }
             }
         },
-        floatingActionButton = {
-            FloatingActionButton(onClick = clickFab, backgroundColor = accentColor) {
-                Icon(
-                    Icons.Filled.Add,
-                    contentDescription = null,
-                )
-            }
-        }
     )
 }
 

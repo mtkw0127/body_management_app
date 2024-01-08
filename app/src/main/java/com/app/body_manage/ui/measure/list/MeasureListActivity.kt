@@ -94,11 +94,19 @@ class MeasureListActivity : AppCompatActivity() {
                 updateDate = {
                     viewModel.updateDate(it)
                 },
-                clickFab = {
+                onClickAddMeasure = {
                     measureFormLauncher.launch(
                         MeasureFormActivity.createMeasureFormIntent(
                             context = this,
                             measureDate = viewModel.uiState.value.date
+                        )
+                    )
+                },
+                onClickAddMeal = {
+                    measureFormLauncher.launch(
+                        MealFormActivity.createIntentAdd(
+                            context = this,
+                            localDate = LocalDate.now(),
                         )
                     )
                 },
