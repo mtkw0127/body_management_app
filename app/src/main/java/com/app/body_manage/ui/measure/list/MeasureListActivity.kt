@@ -43,6 +43,9 @@ class MeasureListActivity : AppCompatActivity() {
             if (it.resultCode == MealFormActivity.RESULT_KEY_MEAL_EDIT) {
                 Toast.makeText(this, getString(R.string.message_edited), Toast.LENGTH_LONG).show()
             }
+            if (it.resultCode == MealFormActivity.RESULT_KEY_MEAL_DELETE) {
+                Toast.makeText(this, getString(R.string.message_deleted), Toast.LENGTH_LONG).show()
+            }
             viewModel.reload()
         }
 

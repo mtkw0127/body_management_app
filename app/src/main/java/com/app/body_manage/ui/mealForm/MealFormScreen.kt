@@ -30,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.sharp.Cancel
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -57,6 +58,7 @@ import java.time.LocalDateTime
 
 @Composable
 fun MealFormScreen(
+    type: MealFormViewModel.Type,
     mealFoods: Meal,
     foodCandidates: List<Food>,
     onClickMealTiming: (Meal.Timing) -> Unit,
@@ -67,6 +69,7 @@ fun MealFormScreen(
     onClickSave: () -> Unit,
     onClickDeleteFood: (Food) -> Unit,
     onClickTakePhoto: () -> Unit,
+    onClickDeleteForm: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -79,6 +82,16 @@ fun MealFormScreen(
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
+                    if (type == MealFormViewModel.Type.Edit) {
+                        Spacer(modifier = Modifier.weight(1F))
+                        Icon(
+                            imageVector = Icons.Filled.DeleteForever,
+                            tint = Color.Black,
+                            contentDescription = null,
+                            modifier = Modifier.clickable { onClickDeleteForm() }
+                        )
+                        Spacer(modifier = Modifier.size(10.dp))
+                    }
                 }
             }
         }

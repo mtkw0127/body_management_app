@@ -36,23 +36,13 @@ class MealFormActivity : AppCompatActivity() {
 
         viewModel.init(intent)
 
-        lifecycleScope.launch {
-            viewModel.saved.collectLatest {
-                if (it) {
-                    val resultCode = when (viewModel.type) {
-                        MealFormViewModel.Type.Add -> RESULT_KEY_MEAL_ADD
-                        MealFormViewModel.Type.Edit -> RESULT_KEY_MEAL_EDIT
-                    }
-                    setResult(resultCode)
-                    finish()
-                }
-            }
-        }
+        initListener()
 
         setContent {
             val mealFoods by viewModel.mealFoods.collectAsState()
             val foodCandidates by viewModel.foodCandidates.collectAsState()
             MealFormScreen(
+                type = viewModel.type,
                 mealFoods = mealFoods,
                 foodCandidates = foodCandidates,
                 onClickTime = {
@@ -69,7 +59,32 @@ class MealFormActivity : AppCompatActivity() {
                 onClickTakePhoto = {
                     cameraLauncher.launch(CameraActivity.createCameraActivityIntent(this))
                 },
+                onClickDeleteForm = viewModel::deleteForm
             )
+        }
+    }
+
+    private fun initListener() {
+        lifecycleScope.launch {
+            viewModel.saved.collectLatest {
+                if (it) {
+                    val resultCode = when (viewModel.type) {
+                        MealFormViewModel.Type.Add -> RESULT_KEY_MEAL_ADD
+                        MealFormViewModel.Type.Edit -> RESULT_KEY_MEAL_EDIT
+                    }
+                    setResult(resultCode)
+                    finish()
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.deleted.collectLatest {
+                if (it) {
+                    setResult(RESULT_KEY_MEAL_DELETE)
+                    finish()
+                }
+            }
         }
     }
 
@@ -80,6 +95,7 @@ class MealFormActivity : AppCompatActivity() {
 
         const val RESULT_KEY_MEAL_ADD = Activity.RESULT_FIRST_USER + 100
         const val RESULT_KEY_MEAL_EDIT = Activity.RESULT_FIRST_USER + 101
+        const val RESULT_KEY_MEAL_DELETE = Activity.RESULT_FIRST_USER + 102
 
         fun createIntentAdd(
             context: Context,

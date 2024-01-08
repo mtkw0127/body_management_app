@@ -34,6 +34,9 @@ class MealFormViewModel(
     private val _saved = MutableStateFlow(false)
     val saved: StateFlow<Boolean> = _saved
 
+    private val _deleted = MutableStateFlow(false)
+    val deleted: StateFlow<Boolean> = _deleted
+
     lateinit var type: Type
 
     fun init(intent: Intent) {
@@ -118,6 +121,13 @@ class MealFormViewModel(
         _mealFoods.update {
             val dateTime = LocalDateTime.of(it.time.toLocalDate(), time)
             it.copy(time = dateTime)
+        }
+    }
+
+    fun deleteForm() {
+        viewModelScope.launch {
+            mealRepository.deleteMeal(_mealFoods.value)
+            _deleted.value = true
         }
     }
 }

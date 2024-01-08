@@ -60,4 +60,10 @@ class MealRepository(
             mealFoodsDao.saveMealFoods(MealFoodCrossRef(mealId, foodId))
         }
     }
+
+    @Transaction
+    suspend fun deleteMeal(meal: Meal) {
+        mealFoodsDao.deleteMeal(meal.toEntity())
+        mealFoodsDao.deleteMealFoods(meal.id.value.toLong())
+    }
 }
