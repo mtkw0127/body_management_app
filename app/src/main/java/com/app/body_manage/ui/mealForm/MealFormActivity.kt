@@ -4,20 +4,36 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.app.body_manage.TrainingApplication
+import com.app.body_manage.dialog.TimePickerDialog
+import com.app.body_manage.ui.camera.CameraActivity
+import java.time.LocalDate
+import java.time.LocalTime
 
 class MealFormActivity : AppCompatActivity() {
 
     lateinit var viewModel: MealFormViewModel
+
+    private val cameraLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         viewModel = MealFormViewModel(
             mealRepository = (application as TrainingApplication).mealFoodsRepository
+        )
+        val type = checkNotNull(intent.getSerializableExtra(KEY_TYPE) as? MealFormViewModel.Type)
+        val date = checkNotNull(intent.getSerializableExtra(KEY_DATE) as? LocalDate)
+
+        viewModel.init(
+            type,
+            date,
         )
 
         setContent {
@@ -26,19 +42,48 @@ class MealFormActivity : AppCompatActivity() {
             MealFormScreen(
                 mealFoods = mealFoods,
                 foodCandidates = foodCandidates,
-                onClickTime = {},
+                onClickTime = {
+                    TimePickerDialog.createTimePickerDialog(mealFoods.dateTime) { hour, minute ->
+                        viewModel.updateTime(LocalTime.of(hour, minute))
+                    }.show(supportFragmentManager, null)
+                },
                 onClickMealTiming = viewModel::updateTiming,
                 onSearchTextChange = viewModel::searchFood,
                 onClickSave = viewModel::save,
                 onClickSearchedFood = viewModel::addFood,
                 onClickDeleteFood = viewModel::removeFood,
                 onClickBackPress = this@MealFormActivity::finish,
-                onClickTakePhoto = {},
+                onClickTakePhoto = {
+                    cameraLauncher.launch(CameraActivity.createCameraActivityIntent(this))
+                },
             )
         }
     }
 
     companion object {
-        fun createIntent(context: Context) = Intent(context, MealFormActivity::class.java)
+        private const val KEY_DATE = "KEY_DATE"
+        private const val KEY_TYPE = "KEY_TYPE"
+
+        fun createIntentAdd(
+            context: Context,
+            localDate: LocalDate,
+        ) = Intent(
+            context,
+            MealFormActivity::class.java
+        ).apply {
+            putExtra(KEY_DATE, localDate)
+            putExtra(KEY_TYPE, MealFormViewModel.Type.Add)
+        }
+
+        fun createIntentEdit(
+            context: Context,
+            localDate: LocalDate,
+        ) = Intent(
+            context,
+            MealFormActivity::class.java
+        ).apply {
+            putExtra(KEY_DATE, localDate)
+            putExtra(KEY_TYPE, MealFormViewModel.Type.Edit)
+        }
     }
 }

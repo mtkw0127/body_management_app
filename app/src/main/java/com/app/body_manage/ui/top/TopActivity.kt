@@ -26,6 +26,7 @@ import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.ui.top.UserPreferenceSettingDialog.Companion.REQUEST_KEY
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class TopActivity : AppCompatActivity() {
     private val launcher =
@@ -79,15 +80,17 @@ class TopActivity : AppCompatActivity() {
                 onClickCalendar = {
                     launcher.launch(CalendarActivity.createIntent(this))
                 },
-                onClickAdd = {
-//                    launcher.launch(
-//                        MeasureFormActivity.createMeasureFormIntent(
-//                            this,
-//                            LocalDate.now()
-//                        )
-//                    )
+                onClickAddMeal = {
                     launcher.launch(
-                        MealFormActivity.createIntent(this)
+                        MealFormActivity.createIntentAdd(this, LocalDate.now())
+                    )
+                },
+                onClickAddMeasure = {
+                    launcher.launch(
+                        MeasureFormActivity.createMeasureFormIntent(
+                            this,
+                            LocalDate.now()
+                        )
                     )
                 },
                 onClickSetGoat = {

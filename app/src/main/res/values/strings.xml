@@ -47,6 +47,9 @@
     <string name="label_healthy_weight">健康的な体重</string>
     <string name="label_ideal_weight">理想的な体重</string>
     <string name="message_this_is_estimated_value">※ 18歳から79歳の方に妥当性が認められた推定値です</string>
+    <string name="label_add_meal">食事を登録</string>
+    <string name="label_add_measure">体型を登録</string>
+
 
     <!-- 測定一覧-->
     <string name="message_saved">保存しました</string>

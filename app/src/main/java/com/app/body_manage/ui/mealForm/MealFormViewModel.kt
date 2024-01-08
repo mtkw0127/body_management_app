@@ -10,10 +10,17 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 class MealFormViewModel(
     private val mealRepository: MealRepository
 ) : ViewModel() {
+
+    enum class Type {
+        Add, Edit
+    }
 
     private val _mealFoods: MutableStateFlow<Meal> = MutableStateFlow(Meal.init())
     val mealFoods = _mealFoods.stateIn(viewModelScope, SharingStarted.Eagerly, Meal.init())
@@ -21,6 +28,18 @@ class MealFormViewModel(
     private val _foodCandidates: MutableStateFlow<List<Food>> = MutableStateFlow(emptyList())
     val foodCandidates =
         _foodCandidates.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    fun init(type: Type, date: LocalDate) {
+        when (type) {
+            Type.Add -> {
+                _mealFoods.update {
+                    it.copy(dateTime = LocalDateTime.of(date, it.dateTime.toLocalTime()))
+                }
+            }
+
+            else -> {}
+        }
+    }
 
     fun save() {
         viewModelScope.launch {
@@ -63,6 +82,13 @@ class MealFormViewModel(
                 searchResults.add(Food.createNewFood(text))
             }
             _foodCandidates.value = searchResults
+        }
+    }
+
+    fun updateTime(time: LocalTime) {
+        _mealFoods.update {
+            val dateTime = LocalDateTime.of(it.dateTime.toLocalDate(), time)
+            it.copy(dateTime = dateTime)
         }
     }
 }
