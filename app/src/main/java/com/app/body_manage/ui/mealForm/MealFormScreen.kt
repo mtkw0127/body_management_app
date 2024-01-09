@@ -58,6 +58,7 @@ import com.app.body_manage.R
 import com.app.body_manage.common.CustomButton
 import com.app.body_manage.common.toKcal
 import com.app.body_manage.data.model.Food
+import com.app.body_manage.data.model.Food.Companion.NEW_ID
 import com.app.body_manage.data.model.Meal
 import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.extension.toMMDDEE
@@ -340,8 +341,13 @@ private fun TextWithCandidate(
                 ) {
                     Text(text = candidate.name + " (${candidate.kcal.toKcal()})")
                     Spacer(modifier = Modifier.weight(1F))
+                    val textResource = if (candidate.id == NEW_ID) {
+                        R.string.message_save_and_add
+                    } else {
+                        R.string.message_add_food
+                    }
                     Text(
-                        text = stringResource(id = R.string.message_save_and_add),
+                        text = stringResource(id = textResource),
                         color = Color.DarkGray,
                         fontSize = 11.sp
                     )

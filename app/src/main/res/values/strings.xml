@@ -117,5 +117,6 @@
     <string name="label_all_kcal">合計カロリー</string>
     <string name="message_search_and_add">検索して食べ物を登録しましょう</string>
     <string name="label_result_of_search">検索結果</string>
-    <string name="message_save_and_add">登録して追加</string>
+    <string name="message_save_and_add">新規追加</string>
+    <string name="message_add_food">追加</string>
 </resources>
