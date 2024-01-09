@@ -37,6 +37,7 @@ import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.sharp.Cancel
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,6 +45,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -107,32 +110,38 @@ fun MealFormScreen(
             }
         }
     ) {
-        Column(modifier = Modifier.padding(it)) {
-            Column(
-                Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
-            ) {
-                SelectMealTiming(mealFoods.timing, onClickMealTiming)
-                Spacer(modifier = Modifier.size(10.dp))
-                Time(mealFoods.time, onClickTime)
-                Spacer(modifier = Modifier.size(10.dp))
-                EatenFoods(
-                    mealFoods.foods,
-                    onClickDeleteFood,
-                    onUpdateMealKcal
+        Box(
+            contentAlignment = Alignment.BottomStart
+        ) {
+            Column(modifier = Modifier.padding(it)) {
+                Column(
+                    Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
+                ) {
+                    SelectMealTiming(mealFoods.timing, onClickMealTiming)
+                    Spacer(modifier = Modifier.size(10.dp))
+                    Time(mealFoods.time, onClickTime)
+                    Spacer(modifier = Modifier.size(10.dp))
+                    EatenFoods(
+                        mealFoods.foods,
+                        onClickDeleteFood,
+                        onUpdateMealKcal
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1F))
+            }
+            Column {
+                TextWithCandidate(
+                    onValueChange = onSearchTextChange,
+                    onClickSearchedFood = onClickSearchedFood,
+                    candidates = foodCandidates,
+                )
+                SaveForm(
+                    onClickBackPress = onClickBackPress,
+                    onClickSave = onClickSave,
+                    onClickTakePhoto = onClickTakePhoto,
+                    enable = mealFoods.foods.isNotEmpty(),
                 )
             }
-            Spacer(modifier = Modifier.weight(1F))
-            TextWithCandidate(
-                onValueChange = onSearchTextChange,
-                onClickSearchedFood = onClickSearchedFood,
-                candidates = foodCandidates,
-            )
-            SaveForm(
-                onClickBackPress = onClickBackPress,
-                onClickSave = onClickSave,
-                onClickTakePhoto = onClickTakePhoto,
-                enable = mealFoods.foods.isNotEmpty(),
-            )
         }
     }
 }
@@ -298,6 +307,11 @@ private fun TextWithCandidate(
     onClickSearchedFood: (Food) -> Unit,
     candidates: List<Food>
 ) {
+    val focusRequester = remember { FocusRequester() }
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
     var searchText by remember { mutableStateOf("") }
     Column(modifier = Modifier.imePadding()) {
         val roundedConnerShape = RoundedCornerShape(
@@ -361,7 +375,8 @@ private fun TextWithCandidate(
             ),
             modifier = Modifier
                 .offset(0.dp, 0.5.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
             onValueChange = {
                 searchText = it.trim()
                 onValueChange(it)
