@@ -29,11 +29,14 @@ class MealRepository(
     @Transaction
     suspend fun saveMeal(meal: Meal) {
         val mealId = mealFoodsDao.saveMeal(meal.toEntity())
-        val foodIds = mealFoodsDao.saveFoods(
+        val newFoodIds = mealFoodsDao.saveFoods(
             // NEW_IDのものを新規登録する
             meal.foods.filter { it.id == Food.NEW_ID }.map { it.toEntity() }
         )
-        foodIds.forEach { foodId ->
+        val registeredFoodIds =
+            meal.foods.filterNot { it.id == Food.NEW_ID }.map { it.id.value.toLong() }
+
+        (newFoodIds + registeredFoodIds).forEach { foodId ->
             mealFoodsDao.saveMealFoods(MealFoodCrossRef(mealId, foodId))
         }
     }
