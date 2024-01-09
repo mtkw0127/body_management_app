@@ -145,8 +145,8 @@ class MeasureListActivity : AppCompatActivity() {
 
     companion object {
         private const val INTENT_KEY = "DATE"
-        fun createTrainingMeasureListIntent(context: Context, localDate: LocalDate): Intent {
-            val intent = Intent(context.applicationContext, MeasureListActivity::class.java)
+        fun createIntent(context: Context, localDate: LocalDate): Intent {
+            val intent = Intent(context, MeasureListActivity::class.java)
             intent.putExtra(INTENT_KEY, localDate)
             return intent
         }

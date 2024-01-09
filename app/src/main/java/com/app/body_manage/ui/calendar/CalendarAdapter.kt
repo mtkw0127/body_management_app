@@ -192,7 +192,7 @@ class CalendarAdapter(
 
         // セルタッチ時のイベント
         calendarCellView.setOnClickListener {
-            val intent = MeasureListActivity.createTrainingMeasureListIntent(
+            val intent = MeasureListActivity.createIntent(
                 it.context,
                 cellInfo.localDate
             )

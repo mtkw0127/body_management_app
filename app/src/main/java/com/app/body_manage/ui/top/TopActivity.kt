@@ -22,6 +22,7 @@ import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.mealForm.MealFormActivity
 import com.app.body_manage.ui.measure.form.MeasureFormActivity
+import com.app.body_manage.ui.measure.list.MeasureListActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.ui.top.UserPreferenceSettingDialog.Companion.REQUEST_KEY
 import kotlinx.coroutines.flow.collectLatest
@@ -82,6 +83,9 @@ class TopActivity : AppCompatActivity() {
                 bottomSheetDataList = bottomSheetDataList,
                 onClickCalendar = {
                     launcher.launch(CalendarActivity.createIntent(this))
+                },
+                onClickToday = {
+                    launcher.launch(MeasureListActivity.createIntent(this, LocalDate.now()))
                 },
                 onClickAddMeal = {
                     launcher.launch(

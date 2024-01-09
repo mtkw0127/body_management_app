@@ -41,6 +41,7 @@
     <string name="label_kcal">基礎代謝</string>
     <string name="label_fat">体脂肪率</string>
     <string name="label_see_by_calendar">カレンダーで見る</string>
+    <string name="label_see_by_today">今日の記録を見る</string>
     <string name="label_see_statistic">統計</string>
     <string name="label_start_point">開始点</string>
     <string name="label_good_weight">適正な体重</string>

@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.AccessibilityNew
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Today
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,6 +53,7 @@ fun TopScreen(
     lastMeasure: BodyMeasure?,
     bottomSheetDataList: List<BottomSheetData>,
     onClickCalendar: () -> Unit = {},
+    onClickToday: () -> Unit = {},
     onClickAddMeasure: () -> Unit = {},
     onClickAddMeal: () -> Unit = {},
     onClickSetGoat: () -> Unit = {},
@@ -206,16 +208,6 @@ fun TopScreen(
             item {
                 PanelColumn {
                     IconAndText(
-                        icon = Icons.Default.CalendarMonth,
-                        onClick = { onClickCalendar() },
-                        text = stringResource(id = R.string.label_see_by_calendar),
-                    )
-                }
-                Spacer(modifier = Modifier.size(10.dp))
-            }
-            item {
-                PanelColumn {
-                    IconAndText(
                         icon = Icons.Default.Check,
                         text = stringResource(id = R.string.label_good_weight),
                         withArrow = false,
@@ -231,6 +223,25 @@ fun TopScreen(
                         subTitle = "BMIが18.5から24.9の体重"
                     )
                 }
+                Spacer(modifier = Modifier.size(10.dp))
+            }
+            item {
+                PanelColumn {
+                    IconAndText(
+                        icon = Icons.Default.CalendarMonth,
+                        modifier = Modifier.padding(vertical = 5.dp),
+                        onClick = { onClickCalendar() },
+                        text = stringResource(id = R.string.label_see_by_calendar),
+                    )
+                    HorizontalLine()
+                    IconAndText(
+                        icon = Icons.Default.Today,
+                        modifier = Modifier.padding(vertical = 5.dp),
+                        onClick = { onClickToday() },
+                        text = stringResource(id = R.string.label_see_by_today),
+                    )
+                }
+                Spacer(modifier = Modifier.size(10.dp))
             }
         }
     }
@@ -304,6 +315,7 @@ private fun HorizontalLine() {
 private fun IconAndText(
     text: String,
     icon: ImageVector,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     withArrow: Boolean = true,
     message: String? = null,
@@ -311,7 +323,7 @@ private fun IconAndText(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.clickable { onClick() }
+        modifier = modifier.clickable { onClick() }
     ) {
         Icon(
             imageVector = icon,
