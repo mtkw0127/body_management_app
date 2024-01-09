@@ -57,6 +57,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -213,6 +214,7 @@ fun MeasureListScreen(
                     Divider(modifier = Modifier.padding(12.dp))
 
                     if (uiState.list.isNotEmpty()) {
+                        Summary(uiState.list)
                         MeasureList(
                             list = uiState.list,
                             clickBodyMeasureEdit = clickBodyMeasureEdit,
@@ -237,6 +239,25 @@ fun MeasureListScreen(
             }
         },
     )
+}
+
+@Composable
+private fun Summary(list: List<Measure>) {
+    Column(
+        Modifier
+            .padding(horizontal = 12.dp, vertical = 12.dp)
+            .fillMaxWidth(),
+    ) {
+        // トータルカロリー
+        list.filterIsInstance<Meal>().let { meals ->
+            val totalKcal = meals.flatMap { it.foods }.sumOf { it.kcal }
+            LabelAndText(
+                label = stringResource(id = R.string.label_total_kcal_per_day),
+                text = totalKcal.toKcal(),
+                labelWidth = 130.dp
+            )
+        }
+    }
 }
 
 @Composable
@@ -494,11 +515,15 @@ fun ResultItem(
 }
 
 @Composable
-private fun LabelAndText(label: String, text: String) {
+private fun LabelAndText(
+    label: String,
+    text: String,
+    labelWidth: Dp = 100.dp
+) {
     Row {
         Text(
             text = label,
-            modifier = Modifier.width(100.dp)
+            modifier = Modifier.width(labelWidth)
         )
         Spacer(modifier = Modifier.size(10.dp))
         Text(text = text)
