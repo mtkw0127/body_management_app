@@ -7,7 +7,7 @@ import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.entity.toModel
 import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.local.toBodyMeasureForAdd
-import com.app.body_manage.data.model.BodyMeasureModel
+import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.data.model.PhotoModel
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.PhotoRepository
@@ -25,18 +25,18 @@ import java.time.LocalDateTime
 sealed interface FormState {
     data object Init : FormState
     sealed interface HasData : FormState {
-        val model: BodyMeasureModel
+        val model: BodyMeasure
         val photos: List<PhotoModel>
         val measureDate: LocalDate // 登録する日付アプリバー用
 
         data class Add(
-            override val model: BodyMeasureModel,
+            override val model: BodyMeasure,
             override val photos: List<PhotoModel>,
             override val measureDate: LocalDate,
         ) : HasData
 
         data class Edit(
-            override val model: BodyMeasureModel,
+            override val model: BodyMeasure,
             override val photos: List<PhotoModel>,
             override val measureDate: LocalDate,
         ) : HasData
@@ -44,7 +44,7 @@ sealed interface FormState {
 }
 
 data class FormViewModelState(
-    val model: BodyMeasureModel? = null,
+    val model: BodyMeasure? = null,
     val photos: List<PhotoModel> = emptyList(),
     val type: Type? = null,
     val measureDate: LocalDate? = null,
@@ -135,7 +135,7 @@ class BodyMeasureEditFormViewModel(
 
     fun setTime(time: LocalDateTime) {
         viewModelState.update {
-            val model = checkNotNull(it.model).copy(capturedLocalDateTime = time)
+            val model = checkNotNull(it.model).copy(time = time)
             it.copy(model = model)
         }
     }
@@ -144,7 +144,7 @@ class BodyMeasureEditFormViewModel(
         viewModelState.update {
             val model = checkNotNull(it.model)
             val updatedModel =
-                model.copy(capturedLocalDateTime = model.capturedLocalDateTime.minusDays(1))
+                model.copy(time = model.time.minusDays(1))
             val updatedMeasureDate = checkNotNull(it.measureDate).minusDays(1)
 
             it.copy(model = updatedModel, measureDate = updatedMeasureDate)
@@ -155,7 +155,7 @@ class BodyMeasureEditFormViewModel(
         viewModelState.update {
             val model = checkNotNull(it.model)
             val updatedModel =
-                model.copy(capturedLocalDateTime = model.capturedLocalDateTime.plusDays(1))
+                model.copy(time = model.time.plusDays(1))
             val updatedMeasureDate = checkNotNull(it.measureDate).plusDays(1)
 
             it.copy(model = updatedModel, measureDate = updatedMeasureDate)
@@ -236,7 +236,7 @@ class BodyMeasureEditFormViewModel(
             // 最新の更新の場合、デフォルト値を更新する
             bodyMeasureRepository.getLast().let { last ->
                 if (last != null) {
-                    if (last.capturedTime <= viewModelState.value.model?.capturedLocalDateTime) {
+                    if (last.capturedTime <= viewModelState.value.model?.time) {
                         userPreferenceRepository.putWeight(model.weight)
                         userPreferenceRepository.putFat(model.fat)
                     }
@@ -251,7 +251,7 @@ class BodyMeasureEditFormViewModel(
 
     fun deleteBodyMeasure() {
         assert(viewModelState.value.type == FormViewModelState.Type.Edit)
-        val target = viewModelState.value.model?.capturedLocalDateTime ?: return
+        val target = viewModelState.value.model?.time ?: return
         viewModelScope.launch {
             runCatching { bodyMeasureRepository.deleteBodyMeasure(target) }
                 .onFailure {

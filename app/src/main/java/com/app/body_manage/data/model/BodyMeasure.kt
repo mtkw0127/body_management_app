@@ -4,23 +4,23 @@ import android.net.Uri
 import com.app.body_manage.data.entity.BodyMeasureEntity
 import java.time.LocalDateTime
 
-data class BodyMeasureModel(
+data class BodyMeasure(
     val id: Id,
-    val capturedLocalDateTime: LocalDateTime,
+    override val time: LocalDateTime,
     val weight: Float,
     val fat: Float,
     val memo: String,
     val photoUri: Uri?,
     val tall: Float?,
-) {
+) : Measure {
     @JvmInline
     value class Id(val value: Int)
 }
 
-fun BodyMeasureModel.toEntity() = BodyMeasureEntity(
+fun BodyMeasure.toEntity() = BodyMeasureEntity(
     ui = id.value,
-    calendarDate = capturedLocalDateTime.toLocalDate(),
-    capturedTime = capturedLocalDateTime,
+    calendarDate = time.toLocalDate(),
+    capturedTime = time,
     weight = weight,
     fat = fat,
     memo = memo,

@@ -92,12 +92,12 @@ class GraphViewModel(
                     if (bodyMeasureList != null) {
                         val timelineForWeight = bodyMeasureList
                             .map {
-                                it.capturedLocalDateTime.toLocalDate() to it.weight
+                                it.time.toLocalDate() to it.weight
                             }.toList()
 
                         val timelineForFat = bodyMeasureList
                             .map {
-                                it.capturedLocalDateTime.toLocalDate() to it.fat
+                                it.time.toLocalDate() to it.fat
                             }.toList()
 
                         viewModelState.update {

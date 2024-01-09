@@ -88,7 +88,7 @@ class MeasureFormActivity : AppCompatActivity() {
                     viewModel.deletePhoto(it)
                 },
                 onClickTime = {
-                    val time = (uiState as FormState.HasData).model.capturedLocalDateTime
+                    val time = (uiState as FormState.HasData).model.time
                     TimePickerDialog.createTimePickerDialog(
                         hour = time.hour,
                         minute = time.minute,

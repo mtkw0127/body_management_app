@@ -25,3 +25,26 @@ fun String.toYYYYMMDD(): String {
 }
 
 fun String.withPercent() = "$this %"
+
+fun String.withKcal() = "$this kcal"
+
+// ひらがなをカナに変換
+fun String.toKana(): String {
+    return this.map {
+        if (it.code in 0x3041..0x3093) {
+            it + 0x60
+        } else {
+            it
+        }
+    }.joinToString("")
+}
+
+fun String.toJp(): String {
+    return this.map {
+        if (it.code in 0x30A1..0x30F6) {
+            it - 0x60
+        } else {
+            it
+        }
+    }.joinToString("")
+}

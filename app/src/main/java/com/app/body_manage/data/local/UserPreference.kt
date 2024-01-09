@@ -1,6 +1,6 @@
 package com.app.body_manage.data.local
 
-import com.app.body_manage.data.model.BodyMeasureModel
+import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.domain.BMICalculator
 import com.app.body_manage.domain.FatCalculator
 import com.app.body_manage.extension.age
@@ -89,9 +89,9 @@ enum class Gender(val value: Int) {
     MALE(0), FEMALE(1)
 }
 
-fun UserPreference.toBodyMeasureForAdd(date: LocalDate) = BodyMeasureModel(
-    id = BodyMeasureModel.Id(0),
-    capturedLocalDateTime = date.atTime(LocalTime.now()), // その日付の現在時刻
+fun UserPreference.toBodyMeasureForAdd(date: LocalDate) = BodyMeasure(
+    id = BodyMeasure.Id(0),
+    time = date.atTime(LocalTime.now()), // その日付の現在時刻
     weight = weight ?: 50F,
     fat = fat ?: 20F,
     photoUri = null,

@@ -16,11 +16,14 @@ import com.app.body_manage.TrainingApplication
 import com.app.body_manage.common.createBottomDataList
 import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
+import com.app.body_manage.data.repository.MealRepository
 import com.app.body_manage.dialog.FloatNumberPickerDialog
 import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
+import com.app.body_manage.ui.mealForm.MealFormActivity
 import com.app.body_manage.ui.measure.form.MeasureFormActivity
+import com.app.body_manage.ui.measure.list.MeasureListActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.ui.top.UserPreferenceSettingDialog.Companion.REQUEST_KEY
 import kotlinx.coroutines.flow.collectLatest
@@ -33,11 +36,18 @@ class TopActivity : AppCompatActivity() {
             if (it.resultCode == MeasureFormActivity.RESULT_CODE_ADD) {
                 Toast.makeText(this, getString(R.string.message_saved), Toast.LENGTH_LONG).show()
             }
+            if (it.resultCode == MealFormActivity.RESULT_KEY_MEAL_ADD) {
+                Toast.makeText(this, getString(R.string.message_saved), Toast.LENGTH_LONG).show()
+            }
             viewModel.load()
         }
 
     private val bodyMeasureRepository: BodyMeasureRepository by lazy {
         (application as TrainingApplication).bodyMeasureRepository
+    }
+
+    private val mealRepository: MealRepository by lazy {
+        (application as TrainingApplication).mealFoodsRepository
     }
 
     private lateinit var viewModel: TopViewModel
@@ -58,6 +68,7 @@ class TopActivity : AppCompatActivity() {
         viewModel = TopViewModel(
             UserPreferenceRepository(this),
             bodyMeasureRepository,
+            mealRepository,
         )
         viewModel.checkSetUpUserPref()
         lifecycleScope.launch {
@@ -72,14 +83,24 @@ class TopActivity : AppCompatActivity() {
         setContent {
             val userPreference by viewModel.userPreference.collectAsState()
             val lastMeasure by viewModel.lastMeasure.collectAsState()
+            val todayMeasure by viewModel.todayMeasure.collectAsState()
             TopScreen(
                 userPreference = userPreference,
                 lastMeasure = lastMeasure,
+                todayMeasure = todayMeasure,
                 bottomSheetDataList = bottomSheetDataList,
                 onClickCalendar = {
                     launcher.launch(CalendarActivity.createIntent(this))
                 },
-                onClickAdd = {
+                onClickToday = {
+                    launcher.launch(MeasureListActivity.createIntent(this, LocalDate.now()))
+                },
+                onClickAddMeal = {
+                    launcher.launch(
+                        MealFormActivity.createIntentAdd(this, LocalDate.now())
+                    )
+                },
+                onClickAddMeasure = {
                     launcher.launch(
                         MeasureFormActivity.createMeasureFormIntent(
                             this,
