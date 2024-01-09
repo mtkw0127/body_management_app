@@ -109,7 +109,7 @@ class MeasureListActivity : AppCompatActivity() {
                     measureFormLauncher.launch(
                         MealFormActivity.createIntentAdd(
                             context = this,
-                            localDate = LocalDate.now(),
+                            localDate = viewModel.uiState.value.date,
                         )
                     )
                 },
