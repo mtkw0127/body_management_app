@@ -55,12 +55,17 @@ class MealRepository(
         )
 
         // 再登録する
-        val registeredFoodIds =
-            meal.foods.filterNot { it.id == Food.NEW_ID }.map { it.id.value.toLong() }
+        val registeredFoods = meal.foods.filterNot { it.id == Food.NEW_ID }
+        val registeredFoodIds = registeredFoods.map { it.id.value.toLong() }
 
         // 関係性を再構築する
         (newFoodIds + registeredFoodIds).forEach { foodId ->
             mealFoodsDao.saveMealFoods(MealFoodCrossRef(mealId, foodId))
+        }
+
+        // 食べ物のカロリーが更新されている可能性があるので更新
+        if (registeredFoods.isNotEmpty()) {
+            mealFoodsDao.updateFoods(registeredFoods.map { it.toEntity() })
         }
     }
 

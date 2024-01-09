@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.app.body_manage.data.entity.FoodEntity
 import com.app.body_manage.data.entity.MealEntity
 import com.app.body_manage.data.entity.MealFoodCrossRef
@@ -47,4 +48,7 @@ interface MealFoodsDao {
             "name_kana LIKE '%' || :name || '%'"
     )
     suspend fun getFoods(name: String): List<FoodEntity>
+
+    @Update
+    suspend fun updateFoods(foods: List<FoodEntity>)
 }
