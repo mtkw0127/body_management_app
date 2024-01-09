@@ -97,18 +97,19 @@ class MealFormViewModel(
     }
 
     fun searchFood(text: String) {
-        if (text.isEmpty()) {
+        val trimText = text.trim()
+        if (trimText.isEmpty()) {
             _foodCandidates.value = emptyList()
             return
         }
         viewModelScope.launch {
-            var searchResults = mealRepository.getFoods(text).toMutableList()
+            var searchResults = mealRepository.getFoods(trimText).toMutableList()
             // 完全に一致したものがない場合は新規追加として追加
             if (
-                searchResults.any { it.name == text }.not() &&
-                _mealFoods.value.foods.any { it.name == text }.not()
+                searchResults.any { it.name == trimText }.not() &&
+                _mealFoods.value.foods.any { it.name == trimText }.not()
             ) {
-                searchResults.add(Food.createNewFood(text))
+                searchResults.add(Food.createNewFood(trimText))
             }
             // その日の食事に登録済みのものは除く
             searchResults =

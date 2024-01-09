@@ -357,7 +357,7 @@ private fun TextWithCandidate(
                 .offset(0.dp, 0.5.dp)
                 .fillMaxWidth(),
             onValueChange = {
-                searchText = it
+                searchText = it.trim()
                 onValueChange(it)
             },
             decorationBox = @Composable { innerTextField ->
