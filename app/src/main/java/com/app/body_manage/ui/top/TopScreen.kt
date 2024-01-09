@@ -1,5 +1,6 @@
 package com.app.body_manage.ui.top
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,21 +17,22 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessibilityNew
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Today
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -41,35 +43,30 @@ import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.common.CustomButton
 import com.app.body_manage.data.local.UserPreference
-import com.app.body_manage.data.model.BodyMeasureModel
+import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.extension.toCentiMeter
 import com.app.body_manage.extension.toMMDDEE
-import com.app.body_manage.style.Colors.Companion.accentColor
+import com.app.body_manage.extension.withPercent
 import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
 
 @Composable
 fun TopScreen(
     userPreference: UserPreference?,
-    lastMeasure: BodyMeasureModel?,
+    lastMeasure: BodyMeasure?,
+    todayMeasure: TodayMeasure,
     bottomSheetDataList: List<BottomSheetData>,
     onClickCalendar: () -> Unit = {},
-    onClickAdd: () -> Unit = {},
+    onClickToday: () -> Unit = {},
+    onClickAddMeasure: () -> Unit = {},
+    onClickAddMeal: () -> Unit = {},
     onClickSetGoat: () -> Unit = {},
 ) {
     Scaffold(
         bottomBar = {
-            BottomSheet(bottomSheetDataList)
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { onClickAdd() },
-                backgroundColor = accentColor
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null,
-                )
+            Column {
+                BottomButtons(onClickAddMeasure, onClickAddMeal)
+                BottomSheet(bottomSheetDataList)
             }
         }
     ) {
@@ -96,7 +93,7 @@ fun TopScreen(
                         color = Color.Gray,
                     )
                     Spacer(modifier = Modifier.size(10.dp))
-                    lastMeasure?.capturedLocalDateTime?.toLocalDate()?.toMMDDEE()?.let { mmdd ->
+                    lastMeasure?.time?.toLocalDate()?.toMMDDEE()?.let { mmdd ->
                         Text(
                             text = "登録日: $mmdd",
                             fontSize = 14.sp,
@@ -104,7 +101,7 @@ fun TopScreen(
                         )
                     }
                     Spacer(modifier = Modifier.weight(1F))
-                    lastMeasure?.tall?.let { tall ->
+                    (lastMeasure?.tall ?: userPreference?.tall)?.let { tall ->
                         Text(
                             text = tall.toCentiMeter(),
                             fontSize = 14.sp,
@@ -134,11 +131,8 @@ fun TopScreen(
                                 .fillMaxSize()
                                 .padding(20.dp),
                         ) {
-                            Text(
-                                text = stringResource(id = R.string.label_set_object),
-                                fontSize = 12.sp,
-                            )
-                            Spacer(modifier = Modifier.size(5.dp))
+                            TextWithUnderLine(R.string.label_set_object)
+                            Spacer(modifier = Modifier.size(10.dp))
                             Text(
                                 text = stringResource(id = R.string.message_set_object),
                                 fontSize = 12.sp,
@@ -187,30 +181,31 @@ fun TopScreen(
                 }
             }
             item {
-                PanelRow {
+                TodaySummary(todayMeasure = todayMeasure)
+                Spacer(modifier = Modifier.size(10.dp))
+            }
+            item {
+                Panel(content = {
                     ColumTextWithLabelAndIcon(
                         title = stringResource(id = R.string.label_bmi),
                         value = userPreference?.bim ?: "-",
                     )
                     VerticalLine()
                     ColumTextWithLabelAndIcon(
-                        title = stringResource(id = R.string.label_kcal),
-                        value = "1900",
+                        title = stringResource(id = R.string.label_kcal) + "※",
+                        value = userPreference?.basicConsumeEnergy ?: "-",
                     )
                     VerticalLine()
                     ColumTextWithLabelAndIcon(
                         title = stringResource(id = R.string.label_fat),
-                        value = userPreference?.calcFat ?: "-",
+                        value = userPreference?.calcFat?.withPercent() ?: "-",
                     )
-                }
-                Spacer(modifier = Modifier.size(10.dp))
-            }
-            item {
-                PanelColumn {
-                    IconAndText(
-                        icon = Icons.Default.CalendarMonth,
-                        onClick = { onClickCalendar() },
-                        text = stringResource(id = R.string.label_see_by_calendar),
+                }) {
+                    Spacer(modifier = Modifier.size(5.dp))
+                    Text(
+                        stringResource(id = R.string.message_this_is_estimated_value),
+                        fontSize = 11.sp,
+                        color = Color.DarkGray
                     )
                 }
                 Spacer(modifier = Modifier.size(10.dp))
@@ -233,8 +228,114 @@ fun TopScreen(
                         subTitle = "BMIが18.5から24.9の体重"
                     )
                 }
+                Spacer(modifier = Modifier.size(10.dp))
+            }
+            item {
+                PanelColumn {
+                    IconAndText(
+                        icon = Icons.Default.CalendarMonth,
+                        modifier = Modifier.padding(vertical = 5.dp),
+                        onClick = { onClickCalendar() },
+                        text = stringResource(id = R.string.label_see_by_calendar),
+                    )
+                    HorizontalLine()
+                    IconAndText(
+                        icon = Icons.Default.Today,
+                        modifier = Modifier.padding(vertical = 5.dp),
+                        onClick = { onClickToday() },
+                        text = stringResource(id = R.string.label_see_by_today),
+                    )
+                }
+                Spacer(modifier = Modifier.size(10.dp))
             }
         }
+    }
+}
+
+@Composable
+private fun TodaySummary(todayMeasure: TodayMeasure) {
+    PanelColumn {
+        TextWithUnderLine(R.string.label_today_you)
+        Spacer(modifier = Modifier.size(10.dp))
+        if (todayMeasure.bodyMeasures.isEmpty() && todayMeasure.meals.isEmpty()) {
+            Text(text = stringResource(id = R.string.message_not_registered_today))
+        }
+        if (todayMeasure.meals.isNotEmpty()) {
+            LabelAndText(
+                stringResource(id = R.string.label_today_total_kcal),
+                todayMeasure.totalKcal
+            )
+            Spacer(modifier = Modifier.size(5.dp))
+        }
+        if (todayMeasure.bodyMeasures.isNotEmpty()) {
+            LabelAndText(
+                stringResource(id = R.string.label_today_min_weight),
+                todayMeasure.minWeight
+            )
+        }
+    }
+}
+
+@Composable
+private fun TextWithUnderLine(
+    @StringRes stringResourceId: Int
+) {
+    Text(
+        text = stringResource(id = stringResourceId),
+        modifier = Modifier.drawBehind {
+            drawLine(
+                Color.Black,
+                Offset(-10F, size.height),
+                Offset(size.width + 10F, size.height),
+                strokeWidth = 1F
+            )
+        }
+    )
+}
+
+@Composable
+private fun LabelAndText(
+    label: String,
+    text: String
+) {
+    Row {
+        Text(
+            text = label,
+            modifier = Modifier.width(130.dp),
+            fontSize = 12.sp,
+        )
+        Text(
+            text = text,
+            fontSize = 12.sp,
+        )
+    }
+}
+
+@Composable
+fun BottomButtons(
+    onClickAddMeasure: () -> Unit,
+    onClickAddMeal: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .shadow(2.dp)
+            .height(50.dp)
+            .fillMaxWidth()
+            .background(Color.White),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly,
+    ) {
+        CustomButton(
+            onClick = onClickAddMeal,
+            valueResourceId = R.string.label_add_meal,
+            backgroundColor = theme,
+        )
+        VerticalLine()
+        CustomButton(
+            onClick = onClickAddMeasure,
+            valueResourceId = R.string.label_add_measure,
+            backgroundColor = theme,
+        )
     }
 }
 
@@ -278,6 +379,7 @@ private fun HorizontalLine() {
 private fun IconAndText(
     text: String,
     icon: ImageVector,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     withArrow: Boolean = true,
     message: String? = null,
@@ -285,7 +387,7 @@ private fun IconAndText(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.clickable { onClick() }
+        modifier = modifier.clickable { onClick() }
     ) {
         Icon(
             imageVector = icon,
@@ -340,10 +442,11 @@ private fun PanelColumn(
 }
 
 @Composable
-private fun PanelRow(
+private fun Panel(
     content: @Composable () -> Unit,
+    bottom: @Composable () -> Unit = {}
 ) {
-    Row(
+    Column(
         modifier = Modifier
             .shadow(2.dp)
             .background(
@@ -351,10 +454,15 @@ private fun PanelRow(
                 RoundedCornerShape(5.dp)
             )
             .fillMaxWidth()
-            .padding(20.dp),
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically,
+            .padding(20.dp)
     ) {
-        content()
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            content()
+        }
+        bottom()
     }
 }

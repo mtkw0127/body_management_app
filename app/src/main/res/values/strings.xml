@@ -38,20 +38,34 @@
     <string name="label_set_object">目標を設定</string>
     <string name="label_update_object">目標を更新</string>
     <string name="label_bmi">BMI</string>
-    <string name="label_kcal">kcal/日</string>
-    <string name="label_fat">体脂肪率 [%]</string>
+    <string name="label_kcal">基礎代謝</string>
+    <string name="label_fat">体脂肪率</string>
     <string name="label_see_by_calendar">カレンダーで見る</string>
+    <string name="label_see_by_today">今日の記録を見る</string>
     <string name="label_see_statistic">統計</string>
     <string name="label_start_point">開始点</string>
     <string name="label_good_weight">適正な体重</string>
     <string name="label_healthy_weight">健康的な体重</string>
     <string name="label_ideal_weight">理想的な体重</string>
+    <string name="message_this_is_estimated_value">※ 18歳から79歳の方に妥当性が認められた推定値です</string>
+    <string name="label_add_meal">食事を登録</string>
+    <string name="label_add_measure">体型を登録</string>
+    <string name="message_not_registered_today">本日の登録はまだありません</string>
+    <string name="label_today_total_kcal">摂取カロリー</string>
+    <string name="label_today_min_weight">最小体重</string>
+    <string name="label_today_you">今日のあなた</string>
 
     <!-- 測定一覧-->
-    <string name="message_saved">保存しました</string>
+    <string name="message_saved">登録しました</string>
     <string name="message_edited">編集しました</string>
     <string name="message_deleted">削除しました</string>
-
+    <string name="message_empty_so_add">この日の登録はありません</string>
+    <string name="label_meals">食事内容</string>
+    <string name="label_total_kcal">合計カロリー</string>
+    <string name="message_empty_photo">写真が未登録です</string>
+    <string name="label_this_day_photos">この日撮影した写真</string>
+    <string name="label_tall_with_unit">身長[cm]</string>
+    <string name="label_total_kcal_per_day">１日の摂取カロリー</string>
     <!-- 設定 -->
     <string name="label_notify_at_seven">毎朝7時に通知</string>
 
@@ -93,4 +107,16 @@
     <string name="screen_name_settings">設定</string>
     <string name="screen_name_graph">グラフ</string>
     <string name="screen_name_choose_compare_photo">写真を選択してください</string>
+
+    <!-- 食事登録 -->
+    <string name="label_breakfast">朝食</string>
+    <string name="label_lunch">昼食</string>
+    <string name="label_dinner">夕食</string>
+    <string name="label_snack">間食</string>
+    <string name="message_add">追加</string>
+    <string name="label_all_kcal">合計カロリー</string>
+    <string name="message_search_and_add">検索して食べ物を登録しましょう</string>
+    <string name="label_result_of_search">検索結果</string>
+    <string name="message_save_and_add">新規追加</string>
+    <string name="message_add_food">追加</string>
 </resources>

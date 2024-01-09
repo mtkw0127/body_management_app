@@ -96,6 +96,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoBar" />
 
+        <activity
+            android:name=".ui.mealForm.MealFormActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoBar"
+            android:windowSoftInputMode="adjustResize" />
+
         <receiver
             android:name=".ui.alarm.AlarmNotification"
             android:enabled="true"

@@ -81,7 +81,7 @@ class DateUtil {
             if (localDate.month == Month.JANUARY) {
                 when (localDate.dayOfMonth) {
                     // 元旦, 成人の日
-                    1, 10 -> return DateType.HOLIDAY
+                    1, 8 -> return DateType.HOLIDAY
                 }
             }
             // 2月

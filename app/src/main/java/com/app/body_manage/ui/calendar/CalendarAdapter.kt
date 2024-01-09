@@ -14,6 +14,8 @@ import androidx.core.content.ContextCompat
 import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.repository.BodyMeasureRepository
+import com.app.body_manage.data.repository.MealRepository
+import com.app.body_manage.extension.toWeight
 import com.app.body_manage.ui.measure.list.MeasureListActivity
 import com.app.body_manage.util.DateUtil
 import kotlinx.coroutines.CoroutineScope
@@ -37,6 +39,10 @@ class CalendarAdapter(
 
     private val bodyMeasureRepository: BodyMeasureRepository by lazy {
         (context.applicationContext as TrainingApplication).bodyMeasureRepository
+    }
+
+    private val mealFoodsRepository: MealRepository by lazy {
+        (context.applicationContext as TrainingApplication).mealFoodsRepository
     }
 
     enum class MonthType {
@@ -186,7 +192,7 @@ class CalendarAdapter(
 
         // セルタッチ時のイベント
         calendarCellView.setOnClickListener {
-            val intent = MeasureListActivity.createTrainingMeasureListIntent(
+            val intent = MeasureListActivity.createIntent(
                 it.context,
                 cellInfo.localDate
             )
@@ -197,12 +203,23 @@ class CalendarAdapter(
             runCatching { bodyMeasureRepository.getEntityListByDate(cellInfo.localDate) }
                 .onFailure { Timber.e(it) }
                 .onSuccess {
-                    if (it.isNotEmpty()) {
+                    val minWeight = it.minByOrNull { measure -> measure.weight }
+                    if (it.isNotEmpty() && minWeight != null) {
                         val measureCntView =
                             calendarCellView.findViewById<TextView>(R.id.measure_cnt)
-                        measureCntView.background =
-                            context.resources.getDrawable(R.drawable.icons8_checkmark, null)
+                        measureCntView.text = minWeight.weight.toWeight()
                     }
+                }
+
+            runCatching { mealFoodsRepository.getMealsByDate(cellInfo.localDate) }
+                .onFailure { Timber.e(it) }
+                .onSuccess { response ->
+                    val text =
+                        response.map { context.getString(it.timing.textResourceId) }.distinct()
+                            .joinToString("\n")
+                    val measureCntView =
+                        calendarCellView.findViewById<TextView>(R.id.measure_cnt)
+                    measureCntView.text = "${measureCntView.text}\n$text"
                 }
         }
         return calendarCellView

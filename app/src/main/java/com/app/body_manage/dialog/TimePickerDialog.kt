@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.NumberPicker
 import androidx.fragment.app.DialogFragment
 import com.app.body_manage.R
+import java.time.LocalDateTime
 
 class TimePickerDialog : DialogFragment() {
 
@@ -30,6 +31,19 @@ class TimePickerDialog : DialogFragment() {
             val bundle = Bundle()
             bundle.putInt(HOUR, hour)
             bundle.putInt(MINUTE, minute)
+            timePickerDialog.arguments = bundle
+            timePickerDialog.callBack = callBack
+            return timePickerDialog
+        }
+
+        fun createTimePickerDialog(
+            localDateTime: LocalDateTime,
+            callBack: (hour: Int, minute: Int) -> Unit
+        ): TimePickerDialog {
+            val timePickerDialog = TimePickerDialog()
+            val bundle = Bundle()
+            bundle.putInt(HOUR, localDateTime.hour)
+            bundle.putInt(MINUTE, localDateTime.minute)
             timePickerDialog.arguments = bundle
             timePickerDialog.callBack = callBack
             return timePickerDialog

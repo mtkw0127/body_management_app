@@ -10,13 +10,24 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.app.body_manage.data.dao.BodyMeasureDao
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.data.dao.ComparePhotoHistoryDao
+import com.app.body_manage.data.dao.MealFoodsDao
 import com.app.body_manage.data.dao.PhotoDao
 import com.app.body_manage.data.entity.BodyMeasureEntity
 import com.app.body_manage.data.entity.ComparePhotoHistoryEntity
+import com.app.body_manage.data.entity.FoodEntity
+import com.app.body_manage.data.entity.MealEntity
+import com.app.body_manage.data.entity.MealFoodCrossRef
 import com.app.body_manage.data.entity.PhotoEntity
 
 @Database(
-    entities = [BodyMeasureEntity::class, PhotoEntity::class, ComparePhotoHistoryEntity::class],
+    entities = [
+        BodyMeasureEntity::class,
+        PhotoEntity::class,
+        ComparePhotoHistoryEntity::class,
+        MealEntity::class,
+        FoodEntity::class,
+        MealFoodCrossRef::class,
+    ],
     version = 5,
     exportSchema = true
 )
@@ -47,6 +58,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun photoDao(): PhotoDao
     abstract fun bodyMeasurePhotoDao(): BodyMeasurePhotoDao
     abstract fun compareBodyMeasureHistoryDao(): ComparePhotoHistoryDao
+    abstract fun mealFoodsDao(): MealFoodsDao
 }
 
 /** 体重カラムをBodyMeasureTableに追加*/

@@ -5,7 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.app.body_manage.data.model.BodyMeasureModel
+import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.data.model.PhotoModel
 import java.io.Serializable
 
@@ -28,6 +28,6 @@ class PhotoEntity(
 
 fun PhotoEntity.toModel() = PhotoModel(
     id = PhotoModel.Id(id),
-    bodyMeasureId = BodyMeasureModel.Id(bodyMeasureId),
+    bodyMeasureId = BodyMeasure.Id(bodyMeasureId),
     uri = photoUri.toUri(),
 )

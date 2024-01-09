@@ -15,6 +15,8 @@ import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.model.PhotoModel
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
+import com.app.body_manage.data.repository.MealRepository
+import com.app.body_manage.ui.mealForm.MealFormActivity
 import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import java.time.LocalDate
@@ -29,8 +31,23 @@ class MeasureListActivity : AppCompatActivity() {
         (application as TrainingApplication).bodyMeasurePhotoRepository
     }
 
+    private val mealRepository: MealRepository by lazy {
+        (application as TrainingApplication).mealFoodsRepository
+    }
+
     private val launcher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == MealFormActivity.RESULT_KEY_MEAL_ADD) {
+                Toast.makeText(this, getString(R.string.message_saved), Toast.LENGTH_LONG).show()
+            }
+            if (it.resultCode == MealFormActivity.RESULT_KEY_MEAL_EDIT) {
+                Toast.makeText(this, getString(R.string.message_edited), Toast.LENGTH_LONG).show()
+            }
+            if (it.resultCode == MealFormActivity.RESULT_KEY_MEAL_DELETE) {
+                Toast.makeText(this, getString(R.string.message_deleted), Toast.LENGTH_LONG).show()
+            }
+            viewModel.reload()
+        }
 
     private val measureFormLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -53,7 +70,7 @@ class MeasureListActivity : AppCompatActivity() {
         initViewModel()
 
         setContent {
-            val state: MeasureListState by viewModel.uiState.collectAsState()
+            val state: MeasureListState.BodyMeasureListState by viewModel.uiState.collectAsState()
 
             MeasureListScreen(
                 uiState = state,
@@ -80,23 +97,21 @@ class MeasureListActivity : AppCompatActivity() {
                 updateDate = {
                     viewModel.updateDate(it)
                 },
-                clickFab = {
-                    when (viewModel.uiState.value.measureType) {
-                        MeasureType.BODY -> {
-                            measureFormLauncher.launch(
-                                MeasureFormActivity.createMeasureFormIntent(
-                                    context = this,
-                                    measureDate = viewModel.uiState.value.date
-                                )
-                            )
-                        }
-
-                        MeasureType.MEAL -> {
-                            Toast.makeText(this, "今後機能追加する！", Toast.LENGTH_LONG).show()
-                        }
-
-                        else -> {}
-                    }
+                onClickAddMeasure = {
+                    measureFormLauncher.launch(
+                        MeasureFormActivity.createMeasureFormIntent(
+                            context = this,
+                            measureDate = viewModel.uiState.value.date
+                        )
+                    )
+                },
+                onClickAddMeal = {
+                    measureFormLauncher.launch(
+                        MealFormActivity.createIntentAdd(
+                            context = this,
+                            localDate = LocalDate.now(),
+                        )
+                    )
                 },
                 showPhotoDetail = {
                     val intent = PhotoDetailActivity.createIntent(
@@ -108,7 +123,11 @@ class MeasureListActivity : AppCompatActivity() {
                 onChangeCurrentMonth = {
                     viewModel.setCurrentYearMonth(it)
                 },
-                onClickBack = { finish() }
+                onClickBack = { finish() },
+                onClickMeal = {
+                    val intent = MealFormActivity.createIntentEdit(this, it.id)
+                    launcher.launch(intent)
+                }
             )
         }
     }
@@ -116,18 +135,18 @@ class MeasureListActivity : AppCompatActivity() {
     private fun initViewModel() {
         viewModel = MeasureListViewModel(
             localDate = intent.getSerializableExtra(INTENT_KEY) as LocalDate,
-            mealType = MeasureType.BODY,
             bodyMeasureRepository = bodyMeasureRepository,
             bodyMeasurePhotoRepository = bodyMeasurePhotoRepository,
             userPreferenceRepository = UserPreferenceRepository(this),
+            mealRepository = mealRepository
         )
         viewModel.reload()
     }
 
     companion object {
         private const val INTENT_KEY = "DATE"
-        fun createTrainingMeasureListIntent(context: Context, localDate: LocalDate): Intent {
-            val intent = Intent(context.applicationContext, MeasureListActivity::class.java)
+        fun createIntent(context: Context, localDate: LocalDate): Intent {
+            val intent = Intent(context, MeasureListActivity::class.java)
             intent.putExtra(INTENT_KEY, localDate)
             return intent
         }

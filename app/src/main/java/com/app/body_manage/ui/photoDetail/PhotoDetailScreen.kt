@@ -61,7 +61,7 @@ fun PhotoDetailScreen(
                     horizontalAlignment = Alignment.Start
                 ) {
                     Text(
-                        text = "撮影日時：${DateUtil.localDateTimeToJapanese(state.bodyMeasureModel.capturedLocalDateTime)}",
+                        text = "撮影日時：${DateUtil.localDateTimeToJapanese(state.bodyMeasureModel.time)}",
                         color = Color.White,
                         modifier = Modifier.padding(bottom = 5.dp)
                     )
