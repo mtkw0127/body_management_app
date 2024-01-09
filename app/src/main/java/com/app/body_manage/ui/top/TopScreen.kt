@@ -1,5 +1,6 @@
 package com.app.body_manage.ui.top
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,7 +30,9 @@ import androidx.compose.material.icons.filled.Today
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -51,6 +54,7 @@ import com.app.body_manage.style.Colors.Companion.theme
 fun TopScreen(
     userPreference: UserPreference?,
     lastMeasure: BodyMeasure?,
+    todayMeasure: TodayMeasure,
     bottomSheetDataList: List<BottomSheetData>,
     onClickCalendar: () -> Unit = {},
     onClickToday: () -> Unit = {},
@@ -127,11 +131,8 @@ fun TopScreen(
                                 .fillMaxSize()
                                 .padding(20.dp),
                         ) {
-                            Text(
-                                text = stringResource(id = R.string.label_set_object),
-                                fontSize = 12.sp,
-                            )
-                            Spacer(modifier = Modifier.size(5.dp))
+                            TextWithUnderLine(R.string.label_set_object)
+                            Spacer(modifier = Modifier.size(10.dp))
                             Text(
                                 text = stringResource(id = R.string.message_set_object),
                                 fontSize = 12.sp,
@@ -178,6 +179,10 @@ fun TopScreen(
                     }
                     Spacer(modifier = Modifier.size(10.dp))
                 }
+            }
+            item {
+                TodaySummary(todayMeasure = todayMeasure)
+                Spacer(modifier = Modifier.size(10.dp))
             }
             item {
                 Panel(content = {
@@ -244,6 +249,65 @@ fun TopScreen(
                 Spacer(modifier = Modifier.size(10.dp))
             }
         }
+    }
+}
+
+@Composable
+private fun TodaySummary(todayMeasure: TodayMeasure) {
+    PanelColumn {
+        TextWithUnderLine(R.string.label_today_you)
+        Spacer(modifier = Modifier.size(10.dp))
+        if (todayMeasure.bodyMeasures.isEmpty() && todayMeasure.meals.isEmpty()) {
+            Text(text = stringResource(id = R.string.message_not_registered_today))
+        }
+        if (todayMeasure.meals.isNotEmpty()) {
+            LabelAndText(
+                stringResource(id = R.string.label_today_total_kcal),
+                todayMeasure.totalKcal
+            )
+            Spacer(modifier = Modifier.size(5.dp))
+        }
+        if (todayMeasure.bodyMeasures.isNotEmpty()) {
+            LabelAndText(
+                stringResource(id = R.string.label_today_min_weight),
+                todayMeasure.minWeight
+            )
+        }
+    }
+}
+
+@Composable
+private fun TextWithUnderLine(
+    @StringRes stringResourceId: Int
+) {
+    Text(
+        text = stringResource(id = stringResourceId),
+        modifier = Modifier.drawBehind {
+            drawLine(
+                Color.Black,
+                Offset(-10F, size.height),
+                Offset(size.width + 10F, size.height),
+                strokeWidth = 1F
+            )
+        }
+    )
+}
+
+@Composable
+private fun LabelAndText(
+    label: String,
+    text: String
+) {
+    Row {
+        Text(
+            text = label,
+            modifier = Modifier.width(130.dp),
+            fontSize = 12.sp,
+        )
+        Text(
+            text = text,
+            fontSize = 12.sp,
+        )
     }
 }
 

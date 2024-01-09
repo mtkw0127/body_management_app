@@ -253,7 +253,7 @@ private fun EatenFoods(
                                 }
                                 onUpdateMealKcal(food, number)
                             }
-                        } catch (e: Throwable) {
+                        } catch (e: NumberFormatException) {
                             return@TextField
                         }
                     },
