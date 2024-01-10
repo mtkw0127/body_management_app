@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.lifecycleScope
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.model.Meal
-import com.app.body_manage.data.model.PhotoModel
+import com.app.body_manage.data.model.MealPhoto
 import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.camera.CameraActivity
 import kotlinx.coroutines.flow.collectLatest
@@ -29,7 +29,7 @@ class MealFormActivity : AppCompatActivity() {
             if (it.resultCode == Activity.RESULT_OK) {
                 val photoList = CameraActivity.photoList.toList()
                 val photoModels =
-                    photoList.map { uri -> PhotoModel(uri = uri) }.toList()
+                    photoList.map { uri -> MealPhoto(uri = uri) }.toList()
                 viewModel.addPhotos(photoModels)
             }
         }
@@ -48,11 +48,9 @@ class MealFormActivity : AppCompatActivity() {
         setContent {
             val mealFoods by viewModel.mealFoods.collectAsState()
             val foodCandidates by viewModel.foodCandidates.collectAsState()
-            val photos by viewModel.photos.collectAsState()
             MealFormScreen(
                 type = viewModel.type,
                 mealFoods = mealFoods,
-                photos = photos,
                 foodCandidates = foodCandidates,
                 onClickTime = {
                     TimePickerDialog.createTimePickerDialog(mealFoods.time) { hour, minute ->

@@ -17,6 +17,7 @@ import com.app.body_manage.data.entity.ComparePhotoHistoryEntity
 import com.app.body_manage.data.entity.FoodEntity
 import com.app.body_manage.data.entity.MealEntity
 import com.app.body_manage.data.entity.MealFoodCrossRef
+import com.app.body_manage.data.entity.MealPhotoEntity
 import com.app.body_manage.data.entity.PhotoEntity
 
 @Database(
@@ -27,8 +28,9 @@ import com.app.body_manage.data.entity.PhotoEntity
         MealEntity::class,
         FoodEntity::class,
         MealFoodCrossRef::class,
+        MealPhotoEntity::class,
     ],
-    version = 5,
+    version = 6,
     exportSchema = true
 )
 @TypeConverters(LocalDateConverter::class)
@@ -47,6 +49,7 @@ abstract class AppDatabase : RoomDatabase() {
                             addMigrations(MIGRATION_2_3)
                             addMigrations(MIGRATION_3_4)
                             addMigrations(MIGRATION_4_5)
+                            addMigrations(MIGRATION_5_6)
                         }.build()
                 db = instance
                 instance
@@ -96,6 +99,24 @@ val MIGRATION_4_5 = object : Migration(4, 5) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL(
             "ALTER TABLE bodyMeasures ADD COLUMN memo TEXT DEFAULT \"\" NOT NULL "
+        )
+    }
+}
+
+/** 食事テーブルの追加・食事写真テーブルの追加*/
+val MIGRATION_5_6 = object : Migration(5, 6) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `meals` (`meal_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `timing` TEXT NOT NULL, `dateTime` TEXT NOT NULL)"
+        )
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `foods` (`food_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `name_jp` TEXT NOT NULL, `name_kana` TEXT NOT NULL, `kcal` INTEGER NOT NULL)"
+        )
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `meal_photos` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `meal_id` INTEGER NOT NULL, `photo_uri` TEXT NOT NULL)"
+        )
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `mealAndFood` (`meal_id` INTEGER NOT NULL, `food_id` INTEGER NOT NULL)"
         )
     }
 }

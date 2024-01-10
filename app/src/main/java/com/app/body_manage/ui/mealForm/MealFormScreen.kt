@@ -64,7 +64,7 @@ import com.app.body_manage.common.toKcal
 import com.app.body_manage.data.model.Food
 import com.app.body_manage.data.model.Food.Companion.NEW_ID
 import com.app.body_manage.data.model.Meal
-import com.app.body_manage.data.model.PhotoModel
+import com.app.body_manage.data.model.MealPhoto
 import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.extension.toMMDDEE
 import com.app.body_manage.extension.withKcal
@@ -75,7 +75,6 @@ import java.time.LocalDateTime
 fun MealFormScreen(
     type: MealFormViewModel.Type,
     mealFoods: Meal,
-    photos: List<PhotoModel>,
     foodCandidates: List<Food>,
     onClickMealTiming: (Meal.Timing) -> Unit,
     onClickTime: () -> Unit,
@@ -130,7 +129,7 @@ fun MealFormScreen(
                         onUpdateMealKcal
                     )
                     Spacer(modifier = Modifier.size(10.dp))
-                    Photos(photos)
+                    Photos(mealFoods.photos)
                 }
                 Spacer(modifier = Modifier.weight(1F))
             }
@@ -152,7 +151,7 @@ fun MealFormScreen(
 }
 
 @Composable
-private fun Photos(photos: List<PhotoModel>) {
+private fun Photos(photos: List<MealPhoto>) {
     LazyColumn {
         itemsIndexed(photos) { index, photo ->
             AsyncImage(model = photo.uri, contentDescription = null)

@@ -11,6 +11,7 @@ data class Meal(
     val timing: Timing,
     override val time: LocalDateTime,
     val foods: List<Food>,
+    val photos: List<MealPhoto>,
 ) : Measure {
     data class Id(val value: Int) : Serializable
     enum class Timing(@StringRes val textResourceId: Int) {
@@ -22,10 +23,11 @@ data class Meal(
 
     companion object {
         fun init() = Meal(
-            id = Meal.Id(0),
-            timing = Meal.Timing.BREAKFAST,
+            id = Id(0),
+            timing = Timing.BREAKFAST,
             time = LocalDateTime.now(),
             foods = emptyList(),
+            photos = emptyList(),
         )
     }
 }
