@@ -116,12 +116,17 @@ class UserPreferenceSettingViewModel(
     }
 
     fun setTall(tall: TextFieldValue) {
+        val trimTall = tall.text.trim()
+        if (trimTall.startsWith("0")) {
+            return
+        }
         viewModelState.update {
             it.copy(
                 tall = try {
-                    if (tall.text.isEmpty()) {
+                    if (trimTall.isEmpty()) {
                         TextFieldValue()
                     } else {
+                        trimTall.toFloat()
                         tall
                     }
                 } catch (_: Throwable) {
@@ -132,12 +137,17 @@ class UserPreferenceSettingViewModel(
     }
 
     fun setWeight(weight: TextFieldValue) {
+        val trimWeight = weight.text.trim()
+        if (trimWeight.startsWith("0")) {
+            return
+        }
         viewModelState.update {
             it.copy(
                 weight = try {
-                    if (weight.text.isEmpty()) {
+                    if (trimWeight.isEmpty()) {
                         TextFieldValue()
                     } else {
+                        trimWeight.toFloat()
                         weight
                     }
                 } catch (_: Throwable) {
@@ -148,44 +158,45 @@ class UserPreferenceSettingViewModel(
     }
 
     fun setBirth(birth: TextFieldValue) {
+        val trimBirth = birth.text.trim()
         // 空文字はクリアしてリターン
-        if (birth.text.isBlank()) {
+        if (trimBirth.isBlank()) {
             viewModelState.update {
-                it.copy(birth = birth)
+                it.copy(birth = TextFieldValue(""))
             }
             return
         }
         try {
-            birth.text.substring(0, birth.text.lastIndex + 1).toInt()
+            trimBirth.substring(0, trimBirth.lastIndex + 1).toInt()
         } catch (e: NumberFormatException) {
             // 数値以外はセットしない
             return
         }
-        var tempBirth = birth
-        val isAdd = (birth.text.length - (viewModelState.value.birth?.text?.length ?: 0)) > 0
+        var tempBirth = TextFieldValue(trimBirth)
+        val isAdd = (trimBirth.length - (viewModelState.value.birth?.text?.length ?: 0)) > 0
         if (isAdd) {
             // 月を取得する
-            if (birth.text.length == 5) {
+            if (trimBirth.length == 5) {
                 // 3-9で始まる場合は03-09として処理する
-                val month = birth.text.substring(4, 5).toInt()
-                val year = birth.text.substring(0, 4)
+                val month = trimBirth.substring(4, 5).toInt()
+                val year = trimBirth.substring(0, 4)
                 if (month in 2..9) {
                     tempBirth = TextFieldValue("${year}0$month")
                 }
             }
-            if (birth.text.length == 6) {
+            if (trimBirth.length == 6) {
                 // 13月以降は無効とする
-                val month = birth.text.substring(4, 6).toInt()
+                val month = trimBirth.substring(4, 6).toInt()
                 if (12 < month) {
                     return
                 }
             }
         }
-        if (8 < birth.text.length) {
+        if (8 < trimBirth.length) {
             return
         }
         // 日付に変換できるかチェック
-        if (birth.text.length in 7..8) {
+        if (trimBirth.length in 7..8) {
             try {
                 SimpleDateFormat("yyyyMMdd", Locale.getDefault()).apply {
                     isLenient = false
@@ -194,7 +205,7 @@ class UserPreferenceSettingViewModel(
                 return
             }
         }
-        if (birth.text.startsWith("0").not()) {
+        if (trimBirth.startsWith("0").not()) {
             viewModelState.update { it.copy(birth = tempBirth) }
         }
     }

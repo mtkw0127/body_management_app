@@ -110,6 +110,7 @@ private fun Birth(birthText: TextFieldValue?, onChangeBirth: (TextFieldValue) ->
         placeholder = {
             Text(text = stringResource(id = R.string.placeholder_birth))
         },
+        singleLine = true,
         visualTransformation = { text ->
             val transformedText = text.text.toYYYYMMDD()
             TransformedText(
@@ -157,6 +158,7 @@ private fun Tall(value: TextFieldValue, onChangeTall: (TextFieldValue) -> Unit) 
         placeholder = {
             Text(text = stringResource(id = R.string.placeholder_tall))
         },
+        singleLine = true,
         visualTransformation = { text ->
             val textWithUnit = if (text.text.isNotBlank()) {
                 text.text + "cm"
@@ -189,6 +191,7 @@ private fun Weight(value: TextFieldValue, onChangeWeight: (TextFieldValue) -> Un
         placeholder = {
             Text(text = stringResource(id = R.string.placeholder_current_weight))
         },
+        singleLine = true,
         visualTransformation = { text ->
             val textWithUnit = if (text.text.isNotBlank()) {
                 text.text + "kg"
