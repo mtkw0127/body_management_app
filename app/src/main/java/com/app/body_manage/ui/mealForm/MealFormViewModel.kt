@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.data.model.Food
 import com.app.body_manage.data.model.Meal
+import com.app.body_manage.data.model.PhotoModel
 import com.app.body_manage.data.repository.MealRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -36,6 +37,10 @@ class MealFormViewModel(
 
     private val _deleted = MutableStateFlow(false)
     val deleted: StateFlow<Boolean> = _deleted
+
+    private val _photos = MutableStateFlow<List<PhotoModel>>(emptyList())
+    val photos: StateFlow<List<PhotoModel>> =
+        _photos.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     lateinit var type: Type
 
@@ -142,6 +147,12 @@ class MealFormViewModel(
                 }
             }
             it.copy(foods = updatedFoods)
+        }
+    }
+
+    fun addPhotos(photoModels: List<PhotoModel>) {
+        _photos.update {
+            it + photoModels
         }
     }
 }
