@@ -57,12 +57,14 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.app.body_manage.R
 import com.app.body_manage.common.CustomButton
 import com.app.body_manage.common.toKcal
 import com.app.body_manage.data.model.Food
 import com.app.body_manage.data.model.Food.Companion.NEW_ID
 import com.app.body_manage.data.model.Meal
+import com.app.body_manage.data.model.MealPhoto
 import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.extension.toMMDDEE
 import com.app.body_manage.extension.withKcal
@@ -126,6 +128,8 @@ fun MealFormScreen(
                         onClickDeleteFood,
                         onUpdateMealKcal
                     )
+                    Spacer(modifier = Modifier.size(10.dp))
+                    Photos(mealFoods.photos)
                 }
                 Spacer(modifier = Modifier.weight(1F))
             }
@@ -141,6 +145,18 @@ fun MealFormScreen(
                     onClickTakePhoto = onClickTakePhoto,
                     enable = mealFoods.foods.isNotEmpty(),
                 )
+            }
+        }
+    }
+}
+
+@Composable
+private fun Photos(photos: List<MealPhoto>) {
+    LazyColumn {
+        itemsIndexed(photos) { index, photo ->
+            AsyncImage(model = photo.uri, contentDescription = null)
+            if (photos.lastIndex != index) {
+                Spacer(modifier = Modifier.size(10.dp))
             }
         }
     }
@@ -374,6 +390,7 @@ private fun TextWithCandidate(
                 lineHeight = 150.sp
             ),
             modifier = Modifier
+                .background(Color.White)
                 .offset(0.dp, 0.5.dp)
                 .fillMaxWidth()
                 .focusRequester(focusRequester),

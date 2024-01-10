@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.lifecycleScope
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.model.Meal
+import com.app.body_manage.data.model.MealPhoto
 import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.camera.CameraActivity
 import kotlinx.coroutines.flow.collectLatest
@@ -25,6 +26,12 @@ class MealFormActivity : AppCompatActivity() {
 
     private val cameraLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                val photoList = CameraActivity.photoList.toList()
+                val photoModels =
+                    photoList.map { uri -> MealPhoto(uri = uri) }.toList()
+                viewModel.addPhotos(photoModels)
+            }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
