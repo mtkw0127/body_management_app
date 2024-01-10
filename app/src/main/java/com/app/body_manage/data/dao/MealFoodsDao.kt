@@ -10,6 +10,7 @@ import com.app.body_manage.data.entity.FoodEntity
 import com.app.body_manage.data.entity.MealEntity
 import com.app.body_manage.data.entity.MealFoodCrossRef
 import com.app.body_manage.data.entity.MealFoodsEntity
+import com.app.body_manage.data.entity.MealPhotoEntity
 import java.time.LocalDateTime
 
 @Dao
@@ -25,6 +26,9 @@ interface MealFoodsDao {
 
     @Insert
     suspend fun saveMeal(mealFoods: MealEntity): Long
+
+    @Update
+    suspend fun updateMeal(mealFoods: MealEntity)
 
     @Delete
     suspend fun deleteMeal(mealFoods: MealEntity)
@@ -51,4 +55,10 @@ interface MealFoodsDao {
 
     @Update
     suspend fun updateFoods(foods: List<FoodEntity>)
+
+    @Insert
+    suspend fun insertMealPhoto(mealPhotos: List<MealPhotoEntity>)
+
+    @Query("SELECT * FROM meal_photos WHERE meal_id = :mealId")
+    suspend fun getMealPhotos(mealId: Long): List<MealPhotoEntity>
 }
