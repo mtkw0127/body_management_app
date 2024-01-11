@@ -154,7 +154,7 @@ fun TopScreen(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            Text(text = "目標体重 ${userPreference.goalWeight} kg")
+                            Text(text = stringResource(id = R.string.label_target_weight) + " ${userPreference.goalWeight} kg")
                             Spacer(Modifier.weight(1F))
                             Text(text = userPreference.progressText)
                         }
@@ -217,7 +217,7 @@ fun TopScreen(
                         text = stringResource(id = R.string.label_good_weight),
                         withArrow = false,
                         message = userPreference?.goodWeight ?: "-",
-                        subTitle = "BMIが22の場合の体重"
+                        subTitle = stringResource(id = R.string.label_weight_bmi_22)
                     )
                     HorizontalLine()
                     IconAndText(
@@ -225,7 +225,7 @@ fun TopScreen(
                         text = stringResource(id = R.string.label_healthy_weight),
                         withArrow = false,
                         message = userPreference?.healthyDuration ?: "-",
-                        subTitle = "BMIが18.5から24.9の体重"
+                        subTitle = stringResource(id = R.string.label_weight_bmi_18_25)
                     )
                 }
                 Spacer(modifier = Modifier.size(10.dp))

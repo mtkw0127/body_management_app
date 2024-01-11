@@ -59,6 +59,7 @@ class TopActivity : AppCompatActivity() {
             viewModel.load()
         }
         val bottomSheetDataList = createBottomDataList(
+            context = this,
             topAction = { },
             compareAction = { launcher.launch(CompareActivity.createIntent(this)) },
             graphAction = { launcher.launch(GraphActivity.createIntent(this)) },

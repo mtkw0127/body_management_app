@@ -1,0 +1,148 @@
+<resources>
+    <string name="app_name">Body Management</string>
+    <string name="not_yet_measure_message">No records yet.</string>
+    <string name="prev_day">Previous Day</string>
+    <string name="next_day">Next Day</string>
+    <string name="prev_month">Previous Month</string>
+    <string name="next_month">Next Month</string>
+    <string name="settings">Settings</string>
+    <string name="back">Back</string>
+    <string name="record">Record</string>
+    <string name="date">Date</string>
+    <string name="tall">Height</string>
+    <string name="weight">Weight</string>
+    <string name="fat">Body Fat</string>
+    <string name="weight_unit">Weight [kg]</string>
+    <string name="fat_unit">Body Fat Percentage [%]</string>
+    <string name="dot">.</string>
+    <string name="unit_kg">kg</string>
+    <string name="unit_percent">%</string>
+    <string name="unit_hour">hour</string>
+    <string name="unit_minute">min</string>
+
+    <!-- User Settings -->
+    <string name="label_user_name">User Name</string>
+    <string name="placeholder_user_name">Name</string>
+    <string name="placeholder_birth">Example: January 1, 1999</string>
+    <string name="placeholder_tall">Example: 168.5 cm</string>
+    <string name="placeholder_current_weight">Example: 50.5 kg</string>
+    <string name="birth">Birthday</string>
+    <string name="current_weight">Current Weight</string>
+    <string name="gender">Gender</string>
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
+
+    <!-- Home Screen -->
+    <string name="label_registered_date">Registration Date</string>
+    <string name="label_target_weight">Target Weight</string>
+    <string name="title_set_object">Set Goal</string>
+    <string name="message_set_object">Setting a goal can help maintain motivation.</string>
+    <string name="label_set_object">Set Goal</string>
+    <string name="label_update_object">Update Goal</string>
+    <string name="label_bmi">BMI</string>
+    <string name="label_kcal">Basal Metabolic Rate</string>
+    <string name="label_fat">Body Fat Percentage</string>
+    <string name="label_see_by_calendar">View by Calendar</string>
+    <string name="label_see_by_today">View Today\'s Records</string>
+    <string name="label_see_statistic">Statistics</string>
+    <string name="label_start_point">Starting Point</string>
+    <string name="label_good_weight">Optimal Weight</string>
+    <string name="label_healthy_weight">Healthy Weight</string>
+    <string name="label_ideal_weight">Ideal Weight</string>
+    <string name="message_this_is_estimated_value">※ Estimated values recognized for individuals aged 18 to 79</string>
+    <string name="label_add_meal">Add Meal</string>
+    <string name="label_add_measure">Add Measurement</string>
+    <string name="message_not_registered_today">No records registered for today</string>
+    <string name="label_today_total_kcal">Calories Intake Today</string>
+    <string name="label_today_min_weight">Minimum Weight Today</string>
+    <string name="label_today_you">You Today</string>
+    <string name="label_weight_bmi_22">The weight for a BMI of 22</string>
+    <string name="label_weight_bmi_18_25">Weight for BMI between 18.5 and 24.9</string>
+
+    <!-- Measurement List -->
+    <string name="message_saved">Saved</string>
+    <string name="message_edited">Edited</string>
+    <string name="message_deleted">Deleted</string>
+    <string name="message_empty_so_add">No records for this day</string>
+    <string name="label_meals">Meal Details</string>
+    <string name="label_total_kcal">Total Calories</string>
+    <string name="message_empty_photo">Photo not uploaded</string>
+    <string name="label_this_day_photos">Photos taken on this day</string>
+    <string name="label_tall_with_unit">Height [cm]</string>
+    <string name="label_total_kcal_per_day">Daily Caloric Intake</string>
+
+    <!-- Settings -->
+    <string name="label_notify_at_seven">Notify at 7 AM daily</string>
+
+    <!-- Entry Screen -->
+    <string name="hint_fat">Body Fat Percentage</string>
+    <string name="hint_weight">Weight</string>
+    <string name="hint_time">Time</string>
+    <string name="hint_memo">Memo</string>
+    <string name="hint_memo_placeholder">You can write your memo here</string>
+    <string name="save">Save</string>
+    <string name="message_tap_and_add_photo">Tap to add a photo</string>
+
+    <!-- Comparison Screen -->
+    <string name="before">Before</string>
+    <string name="after">After</string>
+    <string name="compare">Compare</string>
+    <string name="history">History</string>
+    <string name="message_please_set_photo_for_compare">Please set a photo for comparison</string>
+    <string name="message_not_yet_saved_history">Comparison not yet saved</string>
+    <string name="message_not_yet_taken_measure_with_photo">No recorded measurements with photos yet\nStart by recording measurements with photos</string>
+
+    <!-- Graph Screen -->
+    <string name="message_empty">Graph will be displayed when measurements are recorded</string>
+    <string name="message_recent_data_is_shown">Showing data from the most recent measurement</string>
+    <string name="label_one_month">1 Month</string>
+    <string name="label_three_month">3 Months</string>
+    <string name="label_six_month">6 Months</string>
+    <string name="label_one_year">12 Months</string>
+    <string name="label_all_duration">All Periods</string>
+
+    <!-- Camera Screen -->
+    <string name="label_back">Back</string>
+    <string name="label_next">Next</string>
+
+    <!-- Photo List Screen -->
+    <string name="message_no_photo">Displayed when photos are uploaded</string>
+
+    <!-- Screen Titles -->
+    <string name="screen_name_settings">Settings</string>
+    <string name="screen_name_graph">Graph</string>
+    <string name="screen_name_choose_compare_photo">Choose a Photo for Comparison</string>
+
+    <!-- Meal Registration Screen -->
+    <string name="label_breakfast">Breakfast</string>
+    <string name="label_lunch">Lunch</string>
+    <string name="label_dinner">Dinner</string>
+    <string name="label_snack">Snack</string>
+    <string name="message_add">Add</string>
+    <string name="label_all_kcal">Total Calories</string>
+    <string name="message_search_and_add">Search and add food items</string>
+    <string name="label_result_of_search">Search Results</string>
+    <string name="message_save_and_add">Add New</string>
+    <string name="message_add_food">Add</string>
+
+    <!-- Calculator UI -->
+    <string name="label_number_1">1</string>
+    <string name="label_number_2">2</string>
+    <string name="label_number_3">3</string>
+    <string name="label_number_4">4</string>
+    <string name="label_number_5">5</string>
+    <string name="label_number_6">6</string>
+    <string name="label_number_7">7</string>
+    <string name="label_number_8">8</string>
+    <string name="label_number_9">9</string>
+    <string name="label_number_C">C</string>
+    <string name="label_number_0">0</string>
+    <string name="label_number_dot">.</string>
+    <string name="label_record">Record</string>
+
+    <!-- ボトムナビゲーション -->
+    <string name="label_home">Home</string>
+    <string name="label_compare">Compare</string>
+    <string name="label_photos">Photos</string>
+    <string name="label_graph">Graph</string>
+</resources>

@@ -80,6 +80,7 @@ class CompareActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val bottomSheetDataList = createBottomDataList(
+            context = this,
             topAction = { simpleLauncher.launch(TopActivity.createIntent(this)) },
             compareAction = { simpleLauncher.launch(createIntent(this)) },
             photoListAction = { simpleLauncher.launch(PhotoListActivity.createIntent(this)) },
