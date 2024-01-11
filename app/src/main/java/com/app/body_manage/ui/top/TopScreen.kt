@@ -154,7 +154,9 @@ fun TopScreen(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            Text(text = stringResource(id = R.string.label_target_weight) + " ${userPreference.goalWeight} kg")
+                            Text(
+                                text = stringResource(id = R.string.label_target_weight) + " ${userPreference.goalWeight} kg"
+                            )
                             Spacer(Modifier.weight(1F))
                             Text(text = userPreference.progressText)
                         }
