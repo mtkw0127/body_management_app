@@ -33,6 +33,8 @@
     <string name="gender_female">女性</string>
 
     <!-- トップ画面 -->
+    <string name="label_registered_date">登録日</string>
+    <string name="label_target_weight">目標体重</string>
     <string name="title_set_object">目標を設定</string>
     <string name="message_set_object">目標を設定すると、モチベーションの維持に役立ちます</string>
     <string name="label_set_object">目標を設定</string>
@@ -54,6 +56,8 @@
     <string name="label_today_total_kcal">摂取カロリー</string>
     <string name="label_today_min_weight">最小体重</string>
     <string name="label_today_you">今日のあなた</string>
+    <string name="label_weight_bmi_22">BMIが22の場合の体重</string>
+    <string name="label_weight_bmi_18_25">BMIが18.5から24.9の体重</string>
 
     <!-- 測定一覧-->
     <string name="message_saved">登録しました</string>
@@ -134,4 +138,10 @@
     <string name="label_number_0">0</string>
     <string name="label_number_dot">.</string>
     <string name="label_record">記録する</string>
+
+    <!-- ボトムナビゲーション -->
+    <string name="label_home">ホーム</string>
+    <string name="label_compare">比較</string>
+    <string name="label_photos">写真</string>
+    <string name="label_graph">グラフ</string>
 </resources>

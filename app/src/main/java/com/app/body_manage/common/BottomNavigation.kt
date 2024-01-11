@@ -1,5 +1,6 @@
 package com.app.body_manage.common
 
+import android.content.Context
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
@@ -56,6 +57,7 @@ data class BottomSheetData(
 )
 
 fun createBottomDataList(
+    context: Context,
     topAction: () -> Unit,
     compareAction: () -> Unit,
     photoListAction: () -> Unit,
@@ -67,7 +69,7 @@ fun createBottomDataList(
 ): List<BottomSheetData> {
     return listOf(
         BottomSheetData(
-            "トップ",
+            context.getString(R.string.label_home),
             {
                 Icon(
                     imageVector = Icons.Default.AccountCircle,
@@ -80,7 +82,7 @@ fun createBottomDataList(
             isTop,
         ),
         BottomSheetData(
-            "比較",
+            context.getString(R.string.label_compare),
             {
                 Icon(
                     imageVector = Icons.Default.CompareArrows,
@@ -93,7 +95,7 @@ fun createBottomDataList(
             isCompare,
         ),
         BottomSheetData(
-            "写真",
+            context.getString(R.string.label_photos),
             {
                 Icon(
                     imageVector = Icons.Default.PhotoLibrary,
@@ -106,7 +108,7 @@ fun createBottomDataList(
             isPhotos
         ),
         BottomSheetData(
-            "グラフ",
+            context.getString(R.string.label_graph),
             {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_baseline_show_chart_24),
