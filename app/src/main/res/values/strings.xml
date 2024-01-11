@@ -119,4 +119,19 @@
     <string name="label_result_of_search">検索結果</string>
     <string name="message_save_and_add">新規追加</string>
     <string name="message_add_food">追加</string>
+
+    <!-- 電卓UI -->
+    <string name="label_number_1">1</string>
+    <string name="label_number_2">2</string>
+    <string name="label_number_3">3</string>
+    <string name="label_number_4">4</string>
+    <string name="label_number_5">5</string>
+    <string name="label_number_6">6</string>
+    <string name="label_number_7">7</string>
+    <string name="label_number_8">8</string>
+    <string name="label_number_9">9</string>
+    <string name="label_number_C">C</string>
+    <string name="label_number_0">0</string>
+    <string name="label_number_dot">.</string>
+    <string name="label_record">記録する</string>
 </resources>

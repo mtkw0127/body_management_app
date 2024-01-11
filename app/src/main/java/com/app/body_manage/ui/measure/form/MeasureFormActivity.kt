@@ -106,6 +106,7 @@ class MeasureFormActivity : AppCompatActivity() {
                 },
                 onChangeWeightDialog = {
                     FloatNumberPickerDialog.createDialog(
+                        getString(R.string.weight),
                         (uiState as FormState.HasData).model.weight,
                         getString(R.string.unit_kg)
                     ) {
@@ -117,6 +118,7 @@ class MeasureFormActivity : AppCompatActivity() {
                 },
                 onChangeFatDialog = {
                     FloatNumberPickerDialog.createDialog(
+                        getString(R.string.fat),
                         (uiState as FormState.HasData).model.fat,
                         getString(R.string.unit_percent)
                     ) {

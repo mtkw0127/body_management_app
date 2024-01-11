@@ -111,6 +111,7 @@ class TopActivity : AppCompatActivity() {
                 onClickSetGoat = {
                     val weight = userPreference?.weight ?: return@TopScreen
                     FloatNumberPickerDialog.createDialog(
+                        getString(R.string.weight),
                         weight,
                         getString(R.string.unit_kg),
                     ) {
