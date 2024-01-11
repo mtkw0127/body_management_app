@@ -59,6 +59,7 @@ class TopActivity : AppCompatActivity() {
             viewModel.load()
         }
         val bottomSheetDataList = createBottomDataList(
+            context = this,
             topAction = { },
             compareAction = { launcher.launch(CompareActivity.createIntent(this)) },
             graphAction = { launcher.launch(GraphActivity.createIntent(this)) },
@@ -111,6 +112,7 @@ class TopActivity : AppCompatActivity() {
                 onClickSetGoat = {
                     val weight = userPreference?.weight ?: return@TopScreen
                     FloatNumberPickerDialog.createDialog(
+                        getString(R.string.weight),
                         weight,
                         getString(R.string.unit_kg),
                     ) {

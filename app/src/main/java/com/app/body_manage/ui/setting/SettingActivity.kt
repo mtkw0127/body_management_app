@@ -55,6 +55,7 @@ class SettingActivity : AppCompatActivity() {
         viewModel = SettingViewModel(UserPreferenceRepository(this))
 
         val bottomSheetDataList = createBottomDataList(
+            context = this,
             topAction = { launcher.launch(TopActivity.createIntent(this)) },
             compareAction = { launcher.launch(CompareActivity.createIntent(this)) },
             photoListAction = { launcher.launch(PhotoListActivity.createIntent(this)) },

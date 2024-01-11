@@ -9,5 +9,6 @@ class Colors {
         val accentColor = Color(0xFF5CA8FA)
         val disable = Color(0xFFCACACA)
         val background = Color(0xFFFCF8F8)
+        val backgroundDark = Color(0xFFE4E3E3)
     }
 }
