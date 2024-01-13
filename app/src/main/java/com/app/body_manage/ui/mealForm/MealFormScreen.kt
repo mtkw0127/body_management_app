@@ -247,7 +247,7 @@ private fun EatenFoods(
             )
             Spacer(modifier = Modifier.weight(1F))
             Text(
-                text = foods.sumOf { checkNotNull(it.kcal) }.toKcal()
+                text = meal.totalKcal.toKcal()
             )
         }
         Divider(

@@ -17,11 +17,12 @@ class MealRepository(
         val from = date.atTime(0, 0)
         val to = date.atTime(23, 59, 59)
         // 食事と写真を紐付けたモデルを返す
-        return mealFoodsDao.getMeals(from, to).map { mealPhotoEntity ->
-            val mealPhotos = mealFoodsDao.getMealPhotos(mealPhotoEntity.meal.mealId.toLong())
+        return mealFoodsDao.getMeals(from, to).map { mealEntity ->
+            val mealPhotos = mealFoodsDao.getMealPhotos(mealEntity.meal.mealId.toLong())
                 .map { it.toModel() }
+            val mealFoodRef = mealFoodsDao.getMealFoodCrossRef(mealEntity.meal.mealId.toLong())
             // 食事の数はわからない
-            mealPhotoEntity.toModel(mealPhotos, emptyList())
+            mealEntity.toModel(mealPhotos, mealFoodRef)
         }
     }
 
