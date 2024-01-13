@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TextFieldValue
@@ -38,7 +37,7 @@ import com.app.body_manage.style.Colors.Companion.theme
 @Composable
 fun UserPreferenceSettingScreen(
     uiState: UiState,
-    onChangeName: (TextFieldValue) -> Unit,
+    onChangeName: (String) -> Unit,
     onChangeGender: (Gender) -> Unit,
     onChangeBirth: (TextFieldValue) -> Unit,
     onChangeTall: (TextFieldValue) -> Unit,
@@ -53,7 +52,7 @@ fun UserPreferenceSettingScreen(
             .padding(30.dp)
     ) {
         item {
-            Name(uiState.name, onChangeName)
+            Name(uiState.name.orEmpty(), onChangeName)
         }
         item {
             Gender(uiState.gender, onChangeGender)
@@ -134,17 +133,23 @@ private fun Birth(birthText: TextFieldValue?, onChangeBirth: (TextFieldValue) ->
 }
 
 @Composable
-private fun Name(string: String?, onChangeName: (TextFieldValue) -> Unit) {
+private fun Name(name: String, onChangeName: (String) -> Unit) {
     Label(R.string.label_user_name)
-    CustomTextField(
-        value = TextFieldValue(string.orEmpty(), selection = TextRange(string?.length ?: 0)),
+    TextField(
+        value = name,
         onValueChange = onChangeName,
+        colors = TextFieldDefaults.textFieldColors(
+            backgroundColor = Color.Transparent,
+        ),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text
+        ),
         placeholder = {
             Text(
                 text = stringResource(id = R.string.placeholder_user_name)
             )
         },
-        keyboardType = KeyboardType.Text,
+        visualTransformation = VisualTransformation.None,
         singleLine = true,
     )
 }

@@ -111,8 +111,8 @@ class UserPreferenceSettingViewModel(
         viewModelState.update { it.copy(gender = gender) }
     }
 
-    fun setName(name: TextFieldValue) {
-        viewModelState.update { it.copy(name = name.text.ifBlank { null }) }
+    fun setName(name: String) {
+        viewModelState.update { it.copy(name = name) }
     }
 
     fun setTall(tall: TextFieldValue) {
