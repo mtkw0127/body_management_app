@@ -14,10 +14,11 @@ data class FoodEntity(
     @ColumnInfo(name = "kcal") val kcal: Int, // カロリー
 )
 
-fun FoodEntity.toModel() = Food(
+fun FoodEntity.toModel(foodNumber: Long) = Food(
     id = Food.Id(this.foodId),
     name = this.name,
     nameJp = this.nameJp,
     nameKana = this.nameKana,
     kcal = this.kcal,
+    number = foodNumber,
 )

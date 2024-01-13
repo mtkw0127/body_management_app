@@ -42,6 +42,7 @@ import com.app.body_manage.R
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.common.CustomButton
+import com.app.body_manage.common.toKcal
 import com.app.body_manage.data.local.UserPreference
 import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.extension.toCentiMeter
@@ -265,7 +266,7 @@ private fun TodaySummary(todayMeasure: TodayMeasure) {
         if (todayMeasure.meals.isNotEmpty()) {
             LabelAndText(
                 stringResource(id = R.string.label_today_total_kcal),
-                todayMeasure.totalKcal
+                todayMeasure.meals.sumOf { it.totalKcal }.toKcal()
             )
             Spacer(modifier = Modifier.size(5.dp))
         }

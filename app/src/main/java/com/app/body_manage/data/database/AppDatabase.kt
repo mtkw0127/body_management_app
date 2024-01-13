@@ -30,7 +30,7 @@ import com.app.body_manage.data.entity.PhotoEntity
         MealFoodCrossRef::class,
         MealPhotoEntity::class,
     ],
-    version = 6,
+    version = 7,
     exportSchema = true
 )
 @TypeConverters(LocalDateConverter::class)
@@ -50,6 +50,7 @@ abstract class AppDatabase : RoomDatabase() {
                             addMigrations(MIGRATION_3_4)
                             addMigrations(MIGRATION_4_5)
                             addMigrations(MIGRATION_5_6)
+                            addMigrations(MIGRATION_6_7)
                         }.build()
                 db = instance
                 instance
@@ -117,6 +118,15 @@ val MIGRATION_5_6 = object : Migration(5, 6) {
         )
         db.execSQL(
             "CREATE TABLE IF NOT EXISTS `mealAndFood` (`meal_id` INTEGER NOT NULL, `food_id` INTEGER NOT NULL)"
+        )
+    }
+}
+
+/** mealAndFoodテーブルに個数を追加（りんごを２つ食べたみたいな登録ができるようにするため）*/
+val MIGRATION_6_7 = object : Migration(6, 7) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "ALTER TABLE `mealAndFood` ADD COLUMN `number` INTEGER DEFAULT 1 NOT NULL"
         )
     }
 }

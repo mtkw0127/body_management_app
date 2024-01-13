@@ -21,6 +21,13 @@ data class Meal(
         SNACK(R.string.label_snack),
     }
 
+    val totalKcal: Int
+        get() {
+            return foods.sumOf {
+                it.kcal * it.number
+            }.toInt()
+        }
+
     companion object {
         fun init() = Meal(
             id = Id(0),

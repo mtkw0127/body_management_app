@@ -17,35 +17,48 @@ class MealRepository(
         val from = date.atTime(0, 0)
         val to = date.atTime(23, 59, 59)
         // 食事と写真を紐付けたモデルを返す
-        return mealFoodsDao.getMeals(from, to).map { mealPhotoEntity ->
-            val mealPhotos = mealFoodsDao.getMealPhotos(mealPhotoEntity.meal.mealId.toLong())
+        return mealFoodsDao.getMeals(from, to).map { mealEntity ->
+            val mealPhotos = mealFoodsDao.getMealPhotos(mealEntity.meal.mealId.toLong())
                 .map { it.toModel() }
-            mealPhotoEntity.toModel(mealPhotos)
+            val mealFoodRef = mealFoodsDao.getMealFoodCrossRef(mealEntity.meal.mealId.toLong())
+            // 食事の数はわからない
+            mealEntity.toModel(mealPhotos, mealFoodRef)
         }
     }
 
     suspend fun getMeal(id: Meal.Id): Meal? {
         val photos = mealFoodsDao.getMealPhotos(id.value.toLong()).map { it.toModel() }
-        return mealFoodsDao.getMeal(id.value.toLong())?.toModel(photos)
+        val mealFoodCrossRefs = mealFoodsDao.getMealFoodCrossRef(id.value.toLong())
+        return mealFoodsDao.getMeal(id.value.toLong())?.toModel(photos, mealFoodCrossRefs)
     }
 
     suspend fun getFoods(text: String): List<Food> {
-        return mealFoodsDao.getFoods(text).map { it.toModel() }
+        return mealFoodsDao.getFoods(text).map { it.toModel(foodNumber = 1) }
     }
 
     @Transaction
     suspend fun saveMeal(meal: Meal) {
         val mealId = mealFoodsDao.saveMeal(meal.toEntity())
-        val newFoodIds = mealFoodsDao.saveFoods(
-            // NEW_IDのものを新規登録する
-            meal.foods.filter { it.id == Food.NEW_ID }.map { it.toEntity() }
-        )
-        val registeredFoodIds =
-            meal.foods.filterNot { it.id == Food.NEW_ID }.map { it.id.value.toLong() }
 
-        (newFoodIds + registeredFoodIds).forEach { foodId ->
-            mealFoodsDao.saveMealFoods(MealFoodCrossRef(mealId, foodId))
+        // NEW_IDのものを新規登録して、食事と紐づける
+        meal.foods.filter { it.id == Food.NEW_ID }.forEach { food ->
+            val foodId = mealFoodsDao.saveFood(food.toEntity())
+            // 食べ物の個数分だけ追加する
+            mealFoodsDao.saveMealFoods(MealFoodCrossRef(mealId, foodId, food.number))
         }
+
+        // NEW_ID以外のものは食事と紐づけるだけ
+        meal.foods.filterNot { it.id == Food.NEW_ID }.forEach { food ->
+            // 食べ物の個数分だけ追加する
+            mealFoodsDao.saveMealFoods(
+                MealFoodCrossRef(
+                    mealId,
+                    food.id.value.toLong(),
+                    food.number
+                )
+            )
+        }
+
         // 写真の紐付け
         meal.photos.map { photo ->
             MealPhotoEntity(id = 0, mealId = mealId.toInt(), photoUri = photo.uri.toString())
@@ -64,17 +77,21 @@ class MealRepository(
         mealFoodsDao.deleteMealFoods(mealId)
 
         // 新しい食事を新規登録する
-        val newFoodIds = mealFoodsDao.saveFoods(
-            meal.foods.filter { it.id == Food.NEW_ID }.map { it.toEntity() }
-        )
+        meal.foods.filter { it.id == Food.NEW_ID }.forEach { food ->
+            val foodId = mealFoodsDao.saveFood(food.toEntity())
+            mealFoodsDao.saveMealFoods(MealFoodCrossRef(mealId, foodId, food.number))
+        }
 
         // 再登録する
         val registeredFoods = meal.foods.filterNot { it.id == Food.NEW_ID }
-        val registeredFoodIds = registeredFoods.map { it.id.value.toLong() }
-
-        // 関係性を再構築する
-        (newFoodIds + registeredFoodIds).forEach { foodId ->
-            mealFoodsDao.saveMealFoods(MealFoodCrossRef(mealId, foodId))
+        registeredFoods.forEach { food ->
+            mealFoodsDao.saveMealFoods(
+                MealFoodCrossRef(
+                    mealId,
+                    food.id.value.toLong(),
+                    food.number,
+                )
+            )
         }
 
         // 食べ物のカロリーが更新されている可能性があるので更新

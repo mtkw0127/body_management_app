@@ -250,7 +250,7 @@ private fun Summary(list: List<Measure>) {
     ) {
         // トータルカロリー
         list.filterIsInstance<Meal>().let { meals ->
-            val totalKcal = meals.flatMap { it.foods }.sumOf { it.kcal }
+            val totalKcal = meals.sumOf { it.totalKcal }
             LabelAndText(
                 label = stringResource(id = R.string.label_total_kcal_per_day),
                 text = totalKcal.toKcal(),
@@ -463,7 +463,7 @@ private fun MealItem(
         Text(text = stringResource(meal.timing.textResourceId))
         LabelAndText(
             label = stringResource(id = R.string.label_total_kcal),
-            text = meal.foods.map { it.kcal }.sumOf { it }.toKcal()
+            text = meal.totalKcal.toKcal()
         )
         Row {
             Text(

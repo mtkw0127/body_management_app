@@ -21,6 +21,7 @@
     <string name="unit_hour">時</string>
     <string name="unit_minute">分</string>
     <string name="unit_kcal">kcal</string>
+    <string name="unit_number">個</string>
 
     <!-- ユーザ設定 -->
     <string name="label_user_name">ユーザ名</string>
@@ -56,7 +57,7 @@
     <string name="label_add_measure">体型を登録</string>
     <string name="message_not_registered_today">本日の登録はまだありません</string>
     <string name="label_today_total_kcal">摂取カロリー</string>
-    <string name="label_today_min_weight">最小体重</string>
+    <string name="label_today_min_weight">体重</string>
     <string name="label_today_you">今日のあなた</string>
     <string name="label_weight_bmi_22">BMIが22の場合の体重</string>
     <string name="label_weight_bmi_18_25">BMIが18.5から24.9の体重</string>
@@ -125,6 +126,7 @@
     <string name="label_result_of_search">検索結果</string>
     <string name="message_save_and_add">新規追加</string>
     <string name="message_add_food">追加</string>
+    <string name="label_number">個数</string>
 
     <!-- 電卓UI -->
     <string name="label_number_1">1</string>

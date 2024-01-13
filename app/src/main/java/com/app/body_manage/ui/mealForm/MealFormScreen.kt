@@ -48,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineBreak
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,6 +56,7 @@ import coil.compose.AsyncImage
 import com.app.body_manage.R
 import com.app.body_manage.common.CustomButton
 import com.app.body_manage.common.toKcal
+import com.app.body_manage.common.toNumber
 import com.app.body_manage.data.model.Food
 import com.app.body_manage.data.model.Food.Companion.NEW_ID
 import com.app.body_manage.data.model.Meal
@@ -79,6 +81,7 @@ fun MealFormScreen(
     onClickTakePhoto: () -> Unit,
     onClickDeleteForm: () -> Unit,
     onUpdateMealKcal: (Food) -> Unit,
+    onUpdateMealNumber: (Food) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -117,9 +120,10 @@ fun MealFormScreen(
                     Time(mealFoods.time, onClickTime)
                     Spacer(modifier = Modifier.size(10.dp))
                     EatenFoods(
-                        mealFoods.foods,
+                        mealFoods,
                         onClickDeleteFood,
-                        onUpdateMealKcal
+                        onUpdateMealKcal = onUpdateMealKcal,
+                        onUpdateMealNumber = onUpdateMealNumber,
                     )
                     Spacer(modifier = Modifier.size(10.dp))
                     Photos(mealFoods.photos)
@@ -220,10 +224,12 @@ private fun SelectMealTiming(
 
 @Composable
 private fun EatenFoods(
-    foods: List<Food>,
+    meal: Meal,
     onClickDeleteFood: (Food) -> Unit,
     onUpdateMealKcal: (Food) -> Unit,
+    onUpdateMealNumber: (Food) -> Unit,
 ) {
+    val foods = meal.foods
     Column(
         modifier = Modifier
             .shadow(2.dp)
@@ -241,7 +247,7 @@ private fun EatenFoods(
             )
             Spacer(modifier = Modifier.weight(1F))
             Text(
-                text = foods.sumOf { checkNotNull(it.kcal) }.toKcal()
+                text = meal.totalKcal.toKcal()
             )
         }
         Divider(
@@ -251,8 +257,37 @@ private fun EatenFoods(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(text = food.name)
+                // 削除ボタン
+                Icon(
+                    imageVector = Icons.Default.Cancel,
+                    contentDescription = null,
+                    modifier = Modifier.clickable { onClickDeleteFood(food) }
+                )
+                Spacer(modifier = Modifier.size(10.dp))
+                // 食べ物の名前
+                Text(
+                    text = food.name,
+                    style = TextStyle(lineBreak = LineBreak.Simple),
+                    modifier = Modifier.width(100.dp)
+                )
                 Spacer(modifier = Modifier.weight(1F))
+                // 個
+                Column(
+                    modifier = Modifier
+                        .height(50.dp)
+                        .width(100.dp)
+                        .clickable {
+                            onUpdateMealNumber(food)
+                        },
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.End,
+                ) {
+                    Text(
+                        text = food.number.toInt().toNumber(),
+                        textAlign = TextAlign.End,
+                    )
+                }
+                // カロリー
                 Column(
                     modifier = Modifier
                         .height(50.dp)
@@ -260,19 +295,14 @@ private fun EatenFoods(
                         .clickable {
                             onUpdateMealKcal(food)
                         },
-                    verticalArrangement = Arrangement.Center
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.End,
                 ) {
                     Text(
                         text = food.kcal.toKcal(),
-                        textAlign = TextAlign.Start,
+                        textAlign = TextAlign.End,
                     )
                 }
-                Spacer(modifier = Modifier.size(10.dp))
-                Icon(
-                    imageVector = Icons.Default.Cancel,
-                    contentDescription = null,
-                    modifier = Modifier.clickable { onClickDeleteFood(food) }
-                )
             }
         }
     }

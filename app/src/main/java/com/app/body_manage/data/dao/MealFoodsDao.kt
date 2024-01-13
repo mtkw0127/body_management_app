@@ -34,7 +34,7 @@ interface MealFoodsDao {
     suspend fun deleteMeal(mealFoods: MealEntity)
 
     @Insert
-    suspend fun saveFoods(foods: List<FoodEntity>): List<Long>
+    suspend fun saveFood(food: FoodEntity): Long
 
     @Delete
     suspend fun deleteFoods(foods: List<FoodEntity>)
@@ -61,4 +61,7 @@ interface MealFoodsDao {
 
     @Query("SELECT * FROM meal_photos WHERE meal_id = :mealId")
     suspend fun getMealPhotos(mealId: Long): List<MealPhotoEntity>
+
+    @Query("SELECT * FROM mealAndFood WHERE mealId = :mealId")
+    suspend fun getMealFoodCrossRef(mealId: Long): List<MealFoodCrossRef>
 }
