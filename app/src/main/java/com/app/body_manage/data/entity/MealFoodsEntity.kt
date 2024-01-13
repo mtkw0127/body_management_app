@@ -16,10 +16,19 @@ data class MealFoodsEntity(
     val foods: List<FoodEntity>,
 )
 
-fun MealFoodsEntity.toModel(photos: List<MealPhoto>) = Meal(
+fun MealFoodsEntity.toModel(
+    photos: List<MealPhoto>,
+    foodCount: List<MealFoodCrossRef>,
+) = Meal(
     id = Meal.Id(meal.mealId),
     timing = checkNotNull(Meal.Timing.entries.find { it.name == this.meal.timing }),
     time = this.meal.dateTime,
-    foods = this.foods.map { it.toModel() },
+    foods = this.foods.map { food ->
+        food.toModel(
+            foodNumber = foodCount.find {
+                it.foodId.toInt() == food.foodId
+            }?.number ?: 0
+        )
+    },
     photos = photos,
 )

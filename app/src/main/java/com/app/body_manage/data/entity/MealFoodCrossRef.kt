@@ -9,4 +9,5 @@ import androidx.room.Entity
 data class MealFoodCrossRef(
     val mealId: Long,
     val foodId: Long,
+    val number: Long,
 )
