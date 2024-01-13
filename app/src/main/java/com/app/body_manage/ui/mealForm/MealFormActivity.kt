@@ -77,6 +77,15 @@ class MealFormActivity : AppCompatActivity() {
                     ) { kcal ->
                         viewModel.updateFood(food, kcal)
                     }.show(supportFragmentManager, null)
+                },
+                onUpdateMealNumber = { food ->
+                    IntNumberPickerDialog.createDialog(
+                        label = getString(R.string.label_number),
+                        number = food.number.toInt(),
+                        unit = getString(R.string.unit_number),
+                    ) { number ->
+                        viewModel.updateFoodNumber(food, number)
+                    }.show(supportFragmentManager, null)
                 }
             )
         }

@@ -151,4 +151,18 @@ class MealFormViewModel(
             meal.copy(photos = meal.photos + photoModels)
         }
     }
+
+    fun updateFoodNumber(targetFood: Food, number: Int) {
+        _mealFoods.update {
+            val updatedFood = targetFood.copy(number = number.toLong())
+            val updatedFoods = it.foods.map { food ->
+                if (food.name == targetFood.name) {
+                    updatedFood
+                } else {
+                    food
+                }
+            }
+            it.copy(foods = updatedFoods)
+        }
+    }
 }
