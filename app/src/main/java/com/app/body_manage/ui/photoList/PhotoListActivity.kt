@@ -36,6 +36,7 @@ class PhotoListActivity : AppCompatActivity() {
             MaterialTheme {
                 val state: PhotoListState by vm.uiState.collectAsState()
                 val bottomSheetDataList = createBottomDataList(
+                    context = this,
                     topAction = { launcher.launch(TopActivity.createIntent(this)) },
                     compareAction = { launcher.launch(CompareActivity.createIntent(this)) },
                     graphAction = { launcher.launch(GraphActivity.createIntent(this)) },

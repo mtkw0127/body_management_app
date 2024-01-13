@@ -28,6 +28,7 @@ class GraphActivity : AppCompatActivity() {
         setContent {
             val state: GraphState by viewModel.uiState.collectAsState()
             val bottomSheetDataList = createBottomDataList(
+                context = this,
                 topAction = { launcher.launch(TopActivity.createIntent(this)) },
                 compareAction = { launcher.launch(CompareActivity.createIntent(this)) },
                 graphAction = { },
