@@ -4,7 +4,6 @@
     <uses-feature android:name="android.hardware.camera" />
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -78,12 +77,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoBar" />
         <activity
-            android:name=".ui.setting.SettingActivity"
-            android:exported="true"
-            android:launchMode="singleInstance"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoBar" />
-        <activity
             android:name=".ui.compare.CompareActivity"
             android:exported="true"
             android:launchMode="singleInstance"
@@ -103,16 +96,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoBar"
             android:windowSoftInputMode="adjustResize" />
-
-        <receiver
-            android:name=".ui.alarm.AlarmNotification"
-            android:enabled="true"
-            android:exported="false"
-            android:theme="@style/AppTheme">
-            <intent-filter>
-                <action android:name="AlarmAction" />
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>
