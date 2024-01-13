@@ -54,7 +54,7 @@ class IntNumberPickerDialog : DialogFragment() {
         THOUSAND, HUNDRED, TENS, ONES
     }
 
-    private var currentFocus: Digit = Digit.THOUSAND
+    private var currentFocus: Digit = Digit.HUNDRED
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +70,10 @@ class IntNumberPickerDialog : DialogFragment() {
             hundredsPlace = integerPart[1].toString()
             tensPlace = integerPart[2].toString()
             onesPlace = integerPart[3].toString()
+            // 千の位に初期値がある場合はそこから入力を始める
+            if (thousandPlace != "0") {
+                currentFocus = Digit.THOUSAND
+            }
         }
     }
 
