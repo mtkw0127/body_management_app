@@ -10,9 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.lifecycleScope
+import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.model.Meal
 import com.app.body_manage.data.model.MealPhoto
+import com.app.body_manage.dialog.IntNumberPickerDialog
 import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.camera.CameraActivity
 import kotlinx.coroutines.flow.collectLatest
@@ -67,8 +69,14 @@ class MealFormActivity : AppCompatActivity() {
                     cameraLauncher.launch(CameraActivity.createCameraActivityIntent(this))
                 },
                 onClickDeleteForm = viewModel::deleteForm,
-                onUpdateMealKcal = { food, kcal ->
-                    viewModel.updateFood(food, kcal)
+                onUpdateMealKcal = { food ->
+                    IntNumberPickerDialog.createDialog(
+                        label = getString(R.string.kcal),
+                        number = food.kcal,
+                        unit = getString(R.string.unit_kcal),
+                    ) { kcal ->
+                        viewModel.updateFood(food, kcal)
+                    }.show(supportFragmentManager, null)
                 }
             )
         }
