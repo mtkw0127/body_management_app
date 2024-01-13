@@ -44,7 +44,7 @@ class MealRepository(
         meal.foods.filter { it.id == Food.NEW_ID }.forEach { food ->
             val foodId = mealFoodsDao.saveFood(food.toEntity())
             // 食べ物の個数分だけ追加する
-            mealFoodsDao.saveMealFoods(MealFoodCrossRef(0, mealId, foodId, food.number.toLong()))
+            mealFoodsDao.saveMealFoods(MealFoodCrossRef(mealId, foodId, food.number))
         }
 
         // NEW_ID以外のものは食事と紐づけるだけ
@@ -52,10 +52,9 @@ class MealRepository(
             // 食べ物の個数分だけ追加する
             mealFoodsDao.saveMealFoods(
                 MealFoodCrossRef(
-                    0,
                     mealId,
                     food.id.value.toLong(),
-                    food.number.toLong()
+                    food.number
                 )
             )
         }
@@ -80,7 +79,7 @@ class MealRepository(
         // 新しい食事を新規登録する
         meal.foods.filter { it.id == Food.NEW_ID }.forEach { food ->
             val foodId = mealFoodsDao.saveFood(food.toEntity())
-            mealFoodsDao.saveMealFoods(MealFoodCrossRef(0, mealId, foodId, food.number.toLong()))
+            mealFoodsDao.saveMealFoods(MealFoodCrossRef(mealId, foodId, food.number))
         }
 
         // 再登録する
@@ -88,10 +87,9 @@ class MealRepository(
         registeredFoods.forEach { food ->
             mealFoodsDao.saveMealFoods(
                 MealFoodCrossRef(
-                    0,
                     mealId,
                     food.id.value.toLong(),
-                    food.number.toLong()
+                    food.number,
                 )
             )
         }
