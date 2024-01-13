@@ -12,6 +12,7 @@
     <string name="tall">Height</string>
     <string name="weight">Weight</string>
     <string name="fat">Body Fat</string>
+    <string name="kcal">Calorie</string>
     <string name="weight_unit">Weight [kg]</string>
     <string name="fat_unit">Body Fat Percentage [%]</string>
     <string name="dot">.</string>
@@ -19,6 +20,7 @@
     <string name="unit_percent">%</string>
     <string name="unit_hour">hour</string>
     <string name="unit_minute">min</string>
+    <string name="unit_kcal">kcal</string>
 
     <!-- User Settings -->
     <string name="label_user_name">User Name</string>

@@ -20,15 +20,12 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Divider
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults.textFieldColors
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -49,12 +46,9 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.OffsetMapping
-import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -67,7 +61,6 @@ import com.app.body_manage.data.model.Meal
 import com.app.body_manage.data.model.MealPhoto
 import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.extension.toMMDDEE
-import com.app.body_manage.extension.withKcal
 import com.app.body_manage.style.Colors
 import java.time.LocalDateTime
 
@@ -85,7 +78,7 @@ fun MealFormScreen(
     onClickDeleteFood: (Food) -> Unit,
     onClickTakePhoto: () -> Unit,
     onClickDeleteForm: () -> Unit,
-    onUpdateMealKcal: (Food, Int) -> Unit,
+    onUpdateMealKcal: (Food) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -229,7 +222,7 @@ private fun SelectMealTiming(
 private fun EatenFoods(
     foods: List<Food>,
     onClickDeleteFood: (Food) -> Unit,
-    onUpdateMealKcal: (Food, Int) -> Unit,
+    onUpdateMealKcal: (Food) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -260,52 +253,20 @@ private fun EatenFoods(
             ) {
                 Text(text = food.name)
                 Spacer(modifier = Modifier.weight(1F))
-                TextField(
-                    value = food.kcal.toString(),
-                    onValueChange = { value ->
-                        try {
-                            val numberString = value.ifEmpty { "0" }
-                            var number = numberString.toInt()
-                            if (
-                                numberString.isEmpty().not() &&
-                                numberString.contains(" ").not() &&
-                                numberString.contains(",").not() &&
-                                numberString.contains("-").not() &&
-                                numberString.contains(".").not() &&
-                                numberString.contains("_").not()
-                            ) {
-                                if (food.kcal == 0) {
-                                    number = numberString.first().toString().toInt()
-                                }
-                                onUpdateMealKcal(food, number)
-                            }
-                        } catch (e: NumberFormatException) {
-                            return@TextField
-                        }
-                    },
-                    colors = textFieldColors(
-                        backgroundColor = Color.White,
-                    ),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                Column(
                     modifier = Modifier
                         .height(50.dp)
-                        .width(100.dp),
-                    visualTransformation = {
-                        val annotatedString = AnnotatedString(it.text.withKcal())
-                        TransformedText(
-                            annotatedString,
-                            object : OffsetMapping {
-                                override fun originalToTransformed(offset: Int): Int {
-                                    return annotatedString.length - 5
-                                }
-
-                                override fun transformedToOriginal(offset: Int): Int {
-                                    return food.kcal.toString().length
-                                }
-                            }
-                        )
-                    }
-                )
+                        .width(100.dp)
+                        .clickable {
+                            onUpdateMealKcal(food)
+                        },
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = food.kcal.toKcal(),
+                        textAlign = TextAlign.Start,
+                    )
+                }
                 Spacer(modifier = Modifier.size(10.dp))
                 Icon(
                     imageVector = Icons.Default.Cancel,
