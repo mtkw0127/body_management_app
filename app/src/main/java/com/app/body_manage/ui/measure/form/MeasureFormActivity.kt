@@ -89,10 +89,7 @@ class MeasureFormActivity : AppCompatActivity() {
                 },
                 onClickTime = {
                     val time = (uiState as FormState.HasData).model.time
-                    TimePickerDialog.createTimePickerDialog(
-                        hour = time.hour,
-                        minute = time.minute,
-                    ) { hour, minute ->
+                    TimePickerDialog.createTimePickerDialog(time) { hour, minute ->
                         viewModel.setTime(
                             LocalDateTime.of(
                                 time.year,
