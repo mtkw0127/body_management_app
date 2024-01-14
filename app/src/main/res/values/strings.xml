@@ -10,6 +10,7 @@
     <string name="record">記録する</string>
     <string name="date">日付</string>
     <string name="tall">身長</string>
+    <string name="age">年齢</string>
     <string name="weight">体重</string>
     <string name="fat">体脂肪</string>
     <string name="kcal">カロリー</string>
@@ -46,7 +47,8 @@
     <string name="label_kcal">基礎代謝</string>
     <string name="label_fat">体脂肪率</string>
     <string name="label_see_by_calendar">カレンダーで見る</string>
-    <string name="label_see_by_today">今日の記録を見る</string>
+    <string name="label_see_by_statistics">統計を見る</string>
+    <string name="label_see_by_today">今日の記録</string>
     <string name="label_see_statistic">統計</string>
     <string name="label_start_point">開始点</string>
     <string name="label_good_weight">適正な体重</string>
@@ -148,4 +150,11 @@
     <string name="label_compare">比較</string>
     <string name="label_photos">写真</string>
     <string name="label_graph">グラフ</string>
+
+    <!-- 統計 -->
+    <string name="label_current_you">現在のあなた</string>
+    <string name="label_result_diagnosis">診断結果</string>
+    <string name="label_result_diagnosis_too_low">痩せすぎです</string>
+    <string name="label_result_diagnosis_good">健康な体重の範囲内です</string>
+    <string name="label_result_diagnosis_too_weight">太り過ぎです</string>
 </resources>

@@ -22,11 +22,9 @@ import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccessibilityNew
 import androidx.compose.material.icons.filled.ArrowForwardIos
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Today
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,7 +45,6 @@ import com.app.body_manage.data.local.UserPreference
 import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.extension.toCentiMeter
 import com.app.body_manage.extension.toMMDDEE
-import com.app.body_manage.extension.withPercent
 import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
 
@@ -57,6 +54,7 @@ fun TopScreen(
     lastMeasure: BodyMeasure?,
     todayMeasure: TodayMeasure,
     bottomSheetDataList: List<BottomSheetData>,
+    onClickStatistics: () -> Unit = {},
     onClickCalendar: () -> Unit = {},
     onClickToday: () -> Unit = {},
     onClickAddMeasure: () -> Unit = {},
@@ -66,7 +64,6 @@ fun TopScreen(
     Scaffold(
         bottomBar = {
             Column {
-                BottomButtons(onClickAddMeasure, onClickAddMeal)
                 BottomSheet(bottomSheetDataList)
             }
         }
@@ -114,123 +111,22 @@ fun TopScreen(
             }
             if (userPreference?.goalWeight == null) {
                 item {
-                    Box(
-                        modifier = Modifier
-                            .shadow(2.dp)
-                            .background(
-                                Color.White,
-                                RoundedCornerShape(5.dp)
-                            )
-                            .fillMaxWidth()
-                            .height(120.dp)
-                            .padding(5.dp),
-                        contentAlignment = Alignment.BottomEnd
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.Start,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(20.dp),
-                        ) {
-                            TextWithUnderLine(R.string.label_set_object)
-                            Spacer(modifier = Modifier.size(10.dp))
-                            Text(
-                                text = stringResource(id = R.string.message_set_object),
-                                fontSize = 12.sp,
-                            )
-                        }
-                        CustomButton(
-                            modifier = Modifier.height(35.dp),
-                            onClick = { onClickSetGoat() },
-                            valueResourceId = R.string.label_set_object,
-                            backgroundColor = theme
-                        )
-                    }
+                    RequireGoal(onClickSetGoat)
                     Spacer(modifier = Modifier.size(10.dp))
                 }
             } else {
                 item {
-                    PanelColumn {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.label_target_weight) + " ${userPreference.goalWeight} kg"
-                            )
-                            Spacer(Modifier.weight(1F))
-                            Text(text = userPreference.progressText)
-                        }
-                        Spacer(modifier = Modifier.size(10.dp))
-                        LinearProgressIndicator(
-                            progress = userPreference.progress,
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        Spacer(modifier = Modifier.size(10.dp))
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.End
-                        ) {
-                            CustomButton(
-                                modifier = Modifier.height(35.dp),
-                                onClick = { onClickSetGoat() },
-                                valueResourceId = R.string.label_update_object,
-                                backgroundColor = theme
-                            )
-                        }
-                    }
+                    Goal(userPreference, onClickSetGoat)
                     Spacer(modifier = Modifier.size(10.dp))
                 }
             }
             item {
-                TodaySummary(todayMeasure = todayMeasure)
-                Spacer(modifier = Modifier.size(10.dp))
-            }
-            item {
-                Panel(content = {
-                    ColumTextWithLabelAndIcon(
-                        title = stringResource(id = R.string.label_bmi),
-                        value = userPreference?.bim ?: "-",
-                    )
-                    VerticalLine()
-                    ColumTextWithLabelAndIcon(
-                        title = stringResource(id = R.string.label_kcal) + "※",
-                        value = userPreference?.basicConsumeEnergy ?: "-",
-                    )
-                    VerticalLine()
-                    ColumTextWithLabelAndIcon(
-                        title = stringResource(id = R.string.label_fat),
-                        value = userPreference?.calcFat?.withPercent() ?: "-",
-                    )
-                }) {
-                    Spacer(modifier = Modifier.size(5.dp))
-                    Text(
-                        stringResource(id = R.string.message_this_is_estimated_value),
-                        fontSize = 11.sp,
-                        color = Color.DarkGray
-                    )
-                }
-                Spacer(modifier = Modifier.size(10.dp))
-            }
-            item {
-                PanelColumn {
-                    IconAndText(
-                        icon = Icons.Default.Check,
-                        text = stringResource(id = R.string.label_good_weight),
-                        withArrow = false,
-                        message = userPreference?.goodWeight ?: "-",
-                        subTitle = stringResource(id = R.string.label_weight_bmi_22)
-                    )
-                    HorizontalLine()
-                    IconAndText(
-                        icon = Icons.Default.AccessibilityNew,
-                        text = stringResource(id = R.string.label_healthy_weight),
-                        withArrow = false,
-                        message = userPreference?.healthyDuration ?: "-",
-                        subTitle = stringResource(id = R.string.label_weight_bmi_18_25)
-                    )
-                }
+                TodaySummary(
+                    todayMeasure = todayMeasure,
+                    onClickToday = onClickToday,
+                    onClickAddMeal = onClickAddMeal,
+                    onClickAddMeasure = onClickAddMeasure,
+                )
                 Spacer(modifier = Modifier.size(10.dp))
             }
             item {
@@ -241,12 +137,16 @@ fun TopScreen(
                         onClick = { onClickCalendar() },
                         text = stringResource(id = R.string.label_see_by_calendar),
                     )
-                    HorizontalLine()
+                }
+                Spacer(modifier = Modifier.size(10.dp))
+            }
+            item {
+                PanelColumn {
                     IconAndText(
-                        icon = Icons.Default.Today,
+                        icon = Icons.Default.BarChart,
                         modifier = Modifier.padding(vertical = 5.dp),
-                        onClick = { onClickToday() },
-                        text = stringResource(id = R.string.label_see_by_today),
+                        onClick = { onClickStatistics() },
+                        text = stringResource(id = R.string.label_see_by_statistics),
                     )
                 }
                 Spacer(modifier = Modifier.size(10.dp))
@@ -256,8 +156,92 @@ fun TopScreen(
 }
 
 @Composable
-private fun TodaySummary(todayMeasure: TodayMeasure) {
+private fun Goal(
+    userPreference: UserPreference,
+    onClickSetGoat: () -> Unit,
+) {
     PanelColumn {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(id = R.string.label_target_weight) + " ${userPreference.goalWeight} kg"
+            )
+            Spacer(Modifier.weight(1F))
+            Text(text = userPreference.progressText)
+        }
+        Spacer(modifier = Modifier.size(10.dp))
+        LinearProgressIndicator(
+            progress = userPreference.progress,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.size(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.End
+        ) {
+            CustomButton(
+                modifier = Modifier.height(35.dp),
+                onClick = { onClickSetGoat() },
+                valueResourceId = R.string.label_update_object,
+                backgroundColor = theme
+            )
+        }
+    }
+}
+
+@Composable
+private fun RequireGoal(
+    onClickSetGoat: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .shadow(2.dp)
+            .background(
+                Color.White,
+                RoundedCornerShape(5.dp)
+            )
+            .fillMaxWidth()
+            .height(120.dp)
+            .padding(5.dp),
+        contentAlignment = Alignment.BottomEnd
+    ) {
+        Column(
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(20.dp),
+        ) {
+            TextWithUnderLine(R.string.label_set_object)
+            Spacer(modifier = Modifier.size(10.dp))
+            Text(
+                text = stringResource(id = R.string.message_set_object),
+                fontSize = 12.sp,
+            )
+        }
+        CustomButton(
+            modifier = Modifier.height(35.dp),
+            onClick = { onClickSetGoat() },
+            valueResourceId = R.string.label_set_object,
+            backgroundColor = theme
+        )
+    }
+}
+
+@Composable
+private fun TodaySummary(
+    todayMeasure: TodayMeasure,
+    onClickToday: () -> Unit,
+    onClickAddMeal: () -> Unit,
+    onClickAddMeasure: () -> Unit,
+) {
+    PanelColumn(
+        modifier = Modifier.clickable {
+            onClickToday()
+        }
+    ) {
         TextWithUnderLine(R.string.label_today_you)
         Spacer(modifier = Modifier.size(10.dp))
         if (todayMeasure.bodyMeasures.isEmpty() && todayMeasure.meals.isEmpty()) {
@@ -268,19 +252,40 @@ private fun TodaySummary(todayMeasure: TodayMeasure) {
                 stringResource(id = R.string.label_today_total_kcal),
                 todayMeasure.meals.sumOf { it.totalKcal }.toKcal()
             )
-            Spacer(modifier = Modifier.size(5.dp))
+            Spacer(modifier = Modifier.size(10.dp))
         }
         if (todayMeasure.bodyMeasures.isNotEmpty()) {
             LabelAndText(
                 stringResource(id = R.string.label_today_min_weight),
                 todayMeasure.minWeight
             )
+            Spacer(modifier = Modifier.size(10.dp))
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround,
+        ) {
+            CustomButton(
+                backgroundColor = theme,
+                onClick = { onClickAddMeasure() },
+                valueResourceId = R.string.label_add_measure
+            )
+            CustomButton(
+                backgroundColor = theme,
+                onClick = { onClickAddMeal() },
+                valueResourceId = R.string.label_add_meal
+            )
+            CustomButton(
+                backgroundColor = theme,
+                onClick = { onClickToday() },
+                valueResourceId = R.string.label_see_by_today
+            )
         }
     }
 }
 
 @Composable
-private fun TextWithUnderLine(
+fun TextWithUnderLine(
     @StringRes stringResourceId: Int
 ) {
     Text(
@@ -292,7 +297,8 @@ private fun TextWithUnderLine(
                 Offset(size.width + 10F, size.height),
                 strokeWidth = 1F
             )
-        }
+        },
+        fontSize = 16.sp,
     )
 }
 
@@ -305,11 +311,11 @@ private fun LabelAndText(
         Text(
             text = label,
             modifier = Modifier.width(130.dp),
-            fontSize = 12.sp,
+            fontSize = 16.sp,
         )
         Text(
             text = text,
-            fontSize = 12.sp,
+            fontSize = 16.sp,
         )
     }
 }
@@ -343,7 +349,7 @@ fun BottomButtons(
 }
 
 @Composable
-private fun VerticalLine() {
+fun VerticalLine() {
     Box(
         modifier = Modifier
             .width(width = 1.dp)
@@ -353,22 +359,7 @@ private fun VerticalLine() {
 }
 
 @Composable
-private fun ColumTextWithLabelAndIcon(
-    title: String,
-    value: String,
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Text(text = title)
-        Spacer(modifier = Modifier.size(5.dp))
-        Text(text = value)
-    }
-}
-
-@Composable
-private fun HorizontalLine() {
+fun HorizontalLine() {
     Box(
         modifier = Modifier
             .padding(vertical = 20.dp)
@@ -379,7 +370,7 @@ private fun HorizontalLine() {
 }
 
 @Composable
-private fun IconAndText(
+fun IconAndText(
     text: String,
     icon: ImageVector,
     modifier: Modifier = Modifier,
@@ -427,11 +418,12 @@ private fun IconAndText(
 }
 
 @Composable
-private fun PanelColumn(
+fun PanelColumn(
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .shadow(2.dp)
             .background(
                 Color.White,
@@ -445,7 +437,7 @@ private fun PanelColumn(
 }
 
 @Composable
-private fun Panel(
+fun Panel(
     content: @Composable () -> Unit,
     bottom: @Composable () -> Unit = {}
 ) {
