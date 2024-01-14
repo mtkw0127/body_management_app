@@ -99,4 +99,11 @@ class TopViewModel(
             load()
         }
     }
+
+    fun setGoalKcal(goal: Int) {
+        viewModelScope.launch {
+            userPreferenceRepository.setGoatKcal(goal)
+            load()
+        }
+    }
 }

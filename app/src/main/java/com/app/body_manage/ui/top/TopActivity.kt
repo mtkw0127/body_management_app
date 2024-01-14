@@ -18,6 +18,7 @@ import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.MealRepository
 import com.app.body_manage.dialog.FloatNumberPickerDialog
+import com.app.body_manage.dialog.IntNumberPickerDialog
 import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
@@ -88,6 +89,19 @@ class TopActivity : AppCompatActivity() {
                 }
             }
         }
+        // 目標体重設定後に１日の目標カロリー設定
+        supportFragmentManager.setFragmentResultListener("GOAL", this) { key, bundle ->
+            IntNumberPickerDialog.createDialog(
+                getString(R.string.kcal_per_day),
+                viewModel.userPreference.value?.goalKcal ?: 2000,
+                getString(R.string.unit_kcal),
+                IntNumberPickerDialog.Digit.THOUSAND,
+                IntNumberPickerDialog.Digit.THOUSAND,
+            ) {
+                viewModel.setGoalKcal(it)
+            }.show(supportFragmentManager, null)
+        }
+
         setContent {
             val userPreference by viewModel.userPreference.collectAsState()
             val lastMeasure by viewModel.lastMeasure.collectAsState()
@@ -125,6 +139,7 @@ class TopActivity : AppCompatActivity() {
                         getString(R.string.weight),
                         weight,
                         getString(R.string.unit_kg),
+                        "GOAL",
                     ) {
                         viewModel.setGoalWeight(it)
                     }.show(supportFragmentManager, null)

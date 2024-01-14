@@ -14,6 +14,7 @@
     <string name="weight">体重</string>
     <string name="fat">体脂肪</string>
     <string name="kcal">カロリー</string>
+    <string name="kcal_per_day">目標摂取カロリー</string>
     <string name="weight_unit">体重 [kg]</string>
     <string name="fat_unit">体脂肪率 [%]</string>
     <string name="dot">.</string>
@@ -41,6 +42,7 @@
     <!-- トップ画面 -->
     <string name="label_registered_date">登録日</string>
     <string name="label_target_weight">目標体重</string>
+    <string name="label_target_kcal">目標カロリー</string>
     <string name="title_set_object">目標を設定</string>
     <string name="message_set_object">目標を設定すると、モチベーションの維持に役立ちます</string>
     <string name="label_set_object">目標を設定</string>
