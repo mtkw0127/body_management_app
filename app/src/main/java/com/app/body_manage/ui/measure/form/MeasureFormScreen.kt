@@ -29,6 +29,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.AccessibilityNew
 import androidx.compose.material.icons.filled.AddCircleOutline
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.DeleteForever
@@ -78,6 +79,13 @@ fun BodyMeasureFormScreen(
                     val isAdd = uiState is FormState.HasData.Add
                     val isEdit = uiState is FormState.HasData.Edit
                     Row(verticalAlignment = Alignment.CenterVertically) {
+                        Spacer(modifier = Modifier.size(10.dp))
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = null,
+                            modifier = Modifier.clickable { onClickBackPress() },
+                            tint = Color.Black
+                        )
                         Text(
                             text = uiState.measureDate.toMMDDEE(),
                             modifier = Modifier.offset(x = 10.dp),
@@ -251,7 +259,6 @@ fun BodyMeasureFormScreen(
                                 .padding(horizontal = 20.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            CustomButton(onClickBackPress, R.string.back, Color.White)
                             Spacer(modifier = Modifier.weight(1F))
                             CustomButton(onClickSave, R.string.save, theme)
                             Spacer(modifier = Modifier.size(20.dp))
