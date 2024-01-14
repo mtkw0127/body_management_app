@@ -1,9 +1,15 @@
 package com.app.body_manage.ui.compare
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Picture
 import android.os.Bundle
+import android.provider.MediaStore
+import android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,9 +28,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
+import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.common.createBottomDataList
 import com.app.body_manage.data.dao.ComparePhotoHistoryDao
@@ -147,6 +155,32 @@ class CompareActivity : AppCompatActivity() {
                             Photo.Id(it)
                         )
                     )
+                },
+                onClickShare = {
+                    val values = ContentValues()
+                    values.put(MediaStore.Images.Media.TITLE, "title")
+                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                    // 共有するためのURIを作る
+                    val uri = contentResolver.insert(
+                        EXTERNAL_CONTENT_URI,
+                        values
+                    )
+                    val bitmap = createBitmapFromPicture(it)
+                    contentResolver.openOutputStream(checkNotNull(uri))?.use { stream ->
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                    }
+
+                    val shareIntent: Intent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_STREAM, uri)
+                        type = "image/jpeg"
+                    }
+                    startActivity(
+                        Intent.createChooser(
+                            shareIntent,
+                            "比較写真の共有"
+                        )
+                    )
                 }
             )
             if (showDeleteConfirmDialog) {
@@ -170,7 +204,7 @@ class CompareActivity : AppCompatActivity() {
                                 .fillMaxWidth()
                         ) {
                             Text(
-                                "キャンセル",
+                                stringResource(id = R.string.cancel),
                                 modifier = Modifier
                                     .padding(5.dp, end = 10.dp)
                                     .clickable {
@@ -178,7 +212,7 @@ class CompareActivity : AppCompatActivity() {
                                     }
                             )
                             Text(
-                                "削除",
+                                stringResource(id = R.string.delete),
                                 modifier = Modifier
                                     .padding(5.dp)
                                     .clickable {
@@ -191,6 +225,19 @@ class CompareActivity : AppCompatActivity() {
                 )
             }
         }
+    }
+
+    private fun createBitmapFromPicture(picture: Picture): Bitmap {
+        val bitmap = Bitmap.createBitmap(
+            picture.width,
+            picture.height,
+            Bitmap.Config.ARGB_8888
+        )
+
+        val canvas = Canvas(bitmap)
+        canvas.drawColor(android.graphics.Color.WHITE)
+        canvas.drawPicture(picture)
+        return bitmap
     }
 
     companion object {
