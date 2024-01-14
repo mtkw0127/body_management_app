@@ -93,7 +93,12 @@ class MealFormActivity : AppCompatActivity() {
                     }.show(supportFragmentManager, null)
                 },
                 onClickPhotoDetail = {
-                    startActivity(PhotoDetailActivity.createIntent(this, it.id))
+                    startActivity(
+                        PhotoDetailActivity.createIntent(
+                            this,
+                            it.uri,
+                        )
+                    )
                 },
                 onClickDeletePhoto = {
                     viewModel.deletePhoto(it)

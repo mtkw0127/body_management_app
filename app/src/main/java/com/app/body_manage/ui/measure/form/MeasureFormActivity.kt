@@ -82,7 +82,11 @@ class MeasureFormActivity : AppCompatActivity() {
                     finish()
                 },
                 onClickPhotoDetail = {
-                    photoDetailLauncher.launch(PhotoDetailActivity.createIntent(this, it.uri))
+                    photoDetailLauncher.launch(
+                        PhotoDetailActivity.createIntent(
+                            this, it.uri
+                        )
+                    )
                 },
                 onClickDeletePhoto = {
                     viewModel.deletePhoto(it)
