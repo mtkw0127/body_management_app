@@ -14,7 +14,7 @@
     <string name="weight">体重</string>
     <string name="fat">体脂肪</string>
     <string name="kcal">カロリー</string>
-    <string name="kcal_per_day">目標摂取カロリー</string>
+    <string name="kcal_per_day">目標\n摂取カロリー</string>
     <string name="weight_unit">体重 [kg]</string>
     <string name="fat_unit">体脂肪率 [%]</string>
     <string name="dot">.</string>
