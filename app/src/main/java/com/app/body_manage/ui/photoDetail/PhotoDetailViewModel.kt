@@ -6,7 +6,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.model.BodyMeasure
-import com.app.body_manage.data.model.PhotoModel
+import com.app.body_manage.data.model.BodyPhoto
+import com.app.body_manage.data.model.Photo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -17,7 +18,7 @@ import timber.log.Timber
 
 sealed interface PhotoDetailState {
     data class ShowPhotoDetailWithDetail(
-        val photoModel: PhotoModel,
+        val photoModel: BodyPhoto,
         val bodyMeasureModel: BodyMeasure?
     ) : PhotoDetailState
 
@@ -29,7 +30,7 @@ sealed interface PhotoDetailState {
 }
 
 data class PhotoDetailViewModelState(
-    val photoModel: PhotoModel? = null,
+    val photoModel: BodyPhoto? = null,
     val bodyMeasureModel: BodyMeasure? = null,
     val err: Throwable? = null,
     val uri: Uri? = null,
@@ -75,7 +76,7 @@ class PhotoDetailViewModel(
             viewModelState.value.toUiState()
         )
 
-    fun loadPhoto(photoId: PhotoModel.Id) {
+    fun loadPhoto(photoId: Photo.Id) {
         viewModelScope.launch {
             runCatching { photoDetailRepository.selectPhoto(photoId) }
                 .onFailure {

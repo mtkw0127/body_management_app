@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.body_manage.data.model.Food
 import com.app.body_manage.data.model.Meal
 import com.app.body_manage.data.model.MealPhoto
+import com.app.body_manage.data.model.Photo
 import com.app.body_manage.data.repository.MealRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -163,6 +164,13 @@ class MealFormViewModel(
                 }
             }
             it.copy(foods = updatedFoods)
+        }
+    }
+
+    fun deletePhoto(targetPhoto: Photo) {
+        _mealFoods.update { meal ->
+            val photos = meal.photos.filter { photo -> photo.id != targetPhoto.id }
+            meal.copy(photos = photos)
         }
     }
 }

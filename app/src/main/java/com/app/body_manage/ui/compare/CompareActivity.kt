@@ -28,7 +28,7 @@ import androidx.lifecycle.lifecycleScope
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.common.createBottomDataList
 import com.app.body_manage.data.dao.ComparePhotoHistoryDao
-import com.app.body_manage.data.model.PhotoModel
+import com.app.body_manage.data.model.Photo
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.CompareHistoryRepository
 import com.app.body_manage.ui.choosePhoto.ChoosePhotoActivity
@@ -144,7 +144,7 @@ class CompareActivity : AppCompatActivity() {
                     startActivity(
                         PhotoDetailActivity.createIntent(
                             this@CompareActivity,
-                            PhotoModel.Id(it)
+                            Photo.Id(it)
                         )
                     )
                 }
