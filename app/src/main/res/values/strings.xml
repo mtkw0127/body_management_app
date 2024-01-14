@@ -23,6 +23,8 @@
     <string name="unit_minute">分</string>
     <string name="unit_kcal">kcal</string>
     <string name="unit_number">個</string>
+    <string name="delete">削除</string>
+    <string name="cancel">キャンセル</string>
 
     <!-- ユーザ設定 -->
     <string name="label_user_name">ユーザ名</string>
