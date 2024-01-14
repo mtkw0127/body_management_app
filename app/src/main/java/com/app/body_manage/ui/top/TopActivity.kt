@@ -33,13 +33,19 @@ import java.time.LocalDate
 class TopActivity : AppCompatActivity() {
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == MeasureFormActivity.RESULT_CODE_ADD) {
-                Toast.makeText(this, getString(R.string.message_saved), Toast.LENGTH_LONG).show()
-            }
-            if (it.resultCode == MealFormActivity.RESULT_KEY_MEAL_ADD) {
-                Toast.makeText(this, getString(R.string.message_saved), Toast.LENGTH_LONG).show()
-            }
             viewModel.load()
+            if (
+                it.resultCode == MeasureFormActivity.RESULT_CODE_ADD ||
+                it.resultCode == MealFormActivity.RESULT_KEY_MEAL_ADD
+            ) {
+                Toast.makeText(this, getString(R.string.message_saved), Toast.LENGTH_LONG).show()
+                startActivity(
+                    MeasureListActivity.createIntent(
+                        this,
+                        LocalDate.now()
+                    )
+                )
+            }
         }
 
     private val bodyMeasureRepository: BodyMeasureRepository by lazy {
