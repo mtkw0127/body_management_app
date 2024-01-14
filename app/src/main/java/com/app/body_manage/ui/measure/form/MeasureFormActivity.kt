@@ -84,7 +84,8 @@ class MeasureFormActivity : AppCompatActivity() {
                 onClickPhotoDetail = {
                     photoDetailLauncher.launch(
                         PhotoDetailActivity.createIntent(
-                            this, it.uri
+                            this,
+                            it.uri
                         )
                     )
                 },
