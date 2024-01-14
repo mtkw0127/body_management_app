@@ -99,6 +99,15 @@ class MealRepository(
             mealFoodsDao.updateFoods(registeredFoods.map { it.toEntity() })
         }
 
+        // 削除された写真を削除する
+        val originalMealPhotos = mealFoodsDao.getMealPhotos(mealId).map { it.toModel() }
+        originalMealPhotos.filter { originalMealPhoto ->
+            // 更新後も存在しないものを残す
+            meal.photos.find { it.uri == originalMealPhoto.uri } == null
+        }.forEach {
+            mealFoodsDao.deleteMealPhoto(it.id.value)
+        }
+
         // 写真の紐付け
         meal.photos.filter { photo ->
             // 新しい写真を新規で追加

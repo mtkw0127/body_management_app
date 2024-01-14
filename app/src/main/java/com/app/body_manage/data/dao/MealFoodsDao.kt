@@ -59,6 +59,9 @@ interface MealFoodsDao {
     @Insert
     suspend fun insertMealPhoto(mealPhotos: List<MealPhotoEntity>)
 
+    @Query("DELETE FROM meal_photos where id = :id")
+    suspend fun deleteMealPhoto(id: Int)
+
     @Query("SELECT * FROM meal_photos WHERE meal_id = :mealId")
     suspend fun getMealPhotos(mealId: Long): List<MealPhotoEntity>
 

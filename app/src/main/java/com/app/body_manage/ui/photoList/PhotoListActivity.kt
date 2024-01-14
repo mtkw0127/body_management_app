@@ -10,7 +10,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.app.body_manage.common.createBottomDataList
-import com.app.body_manage.data.model.PhotoModel
+import com.app.body_manage.data.model.Photo
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
@@ -49,7 +49,7 @@ class PhotoListActivity : AppCompatActivity() {
                         photoDetailLauncher.launch(
                             PhotoDetailActivity.createIntent(
                                 context = this,
-                                photoId = PhotoModel.Id(photoId)
+                                photoId = Photo.Id(photoId)
                             )
                         )
                     },

@@ -2,19 +2,15 @@ package com.app.body_manage.data.model
 
 import android.net.Uri
 import com.app.body_manage.data.entity.PhotoEntity
-import java.io.Serializable
 
-data class PhotoModel(
-    val id: Id = Id(0),
+data class BodyPhoto(
+    override val id: Photo.Id = Photo.Id(0),
     val bodyMeasureId: BodyMeasure.Id? = null,
-    val uri: Uri,
-) {
-    @JvmInline
-    value class Id(val id: Int) : Serializable
-}
+    override val uri: Uri,
+) : Photo
 
-fun PhotoModel.toEntity(bodyMeasureId: BodyMeasure.Id? = null) = PhotoEntity(
-    id = this@toEntity.id.id,
+fun BodyPhoto.toEntity(bodyMeasureId: BodyMeasure.Id? = null) = PhotoEntity(
+    id = this@toEntity.id.value,
     bodyMeasureId = checkNotNull(this@toEntity.bodyMeasureId?.value ?: bodyMeasureId?.value),
     photoUri = this@toEntity.uri.toString(),
 )

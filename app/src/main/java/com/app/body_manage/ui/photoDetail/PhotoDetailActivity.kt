@@ -8,11 +8,11 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.app.body_manage.data.model.PhotoModel
+import com.app.body_manage.data.model.Photo
 
 class PhotoDetailActivity : AppCompatActivity() {
     private val photoId by lazy {
-        intent.getSerializableExtra(KEY_PHOTO_ID) as? PhotoModel.Id
+        intent.getSerializableExtra(KEY_PHOTO_ID) as? Photo.Id
     }
 
     private val photoUri by lazy {
@@ -43,7 +43,7 @@ class PhotoDetailActivity : AppCompatActivity() {
 
         fun createIntent(
             context: Context,
-            photoId: PhotoModel.Id,
+            photoId: Photo.Id,
         ): Intent {
             val intent = Intent(context, PhotoDetailActivity::class.java)
             intent.putExtra(KEY_PHOTO_ID, photoId)

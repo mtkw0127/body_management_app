@@ -8,7 +8,8 @@ import com.app.body_manage.data.entity.toModel
 import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.local.toBodyMeasureForAdd
 import com.app.body_manage.data.model.BodyMeasure
-import com.app.body_manage.data.model.PhotoModel
+import com.app.body_manage.data.model.BodyPhoto
+import com.app.body_manage.data.model.Photo
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.PhotoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,18 +27,18 @@ sealed interface FormState {
     data object Init : FormState
     sealed interface HasData : FormState {
         val model: BodyMeasure
-        val photos: List<PhotoModel>
+        val photos: List<BodyPhoto>
         val measureDate: LocalDate // 登録する日付アプリバー用
 
         data class Add(
             override val model: BodyMeasure,
-            override val photos: List<PhotoModel>,
+            override val photos: List<BodyPhoto>,
             override val measureDate: LocalDate,
         ) : HasData
 
         data class Edit(
             override val model: BodyMeasure,
-            override val photos: List<PhotoModel>,
+            override val photos: List<BodyPhoto>,
             override val measureDate: LocalDate,
         ) : HasData
     }
@@ -45,7 +46,7 @@ sealed interface FormState {
 
 data class FormViewModelState(
     val model: BodyMeasure? = null,
-    val photos: List<PhotoModel> = emptyList(),
+    val photos: List<BodyPhoto> = emptyList(),
     val type: Type? = null,
     val measureDate: LocalDate? = null,
 ) {
@@ -113,15 +114,15 @@ class BodyMeasureEditFormViewModel(
         }
     }
 
-    fun addPhotos(photoList: List<PhotoModel>) {
+    fun addPhotos(photoList: List<BodyPhoto>) {
         viewModelState.update {
             it.copy(photos = it.photos + photoList)
         }
     }
 
-    fun deletePhoto(photoModel: PhotoModel) {
+    fun deletePhoto(photo: Photo) {
         viewModelState.update {
-            val photos = it.photos.filterNot { it.id == photoModel.id }
+            val photos = it.photos.filterNot { it.id == photo.id }
             it.copy(photos = photos)
         }
     }

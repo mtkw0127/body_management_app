@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.local.UserPreferenceRepository
-import com.app.body_manage.data.model.PhotoModel
+import com.app.body_manage.data.model.Photo
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.MealRepository
@@ -116,7 +116,7 @@ class MeasureListActivity : AppCompatActivity() {
                 showPhotoDetail = {
                     val intent = PhotoDetailActivity.createIntent(
                         baseContext,
-                        PhotoModel.Id(it)
+                        Photo.Id(it)
                     )
                     launcher.launch(intent)
                 },

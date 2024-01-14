@@ -7,6 +7,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.app.body_manage.data.model.Meal
 import com.app.body_manage.data.model.MealPhoto
+import com.app.body_manage.data.model.Photo
 
 @Entity(
     tableName = "meal_photos",
@@ -26,7 +27,7 @@ class MealPhotoEntity(
 )
 
 fun MealPhotoEntity.toModel() = MealPhoto(
-    id = MealPhoto.Id(id),
+    id = Photo.Id(id),
     mealId = Meal.Id(mealId),
     uri = photoUri.toUri(),
 )
