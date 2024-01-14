@@ -25,8 +25,8 @@ android {
         applicationId = "com.app.calendar"
         minSdk = 26
         targetSdk = 34
-        versionCode = 28
-        versionName = "1.27.0"
+        versionCode = 29
+        versionName = "1.28.0"
         applicationId = "com.app.body_manage"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -84,10 +84,10 @@ dependencies {
 
     // flipper
     implementation("com.facebook.flipper:flipper:0.244.0")
-    implementation("com.facebook.soloader:soloader:0.10.5")
+    implementation("com.facebook.soloader:soloader:0.11.0")
 
     // lifecycle
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
 
     // CameraX core library using the camera2 implementation
     val cameraxVersion = "1.4.0-alpha03"
@@ -118,7 +118,7 @@ dependencies {
     // Tooling support (Previews, etc.)
     implementation("androidx.compose.ui:ui-tooling:1.5.4")
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-    implementation("androidx.compose.foundation:foundation:1.6.0-beta03")
+    implementation("androidx.compose.foundation:foundation:1.6.0-rc01")
     // Material Design
     implementation("androidx.compose.material:material:1.5.4")
     // Material design icons
@@ -127,7 +127,7 @@ dependencies {
     // Integration with activities
     implementation("androidx.activity:activity-compose:1.8.2")
     // Integration with ViewModels
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     // Integration with observables
     implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
     implementation("com.google.accompanist:accompanist-pager:0.25.0")
@@ -138,7 +138,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
-    testImplementation("io.mockk:mockk:1.13.2")
+    testImplementation("io.mockk:mockk:1.13.7")
     // 画像
     implementation("io.coil-kt:coil-compose:2.5.0")
 
