@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +25,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -45,13 +48,14 @@ class IntNumberPickerDialog : DialogFragment() {
     private lateinit var callBack: (weight: Int) -> Unit
 
     // 初期値
-    private var thousandPlace: String = ""
-    private var hundredsPlace: String = ""
-    private var tensPlace: String = ""
-    private var onesPlace: String = ""
+    private lateinit var thousandPlace: String
+    private lateinit var hundredsPlace: String
+    private lateinit var tensPlace: String
+    private lateinit var onesPlace: String
+    private lateinit var maxDigit: Digit
 
-    enum class Digit {
-        THOUSAND, HUNDRED, TENS, ONES
+    enum class Digit(val number: Int) {
+        THOUSAND(1000), HUNDRED(100), TENS(10), ONES(1)
     }
 
     private var currentFocus: Digit = Digit.HUNDRED
@@ -63,6 +67,8 @@ class IntNumberPickerDialog : DialogFragment() {
             label = extras.getString(LABEL, "")
             number = extras.getInt(NUMBER, 50)
             unit = extras.getString(UNIT, "")
+            maxDigit = checkNotNull(extras.getSerializable(MAX_DIGIT) as Digit)
+            currentFocus = checkNotNull(extras.getSerializable(INITIAL_DIGIT) as Digit)
 
             // 600 -> 0600
             val integerPart = String.format("%04d", number)
@@ -89,13 +95,14 @@ class IntNumberPickerDialog : DialogFragment() {
                 var hundredsPlace by remember { mutableStateOf(hundredsPlace) }
                 var tensPlace by remember { mutableStateOf(tensPlace) }
                 var onesPlace by remember { mutableStateOf(onesPlace) }
+                var currentFocus by remember { mutableStateOf(currentFocus) }
 
                 val clearNumber = {
                     thousandPlace = "0"
                     hundredsPlace = "0"
                     tensPlace = "0"
                     onesPlace = "0"
-                    currentFocus = Digit.THOUSAND
+                    currentFocus = maxDigit
                 }
 
                 val updateNumber: (Int) -> Unit = { number ->
@@ -117,7 +124,7 @@ class IntNumberPickerDialog : DialogFragment() {
 
                         Digit.ONES -> {
                             onesPlace = number.toString()
-                            currentFocus = Digit.HUNDRED
+                            currentFocus = maxDigit
                         }
                     }
                 }
@@ -141,46 +148,112 @@ class IntNumberPickerDialog : DialogFragment() {
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(10.dp)
+                            modifier = Modifier.padding(20.dp)
                         ) {
                             // 入力対象
                             Row(
                                 horizontalArrangement = Arrangement.Start,
                                 verticalAlignment = Alignment.Bottom,
                             ) {
-                                Text(
-                                    text = label,
-                                    modifier = Modifier.width(100.dp),
-                                    textAlign = TextAlign.Start,
-                                    fontWeight = FontWeight.SemiBold,
-                                    fontSize = 16.sp
-                                )
+                                Box(
+                                    contentAlignment = Alignment.Center,
+                                    modifier = Modifier.padding(5.dp)
+                                ) {
+                                    Text(
+                                        text = label,
+                                        modifier = Modifier.width(100.dp),
+                                        textAlign = TextAlign.Start,
+                                        fontWeight = FontWeight.SemiBold,
+                                        fontSize = 16.sp
+                                    )
+                                }
                                 Row(
                                     modifier = Modifier
                                         .background(
                                             Colors.backgroundDark,
                                             RoundedCornerShape(5.dp)
                                         )
+                                        .padding(5.dp)
                                         .width(100.dp),
                                     horizontalArrangement = Arrangement.End,
                                     verticalAlignment = Alignment.Bottom,
                                 ) {
-                                    Text(
-                                        text = thousandPlace,
-                                        fontSize = 18.sp
-                                    )
-                                    Text(
-                                        text = hundredsPlace,
-                                        fontSize = 18.sp
-                                    )
-                                    Text(
-                                        text = tensPlace,
-                                        fontSize = 18.sp
-                                    )
-                                    Text(
-                                        text = onesPlace,
-                                        fontSize = 18.sp
-                                    )
+                                    if (Digit.THOUSAND.number <= maxDigit.number) {
+                                        Text(
+                                            text = thousandPlace,
+                                            fontSize = 18.sp,
+                                            modifier = Modifier.drawBehind {
+                                                if (currentFocus == Digit.THOUSAND) {
+                                                    drawLine(
+                                                        Color.Black,
+                                                        Offset(0F, this.size.height - 3),
+                                                        Offset(
+                                                            this.size.width,
+                                                            this.size.height - 3
+                                                        ),
+                                                        strokeWidth = 1F
+                                                    )
+                                                }
+                                            }
+                                        )
+                                    }
+                                    if (Digit.HUNDRED.number <= maxDigit.number) {
+                                        Text(
+                                            text = hundredsPlace,
+                                            fontSize = 18.sp,
+                                            modifier = Modifier.drawBehind {
+                                                if (currentFocus == Digit.HUNDRED) {
+                                                    drawLine(
+                                                        Color.Black,
+                                                        Offset(0F, this.size.height - 3),
+                                                        Offset(
+                                                            this.size.width,
+                                                            this.size.height - 3
+                                                        ),
+                                                        strokeWidth = 1F
+                                                    )
+                                                }
+                                            }
+                                        )
+                                    }
+                                    if (Digit.TENS.number <= maxDigit.number) {
+                                        Text(
+                                            text = tensPlace,
+                                            fontSize = 18.sp,
+                                            modifier = Modifier.drawBehind {
+                                                if (currentFocus == Digit.TENS) {
+                                                    drawLine(
+                                                        Color.Black,
+                                                        Offset(0F, this.size.height - 3),
+                                                        Offset(
+                                                            this.size.width,
+                                                            this.size.height - 3
+                                                        ),
+                                                        strokeWidth = 1F
+                                                    )
+                                                }
+                                            }
+                                        )
+                                    }
+                                    if (Digit.ONES.number <= maxDigit.number) {
+                                        Text(
+                                            text = onesPlace,
+                                            fontSize = 18.sp,
+                                            modifier = Modifier.drawBehind {
+                                                if (currentFocus == Digit.ONES) {
+                                                    drawLine(
+                                                        Color.Black,
+                                                        Offset(0F, this.size.height - 3),
+                                                        Offset(
+                                                            this.size.width,
+                                                            this.size.height - 3
+                                                        ),
+                                                        strokeWidth = 1F
+                                                    )
+                                                }
+                                            }
+                                        )
+                                    }
                                 }
                                 Spacer(modifier = Modifier.size(5.dp))
                                 Text(
@@ -288,17 +361,23 @@ class IntNumberPickerDialog : DialogFragment() {
         private const val LABEL = "LABEL"
         private const val NUMBER = "NUMBER"
         private const val UNIT = "UNIT"
+        private const val MAX_DIGIT = "DIGIT"
+        private const val INITIAL_DIGIT = "INITIAL_DIGIT"
         fun createDialog(
             label: String,
             number: Int,
             unit: String,
-            callBack: (weight: Int) -> Unit
+            maxDigit: Digit,
+            initialDigit: Digit,
+            callBack: (weight: Int) -> Unit,
         ): IntNumberPickerDialog {
             val numberPickerDialog = IntNumberPickerDialog()
             val bundle = Bundle().apply {
                 putString(LABEL, label)
                 putInt(NUMBER, number)
                 putString(UNIT, unit)
+                putSerializable(MAX_DIGIT, maxDigit)
+                putSerializable(INITIAL_DIGIT, initialDigit)
             }
             numberPickerDialog.arguments = bundle
             numberPickerDialog.callBack = callBack

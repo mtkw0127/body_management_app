@@ -27,6 +27,7 @@ class UserPreferenceRepository(
         val KEY_TALL = floatPreferencesKey("key_tall")
         val KEY_WEIGHT = floatPreferencesKey("key_weight")
         val KEY_GOAL_WEIGHT = floatPreferencesKey("key_goal_weight")
+        val KEY_GOAL_KCAL = intPreferencesKey("key_goal_kcal")
         val KEY_FAT = floatPreferencesKey("key_fat")
         val KEY_ALARM = booleanPreferencesKey("key_alarm")
     }
@@ -67,15 +68,15 @@ class UserPreferenceRepository(
         }
     }
 
-    suspend fun putAlarm(onAlarm: Boolean) {
-        context.dataStore.edit { preferences ->
-            preferences[KEY_ALARM] = onAlarm
-        }
-    }
-
     suspend fun setGoatWeight(goalWeight: Float) {
         context.dataStore.edit { preferences ->
             preferences[KEY_GOAL_WEIGHT] = goalWeight
+        }
+    }
+
+    suspend fun setGoatKcal(goalKcal: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[KEY_GOAL_KCAL] = goalKcal
         }
     }
 
@@ -108,6 +109,7 @@ class UserPreferenceRepository(
                 tall = it[KEY_TALL],
                 weight = it[KEY_WEIGHT],
                 goalWeight = it[KEY_GOAL_WEIGHT],
+                goalKcal = it[KEY_GOAL_KCAL],
                 fat = it[KEY_FAT],
                 alarm = it[KEY_ALARM] ?: false,
             )

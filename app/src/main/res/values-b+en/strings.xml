@@ -10,9 +10,11 @@
     <string name="record">Record</string>
     <string name="date">Date</string>
     <string name="tall">Height</string>
+    <string name="age">Age</string>
     <string name="weight">Weight</string>
     <string name="fat">Body Fat</string>
     <string name="kcal">Calorie</string>
+    <string name="kcal_per_day">Calorie Per Day</string>
     <string name="weight_unit">Weight [kg]</string>
     <string name="fat_unit">Body Fat Percentage [%]</string>
     <string name="dot">.</string>
@@ -22,6 +24,8 @@
     <string name="unit_minute">min</string>
     <string name="unit_kcal">kcal</string>
     <string name="unit_number">Number</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
 
     <!-- User Settings -->
     <string name="label_user_name">User Name</string>
@@ -38,6 +42,7 @@
     <!-- Home Screen -->
     <string name="label_registered_date">Registration Date</string>
     <string name="label_target_weight">Target Weight</string>
+    <string name="label_target_kcal">Target calorie</string>
     <string name="title_set_object">Set Goal</string>
     <string name="message_set_object">Setting a goal can help maintain motivation.</string>
     <string name="label_set_object">Set Goal</string>
@@ -46,6 +51,7 @@
     <string name="label_kcal">Basal Metabolic Rate</string>
     <string name="label_fat">Body Fat Percentage</string>
     <string name="label_see_by_calendar">View by Calendar</string>
+    <string name="label_see_by_statistics">View by Statistics</string>
     <string name="label_see_by_today">View Today\'s Records</string>
     <string name="label_see_statistic">Statistics</string>
     <string name="label_start_point">Starting Point</string>
@@ -149,4 +155,11 @@
     <string name="label_compare">Compare</string>
     <string name="label_photos">Photos</string>
     <string name="label_graph">Graph</string>
+
+    <!-- 統計 -->
+    <string name="label_current_you">Current you</string>
+    <string name="label_result_diagnosis">Diagnosis</string>
+    <string name="label_result_diagnosis_too_low">Too skinny</string>
+    <string name="label_result_diagnosis_good">Within the healthy weight range.</string>
+    <string name="label_result_diagnosis_too_weight">overweight</string>
 </resources>

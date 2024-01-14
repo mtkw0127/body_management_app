@@ -11,7 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.app.body_manage.R
 import com.app.body_manage.data.local.UserPreferenceRepository
-import com.app.body_manage.data.model.PhotoModel
+import com.app.body_manage.data.model.BodyPhoto
 import com.app.body_manage.dialog.FloatNumberPickerDialog
 import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.camera.CameraActivity
@@ -36,7 +36,7 @@ class MeasureFormActivity : AppCompatActivity() {
         if (it.resultCode == Activity.RESULT_OK) {
             val photoList = CameraActivity.photoList.toList()
             val photoModels =
-                photoList.map { uri -> PhotoModel(uri = uri) }.toList()
+                photoList.map { uri -> BodyPhoto(uri = uri) }.toList()
             viewModel.addPhotos(photoModels)
         }
     }
@@ -82,7 +82,12 @@ class MeasureFormActivity : AppCompatActivity() {
                     finish()
                 },
                 onClickPhotoDetail = {
-                    photoDetailLauncher.launch(PhotoDetailActivity.createIntent(this, it.uri))
+                    photoDetailLauncher.launch(
+                        PhotoDetailActivity.createIntent(
+                            this,
+                            it.uri
+                        )
+                    )
                 },
                 onClickDeletePhoto = {
                     viewModel.deletePhoto(it)

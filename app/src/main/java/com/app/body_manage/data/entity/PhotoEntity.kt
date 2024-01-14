@@ -6,7 +6,8 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.app.body_manage.data.model.BodyMeasure
-import com.app.body_manage.data.model.PhotoModel
+import com.app.body_manage.data.model.BodyPhoto
+import com.app.body_manage.data.model.Photo
 import java.io.Serializable
 
 @Entity(
@@ -26,8 +27,8 @@ class PhotoEntity(
     @ColumnInfo(name = "photo_uri") val photoUri: String
 ) : Serializable
 
-fun PhotoEntity.toModel() = PhotoModel(
-    id = PhotoModel.Id(id),
+fun PhotoEntity.toModel() = BodyPhoto(
+    id = Photo.Id(id),
     bodyMeasureId = BodyMeasure.Id(bodyMeasureId),
     uri = photoUri.toUri(),
 )

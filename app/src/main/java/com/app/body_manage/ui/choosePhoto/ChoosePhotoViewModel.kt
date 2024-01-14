@@ -3,7 +3,7 @@ package com.app.body_manage.ui.choosePhoto
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
-import com.app.body_manage.data.model.PhotoModel
+import com.app.body_manage.data.model.Photo
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,7 +21,7 @@ sealed interface SelectPhotoState {
     data class SelectedPhoto(
         val currentMonth: YearMonth,
         val currentMonthRegisteredDateList: List<LocalDate>,
-        val photoId: PhotoModel.Id?,
+        val photoId: Photo.Id?,
         val photoList: List<BodyMeasurePhotoDao.PhotoData>,
         override val date: LocalDate,
     ) : SelectPhotoState
@@ -35,7 +35,7 @@ sealed interface SelectPhotoState {
 data class SelectPhotoViewModelState(
     val currentMonth: YearMonth,
     val selectedDate: LocalDate,
-    val photoId: PhotoModel.Id? = null,
+    val photoId: Photo.Id? = null,
     val currentMonthRegisteredDateList: List<LocalDate> = listOf(),
     val photoList: List<BodyMeasurePhotoDao.PhotoData> = listOf(),
     val error: Throwable? = null

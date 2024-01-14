@@ -18,6 +18,7 @@ import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.MealRepository
 import com.app.body_manage.dialog.FloatNumberPickerDialog
+import com.app.body_manage.dialog.IntNumberPickerDialog
 import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
@@ -25,6 +26,7 @@ import com.app.body_manage.ui.mealForm.MealFormActivity
 import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.measure.list.MeasureListActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
+import com.app.body_manage.ui.statistics.StatisticsActivity
 import com.app.body_manage.ui.top.UserPreferenceSettingDialog.Companion.REQUEST_KEY
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -33,13 +35,19 @@ import java.time.LocalDate
 class TopActivity : AppCompatActivity() {
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == MeasureFormActivity.RESULT_CODE_ADD) {
-                Toast.makeText(this, getString(R.string.message_saved), Toast.LENGTH_LONG).show()
-            }
-            if (it.resultCode == MealFormActivity.RESULT_KEY_MEAL_ADD) {
-                Toast.makeText(this, getString(R.string.message_saved), Toast.LENGTH_LONG).show()
-            }
             viewModel.load()
+            if (
+                it.resultCode == MeasureFormActivity.RESULT_CODE_ADD ||
+                it.resultCode == MealFormActivity.RESULT_KEY_MEAL_ADD
+            ) {
+                Toast.makeText(this, getString(R.string.message_saved), Toast.LENGTH_LONG).show()
+                startActivity(
+                    MeasureListActivity.createIntent(
+                        this,
+                        LocalDate.now()
+                    )
+                )
+            }
         }
 
     private val bodyMeasureRepository: BodyMeasureRepository by lazy {
@@ -81,6 +89,19 @@ class TopActivity : AppCompatActivity() {
                 }
             }
         }
+        // 目標体重設定後に１日の目標カロリー設定
+        supportFragmentManager.setFragmentResultListener("GOAL", this) { key, bundle ->
+            IntNumberPickerDialog.createDialog(
+                getString(R.string.kcal_per_day),
+                viewModel.userPreference.value?.goalKcal ?: 2000,
+                getString(R.string.unit_kcal),
+                IntNumberPickerDialog.Digit.THOUSAND,
+                IntNumberPickerDialog.Digit.THOUSAND,
+            ) {
+                viewModel.setGoalKcal(it)
+            }.show(supportFragmentManager, null)
+        }
+
         setContent {
             val userPreference by viewModel.userPreference.collectAsState()
             val lastMeasure by viewModel.lastMeasure.collectAsState()
@@ -90,6 +111,9 @@ class TopActivity : AppCompatActivity() {
                 lastMeasure = lastMeasure,
                 todayMeasure = todayMeasure,
                 bottomSheetDataList = bottomSheetDataList,
+                onClickStatistics = {
+                    launcher.launch(StatisticsActivity.createIntent(this))
+                },
                 onClickCalendar = {
                     launcher.launch(CalendarActivity.createIntent(this))
                 },
@@ -115,6 +139,7 @@ class TopActivity : AppCompatActivity() {
                         getString(R.string.weight),
                         weight,
                         getString(R.string.unit_kg),
+                        "GOAL",
                     ) {
                         viewModel.setGoalWeight(it)
                     }.show(supportFragmentManager, null)

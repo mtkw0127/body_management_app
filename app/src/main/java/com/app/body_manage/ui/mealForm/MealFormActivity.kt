@@ -17,6 +17,7 @@ import com.app.body_manage.data.model.MealPhoto
 import com.app.body_manage.dialog.IntNumberPickerDialog
 import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.camera.CameraActivity
+import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -74,6 +75,8 @@ class MealFormActivity : AppCompatActivity() {
                         label = getString(R.string.kcal),
                         number = food.kcal,
                         unit = getString(R.string.unit_kcal),
+                        maxDigit = IntNumberPickerDialog.Digit.THOUSAND,
+                        initialDigit = IntNumberPickerDialog.Digit.HUNDRED,
                     ) { kcal ->
                         viewModel.updateFood(food, kcal)
                     }.show(supportFragmentManager, null)
@@ -83,9 +86,22 @@ class MealFormActivity : AppCompatActivity() {
                         label = getString(R.string.label_number),
                         number = food.number.toInt(),
                         unit = getString(R.string.unit_number),
+                        maxDigit = IntNumberPickerDialog.Digit.ONES,
+                        initialDigit = IntNumberPickerDialog.Digit.ONES,
                     ) { number ->
                         viewModel.updateFoodNumber(food, number)
                     }.show(supportFragmentManager, null)
+                },
+                onClickPhotoDetail = {
+                    startActivity(
+                        PhotoDetailActivity.createIntent(
+                            this,
+                            it.uri,
+                        )
+                    )
+                },
+                onClickDeletePhoto = {
+                    viewModel.deletePhoto(it)
                 }
             )
         }

@@ -10,9 +10,11 @@
     <string name="record">記録する</string>
     <string name="date">日付</string>
     <string name="tall">身長</string>
+    <string name="age">年齢</string>
     <string name="weight">体重</string>
     <string name="fat">体脂肪</string>
     <string name="kcal">カロリー</string>
+    <string name="kcal_per_day">目標\n摂取カロリー</string>
     <string name="weight_unit">体重 [kg]</string>
     <string name="fat_unit">体脂肪率 [%]</string>
     <string name="dot">.</string>
@@ -22,6 +24,8 @@
     <string name="unit_minute">分</string>
     <string name="unit_kcal">kcal</string>
     <string name="unit_number">個</string>
+    <string name="delete">削除</string>
+    <string name="cancel">キャンセル</string>
 
     <!-- ユーザ設定 -->
     <string name="label_user_name">ユーザ名</string>
@@ -38,6 +42,7 @@
     <!-- トップ画面 -->
     <string name="label_registered_date">登録日</string>
     <string name="label_target_weight">目標体重</string>
+    <string name="label_target_kcal">目標カロリー</string>
     <string name="title_set_object">目標を設定</string>
     <string name="message_set_object">目標を設定すると、モチベーションの維持に役立ちます</string>
     <string name="label_set_object">目標を設定</string>
@@ -46,7 +51,8 @@
     <string name="label_kcal">基礎代謝</string>
     <string name="label_fat">体脂肪率</string>
     <string name="label_see_by_calendar">カレンダーで見る</string>
-    <string name="label_see_by_today">今日の記録を見る</string>
+    <string name="label_see_by_statistics">統計を見る</string>
+    <string name="label_see_by_today">今日の記録</string>
     <string name="label_see_statistic">統計</string>
     <string name="label_start_point">開始点</string>
     <string name="label_good_weight">適正な体重</string>
@@ -148,4 +154,11 @@
     <string name="label_compare">比較</string>
     <string name="label_photos">写真</string>
     <string name="label_graph">グラフ</string>
+
+    <!-- 統計 -->
+    <string name="label_current_you">現在のあなた</string>
+    <string name="label_result_diagnosis">診断結果</string>
+    <string name="label_result_diagnosis_too_low">痩せすぎです</string>
+    <string name="label_result_diagnosis_good">健康な体重の範囲内です</string>
+    <string name="label_result_diagnosis_too_weight">太り過ぎです</string>
 </resources>

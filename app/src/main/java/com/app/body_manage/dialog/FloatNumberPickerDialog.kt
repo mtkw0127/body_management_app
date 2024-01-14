@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import com.app.body_manage.R
 import com.app.body_manage.common.CustomButton
@@ -51,6 +52,7 @@ class FloatNumberPickerDialog : DialogFragment() {
     private var onesPlace: String = ""
     private var firstDecimalPlace: String = ""
     private var secondDecimalPlace: String = ""
+    private var key: String? = null
 
     enum class Digit {
         HUNDRED, TENS, ONES, FIRST_DECIMAL, SECOND_DECIMAL
@@ -65,6 +67,7 @@ class FloatNumberPickerDialog : DialogFragment() {
             label = extras.getString(LABEL, "")
             number = extras.getFloat(NUMBER, 50.0F)
             unit = extras.getString(UNIT, "")
+            key = extras.getString(KEY)
 
             // 60.55 -> 60 -> 060
             val integerPart = String.format("%03d", number.toInt())
@@ -319,6 +322,9 @@ class FloatNumberPickerDialog : DialogFragment() {
                                 val decimalPlace =
                                     firstDecimalPlace.toInt() * 0.1 + secondDecimalPlace.toInt() * 0.01
                                 callBack((integerPlace + decimalPlace).toFloat())
+                                key?.let {
+                                    parentFragmentManager.setFragmentResult(it, bundleOf())
+                                }
                                 dismiss()
                             },
                             backgroundColor = Colors.theme,
@@ -335,17 +341,20 @@ class FloatNumberPickerDialog : DialogFragment() {
         private const val LABEL = "LABEL"
         private const val NUMBER = "NUMBER"
         private const val UNIT = "UNIT"
+        private const val KEY = "KEY"
         fun createDialog(
             label: String,
             number: Float,
             unit: String,
-            callBack: (weight: Float) -> Unit
+            requestKey: String? = null,
+            callBack: (weight: Float) -> Unit,
         ): FloatNumberPickerDialog {
             val numberPickerDialog = FloatNumberPickerDialog()
             val bundle = Bundle().apply {
                 putString(LABEL, label)
                 putFloat(NUMBER, number)
                 putString(UNIT, unit)
+                putString(KEY, requestKey)
             }
             numberPickerDialog.arguments = bundle
             numberPickerDialog.callBack = callBack

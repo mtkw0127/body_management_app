@@ -19,7 +19,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -29,8 +28,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.AccessibilityNew
 import androidx.compose.material.icons.filled.AddCircleOutline
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Notes
 import androidx.compose.runtime.Composable
@@ -44,10 +43,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import com.app.body_manage.R
 import com.app.body_manage.common.CustomButton
-import com.app.body_manage.data.model.PhotoModel
+import com.app.body_manage.common.CustomImage
+import com.app.body_manage.data.model.Photo
 import com.app.body_manage.extension.toFat
 import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.extension.toMMDDEE
@@ -64,8 +63,8 @@ fun BodyMeasureFormScreen(
     onClickSave: () -> Unit = {},
     onClickNextDay: () -> Unit = {},
     onClickPreviousDay: () -> Unit = {},
-    onClickPhotoDetail: (PhotoModel) -> Unit = {},
-    onClickDeletePhoto: (PhotoModel) -> Unit = {},
+    onClickPhotoDetail: (Photo) -> Unit = {},
+    onClickDeletePhoto: (Photo) -> Unit = {},
     onClickTime: () -> Unit = {},
     onChangeWeightDialog: () -> Unit = {},
     onChangeFatDialog: () -> Unit = {},
@@ -78,6 +77,13 @@ fun BodyMeasureFormScreen(
                     val isAdd = uiState is FormState.HasData.Add
                     val isEdit = uiState is FormState.HasData.Edit
                     Row(verticalAlignment = Alignment.CenterVertically) {
+                        Spacer(modifier = Modifier.size(10.dp))
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = null,
+                            modifier = Modifier.clickable { onClickBackPress() },
+                            tint = Color.Black
+                        )
                         Text(
                             text = uiState.measureDate.toMMDDEE(),
                             modifier = Modifier.offset(x = 10.dp),
@@ -216,24 +222,11 @@ fun BodyMeasureFormScreen(
                             }
                         } else {
                             items(uiState.photos) { photo ->
-                                Box(modifier = Modifier.fillMaxWidth()) {
-                                    AsyncImage(
-                                        model = photo.uri,
-                                        contentDescription = null,
-                                        modifier = Modifier.clickable {
-                                            onClickPhotoDetail(photo)
-                                        }
-                                    )
-                                    IconButton(
-                                        onClick = { onClickDeletePhoto(photo) },
-                                        modifier = Modifier.offset(x = 5.dp, y = 5.dp)
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Cancel,
-                                            contentDescription = null
-                                        )
-                                    }
-                                }
+                                CustomImage(
+                                    photo,
+                                    onClickPhotoDetail,
+                                    onClickDeletePhoto,
+                                )
                             }
                         }
                     }
@@ -251,7 +244,6 @@ fun BodyMeasureFormScreen(
                                 .padding(horizontal = 20.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            CustomButton(onClickBackPress, R.string.back, Color.White)
                             Spacer(modifier = Modifier.weight(1F))
                             CustomButton(onClickSave, R.string.save, theme)
                             Spacer(modifier = Modifier.size(20.dp))

@@ -17,6 +17,7 @@ data class UserPreference(
     val fat: Float?,
     val weight: Float?,
     val goalWeight: Float?,
+    val goalKcal: Int?,
     val alarm: Boolean?,
 ) {
     val bim: String
@@ -43,15 +44,7 @@ data class UserPreference(
             return "${min}kg - ${max}kg"
         }
 
-    val goodWeight: String
-        get() {
-            if (tall == null) return "-"
-            val doubleTall = (tall / 100F).toDouble().pow(2.0)
-            val result = doubleTall * 22
-            return "${(result * 100).toInt() / 100F} kg"
-        }
-
-    val progress: Float
+    val progressWeight: Float
         get() {
             if (weight == null || goalWeight == null) {
                 return 0F
@@ -59,10 +52,19 @@ data class UserPreference(
             return goalWeight / weight
         }
 
-    val progressText: String
-        get() {
-            return "${(progress * 100).toInt()} %"
+    fun progressKcal(todayKcal: Int): Float {
+        if (goalKcal == null) {
+            return 0F
         }
+        return todayKcal.toFloat() / goalKcal.toFloat()
+    }
+
+    val progressWeightText: String
+        get() {
+            return "${(progressWeight * 100).toInt()} %"
+        }
+
+    fun progressKcalText(totalKcal: Int): String = "${(progressKcal(totalKcal) * 100).toInt()} %"
 
     val basicConsumeEnergy: String
         get() {

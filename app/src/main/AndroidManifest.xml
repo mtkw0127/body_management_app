@@ -35,7 +35,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoBar" />
         <activity
-            android:name="com.app.body_manage.ui.measure.form.MeasureFormActivity"
+            android:name=".ui.measure.form.MeasureFormActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoBar" />
+        <activity
+            android:name=".ui.statistics.StatisticsActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
