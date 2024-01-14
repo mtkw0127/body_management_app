@@ -28,6 +28,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Cancel
@@ -87,6 +88,13 @@ fun MealFormScreen(
         topBar = {
             TopAppBar(backgroundColor = Colors.theme) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    Spacer(modifier = Modifier.size(10.dp))
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = null,
+                        modifier = Modifier.clickable { onClickBackPress() },
+                        tint = Color.Black
+                    )
                     Text(
                         text = mealFoods.time.toLocalDate().toMMDDEE(),
                         modifier = Modifier.offset(x = 10.dp),
@@ -450,7 +458,6 @@ private fun SaveForm(
                 .padding(horizontal = 20.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            CustomButton(onClickBackPress, R.string.back, Color.White)
             Spacer(modifier = Modifier.weight(1F))
             CustomButton(onClickSave, R.string.save, Colors.theme, enable = enable)
             Spacer(modifier = Modifier.size(20.dp))
