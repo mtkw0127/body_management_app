@@ -14,6 +14,7 @@
     <string name="weight">Weight</string>
     <string name="fat">Body Fat</string>
     <string name="kcal">Calorie</string>
+    <string name="kcal_per_day">Calorie Per Day</string>
     <string name="weight_unit">Weight [kg]</string>
     <string name="fat_unit">Body Fat Percentage [%]</string>
     <string name="dot">.</string>
@@ -41,6 +42,7 @@
     <!-- Home Screen -->
     <string name="label_registered_date">Registration Date</string>
     <string name="label_target_weight">Target Weight</string>
+    <string name="label_target_kcal">Target calorie</string>
     <string name="title_set_object">Set Goal</string>
     <string name="message_set_object">Setting a goal can help maintain motivation.</string>
     <string name="label_set_object">Set Goal</string>

@@ -43,6 +43,7 @@ import com.app.body_manage.common.CustomButton
 import com.app.body_manage.common.toKcal
 import com.app.body_manage.data.local.UserPreference
 import com.app.body_manage.data.model.BodyMeasure
+import com.app.body_manage.data.model.Meal
 import com.app.body_manage.extension.toCentiMeter
 import com.app.body_manage.extension.toMMDDEE
 import com.app.body_manage.style.Colors.Companion.background
@@ -116,7 +117,7 @@ fun TopScreen(
                 }
             } else {
                 item {
-                    Goal(userPreference, onClickSetGoat)
+                    Goal(userPreference, todayMeasure.meals, onClickSetGoat)
                     Spacer(modifier = Modifier.size(10.dp))
                 }
             }
@@ -158,6 +159,7 @@ fun TopScreen(
 @Composable
 private fun Goal(
     userPreference: UserPreference,
+    meal: List<Meal>,
     onClickSetGoat: () -> Unit,
 ) {
     PanelColumn {
@@ -169,14 +171,30 @@ private fun Goal(
                 text = stringResource(id = R.string.label_target_weight) + " ${userPreference.goalWeight} kg"
             )
             Spacer(Modifier.weight(1F))
-            Text(text = userPreference.progressText)
+            Text(text = userPreference.progressWeightText)
         }
         Spacer(modifier = Modifier.size(10.dp))
         LinearProgressIndicator(
-            progress = userPreference.progress,
+            progress = userPreference.progressWeight,
             modifier = Modifier.fillMaxWidth()
         )
+        Spacer(modifier = Modifier.size(15.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = stringResource(id = R.string.label_target_kcal) + " ${userPreference.goalKcal} kcal"
+            )
+            Spacer(Modifier.weight(1F))
+            Text(text = userPreference.progressKcalText(meal.sumOf { it.totalKcal }))
+        }
         Spacer(modifier = Modifier.size(10.dp))
+        LinearProgressIndicator(
+            progress = userPreference.progressKcal(meal.sumOf { it.totalKcal }),
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.size(15.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
