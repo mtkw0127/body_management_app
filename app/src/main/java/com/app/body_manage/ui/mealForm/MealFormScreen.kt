@@ -145,7 +145,6 @@ fun MealFormScreen(
                     candidates = foodCandidates,
                 )
                 SaveForm(
-                    onClickBackPress = onClickBackPress,
                     onClickSave = onClickSave,
                     onClickTakePhoto = onClickTakePhoto,
                     enable = mealFoods.foods.isNotEmpty(),
@@ -439,7 +438,6 @@ private fun TextWithCandidate(
 
 @Composable
 private fun SaveForm(
-    onClickBackPress: () -> Unit,
     onClickSave: () -> Unit,
     onClickTakePhoto: () -> Unit,
     enable: Boolean = false,
