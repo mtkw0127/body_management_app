@@ -46,7 +46,6 @@ import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.ui.top.TopActivity
 import kotlinx.coroutines.launch
 
-
 class CompareActivity : AppCompatActivity() {
 
     private val bodyMeasurePhotoRepository: BodyMeasurePhotoRepository by lazy {
@@ -159,8 +158,8 @@ class CompareActivity : AppCompatActivity() {
                 },
                 onClickShare = {
                     val values = ContentValues()
-                    values.put(MediaStore.Images.Media.TITLE, "title");
-                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+                    values.put(MediaStore.Images.Media.TITLE, "title")
+                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
                     // 共有するためのURIを作る
                     val uri = contentResolver.insert(
                         EXTERNAL_CONTENT_URI,
