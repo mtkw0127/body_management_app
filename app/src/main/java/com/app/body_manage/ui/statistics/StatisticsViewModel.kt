@@ -28,7 +28,6 @@ class StatisticsViewModel(
     val latestMeasure: StateFlow<BodyMeasure?> =
         _latestMeasure.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-
     fun init() {
         viewModelScope.launch {
             val latestMeasure = measureRepository.getLast()
