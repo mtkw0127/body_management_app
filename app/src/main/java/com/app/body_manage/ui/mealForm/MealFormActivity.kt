@@ -74,6 +74,8 @@ class MealFormActivity : AppCompatActivity() {
                         label = getString(R.string.kcal),
                         number = food.kcal,
                         unit = getString(R.string.unit_kcal),
+                        maxDigit = IntNumberPickerDialog.Digit.THOUSAND,
+                        initialDigit = IntNumberPickerDialog.Digit.HUNDRED,
                     ) { kcal ->
                         viewModel.updateFood(food, kcal)
                     }.show(supportFragmentManager, null)
@@ -83,6 +85,8 @@ class MealFormActivity : AppCompatActivity() {
                         label = getString(R.string.label_number),
                         number = food.number.toInt(),
                         unit = getString(R.string.unit_number),
+                        maxDigit = IntNumberPickerDialog.Digit.ONES,
+                        initialDigit = IntNumberPickerDialog.Digit.ONES,
                     ) { number ->
                         viewModel.updateFoodNumber(food, number)
                     }.show(supportFragmentManager, null)
