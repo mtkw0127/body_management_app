@@ -1,88 +1,50 @@
 package com.app.body_manage.ui.calendar
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
-import com.app.body_manage.R
-import com.app.body_manage.databinding.ActivityMainBinding
-import com.app.body_manage.ui.measure.form.MeasureFormActivity
-import com.app.body_manage.util.DateUtil
-import java.time.LocalDate
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import com.app.body_manage.TrainingApplication
+import com.app.body_manage.ui.measure.list.MeasureListActivity
 
 class CalendarActivity : AppCompatActivity() {
 
-    companion object {
-        fun createIntent(context: Context) = Intent(context, CalendarActivity::class.java)
-    }
-
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var adapter: CalendarAdapter
-
     private val measureListLauncher = registerForActivityResult(StartActivityForResult()) {
-        adapter.notifyDataSetChanged()
+        viewModel.updateCurrentMonth()
     }
 
-    private val registeredFromFab = registerForActivityResult(StartActivityForResult()) {
-        val message = when (it.resultCode) {
-            MeasureFormActivity.RESULT_CODE_ADD -> getString(R.string.message_saved)
-            else -> null
-        }
-        message?.let {
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-        }
-        adapter.notifyDataSetChanged()
-    }
-
-    private val viewModel: CalendarListViewModel = CalendarListViewModel()
+    lateinit var viewModel: CalendarListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        binding.lifecycleOwner = this
-        setContentView(binding.root)
 
-        adapter = CalendarAdapter(
-            viewModel.today,
-            this.applicationContext,
-            measureListLauncher
+        viewModel = CalendarListViewModel(
+            (application as TrainingApplication).bodyMeasureRepository,
+            (application as TrainingApplication).mealFoodsRepository,
         )
-        binding.calendarGridView.adapter = adapter
-        // Show menu
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.title =
-            DateUtil.localDateConvertJapaneseFormatYearMonth(LocalDate.now())
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        binding.toolbar.setNavigationOnClickListener {
-            finish()
-        }
-        initListener()
-    }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private fun initListener() {
-        binding.next.setOnClickListener {
-            val adapter = (binding.calendarGridView.adapter as CalendarAdapter)
-            adapter.createNextMonthCalendar()
-            supportActionBar?.title =
-                DateUtil.localDateConvertJapaneseFormatYearMonth(adapter.localDate)
-        }
-        binding.prev.setOnClickListener {
-            val adapter = (binding.calendarGridView.adapter as CalendarAdapter)
-            adapter.createPrevMonthCalendar()
-            supportActionBar?.title =
-                DateUtil.localDateConvertJapaneseFormatYearMonth(adapter.localDate)
-        }
-        binding.addButton.setOnClickListener {
-            registeredFromFab.launch(
-                MeasureFormActivity.createMeasureFormIntent(
-                    this,
-                    LocalDate.now()
-                )
+        setContent {
+            val months by viewModel.months.collectAsState()
+            val focusedMonth by viewModel.focusedMonth.collectAsState()
+            CalendarScreen(
+                months = months,
+                focusedMonth = focusedMonth,
+                moveToPrev = viewModel::moveToPrev,
+                moveToNext = viewModel::moveToNext,
+                onClickBackPress = ::finish,
+                onClickDate = {
+                    val intent = MeasureListActivity.createIntent(this, it.value)
+                    measureListLauncher.launch(intent)
+                }
             )
         }
+    }
+
+    companion object {
+        fun createIntent(context: Context) = Intent(context, CalendarActivity::class.java)
     }
 }
