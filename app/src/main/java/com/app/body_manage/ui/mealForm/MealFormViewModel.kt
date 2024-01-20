@@ -169,7 +169,9 @@ class MealFormViewModel(
 
     fun deletePhoto(targetPhoto: Photo) {
         _mealFoods.update { meal ->
-            val photos = meal.photos.filter { photo -> photo.id != targetPhoto.id }
+            val photos = meal.photos.filterNot { photo ->
+                photo.id == targetPhoto.id && photo.uri == targetPhoto.uri
+            }
             meal.copy(photos = photos)
         }
     }

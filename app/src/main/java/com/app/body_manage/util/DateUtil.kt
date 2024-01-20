@@ -57,10 +57,8 @@ class DateUtil {
             return "${localDate.year}年${localDate.monthValue}月"
         }
 
-        fun localDateConvertLocalTimeDateToTime(localDateTime: LocalDateTime): String {
-            val hour = String.format("%02d", localDateTime.hour)
-            val minute = String.format("%02d", localDateTime.minute)
-            return "${hour}時${minute}分"
+        fun localDateConvertJapaneseFormatMonth(localDate: LocalDate): String {
+            return "${localDate.monthValue}月"
         }
 
         fun localDateTimeToJapanese(localDateTime: LocalDateTime): String {
