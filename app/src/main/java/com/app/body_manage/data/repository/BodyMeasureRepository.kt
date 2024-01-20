@@ -42,12 +42,6 @@ class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
             return@withContext trainingDao.updateTallByDate(tall, calendarDate)
         }
 
-    suspend fun getTallByDate(calendarDate: LocalDate): Float? =
-        withContext(Dispatchers.IO) {
-            return@withContext trainingDao.getTrainingEntityListByDate(calendarDate)
-                .firstOrNull()?.tall
-        }
-
     suspend fun getEntityListByDate(date: LocalDate): List<BodyMeasure> {
         return trainingDao.getTrainingEntityListByDate(date).map { it.toModel() }
     }
