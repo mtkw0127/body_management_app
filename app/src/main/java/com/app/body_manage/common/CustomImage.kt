@@ -4,12 +4,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.app.body_manage.data.model.Photo
@@ -20,13 +24,19 @@ fun CustomImage(
     onClickPhotoDetail: (Photo) -> Unit,
     onClickDeletePhoto: (Photo) -> Unit,
 ) {
-    Box(modifier = Modifier.fillMaxWidth()) {
+    Box(
+        modifier = Modifier.fillMaxWidth()
+    ) {
         AsyncImage(
             model = photo.uri,
             contentDescription = null,
-            modifier = Modifier.clickable {
-                onClickPhotoDetail(photo)
-            }
+            modifier = Modifier
+                .clip(RoundedCornerShape(5.dp))
+                .clickable {
+                    onClickPhotoDetail(photo)
+                }
+                .size(150.dp),
+            contentScale = ContentScale.Crop,
         )
         IconButton(
             onClick = { onClickDeletePhoto(photo) },

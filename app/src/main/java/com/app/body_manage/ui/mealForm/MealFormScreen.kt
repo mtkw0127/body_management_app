@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -65,7 +66,6 @@ import com.app.body_manage.data.model.Photo
 import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.extension.toMMDDEE
 import com.app.body_manage.style.Colors
-import java.time.LocalDateTime
 
 @Composable
 fun MealFormScreen(
@@ -125,21 +125,23 @@ fun MealFormScreen(
                 Column(
                     Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
                 ) {
-                    SelectMealTiming(mealFoods.timing, onClickMealTiming)
-                    Spacer(modifier = Modifier.size(10.dp))
-                    Time(mealFoods.time, onClickTime)
-                    Spacer(modifier = Modifier.size(10.dp))
-                    EatenFoods(
+                    SelectMealTiming(
                         mealFoods,
-                        onClickDeleteFood,
-                        onUpdateMealKcal = onUpdateMealKcal,
-                        onUpdateMealNumber = onUpdateMealNumber,
+                        onClickMealTiming,
+                        onClickTime,
                     )
                     Spacer(modifier = Modifier.size(10.dp))
                     Photos(
                         mealFoods.photos,
                         onClickDeletePhoto = onClickDeletePhoto,
                         onClickPhotoDetail = onClickPhotoDetail,
+                    )
+                    Spacer(modifier = Modifier.size(10.dp))
+                    EatenFoods(
+                        mealFoods,
+                        onClickDeleteFood,
+                        onUpdateMealKcal = onUpdateMealKcal,
+                        onUpdateMealNumber = onUpdateMealNumber,
                     )
                 }
                 Spacer(modifier = Modifier.weight(1F))
@@ -166,48 +168,44 @@ private fun Photos(
     onClickPhotoDetail: (Photo) -> Unit,
     onClickDeletePhoto: (Photo) -> Unit,
 ) {
-    LazyColumn {
-        itemsIndexed(photos) { _, photo ->
-            CustomImage(
-                photo,
-                onClickPhotoDetail,
-                onClickDeletePhoto,
-            )
+    if (photos.isNotEmpty()) {
+        Column(
+            modifier = Modifier
+                .shadow(2.dp)
+                .background(
+                    Color.White,
+                    RoundedCornerShape(5.dp)
+                )
+                .fillMaxWidth()
+                .padding(10.dp)
+                .fillMaxWidth()
+        ) {
+            Text(text = "写真")
+            Spacer(modifier = Modifier.size(5.dp))
+            LazyRow {
+                itemsIndexed(photos) { _, photo ->
+                    CustomImage(
+                        photo,
+                        onClickPhotoDetail,
+                        onClickDeletePhoto,
+                    )
+                    Spacer(modifier = Modifier.size(5.dp))
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun Time(
-    time: LocalDateTime,
-    onClickTime: () -> Unit,
-) {
-    Box(
-        modifier = Modifier
-            .shadow(2.dp)
-            .background(
-                Color.White,
-                RoundedCornerShape(5.dp)
-            )
-            .padding(10.dp)
-            .fillMaxWidth()
-    ) {
-        IconAndText(
-            text = time.toJapaneseTime(),
-            onClick = onClickTime,
-        )
-    }
-}
-
-@Composable
 private fun SelectMealTiming(
-    timing: Meal.Timing,
-    onClickMealTiming: (Meal.Timing) -> Unit
+    meal: Meal,
+    onClickMealTiming: (Meal.Timing) -> Unit,
+    onClickTime: () -> Unit
 ) {
     var mealTimingMenuExpanded by remember { mutableStateOf(false) }
     val mealTimingMenuItems = Meal.Timing.entries.toList()
 
-    Box(
+    Column(
         modifier = Modifier
             .shadow(2.dp)
             .background(
@@ -218,8 +216,10 @@ private fun SelectMealTiming(
             .padding(10.dp)
             .fillMaxWidth()
     ) {
+        Text(text = "食べた時間")
+        Spacer(modifier = Modifier.size(5.dp))
         IconAndText(
-            text = stringResource(timing.textResourceId),
+            text = stringResource(meal.timing.textResourceId),
             onClick = {
                 mealTimingMenuExpanded = true
             },
@@ -237,6 +237,10 @@ private fun SelectMealTiming(
                 }
             }
         }
+        IconAndText(
+            text = meal.time.toJapaneseTime(),
+            onClick = onClickTime,
+        )
     }
 }
 
