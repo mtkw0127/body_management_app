@@ -60,6 +60,7 @@ fun TopScreen(
     onClickToday: () -> Unit = {},
     onClickAddMeasure: () -> Unit = {},
     onClickAddMeal: () -> Unit = {},
+    onClickAddTraining: () -> Unit = {},
     onClickSetGoat: () -> Unit = {},
 ) {
     Scaffold(
@@ -127,6 +128,7 @@ fun TopScreen(
                     onClickToday = onClickToday,
                     onClickAddMeal = onClickAddMeal,
                     onClickAddMeasure = onClickAddMeasure,
+                    onClickAddTraining = onClickAddTraining,
                 )
                 Spacer(modifier = Modifier.size(10.dp))
             }
@@ -254,12 +256,9 @@ private fun TodaySummary(
     onClickToday: () -> Unit,
     onClickAddMeal: () -> Unit,
     onClickAddMeasure: () -> Unit,
+    onClickAddTraining: () -> Unit,
 ) {
-    PanelColumn(
-        modifier = Modifier.clickable {
-            onClickToday()
-        }
-    ) {
+    PanelColumn {
         TextWithUnderLine(R.string.label_today_you)
         Spacer(modifier = Modifier.size(10.dp))
         if (todayMeasure.bodyMeasures.isEmpty() && todayMeasure.meals.isEmpty()) {
@@ -281,23 +280,47 @@ private fun TodaySummary(
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround,
+            horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
             CustomButton(
                 backgroundColor = theme,
                 onClick = { onClickAddMeasure() },
-                valueResourceId = R.string.label_add_measure
+                valueResourceId = R.string.label_add_measure,
+                fontSize = 11.sp,
             )
             CustomButton(
                 backgroundColor = theme,
                 onClick = { onClickAddMeal() },
-                valueResourceId = R.string.label_add_meal
+                valueResourceId = R.string.label_add_meal,
+                fontSize = 11.sp,
             )
             CustomButton(
                 backgroundColor = theme,
-                onClick = { onClickToday() },
-                valueResourceId = R.string.label_see_by_today
+                onClick = { onClickAddTraining() },
+                valueResourceId = R.string.label_add_training,
+                fontSize = 11.sp,
             )
+        }
+        Spacer(modifier = Modifier.size(10.dp))
+        Row {
+            Spacer(modifier = Modifier.weight(1F))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.clickable {
+                    onClickToday()
+                }
+            ) {
+                Text(
+                    text = stringResource(id = R.string.label_see_by_today),
+                    fontSize = 12.sp
+                )
+                Spacer(modifier = Modifier.size(5.dp))
+                Icon(
+                    imageVector = Icons.Default.ArrowForwardIos,
+                    contentDescription = null,
+                    modifier = Modifier.size(10.dp)
+                )
+            }
         }
     }
 }
@@ -341,7 +364,8 @@ private fun LabelAndText(
 @Composable
 fun BottomButtons(
     onClickAddMeasure: () -> Unit,
-    onClickAddMeal: () -> Unit
+    onClickAddMeal: () -> Unit,
+    onClickAddTraining: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -357,10 +381,14 @@ fun BottomButtons(
             valueResourceId = R.string.label_add_meal,
             backgroundColor = theme,
         )
-        VerticalLine()
         CustomButton(
             onClick = onClickAddMeasure,
             valueResourceId = R.string.label_add_measure,
+            backgroundColor = theme,
+        )
+        CustomButton(
+            onClick = onClickAddTraining,
+            valueResourceId = R.string.label_add_training,
             backgroundColor = theme,
         )
     }

@@ -68,6 +68,7 @@
     <string name="message_this_is_estimated_value">※ Estimated values recognized for individuals aged 18 to 79</string>
     <string name="label_add_meal">Add Meal</string>
     <string name="label_add_measure">Add Measurement</string>
+    <string name="label_add_training">Add Training</string>
     <string name="message_not_registered_today">No records registered for today</string>
     <string name="label_today_total_kcal">Calories Intake Today</string>
     <string name="label_today_min_weight">Minimum Weight Today</string>

@@ -99,6 +99,7 @@ fun MeasureListScreen(
     onChangeCurrentMonth: (YearMonth) -> Unit,
     onClickBack: () -> Unit,
     onClickMeal: (Meal) -> Unit,
+    onClickAddTraining: () -> Unit,
 ) {
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     val state = rememberScaffoldState()
@@ -110,7 +111,11 @@ fun MeasureListScreen(
     Scaffold(
         bottomBar = {
             Column {
-                BottomButtons(onClickAddMeasure, onClickAddMeal)
+                BottomButtons(
+                    onClickAddMeasure,
+                    onClickAddMeal,
+                    onClickAddTraining,
+                )
             }
         },
         scaffoldState = state,

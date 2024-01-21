@@ -28,6 +28,7 @@ import com.app.body_manage.ui.measure.list.MeasureListActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.ui.statistics.StatisticsActivity
 import com.app.body_manage.ui.top.UserPreferenceSettingDialog.Companion.REQUEST_KEY
+import com.app.body_manage.ui.training.TrainingFormActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -131,6 +132,11 @@ class TopActivity : AppCompatActivity() {
                             this,
                             LocalDate.now()
                         )
+                    )
+                },
+                onClickAddTraining = {
+                    launcher.launch(
+                        TrainingFormActivity.createInstance(this)
                     )
                 },
                 onClickSetGoat = {
