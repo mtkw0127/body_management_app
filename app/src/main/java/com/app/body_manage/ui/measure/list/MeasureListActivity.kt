@@ -19,6 +19,7 @@ import com.app.body_manage.data.repository.MealRepository
 import com.app.body_manage.ui.mealForm.MealFormActivity
 import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
+import com.app.body_manage.ui.training.TrainingFormActivity
 import java.time.LocalDate
 
 class MeasureListActivity : AppCompatActivity() {
@@ -125,8 +126,10 @@ class MeasureListActivity : AppCompatActivity() {
                 },
                 onClickBack = { finish() },
                 onClickMeal = {
-                    val intent = MealFormActivity.createIntentEdit(this, it.id)
-                    launcher.launch(intent)
+                    launcher.launch(MealFormActivity.createIntentEdit(this, it.id))
+                },
+                onClickAddTraining = {
+                    launcher.launch(TrainingFormActivity.createInstance(this))
                 }
             )
         }
