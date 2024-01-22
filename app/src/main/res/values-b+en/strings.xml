@@ -170,4 +170,18 @@
     <string name="label_result_diagnosis_too_low">Too skinny</string>
     <string name="label_result_diagnosis_good">Within the healthy weight range.</string>
     <string name="label_result_diagnosis_too_weight">overweight</string>
+
+    <string name="label_type_chest">Chest</string>
+    <string name="label_type_shoulder">Shoulder</string>
+    <string name="label_type_back">Back</string>
+    <string name="label_type_arm">Arm</string>
+    <string name="label_type_abdominal">Abdominal</string>
+    <string name="label_type_hip">Hip</string>
+    <string name="label_type_leg">Leg</string>
+    <string name="label_type_else">Else</string>
+
+    <!-- タイプ-->
+    <string name="label_machine">Machine</string>
+    <string name="label_free">Free</string>
+    <string name="label_own_weight">Own Weight</string>
 </resources>

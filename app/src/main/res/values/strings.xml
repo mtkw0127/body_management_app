@@ -169,4 +169,20 @@
     <string name="label_result_diagnosis_too_low">痩せすぎです</string>
     <string name="label_result_diagnosis_good">健康な体重の範囲内です</string>
     <string name="label_result_diagnosis_too_weight">太り過ぎです</string>
+
+    <!-- トレーニング登録 -->
+    <!-- 部位 -->
+    <string name="label_type_chest">胸</string>
+    <string name="label_type_shoulder">肩</string>
+    <string name="label_type_back">背中</string>
+    <string name="label_type_arm">腕</string>
+    <string name="label_type_abdominal">腹筋</string>
+    <string name="label_type_hip">尻</string>
+    <string name="label_type_leg">脚</string>
+    <string name="label_type_else">その他</string>
+
+    <!-- タイプ-->
+    <string name="label_machine">マシン</string>
+    <string name="label_free">フリーウェイト</string>
+    <string name="label_own_weight">自重</string>
 </resources>
