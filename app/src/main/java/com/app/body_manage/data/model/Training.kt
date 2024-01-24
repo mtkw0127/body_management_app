@@ -1,10 +1,13 @@
 package com.app.body_manage.data.model
 
-import java.time.LocalDateTime
+import java.time.LocalDate
+import java.time.LocalTime
 
 data class Training(
     val id: Id,
-    val dateTime: LocalDateTime,
+    val date: LocalDate,
+    val startTime: LocalTime,
+    val endTime: LocalTime,
     val menus: List<TrainingMenu>,
     val memo: String,
 ) {

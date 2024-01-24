@@ -1,6 +1,7 @@
 package com.app.body_manage.ui.training
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
@@ -31,16 +34,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.app.body_manage.R
-import com.app.body_manage.common.toCount
-import com.app.body_manage.common.toKg
 import com.app.body_manage.data.model.Training
 import com.app.body_manage.data.model.createSampleTrainingMenu
 import com.app.body_manage.extension.toJapaneseTime
@@ -48,7 +52,9 @@ import com.app.body_manage.extension.toMMDDEE
 import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
 import com.app.body_manage.ui.top.PanelColumn
-import java.time.LocalDateTime
+import timber.log.Timber
+import java.time.LocalDate
+import java.time.LocalTime
 
 @Composable
 fun TrainingFormScreen(
@@ -68,7 +74,7 @@ fun TrainingFormScreen(
                         tint = Color.Black
                     )
                     Text(
-                        text = training.dateTime.toLocalDate().toMMDDEE(),
+                        text = training.date.toMMDDEE(),
                         modifier = Modifier.offset(x = 10.dp),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
@@ -103,39 +109,53 @@ fun TrainingFormScreen(
             Spacer(modifier = Modifier.size(5.dp))
 
             PanelColumn {
-                Text(text = training.dateTime.toJapaneseTime())
+                Row {
+                    Text(text = "開始時間")
+                    Spacer(modifier = Modifier.size(5.dp))
+                    Text(text = training.startTime.toJapaneseTime())
+                }
+                Row {
+                    Text(text = "終了時間")
+                    Spacer(modifier = Modifier.size(5.dp))
+                    Text(text = training.endTime.toJapaneseTime())
+                }
             }
 
             Spacer(modifier = Modifier.size(5.dp))
 
             PanelColumn {
-                Text(text = "メモ")
-                Spacer(modifier = Modifier.size(10.dp))
+                Text(text = "トレーニングメモ")
                 MemoTextField(training.memo)
             }
 
             Spacer(modifier = Modifier.size(5.dp))
 
-            training.menus.forEach { menu ->
+            training.menus.forEachIndexed { index, menu ->
                 TrainingPanel {
-                    Text(
-                        text = stringResource(id = menu.type.nameStringRes) + ":" + stringResource(
-                            menu.part.nameStringResourceId
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "${index + 1}種目目",
+                            modifier = Modifier
+                                .background(Color.Black, RoundedCornerShape(5.dp))
+                                .padding(5.dp),
+                            color = Color.White,
                         )
-                    )
-                    Spacer(modifier = Modifier.size(5.dp))
-                    Text(text = menu.name)
-                    Spacer(modifier = Modifier.size(5.dp))
+                        Spacer(modifier = Modifier.size(10.dp))
+                        Text(text = menu.name)
+                    }
+                    Spacer(modifier = Modifier.size(10.dp))
                     menu.sets.forEach { set ->
                         Text(text = "${set.index}セット目")
                         Row(
                             modifier = Modifier.height(30.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            CustomTextField(set.actualNumber.toCount())
+                            CustomTextField(set.actualNumber, "回")
                             Text(text = set.targetNumberText)
                             Spacer(modifier = Modifier.size(5.dp))
-                            CustomTextField(set.actualWeight.toKg())
+                            CustomTextField(set.actualWeight, "kg")
                             Text(text = set.targetWeightText)
                         }
                         Spacer(modifier = Modifier.size(5.dp))
@@ -154,6 +174,7 @@ private fun TrainingPanel(
 ) {
     Column(
         modifier = Modifier
+            .shadow(1.dp, RoundedCornerShape(15.dp))
             .background(
                 Color.White,
                 shape = RoundedCornerShape(15.dp)
@@ -170,7 +191,6 @@ private fun MemoTextField(
 ) {
     var value by remember { mutableStateOf(text) }
     Column {
-        Text(text = stringResource(id = R.string.hint_memo))
         Spacer(modifier = Modifier.size(5.dp))
         BasicTextField(
             value = value,
@@ -179,25 +199,60 @@ private fun MemoTextField(
             },
             maxLines = 10,
             modifier = Modifier
-                .fillMaxWidth()
-                .drawBehind {
-                    drawLine(
-                        color = Color.Black,
-                        start = Offset(0F, size.height + 10),
-                        end = Offset(size.width, size.height + 10)
-                    )
+                .heightIn(min = 100.dp)
+                .fillMaxWidth(),
+            decorationBox = { innerTextField ->
+                Box(
+                    modifier = Modifier
+                        .border(1.dp, Color.LightGray, RoundedCornerShape(1.dp))
+                        .padding(5.dp)
+                ) {
+                    if (value.isEmpty()) {
+                        Text(text = "メモ欄", color = Color.LightGray)
+                    } else {
+                        innerTextField()
+                    }
                 }
+            }
         )
     }
 }
 
 @Composable
 private fun CustomTextField(
-    text: String
+    count: Int,
+    unit: String,
 ) {
+    var number by remember { mutableStateOf(count.toString()) }
     BasicTextField(
-        value = text,
-        onValueChange = {},
+        value = number,
+        onValueChange = {
+            if (it.isBlank()) {
+                number = ""
+                return@BasicTextField
+            }
+            try {
+                if (it.toInt() < 1000) {
+                    number = it
+                }
+            } catch (e: NumberFormatException) {
+                Timber.e(e)
+            }
+        },
+        visualTransformation = {
+            TransformedText(
+                text = AnnotatedString("$number$unit"),
+                offsetMapping = object : OffsetMapping {
+                    override fun originalToTransformed(offset: Int): Int {
+                        return number.length + 1
+                    }
+
+                    override fun transformedToOriginal(offset: Int): Int {
+                        return number.length
+                    }
+                }
+            )
+        },
         modifier = Modifier
             .width(60.dp)
             .padding(vertical = 5.dp)
@@ -208,6 +263,8 @@ private fun CustomTextField(
                     end = Offset(size.width, size.height + 10)
                 )
             },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
     )
 }
 
@@ -217,13 +274,15 @@ private fun TrainingFormPreview() {
     TrainingFormScreen(
         training = Training(
             id = Training.NEW_ID,
-            dateTime = LocalDateTime.now(),
+            date = LocalDate.now(),
+            startTime = LocalTime.now(),
+            endTime = LocalTime.now(),
             menus = listOf(
                 createSampleTrainingMenu(),
                 createSampleTrainingMenu(),
                 createSampleTrainingMenu(),
             ),
-            memo = "メモ".repeat(5)
+            memo = "たくさん頑張った".repeat(5)
         ),
         onClickBackPress = {},
     )

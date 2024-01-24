@@ -470,7 +470,7 @@ fun PanelColumn(
 ) {
     Column(
         modifier = modifier
-            .shadow(2.dp)
+            .shadow(2.dp, RoundedCornerShape(5.dp))
             .background(
                 Color.White,
                 RoundedCornerShape(5.dp)
