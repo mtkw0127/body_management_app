@@ -21,8 +21,8 @@ data class TrainingMenu(
         val targetWeight: Int, // 目標重量
         val actualWeight: Int, // 実際の重量
     ) {
-        val targetNumberText = "(目標：${targetNumber}回）"
-        val targetWeightText = "(目標：${targetWeight}kg）"
+        val targetNumberText = "(目標:${targetNumber}回）"
+        val targetWeightText = "(目標:${targetWeight}kg）"
     }
 
     enum class Type(@StringRes val nameStringRes: Int) {

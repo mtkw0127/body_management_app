@@ -6,7 +6,8 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import com.app.body_manage.data.model.Training
-import java.time.LocalDateTime
+import java.time.LocalDate
+import java.time.LocalTime
 
 class TrainingFormActivity : AppCompatActivity() {
 
@@ -21,7 +22,9 @@ class TrainingFormActivity : AppCompatActivity() {
             TrainingFormScreen(
                 training = Training(
                     id = Training.NEW_ID,
-                    dateTime = LocalDateTime.now(),
+                    date = LocalDate.now(),
+                    startTime = LocalTime.now(),
+                    endTime = LocalTime.now(),
                     menus = listOf(),
                     memo = "メモ".repeat(5)
                 ),
