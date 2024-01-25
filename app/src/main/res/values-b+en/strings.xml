@@ -180,6 +180,9 @@
     <string name="label_type_leg">Leg</string>
     <string name="label_type_else">Else</string>
 
+    <!-- 登録画面 -->
+    <string name="label_input_all">Input at once</string>
+
     <!-- タイプ-->
     <string name="label_machine">Machine</string>
     <string name="label_free">Free</string>

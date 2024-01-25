@@ -62,9 +62,7 @@ data class UserPreferenceSettingViewModelState(
 
         return if (name == null ||
             setBirth.not() ||
-            birth.text.isEmpty() ||
-            tall == null ||
-            weight.text.isEmpty()
+            birth.text.isEmpty() || weight.text.isEmpty()
         ) {
             UiState.NotYet(
                 name = name,
@@ -173,7 +171,7 @@ class UserPreferenceSettingViewModel(
             return
         }
         var tempBirth = TextFieldValue(trimBirth)
-        val isAdd = (trimBirth.length - (viewModelState.value.birth?.text?.length ?: 0)) > 0
+        val isAdd = (trimBirth.length - viewModelState.value.birth.text.length) > 0
         if (isAdd) {
             // 月を取得する
             if (trimBirth.length == 5) {

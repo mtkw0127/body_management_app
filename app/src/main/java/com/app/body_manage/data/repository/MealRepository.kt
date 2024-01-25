@@ -103,7 +103,7 @@ class MealRepository(
         val originalMealPhotos = mealFoodsDao.getMealPhotos(mealId).map { it.toModel() }
         originalMealPhotos.filter { originalMealPhoto ->
             // 更新後も存在しないものを残す
-            meal.photos.find { it.uri == originalMealPhoto.uri } == null
+            meal.photos.none { it.uri == originalMealPhoto.uri }
         }.forEach {
             mealFoodsDao.deleteMealPhoto(it.id.value)
         }
