@@ -181,6 +181,9 @@
     <string name="label_type_leg">脚</string>
     <string name="label_type_else">その他</string>
 
+    <!-- 登録画面 -->
+    <string name="label_input_all">一括入力</string>
+
     <!-- タイプ-->
     <string name="label_machine">マシン</string>
     <string name="label_free">フリーウェイト</string>
