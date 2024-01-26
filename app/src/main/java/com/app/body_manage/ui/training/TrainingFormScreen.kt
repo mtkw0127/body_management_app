@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -65,6 +66,7 @@ fun TrainingFormScreen(
     training: Training,
     onClickBackPress: () -> Unit = {},
     onClickRegister: () -> Unit = {},
+    onClickInputAll: () -> Unit = {},
 ) {
     Scaffold(
         topBar = {
@@ -98,7 +100,7 @@ fun TrainingFormScreen(
                     },
                 contentAlignment = Alignment.Center,
             ) {
-                Text(text = "登録する")
+                Text(text = stringResource(id = R.string.label_register_trainning))
             }
         }
     ) { padding ->
@@ -114,13 +116,13 @@ fun TrainingFormScreen(
 
             PanelColumn {
                 Row {
-                    Text(text = "開始時間")
+                    Text(text = stringResource(id = R.string.label_start_training_time))
                     Spacer(modifier = Modifier.size(5.dp))
                     Text(text = training.startTime.toJapaneseTime())
                 }
                 Spacer(modifier = Modifier.size(5.dp))
                 Row {
-                    Text(text = "終了時間")
+                    Text(text = stringResource(id = R.string.label_end_training_time))
                     Spacer(modifier = Modifier.size(5.dp))
                     Text(text = training.endTime.toJapaneseTime())
                 }
@@ -129,7 +131,7 @@ fun TrainingFormScreen(
             Spacer(modifier = Modifier.size(5.dp))
 
             PanelColumn {
-                Text(text = "トレーニングメモ")
+                Text(text = stringResource(id = R.string.label_memo_area_training))
                 MemoTextField(training.memo)
             }
 
@@ -141,7 +143,7 @@ fun TrainingFormScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "${index + 1}種目目",
+                            text = stringResource(id = R.string.label_event, index + 1),
                             modifier = Modifier
                                 .background(Color.Black, RoundedCornerShape(5.dp))
                                 .padding(5.dp),
@@ -151,7 +153,7 @@ fun TrainingFormScreen(
                         Text(text = menu.name)
                         Spacer(modifier = Modifier.weight(1F))
                         CustomButton(
-                            onClick = { /*TODO*/ },
+                            onClick = onClickInputAll,
                             valueResourceId = R.string.label_input_all,
                             fontSize = 11.sp,
                             backgroundColor = theme,
@@ -172,11 +174,11 @@ fun TrainingFormScreen(
                                 modifier = Modifier.padding(3.dp)
                             )
                             Text(
-                                text = "目標",
+                                text = stringResource(id = R.string.label_object),
                                 modifier = Modifier.padding(3.dp)
                             )
                             Text(
-                                text = "結果",
+                                text = stringResource(id = R.string.label_result),
                                 modifier = Modifier.padding(3.dp)
                             )
                         }
@@ -187,14 +189,14 @@ fun TrainingFormScreen(
                                 modifier = Modifier.width(100.dp)
                             ) {
                                 Text(
-                                    text = "${set.index}セット目",
+                                    text = stringResource(id = R.string.label_set, set.index),
                                     modifier = Modifier.padding(3.dp)
                                 )
                                 Text(
                                     text = set.targetText,
                                     modifier = Modifier.padding(3.dp)
                                 )
-                                CustomTextField(set.actualNumber, "回")
+                                CountTextField(set.actualNumber)
                             }
                         }
                     }
@@ -247,7 +249,10 @@ private fun MemoTextField(
                         .padding(5.dp)
                 ) {
                     if (value.isEmpty()) {
-                        Text(text = "メモ欄", color = Color.LightGray)
+                        Text(
+                            text = stringResource(id = R.string.label_memo_area),
+                            color = Color.LightGray
+                        )
                     } else {
                         innerTextField()
                     }
@@ -258,11 +263,17 @@ private fun MemoTextField(
 }
 
 @Composable
-private fun CustomTextField(
-    count: Int,
-    unit: String,
-) {
+private fun CountTextField(count: Int) {
     var number by remember { mutableStateOf(count.toString()) }
+    val unit = stringResource(id = R.string.label_count)
+    val empty = stringResource(id = R.string.label_empty)
+    val displayNumber = remember(number) {
+        if (number.isNotBlank()) {
+            "$number$unit"
+        } else {
+            empty
+        }
+    }
     BasicTextField(
         value = number,
         onValueChange = {
@@ -281,10 +292,10 @@ private fun CustomTextField(
         textStyle = LocalTextStyle.current.copy(textAlign = TextAlign.Center),
         visualTransformation = {
             TransformedText(
-                text = AnnotatedString("$number$unit"),
+                text = AnnotatedString(displayNumber),
                 offsetMapping = object : OffsetMapping {
                     override fun originalToTransformed(offset: Int): Int {
-                        return number.length + 1
+                        return displayNumber.length
                     }
 
                     override fun transformedToOriginal(offset: Int): Int {
