@@ -98,7 +98,7 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".ui.training.TrainingFormActivity"
+            android:name=".ui.trainingForm.TrainingFormActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"

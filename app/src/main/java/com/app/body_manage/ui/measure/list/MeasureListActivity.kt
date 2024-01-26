@@ -19,7 +19,7 @@ import com.app.body_manage.data.repository.MealRepository
 import com.app.body_manage.ui.mealForm.MealFormActivity
 import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
-import com.app.body_manage.ui.training.TrainingFormActivity
+import com.app.body_manage.ui.trainingForm.TrainingFormActivity
 import java.time.LocalDate
 
 class MeasureListActivity : AppCompatActivity() {
