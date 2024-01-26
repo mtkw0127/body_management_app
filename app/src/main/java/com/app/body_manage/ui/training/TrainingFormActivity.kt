@@ -28,6 +28,8 @@ class TrainingFormActivity : AppCompatActivity() {
                     menus = listOf(),
                     memo = "メモ".repeat(5)
                 ),
+                onClickInputAll = {},
+                onClickRegister = {},
                 onClickBackPress = ::finish
             )
         }
