@@ -25,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.EmojiPeople
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,6 +56,7 @@ fun TopScreen(
     lastMeasure: BodyMeasure?,
     todayMeasure: TodayMeasure,
     bottomSheetDataList: List<BottomSheetData>,
+    onClickSeeTrainingMenu: () -> Unit = {},
     onClickStatistics: () -> Unit = {},
     onClickCalendar: () -> Unit = {},
     onClickToday: () -> Unit = {},
@@ -150,6 +152,17 @@ fun TopScreen(
                         modifier = Modifier.padding(vertical = 5.dp),
                         onClick = { onClickStatistics() },
                         text = stringResource(id = R.string.label_see_by_statistics),
+                    )
+                }
+                Spacer(modifier = Modifier.size(10.dp))
+            }
+            item {
+                PanelColumn {
+                    IconAndText(
+                        icon = Icons.Default.EmojiPeople,
+                        modifier = Modifier.padding(vertical = 5.dp),
+                        onClick = { onClickSeeTrainingMenu() },
+                        text = stringResource(id = R.string.label_see_by_training_menu),
                     )
                 }
                 Spacer(modifier = Modifier.size(10.dp))

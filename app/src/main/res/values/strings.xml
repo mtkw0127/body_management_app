@@ -59,6 +59,7 @@
     <string name="label_fat">体脂肪率</string>
     <string name="label_see_by_calendar">カレンダーで見る</string>
     <string name="label_see_by_statistics">統計を見る</string>
+    <string name="label_see_by_training_menu">トレーニングメニューを見る</string>
     <string name="label_see_by_today">今日の記録</string>
     <string name="label_see_statistic">統計</string>
     <string name="label_start_point">開始点</string>
@@ -204,5 +205,6 @@
     <!-- トレーニングメニュー一覧 -->
     <string name="label_menu_type_name">種目名：</string>
     <string name="label_training_target_part">ターゲット部位：</string>
+    <string name="label_see_training_history">成長を見る</string>
 
 </resources>

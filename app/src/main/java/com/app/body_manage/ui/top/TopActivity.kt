@@ -29,6 +29,7 @@ import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.ui.statistics.StatisticsActivity
 import com.app.body_manage.ui.top.UserPreferenceSettingDialog.Companion.REQUEST_KEY
 import com.app.body_manage.ui.trainingForm.TrainingFormActivity
+import com.app.body_manage.ui.trainingMenu.TrainingMenuListActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -112,6 +113,9 @@ class TopActivity : AppCompatActivity() {
                 lastMeasure = lastMeasure,
                 todayMeasure = todayMeasure,
                 bottomSheetDataList = bottomSheetDataList,
+                onClickSeeTrainingMenu = {
+                    launcher.launch(TrainingMenuListActivity.createIntent(this))
+                },
                 onClickStatistics = {
                     launcher.launch(StatisticsActivity.createIntent(this))
                 },
