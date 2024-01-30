@@ -25,6 +25,9 @@ class TrainingMenuListActivity : AppCompatActivity() {
                 },
                 onClickBackPress = ::finish,
                 onClickHistory = {
+
+                },
+                onClickEdit = {
                     
                 }
             )

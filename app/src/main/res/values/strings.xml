@@ -203,8 +203,10 @@
     <string name="label_own_weight">自重</string>
 
     <!-- トレーニングメニュー一覧 -->
-    <string name="label_menu_type_name">種目名：</string>
-    <string name="label_training_target_part">ターゲット部位：</string>
+    <string name="label_menu_type_name">種目</string>
+    <string name="label_training_target_part">部位</string>
+    <string name="label_training_content">内容</string>
     <string name="label_see_training_history">成長を見る</string>
+    <string name="label_edit">編集する</string>
 
 </resources>
