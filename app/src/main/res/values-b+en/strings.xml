@@ -59,6 +59,7 @@
     <string name="label_fat">Body Fat Percentage</string>
     <string name="label_see_by_calendar">View by Calendar</string>
     <string name="label_see_by_statistics">View by Statistics</string>
+    <string name="label_see_by_training_menu">See training menu</string>
     <string name="label_see_by_today">View Today\'s Records</string>
     <string name="label_see_statistic">Statistics</string>
     <string name="label_start_point">Starting Point</string>
@@ -181,10 +182,29 @@
     <string name="label_type_else">Else</string>
 
     <!-- 登録画面 -->
+    <!-- 登録画面 -->
+    <string name="label_start_training_time">Start time</string>
+    <string name="label_end_training_time">End time</string>
+    <string name="label_register_trainning">Register</string>
     <string name="label_input_all">Input at once</string>
+    <string name="label_memo_area">Memo</string>
+    <string name="label_memo_area_training">Training memo</string>
+    <string name="label_set">Set: %1$d</string>
+    <string name="label_event">No%1$d</string>
+    <string name="label_count">Number</string>
+    <string name="label_empty">-</string>
+    <string name="label_object">Object</string>
+    <string name="label_result">Result</string>
 
     <!-- タイプ-->
     <string name="label_machine">Machine</string>
     <string name="label_free">Free</string>
     <string name="label_own_weight">Own Weight</string>
+
+    <!-- トレーニングメニュー一覧 -->
+    <string name="label_menu_type_name">Name</string>
+    <string name="label_training_target_part">Part</string>
+    <string name="label_training_content">Contents</string>
+    <string name="label_see_training_history">See history</string>
+    <string name="label_edit">Edit</string>
 </resources>
