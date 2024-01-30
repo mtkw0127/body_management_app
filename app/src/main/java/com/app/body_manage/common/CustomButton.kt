@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.sp
 fun CustomButton(
     onClick: () -> Unit,
     @StringRes valueResourceId: Int,
-    backgroundColor: Color = Color.White,
     modifier: Modifier = Modifier,
+    backgroundColor: Color = Color.White,
     fontSize: TextUnit = 12.sp,
     enable: Boolean = true,
 ) {
@@ -29,7 +29,7 @@ fun CustomButton(
         colors = ButtonDefaults.buttonColors(
             backgroundColor = backgroundColor
         ),
-        modifier = modifier.padding(0.dp),
+        modifier = modifier,
         enabled = enable,
     ) {
         Text(
