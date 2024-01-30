@@ -6,6 +6,7 @@ import com.app.body_manage.data.model.Training
 class TrainingRepository(
     private val trainingDao: TrainingDao
 ) {
+    @Suppress("all")
     suspend fun saveTraining(training: Training) {
         trainingDao.insert()
     }
