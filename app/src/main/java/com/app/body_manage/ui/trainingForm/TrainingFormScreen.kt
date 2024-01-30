@@ -50,7 +50,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.body_manage.R
 import com.app.body_manage.common.CustomButton
+import com.app.body_manage.common.toCount
 import com.app.body_manage.data.model.Training
+import com.app.body_manage.data.model.TrainingMenu
+import com.app.body_manage.data.model.createSampleOwnWeightTrainingMenu
 import com.app.body_manage.data.model.createSampleTrainingMenu
 import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.extension.toMMDDEE
@@ -193,7 +196,10 @@ fun TrainingFormScreen(
                                     modifier = Modifier.padding(3.dp)
                                 )
                                 Text(
-                                    text = set.targetText,
+                                    text = when (set) {
+                                        is TrainingMenu.WeightSet -> set.targetText
+                                        is TrainingMenu.OwnWeightSet -> set.targetNumber.toCount()
+                                    },
                                     modifier = Modifier.padding(3.dp)
                                 )
                                 CountTextField(set.actualNumber)
@@ -332,6 +338,8 @@ private fun TrainingFormPreview() {
                 createSampleTrainingMenu(),
                 createSampleTrainingMenu(),
                 createSampleTrainingMenu(),
+                createSampleOwnWeightTrainingMenu(),
+                createSampleOwnWeightTrainingMenu(),
             ),
             memo = "たくさん頑張った".repeat(5)
         ),

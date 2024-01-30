@@ -200,4 +200,9 @@
     <string name="label_machine">マシン</string>
     <string name="label_free">フリーウェイト</string>
     <string name="label_own_weight">自重</string>
+
+    <!-- トレーニングメニュー一覧 -->
+    <string name="label_menu_type_name">種目名：</string>
+    <string name="label_training_target_part">ターゲット部位：</string>
+
 </resources>
