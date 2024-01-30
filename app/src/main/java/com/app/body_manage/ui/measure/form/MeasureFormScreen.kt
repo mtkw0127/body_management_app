@@ -217,7 +217,7 @@ fun BodyMeasureFormScreen(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Spacer(modifier = Modifier.weight(1F))
-                            CustomButton(onClickSave, R.string.save, theme)
+                            CustomButton(onClickSave, R.string.save, backgroundColor = theme)
                             Spacer(modifier = Modifier.size(20.dp))
                             Icon(
                                 imageVector = Icons.Filled.CameraAlt,

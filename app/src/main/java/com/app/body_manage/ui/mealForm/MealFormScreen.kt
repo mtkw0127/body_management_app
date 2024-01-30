@@ -472,7 +472,7 @@ private fun SaveForm(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Spacer(modifier = Modifier.weight(1F))
-            CustomButton(onClickSave, R.string.save, Colors.theme, enable = enable)
+            CustomButton(onClickSave, R.string.save, backgroundColor = Colors.theme, enable = enable)
             Spacer(modifier = Modifier.size(20.dp))
             Icon(
                 imageVector = Icons.Filled.CameraAlt,
