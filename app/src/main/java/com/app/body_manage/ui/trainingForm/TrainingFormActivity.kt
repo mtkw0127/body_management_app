@@ -1,4 +1,4 @@
-package com.app.body_manage.ui.training
+package com.app.body_manage.ui.trainingForm
 
 import android.content.Context
 import android.content.Intent
@@ -28,6 +28,8 @@ class TrainingFormActivity : AppCompatActivity() {
                     menus = listOf(),
                     memo = "メモ".repeat(5)
                 ),
+                onClickInputAll = {},
+                onClickRegister = {},
                 onClickBackPress = ::finish
             )
         }

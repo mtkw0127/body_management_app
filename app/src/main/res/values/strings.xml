@@ -59,6 +59,7 @@
     <string name="label_fat">体脂肪率</string>
     <string name="label_see_by_calendar">カレンダーで見る</string>
     <string name="label_see_by_statistics">統計を見る</string>
+    <string name="label_see_by_training_menu">トレーニングメニューを見る</string>
     <string name="label_see_by_today">今日の記録</string>
     <string name="label_see_statistic">統計</string>
     <string name="label_start_point">開始点</string>
@@ -200,4 +201,12 @@
     <string name="label_machine">マシン</string>
     <string name="label_free">フリーウェイト</string>
     <string name="label_own_weight">自重</string>
+
+    <!-- トレーニングメニュー一覧 -->
+    <string name="label_menu_type_name">種目</string>
+    <string name="label_training_target_part">部位</string>
+    <string name="label_training_content">内容</string>
+    <string name="label_see_training_history">成長を見る</string>
+    <string name="label_edit">編集する</string>
+
 </resources>
