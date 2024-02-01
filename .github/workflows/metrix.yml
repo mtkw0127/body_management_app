@@ -1,0 +1,29 @@
+name: Build_Metrics
+
+on:
+  push:
+
+jobs:
+  metrix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      - name: Debug
+        run: ./gradlew :app:assembleDebug
+      - id: 'update_worksheet'
+        uses: jroehl/gsheet.action@v2.0.0
+        with:
+          spreadsheetId: ${{ secrets.BUILD_METRIX_SHEET_ID }}
+          commands: |
+            [
+              { "command": "addWorksheet", "args": { "worksheetTitle": "test" }},
+              { "command": "updateData", "args": { "data": [["A1", "A2", "A3"]] }},
+              { "command": "getData", "args": { "range": "'test'!A2:B3" } }
+            ]
+        env:
+          GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
+          GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
