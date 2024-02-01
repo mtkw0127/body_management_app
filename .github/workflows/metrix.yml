@@ -16,11 +16,10 @@ jobs:
               { 
                 "command": "updateData", 
                 "args": { 
-                  "data": [["${{ LINK }}", "A2", "A3"]] 
+                  "data": [["${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "A2", "A3"]] 
                 }
               },
             ]
         env:
           GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
           GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
-          LINK: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
