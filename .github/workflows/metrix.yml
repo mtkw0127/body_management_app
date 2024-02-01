@@ -4,10 +4,14 @@ on:
   push:
 
 jobs:
-  metrix:
+  metics:
     runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.step1.outputs.url }}
     steps:
-      - id: 'update_worksheet'
+      - id: step1
+        run: echo "url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> "$GITHUB_OUTPUT"
+      - id: step2
         uses: jroehl/gsheet.action@v2.0.0
         with:
           spreadsheetId: ${{ secrets.BUILD_METRIX_SHEET_ID }}
@@ -16,7 +20,7 @@ jobs:
               { 
                 "command": "updateData", 
                 "args": { 
-                  "data": [["${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "A2", "A3"]] 
+                  "data": [["${{needs.step1.outputs.output1}}", "A2", "A3"]] 
                 }
               },
             ]
