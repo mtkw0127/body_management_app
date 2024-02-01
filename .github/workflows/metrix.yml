@@ -17,7 +17,6 @@ jobs:
           spreadsheetId: ${{ secrets.BUILD_METRIX_SHEET_ID }}
           commands: |
             [
-              { "command": "addWorksheet", "args": { "worksheetTitle": "<worksheetTitle>" }},
               { "command": "updateData", "args": { "data": [["${{ steps.step1.outputs.url }}", "A2", "A3"]] }},
               { "command": "getData", "args": { "range": "'<worksheetTitle>'!A2:B3" } }
             ]
