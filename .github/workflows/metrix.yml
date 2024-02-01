@@ -7,13 +7,6 @@ jobs:
   metrix:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-      - name: Debug
-        run: ./gradlew :app:assembleDebug
       - id: 'update_worksheet'
         uses: jroehl/gsheet.action@v2.0.0
         with:
