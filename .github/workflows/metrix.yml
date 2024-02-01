@@ -12,15 +12,15 @@ jobs:
         with:
           spreadsheetId: ${{ secrets.BUILD_METRIX_SHEET_ID }}
           commands: |
-            link=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             [
               { 
                 "command": "updateData", 
                 "args": { 
-                  "data": [["${{ link }}", "A2", "A3"]] 
+                  "data": [["${{ LINK }}", "A2", "A3"]] 
                 }
               },
             ]
         env:
           GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
           GSHEET_PRIVATE_KEY: ${{ secrets.GSHEET_PRIVATE_KEY }}
+          LINK: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
