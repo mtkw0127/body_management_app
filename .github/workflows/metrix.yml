@@ -18,7 +18,6 @@ jobs:
           commands: |
             [
               { "command": "updateData", "args": { "data": [["${{ steps.step1.outputs.url }}", "A2", "A3"]] }},
-              { "command": "getData", "args": { "range": "'<worksheetTitle>'!A2:B3" } }
             ]
         env:
           GSHEET_CLIENT_EMAIL: ${{ secrets.GSHEET_CLIENT_EMAIL }}
