@@ -19,6 +19,7 @@
     <string name="fat_unit">体脂肪率 [%]</string>
     <string name="dot">.</string>
     <string name="unit_kg">kg</string>
+    <string name="unit_cm">cm</string>
     <string name="unit_percent">%</string>
     <string name="unit_hour">時</string>
     <string name="unit_minute">分</string>

@@ -19,6 +19,7 @@
     <string name="fat_unit">Body Fat Percentage [%]</string>
     <string name="dot">.</string>
     <string name="unit_kg">kg</string>
+    <string name="unit_cm">cm</string>
     <string name="unit_percent">%</string>
     <string name="unit_hour">hour</string>
     <string name="unit_minute">min</string>

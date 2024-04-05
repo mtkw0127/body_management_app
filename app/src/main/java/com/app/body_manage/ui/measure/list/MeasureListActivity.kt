@@ -16,6 +16,7 @@ import com.app.body_manage.data.model.Photo
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.MealRepository
+import com.app.body_manage.dialog.FloatNumberPickerDialog
 import com.app.body_manage.ui.mealForm.MealFormActivity
 import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
@@ -78,8 +79,15 @@ class MeasureListActivity : AppCompatActivity() {
                 clickSaveBodyInfo = {
                     viewModel.updateTall()
                 },
-                setTall = {
-                    viewModel.setTall(it)
+                onClickTall = {
+                    FloatNumberPickerDialog.createDialog(
+                        label = getString(R.string.tall),
+                        number = viewModel.uiState.value.tall.toFloat(),
+                        unit = getString(R.string.unit_cm),
+                        supportOneHundred = true,
+                    ) {
+                        viewModel.setTall(it.toString())
+                    }.show(supportFragmentManager, null)
                 },
                 setLocalDate = {
                     viewModel.setDate(it)

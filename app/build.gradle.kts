@@ -83,14 +83,14 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     // flipper
-    implementation("com.facebook.flipper:flipper:0.244.0")
+    implementation("com.facebook.flipper:flipper:0.250.0")
     implementation("com.facebook.soloader:soloader:0.11.0")
 
     // lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
 
     // CameraX core library using the camera2 implementation
-    val cameraxVersion = "1.4.0-alpha03"
+    val cameraxVersion = "1.4.0-alpha04"
     implementation("androidx.camera:camera-core:${cameraxVersion}")
     implementation("androidx.camera:camera-camera2:${cameraxVersion}")
     implementation("androidx.camera:camera-lifecycle:${cameraxVersion}")
@@ -104,7 +104,7 @@ dependencies {
 
     // Kotlin components
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 
     // 画像加工
@@ -114,22 +114,22 @@ dependencies {
     implementation("com.jakewharton.timber:timber:5.0.1")
 
     // Compose
-    implementation("androidx.compose.ui:ui:1.5.4")
+    implementation("androidx.compose.ui:ui:1.6.5")
     // Tooling support (Previews, etc.)
-    implementation("androidx.compose.ui:ui-tooling:1.5.4")
+    implementation("androidx.compose.ui:ui-tooling:1.6.5")
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-    implementation("androidx.compose.foundation:foundation:1.6.0-rc01")
+    implementation("androidx.compose.foundation:foundation:1.6.5")
     // Material Design
-    implementation("androidx.compose.material:material:1.5.4")
+    implementation("androidx.compose.material:material:1.6.5")
     // Material design icons
-    implementation("androidx.compose.material:material-icons-core:1.5.4")
-    implementation("androidx.compose.material:material-icons-extended:1.5.4")
+    implementation("androidx.compose.material:material-icons-core:1.6.5")
+    implementation("androidx.compose.material:material-icons-extended:1.6.5")
     // Integration with activities
     implementation("androidx.activity:activity-compose:1.8.2")
     // Integration with ViewModels
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     // Integration with observables
-    implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.5")
     implementation("com.google.accompanist:accompanist-pager:0.25.0")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.24.11-rc")
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
@@ -140,7 +140,7 @@ dependencies {
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     testImplementation("io.mockk:mockk:1.13.7")
     // 画像
-    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
     // Text feature
     implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.0")
@@ -154,7 +154,7 @@ dependencies {
     // Proto DataStore
     implementation("androidx.datastore:datastore-core:1.0.0")
 
-    implementation(platform("com.google.firebase:firebase-bom:30.3.2"))
+    implementation(platform("com.google.firebase:firebase-bom:32.8.0"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-crashlytics-ktx")
 
