@@ -38,7 +38,7 @@ import com.app.body_manage.style.Colors
 fun TrainingMenuListScreen(
     trainingMenus: List<TrainingMenu>,
     onClickBackPress: () -> Unit = {},
-    onClickHistory: (TrainingMenu) -> Unit = {},
+//    onClickHistory: (TrainingMenu) -> Unit = {},
     onClickEdit: (TrainingMenu) -> Unit = {},
 ) {
     Scaffold(
@@ -65,7 +65,7 @@ fun TrainingMenuListScreen(
                 items(trainingMenus) { menu ->
                     TrainingMenu(
                         trainingMenu = menu,
-                        onClickHistory = onClickHistory,
+//                        onClickHistory = onClickHistory,
                         onClickEdit = onClickEdit,
                     )
                     Spacer(modifier = Modifier.size(10.dp))
@@ -80,7 +80,7 @@ fun TrainingMenuListScreen(
 private fun TrainingMenu(
     trainingMenu: TrainingMenu,
     onClickEdit: (TrainingMenu) -> Unit,
-    onClickHistory: (TrainingMenu) -> Unit,
+//    onClickHistory: (TrainingMenu) -> Unit,
 ) {
     val cornerShape = RoundedCornerShape(10.dp)
     Column(

@@ -6,10 +6,14 @@ import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.data.model.BodyPhoto
 import com.app.body_manage.data.model.Photo
 import com.app.body_manage.data.model.toEntity
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class PhotoRepository(private val photoDao: PhotoDao) {
+class PhotoRepository(
+    private val photoDao: PhotoDao,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+) {
     suspend fun insert(photoModels: List<BodyPhoto>): List<Long> {
         val entities = photoModels.map { it.toEntity() }
         return photoDao.insert(entities)
@@ -20,7 +24,7 @@ class PhotoRepository(private val photoDao: PhotoDao) {
     }
 
     suspend fun selectPhoto(photoId: Photo.Id): BodyPhoto =
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             return@withContext photoDao.selectPhoto(photoId = photoId.value).toModel()
         }
 

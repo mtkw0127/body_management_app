@@ -21,8 +21,8 @@ class TrainingMenuListActivity : AppCompatActivity() {
             TrainingMenuListScreen(
                 trainingMenus = trainingMenuList.value,
                 onClickBackPress = ::finish,
-                onClickHistory = {
-                },
+//                onClickHistory = {
+//                },
                 onClickEdit = {
                 }
             )

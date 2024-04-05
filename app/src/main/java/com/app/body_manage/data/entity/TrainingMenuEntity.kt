@@ -16,4 +16,3 @@ data class TrainingMenuEntity(
     @ColumnInfo(name = "memo") val memo: String,
     @ColumnInfo(name = "type") val type: Int,
 ) : Serializable
-

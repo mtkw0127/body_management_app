@@ -5,12 +5,16 @@ import com.app.body_manage.data.entity.BodyMeasureEntity
 import com.app.body_manage.data.entity.toModel
 import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.data.model.toEntity
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
+class BodyMeasureRepository(
+    private val trainingDao: BodyMeasureDao,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+) {
 
     suspend fun insert(model: BodyMeasure): BodyMeasure.Id {
         val id = trainingDao.insert(model.toEntity())
@@ -26,19 +30,19 @@ class BodyMeasureRepository(private val trainingDao: BodyMeasureDao) {
     }
 
     suspend fun getBetween(from: LocalDate, to: LocalDate): List<BodyMeasure> =
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             return@withContext trainingDao.getTrainingEntityListBetween(from, to)
                 .map { it.toModel() }
         }
 
     suspend fun getBetweenGroupByDate(from: LocalDate, to: LocalDate): List<BodyMeasure> =
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             return@withContext trainingDao.getTrainingEntityListBetweenGroupByDate(from, to)
                 .map { it.toModel() }
         }
 
     suspend fun updateTallByDate(tall: Float, calendarDate: LocalDate): Int =
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             return@withContext trainingDao.updateTallByDate(tall, calendarDate)
         }
 
