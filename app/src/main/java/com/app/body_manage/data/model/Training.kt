@@ -1,5 +1,6 @@
 package com.app.body_manage.data.model
 
+import com.app.body_manage.data.entity.TrainingEntity
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -16,4 +17,14 @@ data class Training(
     companion object {
         val NEW_ID = Id(-1)
     }
+}
+
+fun Training.toEntity(): TrainingEntity {
+    return TrainingEntity(
+        id = this.id.value,
+        date = this.date,
+        startTime = this.startTime,
+        endTime = this.endTime,
+        memo = this.memo,
+    )
 }

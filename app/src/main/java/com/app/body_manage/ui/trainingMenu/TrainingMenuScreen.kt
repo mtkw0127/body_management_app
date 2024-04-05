@@ -23,17 +23,12 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.app.body_manage.R
-import com.app.body_manage.common.toCount
-import com.app.body_manage.common.toKg
-import com.app.body_manage.common.toSet
 import com.app.body_manage.data.model.TrainingMenu
 import com.app.body_manage.data.model.createSampleOwnWeightTrainingMenu
 import com.app.body_manage.data.model.createSampleTrainingMenu
@@ -113,34 +108,6 @@ private fun TrainingMenu(
                 ) {
                     Spacer(modifier = Modifier.size(10.dp))
                     Text(text = stringResource(trainingMenu.part.nameStringResourceId))
-                }
-                Spacer(modifier = Modifier.size(10.dp))
-                LabelAndContentRow(
-                    label = R.string.label_training_content
-                ) {
-                    Spacer(modifier = Modifier.size(10.dp))
-                    Text(text = trainingMenu.sets.maxOf { it.targetNumber }.toCount())
-                    trainingMenu.sets.filterIsInstance<TrainingMenu.WeightSet>()
-                        .takeIf { it.isNotEmpty() }?.let { sets ->
-                            Text(text = " / ")
-                            Text(text = sets.maxOf { it.targetWeight }.toKg())
-                        }
-                    Text(text = " / ")
-                    Text(text = trainingMenu.sets.size.toSet())
-                    Spacer(modifier = Modifier.weight(1F))
-                    Text(
-                        text = stringResource(id = R.string.history),
-                        modifier = Modifier
-                            .clickable { onClickHistory(trainingMenu) }
-                            .drawBehind {
-                                drawLine(
-                                    color = Color.Black,
-                                    start = Offset(0F - 5, size.height + 10),
-                                    end = Offset(size.width + 5, size.height + 10)
-                                )
-                            }
-                    )
-                    Spacer(modifier = Modifier.size(5.dp))
                 }
             }
         }
