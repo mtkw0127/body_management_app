@@ -122,8 +122,8 @@ class BodyMeasureEditFormViewModel(
 
     fun deletePhoto(photo: Photo) {
         viewModelState.update {
-            val photos = it.photos.filterNot {
-                it.id == photo.id && it.uri == photo.uri
+            val photos = it.photos.filterNot { bodyPhoto ->
+                bodyPhoto.id == photo.id && bodyPhoto.uri == photo.uri
             }
             it.copy(photos = photos)
         }

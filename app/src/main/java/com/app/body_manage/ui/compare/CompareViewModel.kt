@@ -148,14 +148,14 @@ class CompareViewModel(
                             fat = response.fat,
                             photoUri = response.photoUri
                         )
-                        viewModelState.update {
+                        viewModelState.update { compareViewModelState ->
                             when (compareItemType) {
                                 CompareItemType.BEFORE -> {
-                                    it.copy(before = compareItem)
+                                    compareViewModelState.copy(before = compareItem)
                                 }
 
                                 CompareItemType.AFTER -> {
-                                    it.copy(after = compareItem)
+                                    compareViewModelState.copy(after = compareItem)
                                 }
                             }
                         }

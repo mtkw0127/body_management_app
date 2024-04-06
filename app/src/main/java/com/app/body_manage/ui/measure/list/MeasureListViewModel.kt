@@ -194,8 +194,8 @@ class MeasureListViewModel(
         runCatching {
             tall.toFloat()
         }.onSuccess {
-            viewModelState.update {
-                it.copy(tall = tall)
+            viewModelState.update { viewModelState ->
+                viewModelState.copy(tall = tall)
             }
         }
     }

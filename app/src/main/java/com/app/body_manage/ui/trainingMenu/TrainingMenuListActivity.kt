@@ -5,8 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import com.app.body_manage.data.model.createSampleOwnWeightTrainingMenu
-import com.app.body_manage.data.model.createSampleTrainingMenu
+import androidx.compose.runtime.collectAsState
 
 class TrainingMenuListActivity : AppCompatActivity() {
 
@@ -17,19 +16,19 @@ class TrainingMenuListActivity : AppCompatActivity() {
         viewModel = TrainingMenuListViewModel()
 
         setContent {
+            val trainingMenuList = viewModel.trainingMenuList.collectAsState()
+
             TrainingMenuListScreen(
-                trainingMenus = List(3) {
-                    createSampleTrainingMenu()
-                } + List(3) {
-                    createSampleOwnWeightTrainingMenu()
-                },
+                trainingMenus = trainingMenuList.value,
                 onClickBackPress = ::finish,
-                onClickHistory = {
-                },
+//                onClickHistory = {
+//                },
                 onClickEdit = {
                 }
             )
         }
+
+        viewModel.loadMenu()
     }
 
     companion object {

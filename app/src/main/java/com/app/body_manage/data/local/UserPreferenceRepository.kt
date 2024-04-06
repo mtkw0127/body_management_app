@@ -94,8 +94,8 @@ class UserPreferenceRepository(
                 Gender.FEMALE.value -> Gender.FEMALE
                 else -> error("IllegalState ${it[KEY_GENDER]}")
             }
-            val birth = checkNotNull(it[KEY_BIRTH]).let {
-                val split = it.split("-")
+            val birth = checkNotNull(it[KEY_BIRTH]).let { birth ->
+                val split = birth.split("-")
                 LocalDate.of(
                     split[0].toInt(),
                     split[1].toInt(),

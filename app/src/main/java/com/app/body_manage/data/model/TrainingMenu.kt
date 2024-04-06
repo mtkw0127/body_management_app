@@ -2,8 +2,7 @@ package com.app.body_manage.data.model
 
 import androidx.annotation.StringRes
 import com.app.body_manage.R
-import com.app.body_manage.common.toCount
-import com.app.body_manage.common.toKg
+import com.app.body_manage.data.entity.TrainingMenuEntity
 
 data class TrainingMenu(
     val id: Id,
@@ -17,7 +16,6 @@ data class TrainingMenu(
 
     sealed interface Set {
         val index: Int
-        val targetNumber: Int
         val actualNumber: Int
     }
 
@@ -25,53 +23,69 @@ data class TrainingMenu(
     // マシン・フリーウェイト用のSet
     data class WeightSet(
         override val index: Int,
-        override val targetNumber: Int, // 目標回数
         override val actualNumber: Int, // 実際の回数
-        val targetWeight: Int, // 目標重量
         val actualWeight: Int, // 実際の重量
-    ) : Set {
-        val targetText = "${targetWeight.toKg()} ${targetNumber.toCount()}"
-    }
+    ) : Set
 
     // マシン・フリーウェイト用のSet
     data class OwnWeightSet(
         override val index: Int,
-        override val targetNumber: Int, // 目標回数
         override val actualNumber: Int, // 実際の回数
-        val additionalWeight: Int, // 加重
     ) : Set
 
-    enum class Type(@StringRes val nameStringRes: Int) {
-        MACHINE(R.string.label_machine), FREE(R.string.label_free), OWN_WEIGHT(R.string.label_own_weight)
+    enum class Type(val index: Int, @StringRes val nameStringRes: Int) {
+        MACHINE(
+            1,
+            R.string.label_machine
+        ),
+        FREE(
+            2,
+            R.string.label_free
+        ),
+        OWN_WEIGHT(
+            3,
+            R.string.label_own_weight
+        )
     }
 
     enum class Part(
+        val index: Int,
         @StringRes val nameStringResourceId: Int,
     ) {
         // 胸
-        CHEST(R.string.label_type_chest),
+        CHEST(1, R.string.label_type_chest),
 
         // 肩
-        SHOULDER(R.string.label_type_shoulder),
+        SHOULDER(2, R.string.label_type_shoulder),
 
         // 背中
-        BACK(R.string.label_type_back),
+        BACK(3, R.string.label_type_back),
 
         // 腕
-        ARM(R.string.label_type_arm),
+        ARM(4, R.string.label_type_arm),
 
         // 腹部
-        ABDOMINAL(R.string.label_type_abdominal),
+        ABDOMINAL(5, R.string.label_type_abdominal),
 
         // 尻
-        HIP(R.string.label_type_hip),
+        HIP(6, R.string.label_type_hip),
 
         // 脚
-        LEG(R.string.label_type_leg),
+        LEG(7, R.string.label_type_leg),
 
         // その他
-        ELSE(R.string.label_type_else),
+        ELSE(8, R.string.label_type_else),
     }
+}
+
+fun TrainingMenu.toEntity(): TrainingMenuEntity {
+    return TrainingMenuEntity(
+        id = this.id.value,
+        name = this.name,
+        part = this.part.index,
+        memo = this.memo,
+        type = this.type.index,
+    )
 }
 
 fun createSampleTrainingMenu(): TrainingMenu {
@@ -83,9 +97,7 @@ fun createSampleTrainingMenu(): TrainingMenu {
         sets = List(5) { index ->
             TrainingMenu.WeightSet(
                 index = index + 1,
-                targetNumber = 10,
                 actualNumber = 10,
-                targetWeight = 50,
                 actualWeight = 55,
             )
         },
@@ -102,9 +114,7 @@ fun createSampleOwnWeightTrainingMenu(): TrainingMenu {
         sets = List(5) { index ->
             TrainingMenu.OwnWeightSet(
                 index = index + 1,
-                targetNumber = 10 + index,
                 actualNumber = 10 + index,
-                additionalWeight = 0 + index,
             )
         },
         type = TrainingMenu.Type.OWN_WEIGHT,
