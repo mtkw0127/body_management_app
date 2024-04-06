@@ -7,6 +7,7 @@ import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.CompareHistoryRepository
 import com.app.body_manage.data.repository.MealRepository
 import com.app.body_manage.data.repository.PhotoRepository
+import com.app.body_manage.data.repository.TrainingRepository
 import com.facebook.flipper.android.AndroidFlipperClient
 import com.facebook.flipper.android.utils.FlipperUtils
 import com.facebook.flipper.plugins.inspector.DescriptorMapping
@@ -24,6 +25,7 @@ class TrainingApplication : Application() {
         )
     }
     val mealFoodsRepository by lazy { MealRepository(database.mealFoodsDao()) }
+    val trainingRepository by lazy { TrainingRepository(database.trainingDao()) }
 
     override fun onCreate() {
         super.onCreate()

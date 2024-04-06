@@ -12,6 +12,7 @@ import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.data.dao.ComparePhotoHistoryDao
 import com.app.body_manage.data.dao.MealFoodsDao
 import com.app.body_manage.data.dao.PhotoDao
+import com.app.body_manage.data.dao.TrainingDao
 import com.app.body_manage.data.entity.BodyMeasureEntity
 import com.app.body_manage.data.entity.ComparePhotoHistoryEntity
 import com.app.body_manage.data.entity.FoodEntity
@@ -36,7 +37,7 @@ import com.app.body_manage.data.entity.TrainingSetEntity
         TrainingMenuEntity::class,
         TrainingSetEntity::class,
     ],
-    version = 7,
+    version = 9,
     exportSchema = true
 )
 @TypeConverters(LocalDateConverter::class)
@@ -51,13 +52,15 @@ abstract class AppDatabase : RoomDatabase() {
                     Room.databaseBuilder(applicationContext, AppDatabase::class.java, "database")
                         .apply {
                             allowMainThreadQueries()
-                            addMigrations(MIGRATION_1_2)
-                            addMigrations(MIGRATION_2_3)
-                            addMigrations(MIGRATION_3_4)
-                            addMigrations(MIGRATION_4_5)
-                            addMigrations(MIGRATION_5_6)
-                            addMigrations(MIGRATION_6_7)
-                            addMigrations(MIGRATION_7_8)
+                            addMigrations(
+                                MIGRATION_1_2,
+                                MIGRATION_2_3,
+                                MIGRATION_3_4,
+                                MIGRATION_4_5,
+                                MIGRATION_6_7,
+                                MIGRATION_7_8,
+                                MIGRATION_8_9,
+                            )
                         }.build()
                 db = instance
                 instance
@@ -70,6 +73,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun bodyMeasurePhotoDao(): BodyMeasurePhotoDao
     abstract fun compareBodyMeasureHistoryDao(): ComparePhotoHistoryDao
     abstract fun mealFoodsDao(): MealFoodsDao
+    abstract fun trainingDao(): TrainingDao
 }
 
 /** 体重カラムをBodyMeasureTableに追加*/
@@ -149,10 +153,72 @@ val MIGRATION_7_8 = object : Migration(7, 8) {
             "CREATE TABLE IF NOT EXISTS `trainings` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `start_time` TEXT NOT NULL, `end_time` TEXT NOT NULL, `memo` TEXT NOT NULL)"
         )
         db.execSQL(
-            "CREATE TABLE IF NOT EXISTS `training_menus` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `part` INTEGER NOT NULL, `memo` TEXT NOT NULL,, `type` INTEGER NOT NULL)"
+            "CREATE TABLE IF NOT EXISTS `training_menus` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `part` INTEGER NOT NULL, `memo` TEXT NOT NULL, `type` INTEGER NOT NULL)"
         )
         db.execSQL(
             "CREATE TABLE IF NOT EXISTS `training_sets`  (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `training_id` INTEGER NOT NULL, `training_menu_id` INTEGER NOT NULL, `rep` INTEGER NOT NULL, `weight` INTEGER NOT NULL)"
+        )
+    }
+}
+
+/**
+ * 筋トレメニューの初期データを追加
+ */
+val MIGRATION_8_9 = object : Migration(8, 9) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        // 胸
+        db.execSQL(
+            "INSERT INTO training_menus (name, part, memo, type) VALUES ('ベンチプレス', 10, '', 2)"
+        )
+        db.execSQL(
+            "INSERT INTO training_menus (name, part, memo, type) VALUES ('ダンベルベンチプレス', 10, '', 2)"
+        )
+        db.execSQL(
+            "INSERT INTO training_menus (name, part, memo, type) VALUES ('ダンベルフライ', 10, '', 2)"
+        )
+        db.execSQL(
+            "INSERT INTO training_menus (name, part, memo, type) VALUES ('チェストプレス', 10, '', 1)"
+        )
+        db.execSQL(
+            "INSERT INTO training_menus (name, part, memo, type) VALUES ('腕立て伏せ', 10, '', 3)"
+        )
+        // 腕
+        db.execSQL(
+            "INSERT INTO training_menus (name, part, memo, type) VALUES ('ダンベルアームカール', 20, '', 2)"
+        )
+        db.execSQL(
+            "INSERT INTO training_menus (name, part, memo, type) VALUES ('アームカール', 20, '', 1)"
+        )
+        // 肩
+        db.execSQL(
+            "INSERT INTO training_menus (name, part, memo, type) VALUES ('ショルダープレス', 20, '', 1)"
+        )
+        // 背中
+        db.execSQL(
+            "INSERT INTO training_menus (name, part, memo, type) VALUES ('デッドリフト', 30, '', 2)"
+        )
+        db.execSQL(
+            "INSERT INTO training_menus (name, part, memo, type) VALUES ('ラッドプルダウン', 30, '', 1)"
+        )
+        db.execSQL(
+            "INSERT INTO training_menus (name, part, memo, type) VALUES ('懸垂', 30, '', 3)"
+        )
+        // 腹
+        db.execSQL(
+            "INSERT INTO training_menus (name, part, memo, type) VALUES ('腹筋', 50, '', 3)"
+        )
+        db.execSQL(
+            "INSERT INTO training_menus (name, part, memo, type) VALUES ('アブドミナル', 70, '', 1)"
+        )
+        // 脚
+        db.execSQL(
+            "INSERT INTO training_menus (name, part, memo, type) VALUES ('スクワット', 70, '', 2)"
+        )
+        db.execSQL(
+            "INSERT INTO training_menus (name, part, memo, type) VALUES ('レッグプレス', 70, '', 1)"
+        )
+        db.execSQL(
+            "INSERT INTO training_menus (name, part, memo, type) VALUES ('自重スクワット', 70, '', 3)"
         )
     }
 }

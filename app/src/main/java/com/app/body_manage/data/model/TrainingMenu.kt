@@ -53,28 +53,28 @@ data class TrainingMenu(
         @StringRes val nameStringResourceId: Int,
     ) {
         // 胸
-        CHEST(1, R.string.label_type_chest),
+        CHEST(10, R.string.label_type_chest),
 
         // 肩
-        SHOULDER(2, R.string.label_type_shoulder),
+        SHOULDER(20, R.string.label_type_shoulder),
 
         // 背中
-        BACK(3, R.string.label_type_back),
+        BACK(30, R.string.label_type_back),
 
         // 腕
-        ARM(4, R.string.label_type_arm),
+        ARM(40, R.string.label_type_arm),
 
         // 腹部
-        ABDOMINAL(5, R.string.label_type_abdominal),
+        ABDOMINAL(50, R.string.label_type_abdominal),
 
         // 尻
-        HIP(6, R.string.label_type_hip),
+        HIP(60, R.string.label_type_hip),
 
         // 脚
-        LEG(7, R.string.label_type_leg),
+        LEG(70, R.string.label_type_leg),
 
         // その他
-        ELSE(8, R.string.label_type_else),
+        ELSE(999, R.string.label_type_else),
     }
 }
 
