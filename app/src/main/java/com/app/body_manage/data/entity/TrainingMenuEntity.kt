@@ -22,9 +22,9 @@ fun TrainingMenuEntity.toModel(): TrainingMenu {
     return TrainingMenu(
         id = TrainingMenu.Id(id),
         name = name,
-        part = TrainingMenu.Part.entries.find { it.index == part }!!,
+        part = checkNotNull(TrainingMenu.Part.entries.find { it.index == part }),
         memo = memo,
         sets = emptyList(),
-        type = TrainingMenu.Type.entries.first { it.index == type },
+        type = checkNotNull(TrainingMenu.Type.entries.first { it.index == type }),
     )
 }

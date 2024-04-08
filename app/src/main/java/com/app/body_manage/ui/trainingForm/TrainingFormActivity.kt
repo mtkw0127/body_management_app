@@ -4,14 +4,25 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.app.body_manage.data.model.Training
-import java.time.LocalDate
-import java.time.LocalTime
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import com.app.body_manage.ui.selectTrainingMenu.SelectTrainingMenuActivity
 
 class TrainingFormActivity : AppCompatActivity() {
 
     private lateinit var viewModel: TrainingFormViewModel
+
+    private val trainingMenuLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                result.data?.let { data ->
+                    val trainingMenu = SelectTrainingMenuActivity.obtainResult(data)
+                    viewModel.addMenu(trainingMenu)
+                }
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,18 +30,16 @@ class TrainingFormActivity : AppCompatActivity() {
         viewModel = TrainingFormViewModel()
 
         setContent {
+            val training by viewModel.training.collectAsState()
+
             TrainingFormScreen(
-                training = Training(
-                    id = Training.NEW_ID,
-                    date = LocalDate.now(),
-                    startTime = LocalTime.now(),
-                    endTime = LocalTime.now(),
-                    menus = listOf(),
-                    memo = "メモ".repeat(5)
-                ),
+                training = training,
                 onClickInputAll = {},
                 onClickRegister = {},
-                onClickBackPress = ::finish
+                onClickBackPress = ::finish,
+                onClickFab = {
+                    trainingMenuLauncher.launch(SelectTrainingMenuActivity.createInstance(this))
+                }
             )
         }
     }

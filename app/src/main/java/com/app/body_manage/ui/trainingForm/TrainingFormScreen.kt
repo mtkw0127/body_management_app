@@ -22,13 +22,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,6 +53,7 @@ import androidx.compose.ui.unit.sp
 import com.app.body_manage.R
 import com.app.body_manage.common.CustomButton
 import com.app.body_manage.data.model.Training
+import com.app.body_manage.data.model.TrainingMenu
 import com.app.body_manage.data.model.createSampleOwnWeightTrainingMenu
 import com.app.body_manage.data.model.createSampleTrainingMenu
 import com.app.body_manage.extension.toJapaneseTime
@@ -68,6 +71,7 @@ fun TrainingFormScreen(
     onClickBackPress: () -> Unit = {},
     onClickRegister: () -> Unit = {},
     onClickInputAll: () -> Unit = {},
+    onClickFab: () -> Unit = {},
 ) {
     Scaffold(
         topBar = {
@@ -75,7 +79,7 @@ fun TrainingFormScreen(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Spacer(modifier = Modifier.size(10.dp))
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = null,
                         modifier = Modifier.clickable { onClickBackPress() },
                         tint = Color.Black
@@ -103,7 +107,19 @@ fun TrainingFormScreen(
             ) {
                 Text(text = stringResource(id = R.string.label_register_trainning))
             }
-        }
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    onClickFab()
+                }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = null
+                )
+            }
+        },
     ) { padding ->
         Column(
             modifier = Modifier
@@ -162,46 +178,60 @@ fun TrainingFormScreen(
                         )
                     }
                     Spacer(modifier = Modifier.size(10.dp))
-                    Row(
-                        modifier = Modifier.horizontalScroll(rememberScrollState())
-                    ) {
-                        Column(
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.width(50.dp)
+
+                    val chunkedMenu = menu.sets.chunked(3)
+                    chunkedMenu.forEachIndexed { index, chunk ->
+                        Row(
+                            modifier = Modifier.horizontalScroll(rememberScrollState())
                         ) {
-                            Text(
-                                text = "",
-                                modifier = Modifier.padding(3.dp)
-                            )
-                            Text(
-                                text = stringResource(id = R.string.label_object),
-                                modifier = Modifier.padding(3.dp)
-                            )
-                            Text(
-                                text = stringResource(id = R.string.label_result),
-                                modifier = Modifier.padding(3.dp)
-                            )
-                        }
-                        menu.sets.forEach { set ->
                             Column(
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.width(100.dp)
+                                modifier = Modifier.width(50.dp)
                             ) {
                                 Text(
-                                    text = stringResource(id = R.string.label_set, set.index),
+                                    text = "",
                                     modifier = Modifier.padding(3.dp)
                                 )
-//                                Text(
-//                                    text = when (set) {
-//                                        is TrainingMenu.WeightSet -> set.targetText
-//                                        is TrainingMenu.OwnWeightSet -> set.actualNumber.toCount()
-//                                    },
-//                                    modifier = Modifier.padding(3.dp)
-//                                )
-                                CountTextField(set.actualNumber)
+                                Text(
+                                    text = stringResource(id = R.string.label_result),
+                                    modifier = Modifier.padding(3.dp)
+                                )
+                                if (menu.type == TrainingMenu.Type.MACHINE || menu.type == TrainingMenu.Type.FREE) {
+                                    Text(
+                                        text = stringResource(id = R.string.label_weight),
+                                        modifier = Modifier.padding(3.dp)
+                                    )
+                                }
                             }
+                            chunk.forEach { set ->
+                                Column(
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    modifier = Modifier.width(100.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(
+                                            id = R.string.label_set,
+                                            set.index + 1
+                                        ),
+                                        modifier = Modifier.padding(3.dp)
+                                    )
+                                    CountTextField(set.number, R.string.label_count)
+                                    Spacer(modifier = Modifier.size(7.dp))
+                                    // 重りを扱う種目の場合は重量を入力する
+                                    if (set is TrainingMenu.WeightSet) {
+                                        CountTextField(set.weight, R.string.label_weight_unit)
+                                    }
+                                }
+                            }
+                        }
+                        if (index != chunkedMenu.lastIndex) {
+                            Spacer(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(10.dp)
+                            )
                         }
                     }
                     Spacer(modifier = Modifier.size(15.dp))
@@ -267,9 +297,9 @@ private fun MemoTextField(
 }
 
 @Composable
-private fun CountTextField(count: Int) {
+private fun CountTextField(count: Int, unitStringResource: Int) {
     var number by remember { mutableStateOf(count.toString()) }
-    val unit = stringResource(id = R.string.label_count)
+    val unit = stringResource(id = unitStringResource)
     val empty = stringResource(id = R.string.label_empty)
     val displayNumber = remember(number) {
         if (number.isNotBlank()) {
