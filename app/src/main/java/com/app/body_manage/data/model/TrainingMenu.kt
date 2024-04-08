@@ -3,6 +3,7 @@ package com.app.body_manage.data.model
 import androidx.annotation.StringRes
 import com.app.body_manage.R
 import com.app.body_manage.data.entity.TrainingMenuEntity
+import java.io.Serializable
 
 data class TrainingMenu(
     val id: Id,
@@ -11,27 +12,27 @@ data class TrainingMenu(
     val memo: String,
     val sets: List<Set>, // MEMO：最新のセット数。履歴管理する。
     val type: Type,
-) {
-    data class Id(val value: Long)
+) : Serializable {
+    data class Id(val value: Long) : Serializable
 
     sealed interface Set {
         val index: Int
-        val actualNumber: Int
+        val number: Int
     }
 
     // MEMO: 例えば60kgを10回上げるような感じ
     // マシン・フリーウェイト用のSet
     data class WeightSet(
         override val index: Int,
-        override val actualNumber: Int, // 実際の回数
-        val actualWeight: Int, // 実際の重量
-    ) : Set
+        override val number: Int, // 実際の回数
+        val weight: Int, // 実際の重量
+    ) : Set, Serializable
 
-    // マシン・フリーウェイト用のSet
+    // 自重用のSet
     data class OwnWeightSet(
         override val index: Int,
-        override val actualNumber: Int, // 実際の回数
-    ) : Set
+        override val number: Int, // 実際の回数
+    ) : Set, Serializable
 
     enum class Type(val index: Int, @StringRes val nameStringRes: Int) {
         MACHINE(
@@ -97,8 +98,8 @@ fun createSampleTrainingMenu(): TrainingMenu {
         sets = List(5) { index ->
             TrainingMenu.WeightSet(
                 index = index + 1,
-                actualNumber = 10,
-                actualWeight = 55,
+                number = 10,
+                weight = 55,
             )
         },
         type = TrainingMenu.Type.MACHINE,
@@ -114,7 +115,7 @@ fun createSampleOwnWeightTrainingMenu(): TrainingMenu {
         sets = List(5) { index ->
             TrainingMenu.OwnWeightSet(
                 index = index + 1,
-                actualNumber = 10 + index,
+                number = 10 + index,
             )
         },
         type = TrainingMenu.Type.OWN_WEIGHT,

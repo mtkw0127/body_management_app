@@ -112,6 +112,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoBar"
             android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".ui.selectTrainingMenu.SelectTrainingMenuActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoBar"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

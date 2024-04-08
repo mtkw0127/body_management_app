@@ -193,9 +193,11 @@
     <string name="label_set">Set: %1$d</string>
     <string name="label_event">No%1$d</string>
     <string name="label_count">Number</string>
+    <string name="label_weight_unit">kg</string>
     <string name="label_empty">-</string>
     <string name="label_object">Object</string>
     <string name="label_result">Result</string>
+    <string name="label_weight">Weight</string>
 
     <!-- タイプ-->
     <string name="label_machine">Machine</string>
