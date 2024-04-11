@@ -8,7 +8,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.lifecycleScope
+import com.app.body_manage.TrainingApplication
 import com.app.body_manage.ui.selectTrainingMenu.SelectTrainingMenuActivity
+import kotlinx.coroutines.launch
 
 class TrainingFormActivity : AppCompatActivity() {
 
@@ -27,15 +30,22 @@ class TrainingFormActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = TrainingFormViewModel()
+        viewModel = TrainingFormViewModel(
+            trainingRepository = (application as TrainingApplication).trainingRepository
+        )
+
+        lifecycleScope.launch {
+            viewModel.isSuccessForSavingTraining.collect {
+                finish()
+            }
+        }
 
         setContent {
             val training by viewModel.training.collectAsState()
 
             TrainingFormScreen(
                 training = training,
-                onClickInputAll = {},
-                onClickRegister = {},
+                onClickRegister = viewModel::registerTraining,
                 onClickBackPress = ::finish,
                 onClickFab = {
                     trainingMenuLauncher.launch(SelectTrainingMenuActivity.createInstance(this))

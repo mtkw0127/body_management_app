@@ -11,7 +11,7 @@ import com.app.body_manage.data.entity.TrainingSetEntity
 interface TrainingDao {
     // ある１日のトレーニングを作る
     @Insert
-    suspend fun insertTraining(training: TrainingEntity)
+    suspend fun insertTraining(training: TrainingEntity): Long
 
     // トレーニングメニューを作る
     @Insert

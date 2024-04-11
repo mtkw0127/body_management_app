@@ -1,7 +1,6 @@
 package com.app.body_manage.data.repository
 
 import com.app.body_manage.data.dao.TrainingDao
-import com.app.body_manage.data.entity.TrainingSetEntity
 import com.app.body_manage.data.entity.toModel
 import com.app.body_manage.data.model.Training
 import com.app.body_manage.data.model.TrainingMenu
@@ -14,17 +13,19 @@ class TrainingRepository(
     private val trainingDao: TrainingDao,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
-    @Suppress("all")
+    // その日のトレーニングを保存する
     suspend fun saveTraining(
         training: Training,
-        trainingSetEntityList: List<TrainingSetEntity>,
     ) {
         // その日のトレーニングを作る
-        trainingDao.insertTraining(training.toEntity())
+        val trainingId = trainingDao.insertTraining(training.toEntity())
 
-        // トレーニングを登録する
-        trainingSetEntityList.forEach { trainingSetEntity ->
-            trainingDao.insertTrainingSet(trainingSetEntity)
+        // そのトレーニングに紐づくメニューに紐づくトレーニング実績を登録する
+        training.menus.forEach { trainingMenu ->
+            for (set in trainingMenu.sets) {
+                val entity = set.toEntity(trainingId, trainingMenu.id.value)
+                trainingDao.insertTrainingSet(entity)
+            }
         }
     }
 

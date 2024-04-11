@@ -3,6 +3,7 @@ package com.app.body_manage.data.model
 import androidx.annotation.StringRes
 import com.app.body_manage.R
 import com.app.body_manage.data.entity.TrainingMenuEntity
+import com.app.body_manage.data.entity.TrainingSetEntity
 import java.io.Serializable
 
 data class TrainingMenu(
@@ -18,6 +19,8 @@ data class TrainingMenu(
     sealed interface Set {
         val index: Int
         val number: Int
+
+        fun toEntity(trainingId: Long, trainingMenuId: Long): TrainingSetEntity
     }
 
     // MEMO: 例えば60kgを10回上げるような感じ
@@ -26,13 +29,33 @@ data class TrainingMenu(
         override val index: Int,
         override val number: Int, // 実際の回数
         val weight: Int, // 実際の重量
-    ) : Set, Serializable
+    ) : Set, Serializable {
+        override fun toEntity(trainingId: Long, trainingMenuId: Long): TrainingSetEntity {
+            return TrainingSetEntity(
+                id = 0,
+                trainingId = trainingId,
+                trainingMenuId = trainingMenuId,
+                rep = number.toLong(),
+                weight = weight.toLong(),
+            )
+        }
+    }
 
     // 自重用のSet
     data class OwnWeightSet(
         override val index: Int,
         override val number: Int, // 実際の回数
-    ) : Set, Serializable
+    ) : Set, Serializable {
+        override fun toEntity(trainingId: Long, trainingMenuId: Long): TrainingSetEntity {
+            return TrainingSetEntity(
+                id = 0,
+                trainingId = trainingId,
+                trainingMenuId = trainingMenuId,
+                rep = number.toLong(),
+                weight = 0,
+            )
+        }
+    }
 
     enum class Type(val index: Int, @StringRes val nameStringRes: Int) {
         MACHINE(
