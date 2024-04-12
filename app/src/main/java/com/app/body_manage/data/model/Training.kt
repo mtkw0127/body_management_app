@@ -15,7 +15,7 @@ data class Training(
     data class Id(val value: Long)
 
     companion object {
-        val NEW_ID = Id(-1)
+        val NEW_ID = Id(0)
     }
 }
 

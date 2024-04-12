@@ -51,7 +51,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.body_manage.R
-import com.app.body_manage.common.CustomButton
 import com.app.body_manage.data.model.Training
 import com.app.body_manage.data.model.TrainingMenu
 import com.app.body_manage.data.model.createSampleOwnWeightTrainingMenu
@@ -70,7 +69,6 @@ fun TrainingFormScreen(
     training: Training,
     onClickBackPress: () -> Unit = {},
     onClickRegister: () -> Unit = {},
-    onClickInputAll: () -> Unit = {},
     onClickFab: () -> Unit = {},
 ) {
     Scaffold(
@@ -169,13 +167,13 @@ fun TrainingFormScreen(
                         Spacer(modifier = Modifier.size(10.dp))
                         Text(text = menu.name)
                         Spacer(modifier = Modifier.weight(1F))
-                        CustomButton(
-                            onClick = onClickInputAll,
-                            valueResourceId = R.string.label_input_all,
-                            fontSize = 11.sp,
-                            backgroundColor = theme,
-                            modifier = Modifier.padding(1.dp)
-                        )
+//                        CustomButton(
+//                            onClick = onClickInputAll,
+//                            valueResourceId = R.string.label_input_all,
+//                            fontSize = 11.sp,
+//                            backgroundColor = theme,
+//                            modifier = Modifier.padding(1.dp)
+//                        )
                     }
                     Spacer(modifier = Modifier.size(10.dp))
 
