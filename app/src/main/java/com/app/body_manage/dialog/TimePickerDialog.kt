@@ -6,6 +6,7 @@ import android.widget.TimePicker
 import androidx.fragment.app.DialogFragment
 import com.app.body_manage.R
 import java.time.LocalDateTime
+import java.time.LocalTime
 
 class TimePickerDialog : DialogFragment(), android.app.TimePickerDialog.OnTimeSetListener {
 
@@ -22,10 +23,25 @@ class TimePickerDialog : DialogFragment(), android.app.TimePickerDialog.OnTimeSe
             localDateTime: LocalDateTime,
             callBack: (hour: Int, minute: Int) -> Unit
         ): TimePickerDialog {
+            return createFragment(localDateTime.hour, localDateTime.minute, callBack)
+        }
+
+        fun createTimePickerDialog(
+            localTime: LocalTime,
+            callBack: (hour: Int, minute: Int) -> Unit
+        ): TimePickerDialog {
+            return createFragment(localTime.hour, localTime.minute, callBack)
+        }
+
+        private fun createFragment(
+            hour: Int,
+            minute: Int,
+            callBack: (hour: Int, minute: Int) -> Unit
+        ): TimePickerDialog {
             val timePickerDialog = TimePickerDialog()
             val bundle = Bundle()
-            bundle.putInt(HOUR, localDateTime.hour)
-            bundle.putInt(MINUTE, localDateTime.minute)
+            bundle.putInt(HOUR, hour)
+            bundle.putInt(MINUTE, minute)
             timePickerDialog.arguments = bundle
             timePickerDialog.callBack = callBack
             return timePickerDialog

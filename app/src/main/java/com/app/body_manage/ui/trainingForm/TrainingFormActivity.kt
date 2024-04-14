@@ -9,9 +9,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.lifecycleScope
+import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
+import com.app.body_manage.dialog.IntNumberPickerDialog
+import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.selectTrainingMenu.SelectTrainingMenuActivity
 import kotlinx.coroutines.launch
+import java.time.LocalTime
 
 class TrainingFormActivity : AppCompatActivity() {
 
@@ -49,6 +53,51 @@ class TrainingFormActivity : AppCompatActivity() {
                 onClickBackPress = ::finish,
                 onClickFab = {
                     trainingMenuLauncher.launch(SelectTrainingMenuActivity.createInstance(this))
+                },
+                onClickRep = { menuIndex, setIndex ->
+                    val menu = viewModel.training.value.menus[menuIndex]
+                    val set = menu.sets[setIndex]
+                    IntNumberPickerDialog.createDialog(
+                        label = getString(R.string.label_rep_num),
+                        number = set.number,
+                        unit = getString(R.string.label_count),
+                        maxDigit = IntNumberPickerDialog.Digit.TENS,
+                        initialDigit = IntNumberPickerDialog.Digit.TENS,
+                        callBack = { number ->
+                            viewModel.updateRep(menuIndex, setIndex, number)
+                        }
+                    ).show(supportFragmentManager, "rep")
+                },
+                onClickWeight = { menuIndex, setIndex ->
+                    val menu = viewModel.training.value.menus[menuIndex]
+                    val set = menu.sets[setIndex]
+                    IntNumberPickerDialog.createDialog(
+                        label = getString(R.string.label_weight),
+                        number = set.number,
+                        unit = getString(R.string.label_weight_unit),
+                        maxDigit = IntNumberPickerDialog.Digit.TENS,
+                        initialDigit = IntNumberPickerDialog.Digit.TENS,
+                        callBack = { weight ->
+                            viewModel.updateWeight(menuIndex, setIndex, weight)
+                        }
+                    ).show(supportFragmentManager, "weight")
+                },
+                onClickDelete = { menuIndex, setIndex ->
+                    viewModel.deleteSet(menuIndex, setIndex)
+                },
+                onClickStartTime = {
+                    TimePickerDialog.createTimePickerDialog(
+                        localTime = training.startTime,
+                    ) { hour, minute ->
+                        viewModel.updateStartTime(LocalTime.of(hour, minute))
+                    }.show(supportFragmentManager, "start_time")
+                },
+                onClickEndTime = {
+                    TimePickerDialog.createTimePickerDialog(
+                        localTime = training.endTime,
+                    ) { hour, minute ->
+                        viewModel.updateEndTime(LocalTime.of(hour, minute))
+                    }.show(supportFragmentManager, "end_time")
                 }
             )
         }
