@@ -73,9 +73,87 @@ class TrainingFormViewModel(
         }
     }
 
+    fun updateRep(menuIndex: Int, setIndex: Int, number: Int) {
+        update(menuIndex, setIndex) { set ->
+            when (set) {
+                is TrainingMenu.WeightSet -> set.copy(number = number)
+                is TrainingMenu.OwnWeightSet -> set.copy(number = number)
+            }
+        }
+    }
+
+    fun updateWeight(menuIndex: Int, setIndex: Int, weight: Int) {
+        update(menuIndex, setIndex) { set ->
+            when (set) {
+                is TrainingMenu.WeightSet -> set.copy(weight = weight)
+                else -> set
+            }
+        }
+    }
+
+    fun updateStartTime(time: LocalTime) {
+        _training.update {
+            it.copy(startTime = time)
+        }
+    }
+
+    fun updateEndTime(time: LocalTime) {
+        _training.update {
+            it.copy(endTime = time)
+        }
+    }
+
+    private fun update(
+        menuIndex: Int,
+        setIndex: Int,
+        update: (TrainingMenu.Set) -> TrainingMenu.Set
+    ) {
+        _training.update { training: Training ->
+            training.copy(
+                menus = training.menus.mapIndexed { i, trainingMenu ->
+                    if (i == menuIndex) {
+                        trainingMenu.copy(
+                            sets = trainingMenu.sets.mapIndexed { j, set ->
+                                if (j == setIndex) {
+                                    when (set) {
+                                        is TrainingMenu.WeightSet -> update(set)
+                                        is TrainingMenu.OwnWeightSet -> update(set)
+                                    }
+                                } else {
+                                    set
+                                }
+                            }
+                        )
+                    } else {
+                        trainingMenu
+                    }
+                }
+            )
+        }
+    }
+
+    fun deleteSet(
+        menuIndex: Int,
+        setIndex: Int
+    ) {
+        _training.update {
+            it.copy(
+                menus = it.menus.mapIndexed { i, trainingMenu ->
+                    if (i == menuIndex) {
+                        trainingMenu.copy(
+                            sets = trainingMenu.sets.filterIndexed { j, _ -> j != setIndex }
+                        )
+                    } else {
+                        trainingMenu
+                    }
+                }
+            )
+        }
+    }
+
     companion object {
         // 初期のセット数
-        private const val DEFAULT_SET_NUMBER = 6
+        private const val DEFAULT_SET_NUMBER = 5
 
         // 初期値となる実施回数
         private const val DEFAULT_ACTUAL_NUMBER = 10

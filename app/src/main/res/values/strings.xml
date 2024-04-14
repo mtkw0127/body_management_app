@@ -190,13 +190,13 @@
     <string name="label_input_all">一括入力</string>
     <string name="label_memo_area">メモ欄</string>
     <string name="label_memo_area_training">トレーニングメモ</string>
-    <string name="label_set">%1$dセット目</string>
+    <string name="label_set">#%1$d</string>
     <string name="label_event">%1$d種目目</string>
     <string name="label_count">回</string>
     <string name="label_weight_unit">kg</string>
     <string name="label_empty">-</string>
     <string name="label_object">目標</string>
-    <string name="label_result">結果</string>
+    <string name="label_rep_num">レップ数</string>
     <string name="label_weight">重量</string>
 
 
