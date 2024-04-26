@@ -11,6 +11,7 @@ data class Training(
     val endTime: LocalTime,
     val menus: List<TrainingMenu>,
     val memo: String,
+    val createdAt: LocalDate,
 ) {
     data class Id(val value: Long)
 
@@ -26,5 +27,6 @@ fun Training.toEntity(): TrainingEntity {
         startTime = this.startTime,
         endTime = this.endTime,
         memo = this.memo,
+        createdAt = this.createdAt,
     )
 }

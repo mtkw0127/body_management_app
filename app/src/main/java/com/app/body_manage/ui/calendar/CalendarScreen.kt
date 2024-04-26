@@ -316,7 +316,7 @@ private fun DateCell(
                 Text(text = "")
             }
             Spacer(modifier = Modifier.size(5.dp))
-            if (day.kcal != 0) {
+            if (day.kcal != 0L) {
                 Row(
                     verticalAlignment = Alignment.Bottom,
                     modifier = Modifier

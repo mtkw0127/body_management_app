@@ -21,6 +21,15 @@ interface TrainingDao {
     @Insert
     suspend fun insertTrainingSet(trainingSet: TrainingSetEntity)
 
+//    @Query("SELECT * FROM trainings WHERE date = :date")
+//    suspend fun getTrainingsByDate(date: LocalDate): List<TrainingEntity>
+//
+//    @Query("SELECT * FROM training_sets WHERE training_id = :trainingId")
+//    suspend fun getTrainingSetsByTrainingId(trainingId: Long): List<TrainingSetEntity>
+
+    @Query("SELECT * FROM training_menus WHERE id = :trainingMenuId")
+    suspend fun getTrainingMenu(trainingMenuId: Long): TrainingMenuEntity
+
     @Query("SELECT * FROM training_menus")
     suspend fun getTrainingMenuList(): List<TrainingMenuEntity>
 }

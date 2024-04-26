@@ -185,7 +185,7 @@ fun TrainingFormScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = stringResource(id = R.string.label_event, menuIndex + 1),
+                            text = stringResource(id = R.string.label_event, menu.eventIndex + 1),
                             modifier = Modifier
                                 .background(Color.Black, RoundedCornerShape(5.dp))
                                 .padding(5.dp),
@@ -334,7 +334,7 @@ private fun MemoTextField(
 @Composable
 private fun CountTextField(
     modifier: Modifier = Modifier,
-    count: Int,
+    count: Long,
     unitStringResource: Int,
     onClick: () -> Unit,
 ) {
@@ -371,15 +371,16 @@ private fun TrainingFormPreview() {
             startTime = LocalTime.now(),
             endTime = LocalTime.now(),
             menus = listOf(
-                createSampleTrainingMenu(),
-                createSampleTrainingMenu(),
-                createSampleTrainingMenu(),
-                createSampleTrainingMenu(),
-                createSampleTrainingMenu(),
-                createSampleOwnWeightTrainingMenu(),
-                createSampleOwnWeightTrainingMenu(),
+                createSampleTrainingMenu(0),
+                createSampleTrainingMenu(1),
+                createSampleTrainingMenu(2),
+                createSampleTrainingMenu(3),
+                createSampleTrainingMenu(4),
+                createSampleOwnWeightTrainingMenu(5),
+                createSampleOwnWeightTrainingMenu(6),
             ),
-            memo = "たくさん頑張った".repeat(5)
+            memo = "たくさん頑張った".repeat(5),
+            createdAt = LocalDate.now(),
         ),
         onClickBackPress = {},
     )

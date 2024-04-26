@@ -9,7 +9,7 @@ data class Food(
     val name: String,
     val nameJp: String,
     val nameKana: String,
-    val kcal: Int,
+    val kcal: Long,
     val number: Long, // 個数
 ) {
     data class Id(val value: Int)

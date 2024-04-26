@@ -73,7 +73,7 @@ class MealFormActivity : AppCompatActivity() {
                 onUpdateMealKcal = { food ->
                     IntNumberPickerDialog.createDialog(
                         label = getString(R.string.kcal),
-                        number = food.kcal,
+                        number = food.kcal.toLong(),
                         unit = getString(R.string.unit_kcal),
                         maxDigit = IntNumberPickerDialog.Digit.THOUSAND,
                         initialDigit = IntNumberPickerDialog.Digit.HUNDRED,
@@ -84,7 +84,7 @@ class MealFormActivity : AppCompatActivity() {
                 onUpdateMealNumber = { food ->
                     IntNumberPickerDialog.createDialog(
                         label = getString(R.string.label_number),
-                        number = food.number.toInt(),
+                        number = food.number,
                         unit = getString(R.string.unit_number),
                         maxDigit = IntNumberPickerDialog.Digit.ONES,
                         initialDigit = IntNumberPickerDialog.Digit.ONES,

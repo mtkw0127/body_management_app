@@ -8,7 +8,7 @@ data class Holiday(
     override val hasLunch: Boolean = false,
     override val hasDinner: Boolean = false,
     override val hasMiddle: Boolean = false,
-    override val kcal: Int,
+    override val kcal: Long,
     override val weight: Float?,
     val name: String // 休日の名前
 ) : Day

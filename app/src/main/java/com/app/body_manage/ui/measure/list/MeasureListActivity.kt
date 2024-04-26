@@ -16,6 +16,7 @@ import com.app.body_manage.data.model.Photo
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.MealRepository
+import com.app.body_manage.data.repository.TrainingRepository
 import com.app.body_manage.dialog.FloatNumberPickerDialog
 import com.app.body_manage.ui.mealForm.MealFormActivity
 import com.app.body_manage.ui.measure.form.MeasureFormActivity
@@ -35,6 +36,10 @@ class MeasureListActivity : AppCompatActivity() {
 
     private val mealRepository: MealRepository by lazy {
         (application as TrainingApplication).mealFoodsRepository
+    }
+
+    private val trainingRepository: TrainingRepository by lazy {
+        (application as TrainingApplication).trainingRepository
     }
 
     private val launcher =
@@ -149,7 +154,8 @@ class MeasureListActivity : AppCompatActivity() {
             bodyMeasureRepository = bodyMeasureRepository,
             bodyMeasurePhotoRepository = bodyMeasurePhotoRepository,
             userPreferenceRepository = UserPreferenceRepository(this),
-            mealRepository = mealRepository
+            mealRepository = mealRepository,
+            trainingRepository = trainingRepository,
         )
         viewModel.reload()
     }

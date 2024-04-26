@@ -17,7 +17,7 @@ data class UserPreference(
     val fat: Float?,
     val weight: Float?,
     val goalWeight: Float?,
-    val goalKcal: Int?,
+    val goalKcal: Long?,
     val alarm: Boolean?,
 ) {
     val bim: String
@@ -52,7 +52,7 @@ data class UserPreference(
             return goalWeight / weight
         }
 
-    fun progressKcal(todayKcal: Int): Float {
+    fun progressKcal(todayKcal: Long): Float {
         if (goalKcal == null) {
             return 0F
         }
@@ -64,7 +64,7 @@ data class UserPreference(
             return "${(progressWeight * 100).toInt()} %"
         }
 
-    fun progressKcalText(totalKcal: Int): String = "${(progressKcal(totalKcal) * 100).toInt()} %"
+    fun progressKcalText(totalKcal: Long): String = "${(progressKcal(totalKcal) * 100).toInt()} %"
 
     val basicConsumeEnergy: String
         get() {

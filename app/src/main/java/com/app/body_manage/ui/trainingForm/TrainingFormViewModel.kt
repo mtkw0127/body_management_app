@@ -30,28 +30,30 @@ class TrainingFormViewModel(
             endTime = LocalTime.now(),
             menus = listOf(),
             memo = "",
+            createdAt = LocalDate.now(),
         )
     )
     val training: StateFlow<Training> = _training
 
     fun addMenu(trainingMenu: TrainingMenu) {
         val trainingMenuWithDefaultSet = trainingMenu.copy(
-            sets = List(DEFAULT_SET_NUMBER) {
+            sets = List(DEFAULT_SET_NUMBER) { setIndex ->
+                val castedSetIndex = setIndex.toLong()
                 when (trainingMenu.type) {
                     TrainingMenu.Type.MACHINE -> TrainingMenu.WeightSet(
-                        index = it,
+                        setIndex = castedSetIndex,
                         number = DEFAULT_ACTUAL_NUMBER,
                         weight = 0 // TODO: 前回の重量を引き継ぐ
                     )
 
                     TrainingMenu.Type.FREE -> TrainingMenu.WeightSet(
-                        index = it,
+                        setIndex = castedSetIndex,
                         number = DEFAULT_ACTUAL_NUMBER,
                         weight = 0
                     )
 
                     TrainingMenu.Type.OWN_WEIGHT -> TrainingMenu.OwnWeightSet(
-                        index = it,
+                        setIndex = castedSetIndex,
                         number = DEFAULT_ACTUAL_NUMBER,
                     )
                 }
@@ -73,7 +75,7 @@ class TrainingFormViewModel(
         }
     }
 
-    fun updateRep(menuIndex: Int, setIndex: Int, number: Int) {
+    fun updateRep(menuIndex: Int, setIndex: Int, number: Long) {
         update(menuIndex, setIndex) { set ->
             when (set) {
                 is TrainingMenu.WeightSet -> set.copy(number = number)
@@ -82,7 +84,7 @@ class TrainingFormViewModel(
         }
     }
 
-    fun updateWeight(menuIndex: Int, setIndex: Int, weight: Int) {
+    fun updateWeight(menuIndex: Int, setIndex: Int, weight: Long) {
         update(menuIndex, setIndex) { set ->
             when (set) {
                 is TrainingMenu.WeightSet -> set.copy(weight = weight)
@@ -156,6 +158,6 @@ class TrainingFormViewModel(
         private const val DEFAULT_SET_NUMBER = 5
 
         // 初期値となる実施回数
-        private const val DEFAULT_ACTUAL_NUMBER = 10
+        private const val DEFAULT_ACTUAL_NUMBER = 10L
     }
 }

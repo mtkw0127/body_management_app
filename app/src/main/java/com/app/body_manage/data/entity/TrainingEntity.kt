@@ -10,15 +10,14 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 // ある一回のトレーニングを保存するEntity
-@Entity(
-    tableName = "trainings",
-)
+@Entity(tableName = "trainings")
 data class TrainingEntity(
     @PrimaryKey(autoGenerate = true) val id: Long,
     @ColumnInfo(name = "date") val date: LocalDate,
     @ColumnInfo(name = "start_time") val startTime: LocalTime,
     @ColumnInfo(name = "end_time") val endTime: LocalTime,
     @ColumnInfo(name = "memo") val memo: String,
+    @ColumnInfo(name = "created_at") val createdAt: LocalDate,
 ) : Serializable
 
 fun TrainingEntity.toModel(menus: List<TrainingMenu>): Training {
@@ -29,5 +28,6 @@ fun TrainingEntity.toModel(menus: List<TrainingMenu>): Training {
         endTime = this.endTime,
         menus = menus,
         memo = this.memo,
+        createdAt = this.createdAt,
     )
 }

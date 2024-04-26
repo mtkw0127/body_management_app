@@ -21,11 +21,11 @@ data class Meal(
         SNACK(R.string.label_snack),
     }
 
-    val totalKcal: Int
+    val totalKcal: Long
         get() {
             return foods.sumOf {
                 it.kcal * it.number
-            }.toInt()
+            }
         }
 
     companion object {

@@ -70,10 +70,10 @@ fun TrainingMenuListScreen(
 private fun TrainingMenuListScreenPreview() {
     TrainingMenuListScreen(
         trainingMenus =
-        List(3) {
-            createSampleTrainingMenu()
-        } + List(3) {
-            createSampleOwnWeightTrainingMenu()
+        List(3) { eventIndex ->
+            createSampleTrainingMenu(eventIndex.toLong())
+        } + List(3) { eventIndex ->
+            createSampleOwnWeightTrainingMenu(eventIndex.toLong() + 2)
         }
     )
 }

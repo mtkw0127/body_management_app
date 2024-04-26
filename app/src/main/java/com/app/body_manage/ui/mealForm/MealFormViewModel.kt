@@ -134,7 +134,7 @@ class MealFormViewModel(
         }
     }
 
-    fun updateFood(targetFood: Food, kcal: Int) {
+    fun updateFood(targetFood: Food, kcal: Long) {
         _mealFoods.update {
             val updatedFoods = it.foods.map { food ->
                 if (targetFood.name == food.name && targetFood.id == food.id) {
@@ -153,9 +153,9 @@ class MealFormViewModel(
         }
     }
 
-    fun updateFoodNumber(targetFood: Food, number: Int) {
+    fun updateFoodNumber(targetFood: Food, number: Long) {
         _mealFoods.update {
-            val updatedFood = targetFood.copy(number = number.toLong())
+            val updatedFood = targetFood.copy(number = number)
             val updatedFoods = it.foods.map { food ->
                 if (food.name == targetFood.name) {
                     updatedFood

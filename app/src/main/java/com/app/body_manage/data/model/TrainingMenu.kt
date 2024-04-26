@@ -8,6 +8,7 @@ import java.io.Serializable
 
 data class TrainingMenu(
     val id: Id,
+    val eventIndex: Long, // 何種目目かを表す
     val name: String,
     val part: Part,
     val memo: String,
@@ -17,41 +18,43 @@ data class TrainingMenu(
     data class Id(val value: Long) : Serializable
 
     sealed interface Set {
-        val index: Int
-        val number: Int
+        val setIndex: Long
+        val number: Long
 
-        fun toEntity(trainingId: Long, trainingMenuId: Long): TrainingSetEntity
+        fun toEntity(setIndex: Long): TrainingSetEntity
     }
 
     // MEMO: 例えば60kgを10回上げるような感じ
     // マシン・フリーウェイト用のSet
     data class WeightSet(
-        override val index: Int,
-        override val number: Int, // 実際の回数
-        val weight: Int, // 実際の重量
+        override val setIndex: Long,
+        override val number: Long, // 実際の回数
+        val weight: Long, // 実際の重量
     ) : Set, Serializable {
-        override fun toEntity(trainingId: Long, trainingMenuId: Long): TrainingSetEntity {
+        override fun toEntity(
+            setIndex: Long,
+        ): TrainingSetEntity {
             return TrainingSetEntity(
                 id = 0,
-                trainingId = trainingId,
-                trainingMenuId = trainingMenuId,
-                rep = number.toLong(),
-                weight = weight.toLong(),
+                setIndex = setIndex,
+                rep = number,
+                weight = weight,
             )
         }
     }
 
     // 自重用のSet
     data class OwnWeightSet(
-        override val index: Int,
-        override val number: Int, // 実際の回数
+        override val setIndex: Long,
+        override val number: Long, // 実際の回数
     ) : Set, Serializable {
-        override fun toEntity(trainingId: Long, trainingMenuId: Long): TrainingSetEntity {
+        override fun toEntity(
+            setIndex: Long,
+        ): TrainingSetEntity {
             return TrainingSetEntity(
                 id = 0,
-                trainingId = trainingId,
-                trainingMenuId = trainingMenuId,
-                rep = number.toLong(),
+                setIndex = setIndex,// 何セット目かを表す
+                rep = number,
                 weight = 0,
             )
         }
@@ -112,7 +115,7 @@ fun TrainingMenu.toEntity(): TrainingMenuEntity {
     )
 }
 
-fun createSampleTrainingMenu(): TrainingMenu {
+fun createSampleTrainingMenu(eventIndex: Long): TrainingMenu {
     return TrainingMenu(
         id = TrainingMenu.Id(0),
         name = "ダンベルベンチプレス",
@@ -120,16 +123,17 @@ fun createSampleTrainingMenu(): TrainingMenu {
         memo = "メモメモ".repeat(4),
         sets = List(5) { index ->
             TrainingMenu.WeightSet(
-                index = index + 1,
+                setIndex = index.toLong() + 1,
                 number = 10,
                 weight = 55,
             )
         },
+        eventIndex = eventIndex,
         type = TrainingMenu.Type.MACHINE,
     )
 }
 
-fun createSampleOwnWeightTrainingMenu(): TrainingMenu {
+fun createSampleOwnWeightTrainingMenu(eventIndex: Long): TrainingMenu {
     return TrainingMenu(
         id = TrainingMenu.Id(0),
         name = "腕立て伏せ",
@@ -137,10 +141,11 @@ fun createSampleOwnWeightTrainingMenu(): TrainingMenu {
         memo = "メモメモ".repeat(4),
         sets = List(5) { index ->
             TrainingMenu.OwnWeightSet(
-                index = index + 1,
-                number = 10 + index,
+                setIndex = index.toLong() + 1,
+                number = index.toLong() + 10,
             )
         },
+        eventIndex = eventIndex,
         type = TrainingMenu.Type.OWN_WEIGHT,
     )
 }
