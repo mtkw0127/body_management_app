@@ -1,6 +1,7 @@
 package com.app.body_manage.data.repository
 
 import com.app.body_manage.data.dao.TrainingDao
+import com.app.body_manage.data.entity.toModel
 import com.app.body_manage.data.model.Training
 import com.app.body_manage.data.model.TrainingMenu
 import com.app.body_manage.data.model.toEntity
@@ -67,8 +68,7 @@ class TrainingRepository(
         trainingDao.insertTrainingMenu(trainingMenu.toEntity())
     }
 
-    suspend fun getTrainingMenuList(): List<TrainingMenu> = withContext(ioDispatcher) {
-//        return@withContext trainingDao.getTrainingMenuList().map { it.toModel() }
-        return@withContext emptyList()
+    suspend fun getJustTrainingMenuList(): List<TrainingMenu> = withContext(ioDispatcher) {
+        return@withContext trainingDao.getTrainingMenuList().map { it.toModel(emptyList(), 0) }
     }
 }
