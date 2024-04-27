@@ -140,9 +140,9 @@ class TrainingFormViewModel(
         menuIndex: Int,
         setIndex: Int
     ) {
-        _training.update {
-            it.copy(
-                menus = it.menus.mapIndexed { i, trainingMenu ->
+        _training.update { training ->
+            training.copy(
+                menus = training.menus.mapIndexed { i, trainingMenu ->
                     if (i == menuIndex) {
                         trainingMenu.copy(
                             sets = trainingMenu.sets.filterIndexed { j, _ -> j != setIndex }
@@ -150,6 +150,8 @@ class TrainingFormViewModel(
                     } else {
                         trainingMenu
                     }
+                }.filter {
+                    it.sets.isNotEmpty()
                 }
             )
         }
