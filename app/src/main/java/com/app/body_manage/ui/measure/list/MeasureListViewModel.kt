@@ -58,7 +58,7 @@ data class MeasureListViewModelState(
     fun toUiState(): BodyMeasureListState {
         return BodyMeasureListState(
             date = date,
-            list = (bodies + meals).sortedBy { it.time }, // 時刻が早い順に並べる
+            list = (bodies + meals + trainings).sortedBy { it.time }, // 時刻が早い順に並べる
             photoList = photoList,
             tall = tall,
             currentMonth = currentMonth,

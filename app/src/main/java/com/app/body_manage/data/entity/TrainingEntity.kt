@@ -24,6 +24,7 @@ fun TrainingEntity.toModel(menus: List<TrainingMenu>): Training {
     return Training(
         id = Training.Id(this.id),
         date = this.date,
+        time = date.atTime(startTime),
         startTime = this.startTime,
         endTime = this.endTime,
         menus = menus,

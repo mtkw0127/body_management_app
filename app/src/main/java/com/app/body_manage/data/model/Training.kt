@@ -2,17 +2,19 @@ package com.app.body_manage.data.model
 
 import com.app.body_manage.data.entity.TrainingEntity
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 data class Training(
     val id: Id,
     val date: LocalDate,
+    override val time: LocalDateTime,
     val startTime: LocalTime,
     val endTime: LocalTime,
     val menus: List<TrainingMenu>,
     val memo: String,
     val createdAt: LocalDate,
-) {
+) : Measure {
     data class Id(val value: Long)
 
     companion object {

@@ -6,6 +6,8 @@ import androidx.room.Query
 import com.app.body_manage.data.entity.TrainingEntity
 import com.app.body_manage.data.entity.TrainingMenuEntity
 import com.app.body_manage.data.entity.TrainingSetEntity
+import com.app.body_manage.data.entity.TrainingTrainingMenuSetEntity
+import java.time.LocalDate
 
 @Dao
 interface TrainingDao {
@@ -13,19 +15,21 @@ interface TrainingDao {
     @Insert
     suspend fun insertTraining(training: TrainingEntity): Long
 
-    // トレーニングメニューを作る
     @Insert
-    suspend fun insertTrainingMenu(trainingMenu: TrainingMenuEntity)
+    suspend fun insertTrainingTrainingMenuSet(trainingTrainingMenuSetEntity: TrainingTrainingMenuSetEntity)
 
-    // トレーニングした実績を登録する
     @Insert
-    suspend fun insertTrainingSet(trainingSet: TrainingSetEntity)
+    suspend fun insertTrainingSet(trainingSet: TrainingSetEntity): Long
 
-//    @Query("SELECT * FROM trainings WHERE date = :date")
-//    suspend fun getTrainingsByDate(date: LocalDate): List<TrainingEntity>
-//
-//    @Query("SELECT * FROM training_sets WHERE training_id = :trainingId")
-//    suspend fun getTrainingSetsByTrainingId(trainingId: Long): List<TrainingSetEntity>
+    @Query("SELECT * FROM trainings WHERE date = :date")
+    suspend fun getTrainingsByDate(date: LocalDate): List<TrainingEntity>
+
+    @Query("SELECT * FROM training_training_menu_sets WHERE training_id = :id")
+    suspend fun getTrainingTrainingMenuSetById(id: Long): List<TrainingTrainingMenuSetEntity>
+
+    @Query("SELECT * FROM training_sets WHERE id IN (:ids)")
+    suspend fun getTrainingSetByIds(ids: List<Long>): List<TrainingSetEntity>
+
 
     @Query("SELECT * FROM training_menus WHERE id = :trainingMenuId")
     suspend fun getTrainingMenu(trainingMenuId: Long): TrainingMenuEntity

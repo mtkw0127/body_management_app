@@ -55,6 +55,7 @@ import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
 import com.app.body_manage.ui.top.PanelColumn
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 @Composable
@@ -368,6 +369,7 @@ private fun TrainingFormPreview() {
         training = Training(
             id = Training.NEW_ID,
             date = LocalDate.now(),
+            time = LocalDateTime.now(),
             startTime = LocalTime.now(),
             endTime = LocalTime.now(),
             menus = listOf(

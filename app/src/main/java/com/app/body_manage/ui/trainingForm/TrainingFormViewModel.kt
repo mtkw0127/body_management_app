@@ -26,6 +26,7 @@ class TrainingFormViewModel(
         Training(
             id = Training.NEW_ID,
             date = LocalDate.now(),
+            time = LocalDate.now().atTime(LocalTime.now()),
             startTime = LocalTime.now(),
             endTime = LocalTime.now(),
             menus = listOf(),
