@@ -38,6 +38,7 @@ class TrainingFormViewModel(
 
     fun addMenu(trainingMenu: TrainingMenu) {
         val trainingMenuWithDefaultSet = trainingMenu.copy(
+            eventIndex = _training.value.menus.lastIndex + 1L,
             sets = List(DEFAULT_SET_NUMBER) { setIndex ->
                 val castedSetIndex = setIndex.toLong()
                 when (trainingMenu.type) {

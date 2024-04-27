@@ -25,16 +25,16 @@ class TrainingRepository(
         val trainingId = trainingDao.insertTraining(training.toEntity())
 
         training.menus.forEach { trainingMenu ->
-            trainingMenu.sets.forEachIndexed { eventIndex, trainingSet ->
+            trainingMenu.sets.forEach { trainingSet ->
                 // そのトレーニングの１セットを登録する
                 val trainingSetId =
-                    trainingDao.insertTrainingSet(trainingSet.toEntity(eventIndex.toLong()))
+                    trainingDao.insertTrainingSet(trainingSet.toEntity(trainingMenu.eventIndex))
 
                 // 中間テーブルを登録する
                 val middleTableEntity = TrainingTrainingMenuSetEntity(
                     id = 0,
                     trainingId = trainingId,
-                    eventIndex = eventIndex.toLong(),
+                    eventIndex = trainingMenu.eventIndex,
                     trainingMenuId = trainingMenu.id.value,
                     trainingSetId = trainingSetId,
                 )

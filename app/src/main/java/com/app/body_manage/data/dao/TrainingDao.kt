@@ -24,7 +24,7 @@ interface TrainingDao {
     @Query("SELECT * FROM trainings WHERE date = :date")
     suspend fun getTrainingsByDate(date: LocalDate): List<TrainingEntity>
 
-    @Query("SELECT * FROM training_training_menu_sets WHERE training_id = :id")
+    @Query("SELECT * FROM training_training_menu_sets WHERE training_id = :id ")
     suspend fun getTrainingTrainingMenuSetById(id: Long): List<TrainingTrainingMenuSetEntity>
 
     @Query("SELECT * FROM training_sets WHERE id IN (:ids)")
