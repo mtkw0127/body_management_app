@@ -61,7 +61,7 @@
     <string name="label_see_by_calendar">カレンダーで見る</string>
     <string name="label_see_by_statistics">統計を見る</string>
     <string name="label_see_by_training_menu">トレーニングメニューを見る</string>
-    <string name="label_see_by_today">今日の記録</string>
+    <string name="label_see_by_today">今日の記録へ</string>
     <string name="label_see_statistic">統計</string>
     <string name="label_start_point">開始点</string>
     <string name="label_good_weight">適正な体重</string>
@@ -74,7 +74,8 @@
     <string name="message_not_registered_today">本日の登録はまだありません</string>
     <string name="label_today_total_kcal">摂取カロリー</string>
     <string name="label_today_min_weight">体重</string>
-    <string name="label_today_you">今日のあなた</string>
+    <string name="label_today_you">本日の記録</string>
+    <string name="label_did_training">トレーニング済</string>
     <string name="label_weight_bmi_22">BMIが22の場合の体重</string>
     <string name="label_weight_bmi_18_25">BMIが18.5から24.9の体重</string>
 
@@ -186,7 +187,8 @@
     <!-- 登録画面 -->
     <string name="label_start_training_time">開始時間</string>
     <string name="label_end_training_time">終了時間</string>
-    <string name="label_register_trainning">登録する</string>
+    <string name="label_register_training">登録する</string>
+    <string name="label_update_training">更新する</string>
     <string name="label_input_all">一括入力</string>
     <string name="label_memo_area">メモ欄</string>
     <string name="label_memo_area_training">トレーニングメモ</string>
@@ -199,8 +201,11 @@
     <string name="label_rep_num">レップ数</string>
     <string name="label_weight">重量</string>
 
+    <!-- カレンダー -->
+    <string name="label_has_training">トレ済</string>
 
     <!-- タイプ-->
+    <string name="label_type">タイプ</string>
     <string name="label_machine">マシン</string>
     <string name="label_free">フリーウェイト</string>
     <string name="label_own_weight">自重</string>

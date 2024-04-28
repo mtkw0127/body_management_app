@@ -23,6 +23,7 @@ import com.app.body_manage.data.entity.PhotoEntity
 import com.app.body_manage.data.entity.TrainingEntity
 import com.app.body_manage.data.entity.TrainingMenuEntity
 import com.app.body_manage.data.entity.TrainingSetEntity
+import com.app.body_manage.data.entity.TrainingTrainingMenuSetEntity
 
 @Database(
     entities = [
@@ -34,6 +35,7 @@ import com.app.body_manage.data.entity.TrainingSetEntity
         MealFoodCrossRef::class,
         MealPhotoEntity::class,
         TrainingEntity::class,
+        TrainingTrainingMenuSetEntity::class,
         TrainingMenuEntity::class,
         TrainingSetEntity::class,
     ],
@@ -105,7 +107,7 @@ abstract class AppDatabase : RoomDatabase() {
                                     "INSERT INTO training_menus (name, part, memo, type) VALUES ('腹筋', 50, '', 3)"
                                 )
                                 db.execSQL(
-                                    "INSERT INTO training_menus (name, part, memo, type) VALUES ('アブドミナル', 70, '', 1)"
+                                    "INSERT INTO training_menus (name, part, memo, type) VALUES ('アブドミナル', 50, '', 1)"
                                 )
                                 // 脚
                                 db.execSQL(
@@ -207,13 +209,16 @@ val MIGRATION_6_7 = object : Migration(6, 7) {
 val MIGRATION_7_8 = object : Migration(7, 8) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL(
-            "CREATE TABLE IF NOT EXISTS `trainings` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `start_time` TEXT NOT NULL, `end_time` TEXT NOT NULL, `memo` TEXT NOT NULL)"
+            "CREATE TABLE IF NOT EXISTS `trainings` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date` TEXT NOT NULL, `start_time` TEXT NOT NULL, `end_time` TEXT NOT NULL, `memo` TEXT NOT NULL, `created_at` TEXT NOT NULL)"
         )
         db.execSQL(
             "CREATE TABLE IF NOT EXISTS `training_menus` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `part` INTEGER NOT NULL, `memo` TEXT NOT NULL, `type` INTEGER NOT NULL)"
         )
         db.execSQL(
-            "CREATE TABLE IF NOT EXISTS `training_sets`  (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `training_id` INTEGER NOT NULL, `training_menu_id` INTEGER NOT NULL, `rep` INTEGER NOT NULL, `weight` INTEGER NOT NULL)"
+            "CREATE TABLE IF NOT EXISTS `training_sets`  (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `set_index` INTEGER NOT NULL, `rep` INTEGER NOT NULL, `weight` INTEGER NOT NULL)"
+        )
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `training_training_menu_sets`  (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `training_id` INTEGER NOT NULL, `event_index` INTEGER NOT NULL, `training_menu_id` INTEGER NOT NULL, `training_set_id` INTEGER NOT NULL)"
         )
     }
 }

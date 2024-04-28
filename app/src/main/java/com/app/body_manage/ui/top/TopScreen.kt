@@ -145,16 +145,18 @@ fun TopScreen(
                 }
                 Spacer(modifier = Modifier.size(10.dp))
             }
-            item {
-                PanelColumn {
-                    IconAndText(
-                        icon = Icons.Default.BarChart,
-                        modifier = Modifier.padding(vertical = 5.dp),
-                        onClick = { onClickStatistics() },
-                        text = stringResource(id = R.string.label_see_by_statistics),
-                    )
+            if (false) {
+                item {
+                    PanelColumn {
+                        IconAndText(
+                            icon = Icons.Default.BarChart,
+                            modifier = Modifier.padding(vertical = 5.dp),
+                            onClick = { onClickStatistics() },
+                            text = stringResource(id = R.string.label_see_by_statistics),
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(10.dp))
                 }
-                Spacer(modifier = Modifier.size(10.dp))
             }
             item {
                 PanelColumn {
@@ -271,10 +273,12 @@ private fun TodaySummary(
     onClickAddMeasure: () -> Unit,
     onClickAddTraining: () -> Unit,
 ) {
-    PanelColumn {
+    PanelColumn(
+        modifier = Modifier.clickable { onClickToday() }
+    ) {
         TextWithUnderLine(R.string.label_today_you)
-        Spacer(modifier = Modifier.size(10.dp))
-        if (todayMeasure.bodyMeasures.isEmpty() && todayMeasure.meals.isEmpty()) {
+        Spacer(modifier = Modifier.size(12.dp))
+        if (todayMeasure.bodyMeasures.isEmpty() && todayMeasure.meals.isEmpty() && todayMeasure.didTraining.not()) {
             Text(text = stringResource(id = R.string.message_not_registered_today))
         }
         if (todayMeasure.meals.isNotEmpty()) {
@@ -282,14 +286,18 @@ private fun TodaySummary(
                 stringResource(id = R.string.label_today_total_kcal),
                 todayMeasure.meals.sumOf { it.totalKcal }.toKcal()
             )
-            Spacer(modifier = Modifier.size(10.dp))
+            Spacer(modifier = Modifier.size(12.dp))
         }
         if (todayMeasure.bodyMeasures.isNotEmpty()) {
             LabelAndText(
                 stringResource(id = R.string.label_today_min_weight),
                 todayMeasure.minWeight
             )
-            Spacer(modifier = Modifier.size(10.dp))
+            Spacer(modifier = Modifier.size(12.dp))
+        }
+        if (todayMeasure.didTraining) {
+            Text(text = stringResource(id = R.string.label_did_training))
+            Spacer(modifier = Modifier.size(12.dp))
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -314,37 +322,17 @@ private fun TodaySummary(
                 fontSize = 11.sp,
             )
         }
-        Spacer(modifier = Modifier.size(10.dp))
-        Row {
-            Spacer(modifier = Modifier.weight(1F))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable {
-                    onClickToday()
-                }
-            ) {
-                Text(
-                    text = stringResource(id = R.string.label_see_by_today),
-                    fontSize = 12.sp
-                )
-                Spacer(modifier = Modifier.size(5.dp))
-                Icon(
-                    imageVector = Icons.Default.ArrowForwardIos,
-                    contentDescription = null,
-                    modifier = Modifier.size(10.dp)
-                )
-            }
-        }
     }
 }
 
 @Composable
 fun TextWithUnderLine(
-    @StringRes stringResourceId: Int
+    @StringRes stringResourceId: Int,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         text = stringResource(id = stringResourceId),
-        modifier = Modifier.drawBehind {
+        modifier = modifier.drawBehind {
             drawLine(
                 Color.Black,
                 Offset(-10F, size.height),
@@ -362,15 +350,8 @@ private fun LabelAndText(
     text: String
 ) {
     Row {
-        Text(
-            text = label,
-            modifier = Modifier.width(130.dp),
-            fontSize = 16.sp,
-        )
-        Text(
-            text = text,
-            fontSize = 16.sp,
-        )
+        Text(text = label, modifier = Modifier.width(130.dp))
+        Text(text = text)
     }
 }
 

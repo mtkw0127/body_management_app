@@ -26,9 +26,11 @@ class TrainingMenuListActivity : AppCompatActivity() {
             TrainingMenuListScreen(
                 trainingMenus = trainingMenuList.value,
                 onClickBackPress = ::finish,
-//                onClickHistory = {
-//                },
-                onClickEdit = {
+                onSaveMenu = {
+                    viewModel.saveTrainingMenu(it)
+                },
+                onEditMenu = {
+                    viewModel.updateTrainingMenu(it)
                 }
             )
         }

@@ -65,6 +65,7 @@ import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.data.model.Meal
 import com.app.body_manage.data.model.Measure
+import com.app.body_manage.data.model.Training
 import com.app.body_manage.domain.BMICalculator
 import com.app.body_manage.extension.toFat
 import com.app.body_manage.extension.toJapaneseTime
@@ -96,6 +97,7 @@ fun MeasureListScreen(
     onClickBack: () -> Unit,
     onClickMeal: (Meal) -> Unit,
     onClickAddTraining: () -> Unit,
+    onClickTraining: (Training) -> Unit,
 ) {
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     val state = rememberScaffoldState()
@@ -220,6 +222,7 @@ fun MeasureListScreen(
                             list = uiState.list,
                             clickBodyMeasureEdit = clickBodyMeasureEdit,
                             onClickMeal = onClickMeal,
+                            onClickTraining = onClickTraining,
                         )
                     }
                     if (uiState.list.isEmpty()) {
@@ -389,7 +392,8 @@ private fun TallSetField(
 private fun MeasureList(
     list: List<Measure>,
     clickBodyMeasureEdit: (LocalDateTime) -> Unit,
-    onClickMeal: (Meal) -> Unit
+    onClickMeal: (Meal) -> Unit,
+    onClickTraining: (Training) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -403,6 +407,7 @@ private fun MeasureList(
                         when (item) {
                             is BodyMeasure -> clickBodyMeasureEdit(item.time)
                             is Meal -> onClickMeal(item)
+                            is Training -> onClickTraining(item)
                         }
                     }
                 ) {
@@ -413,6 +418,10 @@ private fun MeasureList(
 
                         is Meal -> {
                             MealItem(item)
+                        }
+
+                        is Training -> {
+                            TrainingItem(item)
                         }
                     }
                 }
@@ -440,6 +449,24 @@ private fun BodyItem(
                 label = stringResource(id = R.string.label_bmi),
                 text = BMICalculator().calculate(measure.tall, measure.weight),
             )
+        }
+    }
+}
+
+@Composable
+private fun TrainingItem(
+    training: Training,
+) {
+    Column {
+        training.menus.forEach { trainingMenu ->
+            Row {
+                Text(
+                    text = "${trainingMenu.eventIndex + 1}種目目"
+                )
+                Text(
+                    text = trainingMenu.name
+                )
+            }
         }
     }
 }
@@ -509,7 +536,7 @@ private fun LabelAndText(
     text: String,
     labelWidth: Dp = 100.dp
 ) {
-    Row {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
             text = label,
             modifier = Modifier.width(labelWidth)

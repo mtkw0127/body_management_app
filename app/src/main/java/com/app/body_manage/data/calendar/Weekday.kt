@@ -8,6 +8,7 @@ data class Weekday(
     override val hasLunch: Boolean = false,
     override val hasDinner: Boolean = false,
     override val hasMiddle: Boolean = false,
-    override val kcal: Int,
+    override val kcal: Long,
     override val weight: Float?,
+    override val training: Boolean
 ) : Day

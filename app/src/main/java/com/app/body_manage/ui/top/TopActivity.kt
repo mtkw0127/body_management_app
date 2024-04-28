@@ -25,10 +25,11 @@ import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.mealForm.MealFormActivity
 import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.measure.list.MeasureListActivity
+import com.app.body_manage.ui.measure.list.MeasureListActivity.Companion.RESULT_CODE_ADD
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.ui.statistics.StatisticsActivity
 import com.app.body_manage.ui.top.UserPreferenceSettingDialog.Companion.REQUEST_KEY
-import com.app.body_manage.ui.trainingForm.TrainingFormActivity
+import com.app.body_manage.ui.trainingForm.form.TrainingFormActivity
 import com.app.body_manage.ui.trainingMenu.TrainingMenuListActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -38,10 +39,7 @@ class TopActivity : AppCompatActivity() {
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             viewModel.load()
-            if (
-                it.resultCode == MeasureFormActivity.RESULT_CODE_ADD ||
-                it.resultCode == MealFormActivity.RESULT_KEY_MEAL_ADD
-            ) {
+            if (it.resultCode == RESULT_CODE_ADD) {
                 Toast.makeText(this, getString(R.string.message_saved), Toast.LENGTH_LONG).show()
                 startActivity(
                     MeasureListActivity.createIntent(
@@ -58,6 +56,10 @@ class TopActivity : AppCompatActivity() {
 
     private val mealRepository: MealRepository by lazy {
         (application as TrainingApplication).mealFoodsRepository
+    }
+
+    private val trainingRepository by lazy {
+        (application as TrainingApplication).trainingRepository
     }
 
     private lateinit var viewModel: TopViewModel
@@ -77,9 +79,10 @@ class TopActivity : AppCompatActivity() {
             isTop = true,
         )
         viewModel = TopViewModel(
-            UserPreferenceRepository(this),
-            bodyMeasureRepository,
-            mealRepository,
+            userPreferenceRepository = UserPreferenceRepository(this),
+            bodyMeasureRepository = bodyMeasureRepository,
+            mealRepository = mealRepository,
+            trainingRepository = trainingRepository
         )
         viewModel.checkSetUpUserPref()
         lifecycleScope.launch {
@@ -140,7 +143,7 @@ class TopActivity : AppCompatActivity() {
                 },
                 onClickAddTraining = {
                     launcher.launch(
-                        TrainingFormActivity.createInstance(this)
+                        TrainingFormActivity.createInstance(this, LocalDate.now())
                     )
                 },
                 onClickSetGoat = {

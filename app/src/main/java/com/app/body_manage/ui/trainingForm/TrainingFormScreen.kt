@@ -1,5 +1,6 @@
 package com.app.body_manage.ui.trainingForm
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -45,6 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.body_manage.R
+import com.app.body_manage.common.CustomButton
 import com.app.body_manage.data.model.Training
 import com.app.body_manage.data.model.TrainingMenu
 import com.app.body_manage.data.model.createSampleOwnWeightTrainingMenu
@@ -55,11 +57,15 @@ import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
 import com.app.body_manage.ui.top.PanelColumn
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 @Composable
 fun TrainingFormScreen(
-    training: Training,
+    training: Training?,
+    @StringRes registerTextResourceId: Int,
+    onClickTrainingDelete: (() -> Unit)?,
+    onClickDeleteMenu: (eventIndex: Long) -> Unit = {},
     onClickBackPress: () -> Unit = {},
     onClickRegister: () -> Unit = {},
     onClickFab: () -> Unit = {},
@@ -80,6 +86,7 @@ fun TrainingFormScreen(
                         modifier = Modifier.clickable { onClickBackPress() },
                         tint = Color.Black
                     )
+                    if (training == null) return@TopAppBar
                     Text(
                         text = training.date.toMMDDEE(),
                         modifier = Modifier.offset(x = 10.dp),
@@ -87,6 +94,13 @@ fun TrainingFormScreen(
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
+                    Spacer(modifier = Modifier.weight(1F))
+                    onClickTrainingDelete?.let {
+                        CustomButton(
+                            onClick = onClickTrainingDelete,
+                            valueResourceId = R.string.delete,
+                        )
+                    }
                 }
             }
         },
@@ -101,7 +115,7 @@ fun TrainingFormScreen(
                     },
                 contentAlignment = Alignment.Center,
             ) {
-                Text(text = stringResource(id = R.string.label_register_trainning))
+                Text(text = stringResource(id = registerTextResourceId))
             }
         },
         floatingActionButton = {
@@ -117,6 +131,7 @@ fun TrainingFormScreen(
             }
         },
     ) { padding ->
+        if (training == null) return@Scaffold
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -182,10 +197,11 @@ fun TrainingFormScreen(
             training.menus.forEachIndexed { menuIndex, menu ->
                 TrainingPanel {
                     Row(
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text(
-                            text = stringResource(id = R.string.label_event, menuIndex + 1),
+                            text = stringResource(id = R.string.label_event, menu.eventIndex + 1),
                             modifier = Modifier
                                 .background(Color.Black, RoundedCornerShape(5.dp))
                                 .padding(5.dp),
@@ -194,6 +210,10 @@ fun TrainingFormScreen(
                         Spacer(modifier = Modifier.size(10.dp))
                         Text(text = menu.name)
                         Spacer(modifier = Modifier.weight(1F))
+                        CustomButton(
+                            onClick = { onClickDeleteMenu(menu.eventIndex) },
+                            valueResourceId = R.string.delete,
+                        )
                     }
                     Spacer(modifier = Modifier.size(10.dp))
 
@@ -334,7 +354,7 @@ private fun MemoTextField(
 @Composable
 private fun CountTextField(
     modifier: Modifier = Modifier,
-    count: Int,
+    count: Long,
     unitStringResource: Int,
     onClick: () -> Unit,
 ) {
@@ -368,19 +388,23 @@ private fun TrainingFormPreview() {
         training = Training(
             id = Training.NEW_ID,
             date = LocalDate.now(),
+            time = LocalDateTime.now(),
             startTime = LocalTime.now(),
             endTime = LocalTime.now(),
             menus = listOf(
-                createSampleTrainingMenu(),
-                createSampleTrainingMenu(),
-                createSampleTrainingMenu(),
-                createSampleTrainingMenu(),
-                createSampleTrainingMenu(),
-                createSampleOwnWeightTrainingMenu(),
-                createSampleOwnWeightTrainingMenu(),
+                createSampleTrainingMenu(0),
+                createSampleTrainingMenu(1),
+                createSampleTrainingMenu(2),
+                createSampleTrainingMenu(3),
+                createSampleTrainingMenu(4),
+                createSampleOwnWeightTrainingMenu(5),
+                createSampleOwnWeightTrainingMenu(6),
             ),
-            memo = "たくさん頑張った".repeat(5)
+            memo = "たくさん頑張った".repeat(5),
+            createdAt = LocalDate.now(),
         ),
+        registerTextResourceId = R.string.label_register_training,
         onClickBackPress = {},
+        onClickTrainingDelete = null,
     )
 }

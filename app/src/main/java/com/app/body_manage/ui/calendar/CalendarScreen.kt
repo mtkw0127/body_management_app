@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -267,6 +268,7 @@ private fun DateCell(
     Column(
         modifier = modifier
             .fillMaxHeight()
+            .fillMaxWidth()
             .border(0.2.dp, Color.LightGray)
             .clickable {
                 onClickDate(day)
@@ -293,53 +295,75 @@ private fun DateCell(
             }
         )
         if (day.hasSomething()) {
-            if (day.weight != null) {
-                Row(
-                    verticalAlignment = Alignment.Bottom,
-                    modifier = Modifier
-                        .background(
-                            Color.Green,
-                            RoundedCornerShape(5.dp)
-                        )
-                        .padding(horizontal = 2.dp)
-                ) {
-                    Text(
+            LabelContainer {
+                if (day.weight != null) {
+                    LabelText(
                         text = day.weight.toString(),
-                        fontSize = 12.sp,
-                    )
-                    Text(
-                        text = " " + stringResource(id = R.string.unit_kg),
-                        fontSize = 9.sp
+                        unit = R.string.unit_kg,
+                        color = Color.Red,
                     )
                 }
-            } else {
-                Text(text = "")
             }
-            Spacer(modifier = Modifier.size(5.dp))
-            if (day.kcal != 0) {
-                Row(
-                    verticalAlignment = Alignment.Bottom,
-                    modifier = Modifier
-                        .background(
-                            Color.Blue,
-                            RoundedCornerShape(5.dp)
-                        )
-                        .padding(horizontal = 2.dp)
-                ) {
-                    Text(
+            LabelContainer {
+                if (day.kcal != 0L) {
+                    LabelText(
                         text = day.kcal.toString(),
-                        fontSize = 12.sp,
-                        color = Color.White,
-                    )
-                    Text(
-                        text = " " + stringResource(id = R.string.unit_kcal),
-                        fontSize = 9.sp,
-                        color = Color.White,
+                        color = Color.Magenta,
+                        unit = R.string.unit_kcal,
                     )
                 }
-            } else {
-                Text(text = "")
             }
+            LabelContainer {
+                if (day.training) {
+                    LabelText(
+                        text = stringResource(id = R.string.label_has_training),
+                        unit = null,
+                        color = Color.Blue,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun LabelContainer(composable: @Composable () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(20.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        composable()
+    }
+}
+
+@Composable
+private fun LabelText(
+    text: String,
+    color: Color,
+    unit: Int?
+) {
+    Row(
+        verticalAlignment = Alignment.Bottom,
+        modifier = Modifier
+            .background(
+                color,
+                RoundedCornerShape(5.dp)
+            )
+            .padding(horizontal = 2.dp)
+    ) {
+        Text(
+            text = text,
+            fontSize = 12.sp,
+            color = Color.White,
+        )
+        if (unit != null) {
+            Text(
+                text = " " + stringResource(id = unit),
+                fontSize = 9.sp,
+                color = Color.White,
+            )
         }
     }
 }

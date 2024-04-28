@@ -20,7 +20,7 @@ class SelectTrainingMenuViewModel(
     fun loadMenu() {
         viewModelScope.launch {
             runCatching {
-                trainingRepository.getTrainingMenuList()
+                trainingRepository.getJustTrainingMenuList()
             }.onSuccess {
                 _trainingMenuList.value = it
             }.onFailure { error ->
