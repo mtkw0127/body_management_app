@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.app.body_manage.R
 import com.app.body_manage.data.model.TrainingMenu
@@ -60,19 +61,20 @@ fun TrainingMenuItem(
 }
 
 @Composable
-private fun LabelAndContentRow(
+fun LabelAndContentRow(
     @StringRes label: Int,
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
             text = stringResource(id = label),
-            modifier = Modifier
+            modifier = modifier
                 .background(Color.Black, RoundedCornerShape(5.dp))
                 .padding(5.dp),
             color = Color.White,
+            textAlign = TextAlign.Center,
         )
-        Spacer(modifier = Modifier.size(10.dp))
         content()
     }
 }

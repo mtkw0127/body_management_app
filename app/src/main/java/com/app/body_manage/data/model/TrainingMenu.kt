@@ -4,7 +4,6 @@ import androidx.annotation.StringRes
 import com.app.body_manage.R
 import com.app.body_manage.data.entity.TrainingMenuEntity
 import com.app.body_manage.data.entity.TrainingSetEntity
-import com.app.body_manage.data.model.TrainingMenu.Set.Companion.ID_NEW
 import java.io.Serializable
 
 data class TrainingMenu(
@@ -17,6 +16,10 @@ data class TrainingMenu(
     val type: Type,
 ) : Serializable {
     data class Id(val value: Long) : Serializable
+
+    companion object {
+        val ID_NEW = Id(0)
+    }
 
     sealed interface Set {
         val id: Id

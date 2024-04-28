@@ -327,11 +327,12 @@ private fun TodaySummary(
 
 @Composable
 fun TextWithUnderLine(
-    @StringRes stringResourceId: Int
+    @StringRes stringResourceId: Int,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         text = stringResource(id = stringResourceId),
-        modifier = Modifier.drawBehind {
+        modifier = modifier.drawBehind {
             drawLine(
                 Color.Black,
                 Offset(-10F, size.height),

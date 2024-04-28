@@ -3,6 +3,7 @@ package com.app.body_manage.data.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.app.body_manage.data.entity.TrainingEntity
 import com.app.body_manage.data.entity.TrainingMenuEntity
 import com.app.body_manage.data.entity.TrainingSetEntity
@@ -44,4 +45,10 @@ interface TrainingDao {
 
     @Query("DELETE FROM trainings WHERE id = :value")
     suspend fun deleteTraining(value: Long)
+
+    @Insert
+    suspend fun insertTrainingMenu(trainingMenu: TrainingMenuEntity): Long
+
+    @Update
+    suspend fun updateTrainingMenu(trainingMenu: TrainingMenuEntity)
 }

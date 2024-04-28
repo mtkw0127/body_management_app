@@ -2,6 +2,7 @@ package com.app.body_manage.ui.trainingMenu
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.body_manage.data.entity.TrainingMenuEntity
 import com.app.body_manage.data.model.TrainingMenu
 import com.app.body_manage.data.repository.TrainingRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,6 +27,20 @@ class TrainingMenuListViewModel(
             }.onFailure { error ->
                 Timber.e(error)
             }
+        }
+    }
+
+    fun saveTrainingMenu(menu: TrainingMenuEntity) {
+        viewModelScope.launch {
+            trainingRepository.saveMenu(menu)
+            loadMenu()
+        }
+    }
+
+    fun updateTrainingMenu(menu: TrainingMenuEntity) {
+        viewModelScope.launch {
+            trainingRepository.updateMenu(menu)
+            loadMenu()
         }
     }
 }

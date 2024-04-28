@@ -2,6 +2,7 @@ package com.app.body_manage.data.repository
 
 import androidx.room.Transaction
 import com.app.body_manage.data.dao.TrainingDao
+import com.app.body_manage.data.entity.TrainingMenuEntity
 import com.app.body_manage.data.entity.TrainingTrainingMenuSetEntity
 import com.app.body_manage.data.entity.toModel
 import com.app.body_manage.data.model.Training
@@ -102,5 +103,13 @@ class TrainingRepository(
         if (training.menus.isNotEmpty()) {
             saveTraining(training.copy(id = Training.NEW_ID))
         }
+    }
+
+    suspend fun saveMenu(menu: TrainingMenuEntity) {
+        trainingDao.insertTrainingMenu(menu)
+    }
+
+    suspend fun updateMenu(menu: TrainingMenuEntity) {
+        trainingDao.updateTrainingMenu(menu)
     }
 }

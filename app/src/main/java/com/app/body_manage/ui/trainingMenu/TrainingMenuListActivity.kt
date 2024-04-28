@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import com.app.body_manage.TrainingApplication
@@ -16,6 +17,11 @@ class TrainingMenuListActivity : AppCompatActivity() {
     private val trainingRepository: TrainingRepository
         get() = (application as TrainingApplication).trainingRepository
 
+    private val launcher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = TrainingMenuListViewModel(trainingRepository)
@@ -26,9 +32,11 @@ class TrainingMenuListActivity : AppCompatActivity() {
             TrainingMenuListScreen(
                 trainingMenus = trainingMenuList.value,
                 onClickBackPress = ::finish,
-//                onClickHistory = {
-//                },
-                onClickEdit = {
+                onSaveMenu = {
+                    viewModel.saveTrainingMenu(it)
+                },
+                onEditMenu = {
+                    viewModel.updateTrainingMenu(it)
                 }
             )
         }
