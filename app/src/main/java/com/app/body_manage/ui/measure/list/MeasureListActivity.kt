@@ -1,5 +1,6 @@
 package com.app.body_manage.ui.measure.list
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -21,7 +22,8 @@ import com.app.body_manage.dialog.FloatNumberPickerDialog
 import com.app.body_manage.ui.mealForm.MealFormActivity
 import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
-import com.app.body_manage.ui.trainingForm.TrainingFormActivity
+import com.app.body_manage.ui.trainingForm.detail.TrainingDetailActivity
+import com.app.body_manage.ui.trainingForm.form.TrainingFormActivity
 import java.time.LocalDate
 
 class MeasureListActivity : AppCompatActivity() {
@@ -44,13 +46,13 @@ class MeasureListActivity : AppCompatActivity() {
 
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == MealFormActivity.RESULT_KEY_MEAL_ADD) {
+            if (it.resultCode == RESULT_CODE_ADD) {
                 Toast.makeText(this, getString(R.string.message_saved), Toast.LENGTH_LONG).show()
             }
-            if (it.resultCode == MealFormActivity.RESULT_KEY_MEAL_EDIT) {
+            if (it.resultCode == RESULT_CODE_EDIT) {
                 Toast.makeText(this, getString(R.string.message_edited), Toast.LENGTH_LONG).show()
             }
-            if (it.resultCode == MealFormActivity.RESULT_KEY_MEAL_DELETE) {
+            if (it.resultCode == RESULT_CODE_DELETE) {
                 Toast.makeText(this, getString(R.string.message_deleted), Toast.LENGTH_LONG).show()
             }
             viewModel.reload()
@@ -59,9 +61,9 @@ class MeasureListActivity : AppCompatActivity() {
     private val measureFormLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             val message = when (it.resultCode) {
-                MeasureFormActivity.RESULT_CODE_ADD -> getString(R.string.message_saved)
-                MeasureFormActivity.RESULT_CODE_EDIT -> getString(R.string.message_edited)
-                MeasureFormActivity.RESULT_CODE_DELETE -> getString(R.string.message_deleted)
+                RESULT_CODE_ADD -> getString(R.string.message_saved)
+                RESULT_CODE_EDIT -> getString(R.string.message_edited)
+                RESULT_CODE_DELETE -> getString(R.string.message_deleted)
                 else -> null
             }
             message?.let {
@@ -143,6 +145,9 @@ class MeasureListActivity : AppCompatActivity() {
                 },
                 onClickAddTraining = {
                     launcher.launch(TrainingFormActivity.createInstance(this))
+                },
+                onClickTraining = {
+                    launcher.launch(TrainingDetailActivity.createInstance(this, it))
                 }
             )
         }
@@ -162,6 +167,11 @@ class MeasureListActivity : AppCompatActivity() {
 
     companion object {
         private const val INTENT_KEY = "DATE"
+
+        const val RESULT_CODE_ADD = Activity.RESULT_FIRST_USER + 100
+        const val RESULT_CODE_EDIT = Activity.RESULT_FIRST_USER + 101
+        const val RESULT_CODE_DELETE = Activity.RESULT_FIRST_USER + 102
+
         fun createIntent(context: Context, localDate: LocalDate): Intent {
             val intent = Intent(context, MeasureListActivity::class.java)
             intent.putExtra(INTENT_KEY, localDate)

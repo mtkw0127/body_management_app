@@ -4,6 +4,7 @@ import androidx.annotation.StringRes
 import com.app.body_manage.R
 import com.app.body_manage.data.entity.TrainingMenuEntity
 import com.app.body_manage.data.entity.TrainingSetEntity
+import com.app.body_manage.data.model.TrainingMenu.Set.Companion.ID_NEW
 import java.io.Serializable
 
 data class TrainingMenu(
@@ -18,8 +19,15 @@ data class TrainingMenu(
     data class Id(val value: Long) : Serializable
 
     sealed interface Set {
+        val id: Id
         val setIndex: Long
         val number: Long
+
+        data class Id(val value: Long) : Serializable
+
+        companion object {
+            val ID_NEW = Id(0)
+        }
 
         fun toEntity(setIndex: Long): TrainingSetEntity
     }
@@ -27,6 +35,7 @@ data class TrainingMenu(
     // MEMO: 例えば60kgを10回上げるような感じ
     // マシン・フリーウェイト用のSet
     data class WeightSet(
+        override val id: Set.Id,
         override val setIndex: Long,
         override val number: Long, // 実際の回数
         val weight: Long, // 実際の重量
@@ -35,7 +44,7 @@ data class TrainingMenu(
             setIndex: Long,
         ): TrainingSetEntity {
             return TrainingSetEntity(
-                id = 0,
+                id = ID_NEW.value,
                 setIndex = setIndex,
                 rep = number,
                 weight = weight,
@@ -45,6 +54,7 @@ data class TrainingMenu(
 
     // 自重用のSet
     data class OwnWeightSet(
+        override val id: Set.Id,
         override val setIndex: Long,
         override val number: Long, // 実際の回数
     ) : Set, Serializable {
@@ -52,7 +62,7 @@ data class TrainingMenu(
             setIndex: Long,
         ): TrainingSetEntity {
             return TrainingSetEntity(
-                id = 0,
+                id = ID_NEW.value,
                 setIndex = setIndex,// 何セット目かを表す
                 rep = number,
                 weight = 0,
@@ -123,6 +133,7 @@ fun createSampleTrainingMenu(eventIndex: Long): TrainingMenu {
         memo = "メモメモ".repeat(4),
         sets = List(5) { index ->
             TrainingMenu.WeightSet(
+                id = TrainingMenu.Set.Id(0),
                 setIndex = index.toLong() + 1,
                 number = 10,
                 weight = 55,
@@ -141,6 +152,7 @@ fun createSampleOwnWeightTrainingMenu(eventIndex: Long): TrainingMenu {
         memo = "メモメモ".repeat(4),
         sets = List(5) { index ->
             TrainingMenu.OwnWeightSet(
+                id = TrainingMenu.Set.Id(0),
                 setIndex = index.toLong() + 1,
                 number = index.toLong() + 10,
             )

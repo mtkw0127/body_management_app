@@ -98,7 +98,7 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".ui.trainingForm.TrainingFormActivity"
+            android:name=".ui.trainingForm.form.TrainingFormActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
@@ -115,6 +115,14 @@
 
         <activity
             android:name=".ui.selectTrainingMenu.SelectTrainingMenuActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoBar"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".ui.trainingForm.detail.TrainingDetailActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"

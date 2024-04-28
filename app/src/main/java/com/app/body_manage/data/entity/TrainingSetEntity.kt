@@ -18,12 +18,14 @@ data class TrainingSetEntity(
 fun TrainingSetEntity.toModel(type: TrainingMenu.Type): TrainingMenu.Set {
     return when (type) {
         TrainingMenu.Type.MACHINE, TrainingMenu.Type.FREE -> TrainingMenu.WeightSet(
+            id = TrainingMenu.Set.Id(this.id),
             setIndex = this.setIndex,
             number = this.rep,
             weight = this.weight,
         )
 
         TrainingMenu.Type.OWN_WEIGHT -> TrainingMenu.OwnWeightSet(
+            id = TrainingMenu.Set.Id(this.id),
             setIndex = this.setIndex,
             number = this.rep,
         )

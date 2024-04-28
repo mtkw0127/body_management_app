@@ -1,5 +1,6 @@
 package com.app.body_manage.ui.trainingForm
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -45,6 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.body_manage.R
+import com.app.body_manage.common.CustomButton
 import com.app.body_manage.data.model.Training
 import com.app.body_manage.data.model.TrainingMenu
 import com.app.body_manage.data.model.createSampleOwnWeightTrainingMenu
@@ -60,7 +62,10 @@ import java.time.LocalTime
 
 @Composable
 fun TrainingFormScreen(
-    training: Training,
+    training: Training?,
+    @StringRes registerTextResourceId: Int,
+    onClickTrainingDelete: (() -> Unit)?,
+    onClickDeleteMenu: (eventIndex: Long) -> Unit = {},
     onClickBackPress: () -> Unit = {},
     onClickRegister: () -> Unit = {},
     onClickFab: () -> Unit = {},
@@ -81,6 +86,7 @@ fun TrainingFormScreen(
                         modifier = Modifier.clickable { onClickBackPress() },
                         tint = Color.Black
                     )
+                    if (training == null) return@TopAppBar
                     Text(
                         text = training.date.toMMDDEE(),
                         modifier = Modifier.offset(x = 10.dp),
@@ -88,6 +94,13 @@ fun TrainingFormScreen(
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
+                    Spacer(modifier = Modifier.weight(1F))
+                    onClickTrainingDelete?.let {
+                        CustomButton(
+                            onClick = onClickTrainingDelete,
+                            valueResourceId = R.string.delete,
+                        )
+                    }
                 }
             }
         },
@@ -102,7 +115,7 @@ fun TrainingFormScreen(
                     },
                 contentAlignment = Alignment.Center,
             ) {
-                Text(text = stringResource(id = R.string.label_register_trainning))
+                Text(text = stringResource(id = registerTextResourceId))
             }
         },
         floatingActionButton = {
@@ -118,6 +131,7 @@ fun TrainingFormScreen(
             }
         },
     ) { padding ->
+        if (training == null) return@Scaffold
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -183,7 +197,8 @@ fun TrainingFormScreen(
             training.menus.forEachIndexed { menuIndex, menu ->
                 TrainingPanel {
                     Row(
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text(
                             text = stringResource(id = R.string.label_event, menu.eventIndex + 1),
@@ -195,6 +210,10 @@ fun TrainingFormScreen(
                         Spacer(modifier = Modifier.size(10.dp))
                         Text(text = menu.name)
                         Spacer(modifier = Modifier.weight(1F))
+                        CustomButton(
+                            onClick = { onClickDeleteMenu(menu.eventIndex) },
+                            valueResourceId = R.string.delete,
+                        )
                     }
                     Spacer(modifier = Modifier.size(10.dp))
 
@@ -384,6 +403,8 @@ private fun TrainingFormPreview() {
             memo = "たくさん頑張った".repeat(5),
             createdAt = LocalDate.now(),
         ),
+        registerTextResourceId = R.string.label_register_training,
         onClickBackPress = {},
+        onClickTrainingDelete = null,
     )
 }

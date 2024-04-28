@@ -17,6 +17,7 @@ import com.app.body_manage.data.model.MealPhoto
 import com.app.body_manage.dialog.IntNumberPickerDialog
 import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.camera.CameraActivity
+import com.app.body_manage.ui.measure.list.MeasureListActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -112,8 +113,8 @@ class MealFormActivity : AppCompatActivity() {
             viewModel.saved.collectLatest {
                 if (it) {
                     val resultCode = when (viewModel.type) {
-                        MealFormViewModel.Type.Add -> RESULT_KEY_MEAL_ADD
-                        MealFormViewModel.Type.Edit -> RESULT_KEY_MEAL_EDIT
+                        MealFormViewModel.Type.Add -> MeasureListActivity.RESULT_CODE_ADD
+                        MealFormViewModel.Type.Edit -> MeasureListActivity.RESULT_CODE_EDIT
                     }
                     setResult(resultCode)
                     finish()
@@ -124,7 +125,7 @@ class MealFormActivity : AppCompatActivity() {
         lifecycleScope.launch {
             viewModel.deleted.collectLatest {
                 if (it) {
-                    setResult(RESULT_KEY_MEAL_DELETE)
+                    setResult(MeasureListActivity.RESULT_CODE_DELETE)
                     finish()
                 }
             }
@@ -135,10 +136,6 @@ class MealFormActivity : AppCompatActivity() {
         const val KEY_DATE = "KEY_DATE"
         const val KEY_MEAL_ID = "KEY_MEAL_ID"
         const val KEY_TYPE = "KEY_TYPE"
-
-        const val RESULT_KEY_MEAL_ADD = Activity.RESULT_FIRST_USER + 100
-        const val RESULT_KEY_MEAL_EDIT = Activity.RESULT_FIRST_USER + 101
-        const val RESULT_KEY_MEAL_DELETE = Activity.RESULT_FIRST_USER + 102
 
         fun createIntentAdd(
             context: Context,

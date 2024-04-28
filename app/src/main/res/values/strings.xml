@@ -186,7 +186,8 @@
     <!-- 登録画面 -->
     <string name="label_start_training_time">開始時間</string>
     <string name="label_end_training_time">終了時間</string>
-    <string name="label_register_trainning">登録する</string>
+    <string name="label_register_training">登録する</string>
+    <string name="label_update_training">更新する</string>
     <string name="label_input_all">一括入力</string>
     <string name="label_memo_area">メモ欄</string>
     <string name="label_memo_area_training">トレーニングメモ</string>

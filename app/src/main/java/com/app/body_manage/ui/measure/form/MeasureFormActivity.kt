@@ -15,6 +15,9 @@ import com.app.body_manage.data.model.BodyPhoto
 import com.app.body_manage.dialog.FloatNumberPickerDialog
 import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.camera.CameraActivity
+import com.app.body_manage.ui.measure.list.MeasureListActivity.Companion.RESULT_CODE_ADD
+import com.app.body_manage.ui.measure.list.MeasureListActivity.Companion.RESULT_CODE_DELETE
+import com.app.body_manage.ui.measure.list.MeasureListActivity.Companion.RESULT_CODE_EDIT
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -153,10 +156,6 @@ class MeasureFormActivity : AppCompatActivity() {
     companion object {
         private const val FORM_TYPE = "FORM_TYPE"
         private const val KEY_CAPTURE_TIME = "KEY_CAPTURE_TIME"
-
-        const val RESULT_CODE_DELETE = Activity.RESULT_FIRST_USER
-        const val RESULT_CODE_ADD = Activity.RESULT_FIRST_USER + 1
-        const val RESULT_CODE_EDIT = Activity.RESULT_FIRST_USER + 2
 
         enum class FormType {
             ADD, EDIT

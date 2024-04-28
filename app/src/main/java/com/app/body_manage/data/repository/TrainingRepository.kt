@@ -78,6 +78,29 @@ class TrainingRepository(
     }
 
     suspend fun getJustTrainingMenuList(): List<TrainingMenu> = withContext(ioDispatcher) {
-        return@withContext trainingDao.getTrainingMenuList().map { it.toModel(emptyList(), 0) }
+        return@withContext trainingDao.getTrainingMenuList().map {
+            it.toModel(emptyList(), 0)
+        }
+    }
+
+    suspend fun deleteTraining(training: Training) = withContext(ioDispatcher) {
+        // 古い記録を削除する
+        val setIds = training.menus.flatMap { it.sets }.map { set -> set.id.value }
+        // トレーニングセットレコード削除
+        trainingDao.deleteTrainingSet(setIds)
+        // 中間テーブル削除
+        trainingDao.deleteTrainingTrainingSet(training.id.value)
+        // トレーニングを削除
+        trainingDao.deleteTraining(training.id.value)
+    }
+
+    suspend fun updateTraining(training: Training) = withContext(ioDispatcher) {
+        // 古いデータを削除
+        deleteTraining(training)
+
+        // 新しい記録を登録する
+        if (training.menus.isNotEmpty()) {
+            saveTraining(training.copy(id = Training.NEW_ID))
+        }
     }
 }

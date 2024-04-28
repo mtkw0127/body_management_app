@@ -97,6 +97,7 @@ fun MeasureListScreen(
     onClickBack: () -> Unit,
     onClickMeal: (Meal) -> Unit,
     onClickAddTraining: () -> Unit,
+    onClickTraining: (Training) -> Unit,
 ) {
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     val state = rememberScaffoldState()
@@ -221,6 +222,7 @@ fun MeasureListScreen(
                             list = uiState.list,
                             clickBodyMeasureEdit = clickBodyMeasureEdit,
                             onClickMeal = onClickMeal,
+                            onClickTraining = onClickTraining,
                         )
                     }
                     if (uiState.list.isEmpty()) {
@@ -390,7 +392,8 @@ private fun TallSetField(
 private fun MeasureList(
     list: List<Measure>,
     clickBodyMeasureEdit: (LocalDateTime) -> Unit,
-    onClickMeal: (Meal) -> Unit
+    onClickMeal: (Meal) -> Unit,
+    onClickTraining: (Training) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -404,6 +407,7 @@ private fun MeasureList(
                         when (item) {
                             is BodyMeasure -> clickBodyMeasureEdit(item.time)
                             is Meal -> onClickMeal(item)
+                            is Training -> onClickTraining(item)
                         }
                     }
                 ) {
@@ -451,7 +455,7 @@ private fun BodyItem(
 
 @Composable
 private fun TrainingItem(
-    training: Training
+    training: Training,
 ) {
     Column {
         training.menus.forEach { trainingMenu ->
@@ -532,7 +536,7 @@ private fun LabelAndText(
     text: String,
     labelWidth: Dp = 100.dp
 ) {
-    Row {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
             text = label,
             modifier = Modifier.width(labelWidth)

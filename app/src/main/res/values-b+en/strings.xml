@@ -186,7 +186,8 @@
     <!-- 登録画面 -->
     <string name="label_start_training_time">Start time</string>
     <string name="label_end_training_time">End time</string>
-    <string name="label_register_trainning">Register</string>
+    <string name="label_register_training">Register</string>
+    <string name="label_update_training">Updater</string>
     <string name="label_input_all">Input at once</string>
     <string name="label_memo_area">Memo</string>
     <string name="label_memo_area_training">Training memo</string>
