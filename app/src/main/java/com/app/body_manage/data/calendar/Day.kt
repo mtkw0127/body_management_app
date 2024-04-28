@@ -10,6 +10,7 @@ sealed interface Day {
     val hasMiddle: Boolean
     val kcal: Long
     val weight: Float?
+    val training: Boolean
     fun hasSomeMeal(): Boolean = hasMorning || hasLunch || hasDinner || hasMiddle
-    fun hasSomething(): Boolean = hasSomeMeal() || weight != null
+    fun hasSomething(): Boolean = hasSomeMeal() || weight != null || training
 }

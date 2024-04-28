@@ -10,4 +10,5 @@ data class Weekday(
     override val hasMiddle: Boolean = false,
     override val kcal: Long,
     override val weight: Float?,
+    override val training: Boolean
 ) : Day

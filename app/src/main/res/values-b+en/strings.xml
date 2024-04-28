@@ -200,6 +200,9 @@
     <string name="label_rep_num">Rep</string>
     <string name="label_weight">Weight</string>
 
+    <!-- カレンダー -->
+    <string name="label_has_training">Did training</string>
+
     <!-- タイプ-->
     <string name="label_machine">Machine</string>
     <string name="label_free">Free</string>

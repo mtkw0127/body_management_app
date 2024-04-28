@@ -17,6 +17,7 @@ import com.app.body_manage.ui.measure.list.MeasureListActivity
 import com.app.body_manage.ui.selectTrainingMenu.SelectTrainingMenuActivity
 import com.app.body_manage.ui.trainingForm.TrainingFormScreen
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.LocalTime
 
 class TrainingFormActivity : AppCompatActivity() {
@@ -40,6 +41,8 @@ class TrainingFormActivity : AppCompatActivity() {
             trainingRepository = (application as TrainingApplication).trainingRepository
         )
 
+        viewModel.init(intent.getSerializableExtra(KEY_DATE) as LocalDate)
+
         lifecycleScope.launch {
             viewModel.isSuccessForSavingTraining.collect {
                 setResult(MeasureListActivity.RESULT_CODE_ADD)
@@ -56,7 +59,13 @@ class TrainingFormActivity : AppCompatActivity() {
                 onClickDeleteMenu = { menuIndex ->
                     viewModel.deleteMenu(menuIndex)
                 },
-                onClickRegister = viewModel::registerTraining,
+                onClickRegister = {
+                    if (viewModel.training.value.menus.isNotEmpty()) {
+                        viewModel.registerTraining()
+                    } else {
+                        finish()
+                    }
+                },
                 onClickBackPress = ::finish,
                 onClickFab = {
                     trainingMenuLauncher.launch(SelectTrainingMenuActivity.createInstance(this))
@@ -112,8 +121,11 @@ class TrainingFormActivity : AppCompatActivity() {
     }
 
     companion object {
-        fun createInstance(context: Context): Intent {
+        private const val KEY_DATE = "KEY_DATE"
+
+        fun createInstance(context: Context, date: LocalDate): Intent {
             return Intent(context, TrainingFormActivity::class.java)
+                .putExtra(KEY_DATE, date)
         }
     }
 }

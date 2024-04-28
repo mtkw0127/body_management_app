@@ -25,6 +25,7 @@ class CalendarActivity : AppCompatActivity() {
         viewModel = CalendarListViewModel(
             (application as TrainingApplication).bodyMeasureRepository,
             (application as TrainingApplication).mealFoodsRepository,
+            (application as TrainingApplication).trainingRepository,
         )
 
         setContent {

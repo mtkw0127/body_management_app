@@ -144,7 +144,12 @@ class MeasureListActivity : AppCompatActivity() {
                     launcher.launch(MealFormActivity.createIntentEdit(this, it.id))
                 },
                 onClickAddTraining = {
-                    launcher.launch(TrainingFormActivity.createInstance(this))
+                    launcher.launch(
+                        TrainingFormActivity.createInstance(
+                            this,
+                            viewModel.uiState.value.date
+                        )
+                    )
                 },
                 onClickTraining = {
                     launcher.launch(TrainingDetailActivity.createInstance(this, it))

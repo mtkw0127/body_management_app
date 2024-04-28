@@ -200,6 +200,8 @@
     <string name="label_rep_num">レップ数</string>
     <string name="label_weight">重量</string>
 
+    <!-- カレンダー -->
+    <string name="label_has_training">トレ済</string>
 
     <!-- タイプ-->
     <string name="label_machine">マシン</string>

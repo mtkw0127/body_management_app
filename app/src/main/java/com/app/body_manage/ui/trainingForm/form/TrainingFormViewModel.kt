@@ -173,6 +173,16 @@ class TrainingFormViewModel(
         }
     }
 
+    fun init(date: LocalDate) {
+        _training.update {
+            it.copy(
+                date = date,
+                time = date.atTime(LocalTime.now()),
+                createdAt = date,
+            )
+        }
+    }
+
     companion object {
         // 初期のセット数
         private const val DEFAULT_SET_NUMBER = 5

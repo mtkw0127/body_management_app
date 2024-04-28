@@ -138,7 +138,7 @@ class TopActivity : AppCompatActivity() {
                 },
                 onClickAddTraining = {
                     launcher.launch(
-                        TrainingFormActivity.createInstance(this)
+                        TrainingFormActivity.createInstance(this, LocalDate.now())
                     )
                 },
                 onClickSetGoat = {
