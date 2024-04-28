@@ -66,7 +66,7 @@ data class TrainingMenu(
         ): TrainingSetEntity {
             return TrainingSetEntity(
                 id = ID_NEW.value,
-                setIndex = setIndex,// 何セット目かを表す
+                setIndex = setIndex, // 何セット目かを表す
                 rep = number,
                 weight = 0,
             )

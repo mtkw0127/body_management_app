@@ -115,7 +115,7 @@ class TrainingFormActivity : AppCompatActivity() {
                         viewModel.updateEndTime(LocalTime.of(hour, minute))
                     }.show(supportFragmentManager, "end_time")
                 },
-                onClickTrainingDelete = null, //登録画面では削除できない
+                onClickTrainingDelete = null, // 登録画面では削除できない
             )
         }
     }

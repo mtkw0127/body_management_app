@@ -55,7 +55,6 @@ fun TrainingMenuListScreen(
     onEditMenu: (TrainingMenuEntity) -> Unit = {},
     onSaveMenu: (TrainingMenuEntity) -> Unit = {},
 ) {
-
     val isEditDialogOpening = rememberSaveable { mutableStateOf(false) }
     val isOpenAddDialog = rememberSaveable { mutableStateOf(false) }
 
@@ -165,7 +164,6 @@ fun TrainingMenuListScreen(
                             }
                         }
                     }
-
                 }
                 Box(
                     contentAlignment = Alignment.BottomEnd,

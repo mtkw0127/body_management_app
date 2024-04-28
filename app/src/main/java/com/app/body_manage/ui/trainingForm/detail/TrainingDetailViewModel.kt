@@ -133,7 +133,6 @@ class TrainingDetailViewModel(
         }
     }
 
-
     fun init(training: Training) {
         _training.value = training
     }

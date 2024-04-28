@@ -77,7 +77,7 @@ class TrainingDetailActivity : AppCompatActivity() {
                     }.show(supportFragmentManager, "end_time")
                 },
                 onClickRep = { menuIndex, setIndex ->
-                    val menu = viewModel.training.value?.menus?.get(menuIndex)!!
+                    val menu = checkNotNull(viewModel.training.value?.menus?.get(menuIndex))
                     val set = menu.sets[setIndex]
                     IntNumberPickerDialog.createDialog(
                         label = getString(R.string.label_rep_num),
@@ -91,7 +91,7 @@ class TrainingDetailActivity : AppCompatActivity() {
                     ).show(supportFragmentManager, "rep")
                 },
                 onClickWeight = { menuIndex, setIndex ->
-                    val menu = viewModel.training.value?.menus?.get(menuIndex)!!
+                    val menu = checkNotNull(viewModel.training.value?.menus?.get(menuIndex))
                     val set = menu.sets[setIndex]
                     IntNumberPickerDialog.createDialog(
                         label = getString(R.string.label_weight),
