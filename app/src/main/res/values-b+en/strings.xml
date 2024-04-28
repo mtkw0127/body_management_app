@@ -205,6 +205,7 @@
     <string name="label_has_training">Did training</string>
 
     <!-- タイプ-->
+    <string name="label_type">Type</string>
     <string name="label_machine">Machine</string>
     <string name="label_free">Free</string>
     <string name="label_own_weight">Own Weight</string>
