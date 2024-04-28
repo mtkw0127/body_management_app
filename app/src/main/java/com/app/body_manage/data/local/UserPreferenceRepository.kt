@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -27,7 +28,7 @@ class UserPreferenceRepository(
         val KEY_TALL = floatPreferencesKey("key_tall")
         val KEY_WEIGHT = floatPreferencesKey("key_weight")
         val KEY_GOAL_WEIGHT = floatPreferencesKey("key_goal_weight")
-        val KEY_GOAL_KCAL = intPreferencesKey("key_goal_kcal")
+        val KEY_GOAL_KCAL = longPreferencesKey("key_goal_kcal")
         val KEY_FAT = floatPreferencesKey("key_fat")
         val KEY_ALARM = booleanPreferencesKey("key_alarm")
     }
@@ -74,7 +75,7 @@ class UserPreferenceRepository(
         }
     }
 
-    suspend fun setGoatKcal(goalKcal: Int) {
+    suspend fun setGoatKcal(goalKcal: Long) {
         context.dataStore.edit { preferences ->
             preferences[KEY_GOAL_KCAL] = goalKcal
         }
@@ -94,8 +95,8 @@ class UserPreferenceRepository(
                 Gender.FEMALE.value -> Gender.FEMALE
                 else -> error("IllegalState ${it[KEY_GENDER]}")
             }
-            val birth = checkNotNull(it[KEY_BIRTH]).let {
-                val split = it.split("-")
+            val birth = checkNotNull(it[KEY_BIRTH]).let { birth ->
+                val split = birth.split("-")
                 LocalDate.of(
                     split[0].toInt(),
                     split[1].toInt(),

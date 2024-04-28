@@ -65,12 +65,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.MaterialComponents.NoActionBar" />
         <activity
-            android:name=".ui.camera.MeasureCameraActivity"
-            android:exported="true"
-            android:launchMode="singleInstance"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
-        <activity
             android:name=".ui.photoList.PhotoListActivity"
             android:exported="true"
             android:launchMode="singleInstance"
@@ -97,6 +91,38 @@
 
         <activity
             android:name=".ui.mealForm.MealFormActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoBar"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".ui.trainingForm.form.TrainingFormActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoBar"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".ui.trainingMenu.TrainingMenuListActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoBar"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".ui.selectTrainingMenu.SelectTrainingMenuActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoBar"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".ui.trainingForm.detail.TrainingDetailActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"

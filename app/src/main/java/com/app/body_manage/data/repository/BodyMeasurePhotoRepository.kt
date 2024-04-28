@@ -1,18 +1,22 @@
 package com.app.body_manage.data.repository
 
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 
-class BodyMeasurePhotoRepository(private val bpDao: BodyMeasurePhotoDao) {
+class BodyMeasurePhotoRepository(
+    private val bpDao: BodyMeasurePhotoDao,
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+) {
     suspend fun selectPhotosByDate(): Map<String, List<BodyMeasurePhotoDao.PhotoData>> =
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             return@withContext bpDao.selectPhotosByDate()
         }
 
     suspend fun selectPhotosByWeight(): Map<String, List<BodyMeasurePhotoDao.PhotoData>> =
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             val map = mutableMapOf<String, List<BodyMeasurePhotoDao.PhotoData>>()
             val data = bpDao.selectPhotosByWeight()
             data.forEach { (t, u) ->
@@ -24,7 +28,7 @@ class BodyMeasurePhotoRepository(private val bpDao: BodyMeasurePhotoDao) {
         }
 
     suspend fun selectPhotosByDate(date: LocalDate): List<BodyMeasurePhotoDao.PhotoData> =
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             val photoListMap = bpDao.selectPhotosByDateOnlyDate(date)
             return@withContext if (photoListMap.isEmpty()) {
                 listOf()
@@ -34,12 +38,12 @@ class BodyMeasurePhotoRepository(private val bpDao: BodyMeasurePhotoDao) {
         }
 
     suspend fun selectHavePhotoDateList(from: LocalDate, to: LocalDate): List<LocalDate> =
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             return@withContext bpDao.selectHavePhotoDateList(from, to)
         }
 
     suspend fun selectBodyMeasureByPhotoId(photoId: Int): BodyMeasurePhotoDao.BodyMeasure? =
-        withContext(Dispatchers.IO) {
+        withContext(ioDispatcher) {
             return@withContext bpDao.selectBodyMeasureByPhotoId(photoId)
         }
 }

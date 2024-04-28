@@ -25,6 +25,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.EmojiPeople
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,11 +56,13 @@ fun TopScreen(
     lastMeasure: BodyMeasure?,
     todayMeasure: TodayMeasure,
     bottomSheetDataList: List<BottomSheetData>,
+    onClickSeeTrainingMenu: () -> Unit = {},
     onClickStatistics: () -> Unit = {},
     onClickCalendar: () -> Unit = {},
     onClickToday: () -> Unit = {},
     onClickAddMeasure: () -> Unit = {},
     onClickAddMeal: () -> Unit = {},
+    onClickAddTraining: () -> Unit = {},
     onClickSetGoat: () -> Unit = {},
 ) {
     Scaffold(
@@ -127,6 +130,7 @@ fun TopScreen(
                     onClickToday = onClickToday,
                     onClickAddMeal = onClickAddMeal,
                     onClickAddMeasure = onClickAddMeasure,
+                    onClickAddTraining = onClickAddTraining,
                 )
                 Spacer(modifier = Modifier.size(10.dp))
             }
@@ -141,13 +145,26 @@ fun TopScreen(
                 }
                 Spacer(modifier = Modifier.size(10.dp))
             }
+            if (false) {
+                item {
+                    PanelColumn {
+                        IconAndText(
+                            icon = Icons.Default.BarChart,
+                            modifier = Modifier.padding(vertical = 5.dp),
+                            onClick = { onClickStatistics() },
+                            text = stringResource(id = R.string.label_see_by_statistics),
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(10.dp))
+                }
+            }
             item {
                 PanelColumn {
                     IconAndText(
-                        icon = Icons.Default.BarChart,
+                        icon = Icons.Default.EmojiPeople,
                         modifier = Modifier.padding(vertical = 5.dp),
-                        onClick = { onClickStatistics() },
-                        text = stringResource(id = R.string.label_see_by_statistics),
+                        onClick = { onClickSeeTrainingMenu() },
+                        text = stringResource(id = R.string.label_see_by_training_menu),
                     )
                 }
                 Spacer(modifier = Modifier.size(10.dp))
@@ -254,15 +271,14 @@ private fun TodaySummary(
     onClickToday: () -> Unit,
     onClickAddMeal: () -> Unit,
     onClickAddMeasure: () -> Unit,
+    onClickAddTraining: () -> Unit,
 ) {
     PanelColumn(
-        modifier = Modifier.clickable {
-            onClickToday()
-        }
+        modifier = Modifier.clickable { onClickToday() }
     ) {
         TextWithUnderLine(R.string.label_today_you)
-        Spacer(modifier = Modifier.size(10.dp))
-        if (todayMeasure.bodyMeasures.isEmpty() && todayMeasure.meals.isEmpty()) {
+        Spacer(modifier = Modifier.size(12.dp))
+        if (todayMeasure.bodyMeasures.isEmpty() && todayMeasure.meals.isEmpty() && todayMeasure.didTraining.not()) {
             Text(text = stringResource(id = R.string.message_not_registered_today))
         }
         if (todayMeasure.meals.isNotEmpty()) {
@@ -270,33 +286,40 @@ private fun TodaySummary(
                 stringResource(id = R.string.label_today_total_kcal),
                 todayMeasure.meals.sumOf { it.totalKcal }.toKcal()
             )
-            Spacer(modifier = Modifier.size(10.dp))
+            Spacer(modifier = Modifier.size(12.dp))
         }
         if (todayMeasure.bodyMeasures.isNotEmpty()) {
             LabelAndText(
                 stringResource(id = R.string.label_today_min_weight),
                 todayMeasure.minWeight
             )
-            Spacer(modifier = Modifier.size(10.dp))
+            Spacer(modifier = Modifier.size(12.dp))
+        }
+        if (todayMeasure.didTraining) {
+            Text(text = stringResource(id = R.string.label_did_training))
+            Spacer(modifier = Modifier.size(12.dp))
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround,
+            horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
             CustomButton(
                 backgroundColor = theme,
                 onClick = { onClickAddMeasure() },
-                valueResourceId = R.string.label_add_measure
+                valueResourceId = R.string.label_add_measure,
+                fontSize = 11.sp,
             )
             CustomButton(
                 backgroundColor = theme,
                 onClick = { onClickAddMeal() },
-                valueResourceId = R.string.label_add_meal
+                valueResourceId = R.string.label_add_meal,
+                fontSize = 11.sp,
             )
             CustomButton(
                 backgroundColor = theme,
-                onClick = { onClickToday() },
-                valueResourceId = R.string.label_see_by_today
+                onClick = { onClickAddTraining() },
+                valueResourceId = R.string.label_add_training,
+                fontSize = 11.sp,
             )
         }
     }
@@ -304,11 +327,12 @@ private fun TodaySummary(
 
 @Composable
 fun TextWithUnderLine(
-    @StringRes stringResourceId: Int
+    @StringRes stringResourceId: Int,
+    modifier: Modifier = Modifier,
 ) {
     Text(
         text = stringResource(id = stringResourceId),
-        modifier = Modifier.drawBehind {
+        modifier = modifier.drawBehind {
             drawLine(
                 Color.Black,
                 Offset(-10F, size.height),
@@ -326,22 +350,16 @@ private fun LabelAndText(
     text: String
 ) {
     Row {
-        Text(
-            text = label,
-            modifier = Modifier.width(130.dp),
-            fontSize = 16.sp,
-        )
-        Text(
-            text = text,
-            fontSize = 16.sp,
-        )
+        Text(text = label, modifier = Modifier.width(130.dp))
+        Text(text = text)
     }
 }
 
 @Composable
 fun BottomButtons(
     onClickAddMeasure: () -> Unit,
-    onClickAddMeal: () -> Unit
+    onClickAddMeal: () -> Unit,
+    onClickAddTraining: () -> Unit,
 ) {
     Row(
         modifier = Modifier
@@ -357,10 +375,14 @@ fun BottomButtons(
             valueResourceId = R.string.label_add_meal,
             backgroundColor = theme,
         )
-        VerticalLine()
         CustomButton(
             onClick = onClickAddMeasure,
             valueResourceId = R.string.label_add_measure,
+            backgroundColor = theme,
+        )
+        CustomButton(
+            onClick = onClickAddTraining,
+            valueResourceId = R.string.label_add_training,
             backgroundColor = theme,
         )
     }
@@ -442,7 +464,7 @@ fun PanelColumn(
 ) {
     Column(
         modifier = modifier
-            .shadow(2.dp)
+            .shadow(2.dp, RoundedCornerShape(5.dp))
             .background(
                 Color.White,
                 RoundedCornerShape(5.dp)

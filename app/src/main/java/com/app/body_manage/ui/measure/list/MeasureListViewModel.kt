@@ -7,9 +7,11 @@ import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.data.model.Meal
 import com.app.body_manage.data.model.Measure
+import com.app.body_manage.data.model.Training
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.MealRepository
+import com.app.body_manage.data.repository.TrainingRepository
 import com.app.body_manage.ui.measure.list.MeasureListState.BodyMeasureListState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -44,6 +46,7 @@ data class MeasureListViewModelState(
     val currentMonthRegisteredDayList: List<LocalDate> = emptyList(),
     val bodies: List<BodyMeasure> = emptyList(),
     val meals: List<Meal> = emptyList(),
+    val trainings: List<Training> = emptyList(),
     val photoList: List<BodyMeasurePhotoDao.PhotoData> = emptyList(),
     val tall: String = 150.0F.toString(),
     val updateTall: Boolean = false,
@@ -55,7 +58,7 @@ data class MeasureListViewModelState(
     fun toUiState(): BodyMeasureListState {
         return BodyMeasureListState(
             date = date,
-            list = (bodies + meals).sortedBy { it.time }, // 時刻が早い順に並べる
+            list = (bodies + meals + trainings).sortedBy { it.time }, // 時刻が早い順に並べる
             photoList = photoList,
             tall = tall,
             currentMonth = currentMonth,
@@ -72,6 +75,7 @@ class MeasureListViewModel(
     private val bodyMeasurePhotoRepository: BodyMeasurePhotoRepository,
     private val userPreferenceRepository: UserPreferenceRepository,
     private val mealRepository: MealRepository,
+    private val trainingRepository: TrainingRepository,
 ) : ViewModel() {
 
     private val viewModelState = MutableStateFlow(
@@ -116,6 +120,16 @@ class MeasureListViewModel(
         loadPhoto()
         loadRegisteredDayList()
         loadMeals()
+        loadTraining()
+    }
+
+    private fun loadTraining() {
+        viewModelScope.launch {
+            val trainingList = trainingRepository.getTrainingsByDate(viewModelState.value.date)
+            viewModelState.update {
+                it.copy(trainings = trainingList)
+            }
+        }
     }
 
     private fun loadMeals() {
@@ -194,8 +208,8 @@ class MeasureListViewModel(
         runCatching {
             tall.toFloat()
         }.onSuccess {
-            viewModelState.update {
-                it.copy(tall = tall)
+            viewModelState.update { viewModelState ->
+                viewModelState.copy(tall = tall)
             }
         }
     }

@@ -53,12 +53,13 @@ class FloatNumberPickerDialog : DialogFragment() {
     private var firstDecimalPlace: String = ""
     private var secondDecimalPlace: String = ""
     private var key: String? = null
+    private var supportOneHundred = false
 
     enum class Digit {
         HUNDRED, TENS, ONES, FIRST_DECIMAL, SECOND_DECIMAL
     }
 
-    private var currentFocus: Digit = Digit.TENS
+    private lateinit var currentFocus: Digit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +69,12 @@ class FloatNumberPickerDialog : DialogFragment() {
             number = extras.getFloat(NUMBER, 50.0F)
             unit = extras.getString(UNIT, "")
             key = extras.getString(KEY)
+            supportOneHundred = extras.getBoolean(SUPPORT_HUNDRED, false)
+            currentFocus = if (supportOneHundred) {
+                Digit.HUNDRED
+            } else {
+                Digit.TENS
+            }
 
             // 60.55 -> 60 -> 060
             val integerPart = String.format("%03d", number.toInt())
@@ -102,7 +109,11 @@ class FloatNumberPickerDialog : DialogFragment() {
                     onesPlace = "0"
                     firstDecimalPlace = "0"
                     secondDecimalPlace = "0"
-                    currentFocus = Digit.TENS // TODO: 100キロサポート
+                    currentFocus = if (supportOneHundred) {
+                        Digit.HUNDRED
+                    } else {
+                        Digit.TENS
+                    }
                 }
 
                 val updateNumber: (Int) -> Unit = { number ->
@@ -129,7 +140,11 @@ class FloatNumberPickerDialog : DialogFragment() {
 
                         Digit.SECOND_DECIMAL -> {
                             secondDecimalPlace = number.toString()
-                            currentFocus = Digit.TENS // TODO: 100キロ以上をサポート
+                            currentFocus = if (supportOneHundred) {
+                                Digit.HUNDRED
+                            } else {
+                                Digit.TENS
+                            }
                         }
                     }
                 }
@@ -342,11 +357,13 @@ class FloatNumberPickerDialog : DialogFragment() {
         private const val NUMBER = "NUMBER"
         private const val UNIT = "UNIT"
         private const val KEY = "KEY"
+        private const val SUPPORT_HUNDRED = "SUPPORT_HUNDRED"
         fun createDialog(
             label: String,
             number: Float,
             unit: String,
             requestKey: String? = null,
+            supportOneHundred: Boolean = false,
             callBack: (weight: Float) -> Unit,
         ): FloatNumberPickerDialog {
             val numberPickerDialog = FloatNumberPickerDialog()
@@ -355,6 +372,7 @@ class FloatNumberPickerDialog : DialogFragment() {
                 putFloat(NUMBER, number)
                 putString(UNIT, unit)
                 putString(KEY, requestKey)
+                putBoolean(SUPPORT_HUNDRED, supportOneHundred)
             }
             numberPickerDialog.arguments = bundle
             numberPickerDialog.callBack = callBack

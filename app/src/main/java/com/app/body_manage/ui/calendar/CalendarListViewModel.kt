@@ -10,6 +10,7 @@ import com.app.body_manage.data.calendar.Weekday
 import com.app.body_manage.data.model.Meal
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.MealRepository
+import com.app.body_manage.data.repository.TrainingRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -21,6 +22,7 @@ import java.time.LocalDate
 class CalendarListViewModel(
     private val measureRepository: BodyMeasureRepository,
     private val mealRepository: MealRepository,
+    private val trainingRepository: TrainingRepository,
 ) : ViewModel() {
     private val _months = MutableStateFlow(emptyList<Month>())
     val months = _months.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
@@ -199,6 +201,8 @@ class CalendarListViewModel(
     private suspend fun LocalDate.toDay(): Day {
         val meal = this@CalendarListViewModel.mealRepository.getMealsByDate(this)
         val measures = this@CalendarListViewModel.measureRepository.getEntityListByDate(this)
+        val hasTraining =
+            this@CalendarListViewModel.trainingRepository.getTrainingsByDate(this).isNotEmpty()
         val hasMorning = meal.any { it.timing == Meal.Timing.BREAKFAST }
         val hasLunch = meal.any { it.timing == Meal.Timing.LUNCH }
         val hasDinner = meal.any { it.timing == Meal.Timing.DINNER }
@@ -211,9 +215,10 @@ class CalendarListViewModel(
                 hasLunch = hasLunch,
                 hasDinner = hasDinner,
                 hasMiddle = hasSnack,
+                training = hasTraining,
                 kcal = kcal,
                 weight = measures.takeIf { it.isNotEmpty() }?.minOf { it.weight },
-                "",
+                name = "",
             )
 
             else -> Weekday(
@@ -222,6 +227,7 @@ class CalendarListViewModel(
                 hasLunch = hasLunch,
                 hasDinner = hasDinner,
                 hasMiddle = hasSnack,
+                training = hasTraining,
                 kcal = kcal,
                 weight = measures.takeIf { it.isNotEmpty() }?.minOf { it.weight },
             )

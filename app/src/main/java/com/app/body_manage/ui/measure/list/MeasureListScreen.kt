@@ -21,19 +21,16 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ExposedDropdownMenuDefaults.textFieldColors
 import androidx.compose.material.Icon
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -55,7 +52,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -69,6 +65,7 @@ import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.data.model.Meal
 import com.app.body_manage.data.model.Measure
+import com.app.body_manage.data.model.Training
 import com.app.body_manage.domain.BMICalculator
 import com.app.body_manage.extension.toFat
 import com.app.body_manage.extension.toJapaneseTime
@@ -88,7 +85,7 @@ import java.time.YearMonth
 fun MeasureListScreen(
     uiState: MeasureListState.BodyMeasureListState,
     clickSaveBodyInfo: () -> Unit,
-    setTall: (String) -> Unit,
+    onClickTall: () -> Unit,
     resetSnackBarMessage: () -> Unit,
     setLocalDate: (LocalDate) -> Unit,
     clickBodyMeasureEdit: (LocalDateTime) -> Unit,
@@ -99,6 +96,8 @@ fun MeasureListScreen(
     onChangeCurrentMonth: (YearMonth) -> Unit,
     onClickBack: () -> Unit,
     onClickMeal: (Meal) -> Unit,
+    onClickAddTraining: () -> Unit,
+    onClickTraining: (Training) -> Unit,
 ) {
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     val state = rememberScaffoldState()
@@ -110,7 +109,11 @@ fun MeasureListScreen(
     Scaffold(
         bottomBar = {
             Column {
-                BottomButtons(onClickAddMeasure, onClickAddMeal)
+                BottomButtons(
+                    onClickAddMeasure,
+                    onClickAddMeal,
+                    onClickAddTraining,
+                )
             }
         },
         scaffoldState = state,
@@ -202,7 +205,7 @@ fun MeasureListScreen(
                     }
                     TallSetField(
                         tall = uiState.tall,
-                        setTall = setTall,
+                        onClickTall = onClickTall,
                         clickSaveBodyInfo = clickSaveBodyInfo
                     ) {
                         showCalendar.value = false
@@ -219,6 +222,7 @@ fun MeasureListScreen(
                             list = uiState.list,
                             clickBodyMeasureEdit = clickBodyMeasureEdit,
                             onClickMeal = onClickMeal,
+                            onClickTraining = onClickTraining,
                         )
                     }
                     if (uiState.list.isEmpty()) {
@@ -313,11 +317,10 @@ fun PhotoList(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun TallSetField(
     tall: String,
-    setTall: (String) -> Unit,
+    onClickTall: () -> Unit,
     clickSaveBodyInfo: () -> Unit,
     clickShowPhotoList: () -> Unit,
 ) {
@@ -340,26 +343,15 @@ private fun TallSetField(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .fillMaxHeight()
-                    .padding(end = 16.dp)
+                    .background(Color.White, RoundedCornerShape(5.dp))
+                    .border(1.dp, Color.DarkGray, RoundedCornerShape(5.dp))
+                    .padding(horizontal = 10.dp)
+                    .clickable {
+                        onClickTall()
+                    }
             ) {
-                TextField(
-                    value = tall,
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    onValueChange = {
-                        if (it.toDoubleOrNull() != null ||
-                            it.startsWith("0")
-                                .not()
-                        ) {
-                            setTall.invoke(it)
-                        }
-                    },
-                    colors = textFieldColors(
-                        backgroundColor = Color.White,
-                    ),
-                    modifier = Modifier
-                        .width(120.dp)
-                        .height(48.dp)
+                Text(
+                    text = tall + stringResource(id = R.string.unit_cm),
                 )
             }
             Row(
@@ -400,7 +392,8 @@ private fun TallSetField(
 private fun MeasureList(
     list: List<Measure>,
     clickBodyMeasureEdit: (LocalDateTime) -> Unit,
-    onClickMeal: (Meal) -> Unit
+    onClickMeal: (Meal) -> Unit,
+    onClickTraining: (Training) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -414,6 +407,7 @@ private fun MeasureList(
                         when (item) {
                             is BodyMeasure -> clickBodyMeasureEdit(item.time)
                             is Meal -> onClickMeal(item)
+                            is Training -> onClickTraining(item)
                         }
                     }
                 ) {
@@ -424,6 +418,10 @@ private fun MeasureList(
 
                         is Meal -> {
                             MealItem(item)
+                        }
+
+                        is Training -> {
+                            TrainingItem(item)
                         }
                     }
                 }
@@ -451,6 +449,24 @@ private fun BodyItem(
                 label = stringResource(id = R.string.label_bmi),
                 text = BMICalculator().calculate(measure.tall, measure.weight),
             )
+        }
+    }
+}
+
+@Composable
+private fun TrainingItem(
+    training: Training,
+) {
+    Column {
+        training.menus.forEach { trainingMenu ->
+            Row {
+                Text(
+                    text = "${trainingMenu.eventIndex + 1}種目目"
+                )
+                Text(
+                    text = trainingMenu.name
+                )
+            }
         }
     }
 }
@@ -520,7 +536,7 @@ private fun LabelAndText(
     text: String,
     labelWidth: Dp = 100.dp
 ) {
-    Row {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
             text = label,
             modifier = Modifier.width(labelWidth)

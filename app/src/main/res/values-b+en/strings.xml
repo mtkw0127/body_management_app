@@ -19,6 +19,7 @@
     <string name="fat_unit">Body Fat Percentage [%]</string>
     <string name="dot">.</string>
     <string name="unit_kg">kg</string>
+    <string name="unit_cm">cm</string>
     <string name="unit_percent">%</string>
     <string name="unit_hour">hour</string>
     <string name="unit_minute">min</string>
@@ -59,6 +60,7 @@
     <string name="label_fat">Body Fat Percentage</string>
     <string name="label_see_by_calendar">View by Calendar</string>
     <string name="label_see_by_statistics">View by Statistics</string>
+    <string name="label_see_by_training_menu">See training menu</string>
     <string name="label_see_by_today">View Today\'s Records</string>
     <string name="label_see_statistic">Statistics</string>
     <string name="label_start_point">Starting Point</string>
@@ -68,10 +70,12 @@
     <string name="message_this_is_estimated_value">※ Estimated values recognized for individuals aged 18 to 79</string>
     <string name="label_add_meal">Add Meal</string>
     <string name="label_add_measure">Add Measurement</string>
+    <string name="label_add_training">Add Training</string>
     <string name="message_not_registered_today">No records registered for today</string>
     <string name="label_today_total_kcal">Calories Intake Today</string>
     <string name="label_today_min_weight">Minimum Weight Today</string>
     <string name="label_today_you">You Today</string>
+    <string name="label_did_training">You already did workout</string>
     <string name="label_weight_bmi_22">The weight for a BMI of 22</string>
     <string name="label_weight_bmi_18_25">Weight for BMI between 18.5 and 24.9</string>
 
@@ -169,4 +173,47 @@
     <string name="label_result_diagnosis_too_low">Too skinny</string>
     <string name="label_result_diagnosis_good">Within the healthy weight range.</string>
     <string name="label_result_diagnosis_too_weight">overweight</string>
+
+    <string name="label_type_chest">Chest</string>
+    <string name="label_type_shoulder">Shoulder</string>
+    <string name="label_type_back">Back</string>
+    <string name="label_type_arm">Arm</string>
+    <string name="label_type_abdominal">Abdominal</string>
+    <string name="label_type_hip">Hip</string>
+    <string name="label_type_leg">Leg</string>
+    <string name="label_type_else">Else</string>
+
+    <!-- 登録画面 -->
+    <!-- 登録画面 -->
+    <string name="label_start_training_time">Start time</string>
+    <string name="label_end_training_time">End time</string>
+    <string name="label_register_training">Register</string>
+    <string name="label_update_training">Updater</string>
+    <string name="label_input_all">Input at once</string>
+    <string name="label_memo_area">Memo</string>
+    <string name="label_memo_area_training">Training memo</string>
+    <string name="label_set">#%1$d</string>
+    <string name="label_event">No%1$d</string>
+    <string name="label_count">Number</string>
+    <string name="label_weight_unit">kg</string>
+    <string name="label_empty">-</string>
+    <string name="label_object">Object</string>
+    <string name="label_rep_num">Rep</string>
+    <string name="label_weight">Weight</string>
+
+    <!-- カレンダー -->
+    <string name="label_has_training">Did training</string>
+
+    <!-- タイプ-->
+    <string name="label_type">Type</string>
+    <string name="label_machine">Machine</string>
+    <string name="label_free">Free</string>
+    <string name="label_own_weight">Own Weight</string>
+
+    <!-- トレーニングメニュー一覧 -->
+    <string name="label_menu_type_name">Name</string>
+    <string name="label_training_target_part">Part</string>
+    <string name="label_training_content">Contents</string>
+    <string name="label_see_training_history">See history</string>
+    <string name="label_edit">Edit</string>
 </resources>

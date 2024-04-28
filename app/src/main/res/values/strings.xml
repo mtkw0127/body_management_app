@@ -19,6 +19,7 @@
     <string name="fat_unit">体脂肪率 [%]</string>
     <string name="dot">.</string>
     <string name="unit_kg">kg</string>
+    <string name="unit_cm">cm</string>
     <string name="unit_percent">%</string>
     <string name="unit_hour">時</string>
     <string name="unit_minute">分</string>
@@ -59,7 +60,8 @@
     <string name="label_fat">体脂肪率</string>
     <string name="label_see_by_calendar">カレンダーで見る</string>
     <string name="label_see_by_statistics">統計を見る</string>
-    <string name="label_see_by_today">今日の記録</string>
+    <string name="label_see_by_training_menu">トレーニングメニューを見る</string>
+    <string name="label_see_by_today">今日の記録へ</string>
     <string name="label_see_statistic">統計</string>
     <string name="label_start_point">開始点</string>
     <string name="label_good_weight">適正な体重</string>
@@ -68,10 +70,12 @@
     <string name="message_this_is_estimated_value">※ 18歳から79歳の方に妥当性が認められた推定値です</string>
     <string name="label_add_meal">食事を登録</string>
     <string name="label_add_measure">体型を登録</string>
+    <string name="label_add_training">筋トレを記録</string>
     <string name="message_not_registered_today">本日の登録はまだありません</string>
     <string name="label_today_total_kcal">摂取カロリー</string>
     <string name="label_today_min_weight">体重</string>
-    <string name="label_today_you">今日のあなた</string>
+    <string name="label_today_you">本日の記録</string>
+    <string name="label_did_training">トレーニング済</string>
     <string name="label_weight_bmi_22">BMIが22の場合の体重</string>
     <string name="label_weight_bmi_18_25">BMIが18.5から24.9の体重</string>
 
@@ -168,4 +172,49 @@
     <string name="label_result_diagnosis_too_low">痩せすぎです</string>
     <string name="label_result_diagnosis_good">健康な体重の範囲内です</string>
     <string name="label_result_diagnosis_too_weight">太り過ぎです</string>
+
+    <!-- トレーニング登録 -->
+    <!-- 部位 -->
+    <string name="label_type_chest">胸</string>
+    <string name="label_type_shoulder">肩</string>
+    <string name="label_type_back">背中</string>
+    <string name="label_type_arm">腕</string>
+    <string name="label_type_abdominal">腹筋</string>
+    <string name="label_type_hip">尻</string>
+    <string name="label_type_leg">脚</string>
+    <string name="label_type_else">その他</string>
+
+    <!-- 登録画面 -->
+    <string name="label_start_training_time">開始時間</string>
+    <string name="label_end_training_time">終了時間</string>
+    <string name="label_register_training">登録する</string>
+    <string name="label_update_training">更新する</string>
+    <string name="label_input_all">一括入力</string>
+    <string name="label_memo_area">メモ欄</string>
+    <string name="label_memo_area_training">トレーニングメモ</string>
+    <string name="label_set">#%1$d</string>
+    <string name="label_event">%1$d種目目</string>
+    <string name="label_count">回</string>
+    <string name="label_weight_unit">kg</string>
+    <string name="label_empty">-</string>
+    <string name="label_object">目標</string>
+    <string name="label_rep_num">レップ数</string>
+    <string name="label_weight">重量</string>
+
+    <!-- カレンダー -->
+    <string name="label_has_training">トレ済</string>
+
+    <!-- タイプ-->
+    <string name="label_type">タイプ</string>
+    <string name="label_machine">マシン</string>
+    <string name="label_free">フリーウェイト</string>
+    <string name="label_own_weight">自重</string>
+
+    <!-- トレーニングメニュー一覧 -->
+    <string name="label_menu_type_name">種目</string>
+    <string name="label_training_target_part">部位</string>
+    <string name="label_training_content">内容</string>
+    <string name="label_see_training_history">成長を見る</string>
+    <string name="label_edit">編集する</string>
+
 </resources>

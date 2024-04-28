@@ -42,10 +42,10 @@ import com.app.body_manage.common.CustomButton
 import com.app.body_manage.style.Colors
 
 class IntNumberPickerDialog : DialogFragment() {
-    private var number: Int = 50
+    private var number: Long = 50
     private var unit: String = ""
     private var label: String = ""
-    private lateinit var callBack: (weight: Int) -> Unit
+    private lateinit var callBack: (weight: Long) -> Unit
 
     // 初期値
     private lateinit var thousandPlace: String
@@ -65,7 +65,7 @@ class IntNumberPickerDialog : DialogFragment() {
         val extras = arguments
         if (extras != null) {
             label = extras.getString(LABEL, "")
-            number = extras.getInt(NUMBER, 50)
+            number = extras.getLong(NUMBER, 50L)
             unit = extras.getString(UNIT, "")
             maxDigit = checkNotNull(extras.getSerializable(MAX_DIGIT) as Digit)
             currentFocus = checkNotNull(extras.getSerializable(INITIAL_DIGIT) as Digit)
@@ -344,7 +344,7 @@ class IntNumberPickerDialog : DialogFragment() {
                             onClick = {
                                 val integerPlace =
                                     thousandPlace.toInt() * 1000 + hundredsPlace.toInt() * 100 + tensPlace.toInt() * 10 + onesPlace.toInt()
-                                callBack(integerPlace)
+                                callBack(integerPlace.toLong())
                                 dismiss()
                             },
                             backgroundColor = Colors.theme,
@@ -365,16 +365,16 @@ class IntNumberPickerDialog : DialogFragment() {
         private const val INITIAL_DIGIT = "INITIAL_DIGIT"
         fun createDialog(
             label: String,
-            number: Int,
+            number: Long,
             unit: String,
             maxDigit: Digit,
             initialDigit: Digit,
-            callBack: (weight: Int) -> Unit,
+            callBack: (weight: Long) -> Unit,
         ): IntNumberPickerDialog {
             val numberPickerDialog = IntNumberPickerDialog()
             val bundle = Bundle().apply {
                 putString(LABEL, label)
-                putInt(NUMBER, number)
+                putLong(NUMBER, number)
                 putString(UNIT, unit)
                 putSerializable(MAX_DIGIT, maxDigit)
                 putSerializable(INITIAL_DIGIT, initialDigit)
