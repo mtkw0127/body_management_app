@@ -2,7 +2,6 @@ package com.app.body_manage.ui.top
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.body_manage.common.toKcal
 import com.app.body_manage.data.entity.toModel
 import com.app.body_manage.data.local.UserPreference
 import com.app.body_manage.data.local.UserPreferenceRepository
@@ -10,6 +9,7 @@ import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.data.model.Meal
 import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.MealRepository
+import com.app.body_manage.data.repository.TrainingRepository
 import com.app.body_manage.extension.toWeight
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,10 +23,8 @@ import java.time.LocalDate
 data class TodayMeasure(
     val bodyMeasures: List<BodyMeasure>,
     val meals: List<Meal>,
+    val didTraining: Boolean,
 ) {
-    val totalKcal: String
-        get() = meals.flatMap { it.foods }.sumOf { it.kcal }.toKcal()
-
     val minWeight: String
         get() = bodyMeasures.minOf { it.weight }.toWeight()
 }
@@ -34,6 +32,7 @@ data class TodayMeasure(
 class TopViewModel(
     private val userPreferenceRepository: UserPreferenceRepository,
     private val bodyMeasureRepository: BodyMeasureRepository,
+    private val trainingRepository: TrainingRepository,
     private val mealRepository: MealRepository,
 ) : ViewModel() {
     private val _userPreference: MutableStateFlow<UserPreference?> = MutableStateFlow(null)
@@ -49,7 +48,8 @@ class TopViewModel(
     private val _todayMeasure: MutableStateFlow<TodayMeasure> = MutableStateFlow(
         TodayMeasure(
             emptyList(),
-            emptyList()
+            emptyList(),
+            false,
         )
     )
     val todayMeasure = _todayMeasure.stateIn(
@@ -57,7 +57,8 @@ class TopViewModel(
         SharingStarted.Eagerly,
         TodayMeasure(
             emptyList(),
-            emptyList()
+            emptyList(),
+            false
         )
     )
 
@@ -82,9 +83,11 @@ class TopViewModel(
                 val now = LocalDate.now()
                 val meals = mealRepository.getMealsByDate(now)
                 val bodyMeasures = bodyMeasureRepository.getEntityListByDate(now)
+                val training = trainingRepository.getTrainingsByDate(now)
                 _todayMeasure.value = TodayMeasure(
                     meals = meals,
                     bodyMeasures = bodyMeasures,
+                    didTraining = training.isNotEmpty()
                 )
             }.onFailure {
                 // データがない可能性があるため再設定

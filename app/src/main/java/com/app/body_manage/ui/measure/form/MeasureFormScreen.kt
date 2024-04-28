@@ -28,7 +28,6 @@ import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.AccessibilityNew
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Notes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -102,11 +101,9 @@ fun BodyMeasureFormScreen(
                         }
                         if (isEdit) {
                             Spacer(modifier = Modifier.weight(1F))
-                            Icon(
-                                imageVector = Icons.Filled.DeleteForever,
-                                tint = Color.Black,
-                                contentDescription = null,
-                                modifier = Modifier.clickable { onClickDelete() }
+                            CustomButton(
+                                onClick = onClickDelete,
+                                valueResourceId = R.string.delete,
                             )
                             Spacer(modifier = Modifier.size(10.dp))
                         }

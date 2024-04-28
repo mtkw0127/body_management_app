@@ -58,6 +58,10 @@ class TopActivity : AppCompatActivity() {
         (application as TrainingApplication).mealFoodsRepository
     }
 
+    private val trainingRepository by lazy {
+        (application as TrainingApplication).trainingRepository
+    }
+
     private lateinit var viewModel: TopViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,9 +79,10 @@ class TopActivity : AppCompatActivity() {
             isTop = true,
         )
         viewModel = TopViewModel(
-            UserPreferenceRepository(this),
-            bodyMeasureRepository,
-            mealRepository,
+            userPreferenceRepository = UserPreferenceRepository(this),
+            bodyMeasureRepository = bodyMeasureRepository,
+            mealRepository = mealRepository,
+            trainingRepository = trainingRepository
         )
         viewModel.checkSetUpUserPref()
         lifecycleScope.launch {

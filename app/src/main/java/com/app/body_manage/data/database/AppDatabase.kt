@@ -107,7 +107,7 @@ abstract class AppDatabase : RoomDatabase() {
                                     "INSERT INTO training_menus (name, part, memo, type) VALUES ('腹筋', 50, '', 3)"
                                 )
                                 db.execSQL(
-                                    "INSERT INTO training_menus (name, part, memo, type) VALUES ('アブドミナル', 70, '', 1)"
+                                    "INSERT INTO training_menus (name, part, memo, type) VALUES ('アブドミナル', 50, '', 1)"
                                 )
                                 // 脚
                                 db.execSQL(
