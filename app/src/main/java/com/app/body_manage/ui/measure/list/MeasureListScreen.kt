@@ -1,5 +1,6 @@
 package com.app.body_manage.ui.measure.list
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -60,11 +61,13 @@ import coil.compose.AsyncImage
 import com.app.body_manage.R
 import com.app.body_manage.common.Calendar
 import com.app.body_manage.common.CustomButton
+import com.app.body_manage.common.CustomImage
 import com.app.body_manage.common.toKcal
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
 import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.data.model.Meal
 import com.app.body_manage.data.model.Measure
+import com.app.body_manage.data.model.Photo
 import com.app.body_manage.data.model.Training
 import com.app.body_manage.domain.BMICalculator
 import com.app.body_manage.extension.toFat
@@ -217,7 +220,9 @@ fun MeasureListScreen(
                     Divider(modifier = Modifier.padding(12.dp))
 
                     if (uiState.list.isNotEmpty()) {
-                        Summary(uiState.list)
+                        if (uiState.list.filterIsInstance(Meal::class.java).isNotEmpty()) {
+                            Summary(uiState.list)
+                        }
                         MeasureList(
                             list = uiState.list,
                             clickBodyMeasureEdit = clickBodyMeasureEdit,
@@ -449,6 +454,19 @@ private fun BodyItem(
                 label = stringResource(id = R.string.label_bmi),
                 text = BMICalculator().calculate(measure.tall, measure.weight),
             )
+            if (measure.photoUri != null) {
+                Spacer(modifier = Modifier.size(10.dp))
+                CustomImage(
+                    photo = object : Photo {
+                        override val id: Photo.Id = Photo.Id(0)
+                        override val uri: Uri = measure.photoUri
+                    },
+                    onClickPhotoDetail = {},
+                    onClickDeletePhoto = {},
+                    deleteTable = false,
+                    size = 80.dp,
+                )
+            }
         }
     }
 }
@@ -491,6 +509,20 @@ private fun MealItem(
                 meal.foods.forEach {
                     Text(text = it.nameWithKcal)
                 }
+            }
+        }
+        if (meal.photos.isNotEmpty()) {
+            Spacer(modifier = Modifier.size(10.dp))
+        }
+        Row {
+            meal.photos.forEach { photo ->
+                CustomImage(
+                    photo = photo,
+                    size = 80.dp,
+                    onClickPhotoDetail = {},
+                    onClickDeletePhoto = {},
+                    deleteTable = false
+                )
             }
         }
     }

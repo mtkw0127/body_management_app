@@ -345,6 +345,25 @@ fun TextWithUnderLine(
 }
 
 @Composable
+fun TextWithUnderLine(
+    text: String,
+    modifier: Modifier = Modifier,
+) {
+    Text(
+        text = text,
+        modifier = modifier.drawBehind {
+            drawLine(
+                Color.Black,
+                Offset(-10F, size.height),
+                Offset(size.width + 10F, size.height),
+                strokeWidth = 1F
+            )
+        },
+        fontSize = 16.sp,
+    )
+}
+
+@Composable
 private fun LabelAndText(
     label: String,
     text: String
