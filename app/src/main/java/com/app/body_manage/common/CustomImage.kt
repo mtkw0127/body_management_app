@@ -24,6 +24,7 @@ fun CustomImage(
     size: Dp = 150.dp,
     onClickPhotoDetail: (Photo) -> Unit,
     onClickDeletePhoto: (Photo) -> Unit,
+    deleteTable: Boolean = true,
 ) {
     Box(
         modifier = Modifier.fillMaxWidth()
@@ -39,13 +40,15 @@ fun CustomImage(
                 .size(size),
             contentScale = ContentScale.Crop,
         )
-        IconButton(
-            onClick = { onClickDeletePhoto(photo) },
-        ) {
-            Icon(
-                imageVector = Icons.Default.Cancel,
-                contentDescription = null
-            )
+        if (deleteTable) {
+            IconButton(
+                onClick = { onClickDeletePhoto(photo) },
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Cancel,
+                    contentDescription = null
+                )
+            }
         }
     }
 }
