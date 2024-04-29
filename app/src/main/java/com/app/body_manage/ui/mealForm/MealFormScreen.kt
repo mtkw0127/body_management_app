@@ -380,8 +380,15 @@ private fun TextWithCandidate(
                         .padding(vertical = 5.dp, horizontal = 10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text(text = candidate.name + " (${candidate.kcal.toKcal()})")
+                    val foodName = if (candidate.id == NEW_ID) {
+                        candidate.name
+                    } else {
+                        candidate.name + " (${candidate.kcal.toKcal()})"
+                    }
+                    Text(text = foodName)
+
                     Spacer(modifier = Modifier.weight(1F))
+
                     val textResource = if (candidate.id == NEW_ID) {
                         R.string.message_save_and_add
                     } else {
@@ -389,7 +396,6 @@ private fun TextWithCandidate(
                     }
                     Text(
                         text = stringResource(id = textResource),
-                        color = Color.DarkGray,
                         fontSize = 11.sp
                     )
                 }

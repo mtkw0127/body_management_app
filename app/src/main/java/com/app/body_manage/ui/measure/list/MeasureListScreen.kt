@@ -220,7 +220,9 @@ fun MeasureListScreen(
                     Divider(modifier = Modifier.padding(12.dp))
 
                     if (uiState.list.isNotEmpty()) {
-                        Summary(uiState.list)
+                        if (uiState.list.filterIsInstance(Meal::class.java).isNotEmpty()) {
+                            Summary(uiState.list)
+                        }
                         MeasureList(
                             list = uiState.list,
                             clickBodyMeasureEdit = clickBodyMeasureEdit,
