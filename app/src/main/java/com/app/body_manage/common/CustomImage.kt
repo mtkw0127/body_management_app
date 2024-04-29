@@ -3,7 +3,6 @@ package com.app.body_manage.common
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -14,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.app.body_manage.data.model.Photo
@@ -21,8 +21,10 @@ import com.app.body_manage.data.model.Photo
 @Composable
 fun CustomImage(
     photo: Photo,
+    size: Dp = 150.dp,
     onClickPhotoDetail: (Photo) -> Unit,
     onClickDeletePhoto: (Photo) -> Unit,
+    deleteTable: Boolean = true,
 ) {
     Box(
         modifier = Modifier.fillMaxWidth()
@@ -35,17 +37,18 @@ fun CustomImage(
                 .clickable {
                     onClickPhotoDetail(photo)
                 }
-                .size(150.dp),
+                .size(size),
             contentScale = ContentScale.Crop,
         )
-        IconButton(
-            onClick = { onClickDeletePhoto(photo) },
-            modifier = Modifier.offset(x = 5.dp, y = 5.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Cancel,
-                contentDescription = null
-            )
+        if (deleteTable) {
+            IconButton(
+                onClick = { onClickDeletePhoto(photo) },
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Cancel,
+                    contentDescription = null
+                )
+            }
         }
     }
 }

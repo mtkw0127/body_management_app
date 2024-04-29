@@ -211,7 +211,9 @@ class BodyMeasureEditFormViewModel(
     }
 
     fun save() {
-        val model = checkNotNull(viewModelState.value.model)
+        val model = checkNotNull(viewModelState.value.model).copy(
+            photoUri = viewModelState.value.photos.firstOrNull()?.uri
+        )
         when (checkNotNull(viewModelState.value.type)) {
             FormViewModelState.Type.Edit -> {
                 viewModelScope.launch {
