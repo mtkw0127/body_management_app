@@ -29,10 +29,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -64,6 +60,7 @@ import java.time.LocalTime
 fun TrainingFormScreen(
     training: Training?,
     @StringRes registerTextResourceId: Int,
+    updateMemo: (String) -> Unit = {},
     onClickTrainingDelete: (() -> Unit)?,
     onClickDeleteMenu: (eventIndex: Long) -> Unit = {},
     onClickBackPress: () -> Unit = {},
@@ -182,7 +179,10 @@ fun TrainingFormScreen(
 
             PanelColumn {
                 Text(text = stringResource(id = R.string.label_memo_area_training))
-                MemoTextField(training.memo)
+                MemoTextField(
+                    text = training.memo,
+                    updateMemo = updateMemo,
+                )
             }
 
             Spacer(modifier = Modifier.size(5.dp))
@@ -316,14 +316,14 @@ private fun TrainingPanel(
 @Composable
 private fun MemoTextField(
     text: String,
+    updateMemo: (String) -> Unit,
 ) {
-    var value by remember { mutableStateOf(text) }
     Column {
         Spacer(modifier = Modifier.size(5.dp))
         BasicTextField(
-            value = value,
+            value = text,
             onValueChange = {
-                value = it
+                updateMemo(it)
             },
             maxLines = 10,
             modifier = Modifier
@@ -335,7 +335,7 @@ private fun MemoTextField(
                         .border(1.dp, Color.LightGray, RoundedCornerShape(1.dp))
                         .padding(5.dp)
                 ) {
-                    if (value.isEmpty()) {
+                    if (text.isEmpty()) {
                         Text(
                             text = stringResource(id = R.string.label_memo_area),
                             color = Color.LightGray

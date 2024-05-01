@@ -59,6 +59,7 @@ class TrainingFormActivity : AppCompatActivity() {
                 onClickDeleteMenu = { menuIndex ->
                     viewModel.deleteMenu(menuIndex)
                 },
+                updateMemo = viewModel::updateMemo,
                 onClickRegister = {
                     if (viewModel.training.value.menus.isNotEmpty()) {
                         viewModel.registerTraining()
