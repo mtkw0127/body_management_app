@@ -160,7 +160,7 @@ fun StatisticsScreen(
 }
 
 @Composable
-private fun RowScope.ColumTextWithLabelAndIcon(
+fun RowScope.ColumTextWithLabelAndIcon(
     title: String,
     value: String,
     modifier: Modifier = Modifier,

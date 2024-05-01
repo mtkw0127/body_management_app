@@ -23,7 +23,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForwardIos
-import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.EmojiPeople
 import androidx.compose.runtime.Composable
@@ -45,10 +44,14 @@ import com.app.body_manage.common.toKcal
 import com.app.body_manage.data.local.UserPreference
 import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.data.model.Meal
+import com.app.body_manage.extension.age
 import com.app.body_manage.extension.toCentiMeter
 import com.app.body_manage.extension.toMMDDEE
+import com.app.body_manage.extension.toWeight
+import com.app.body_manage.extension.withPercent
 import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
+import com.app.body_manage.ui.statistics.ColumTextWithLabelAndIcon
 
 @Composable
 fun TopScreen(
@@ -134,6 +137,15 @@ fun TopScreen(
                 )
                 Spacer(modifier = Modifier.size(10.dp))
             }
+            if (lastMeasure != null && userPreference != null) {
+                item {
+                    Statistics(
+                        bodyMeasure = lastMeasure,
+                        userPreference = userPreference,
+                    )
+                    Spacer(modifier = Modifier.size(10.dp))
+                }
+            }
             item {
                 PanelColumn {
                     IconAndText(
@@ -144,19 +156,6 @@ fun TopScreen(
                     )
                 }
                 Spacer(modifier = Modifier.size(10.dp))
-            }
-            if (false) {
-                item {
-                    PanelColumn {
-                        IconAndText(
-                            icon = Icons.Default.BarChart,
-                            modifier = Modifier.padding(vertical = 5.dp),
-                            onClick = { onClickStatistics() },
-                            text = stringResource(id = R.string.label_see_by_statistics),
-                        )
-                    }
-                    Spacer(modifier = Modifier.size(10.dp))
-                }
             }
             item {
                 PanelColumn {
@@ -322,6 +321,64 @@ private fun TodaySummary(
                 fontSize = 11.sp,
             )
         }
+    }
+}
+
+@Composable
+fun Statistics(
+    bodyMeasure: BodyMeasure,
+    userPreference: UserPreference,
+) {
+
+    Panel(content = {
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            TextWithUnderLine(stringResource(id = R.string.label_current_you, userPreference.name))
+            Spacer(modifier = Modifier.size(10.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround,
+            ) {
+                ColumTextWithLabelAndIcon(
+                    title = stringResource(id = R.string.weight),
+                    value = bodyMeasure.weight.toWeight(),
+                )
+                ColumTextWithLabelAndIcon(
+                    title = stringResource(id = R.string.tall),
+                    value = userPreference.tall?.toCentiMeter() ?: "-",
+                )
+                ColumTextWithLabelAndIcon(
+                    title = stringResource(id = R.string.age),
+                    value = userPreference.birth.age().toString(),
+                )
+            }
+            Spacer(modifier = Modifier.size(20.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceAround,
+            ) {
+                ColumTextWithLabelAndIcon(
+                    title = stringResource(id = R.string.label_bmi),
+                    value = userPreference.bim,
+                )
+                ColumTextWithLabelAndIcon(
+                    title = stringResource(id = R.string.label_kcal) + "※",
+                    value = userPreference.basicConsumeEnergy,
+                )
+                ColumTextWithLabelAndIcon(
+                    title = stringResource(id = R.string.label_fat),
+                    value = userPreference.calcFat.withPercent(),
+                )
+            }
+        }
+    }) {
+        Spacer(modifier = Modifier.size(5.dp))
+        Text(
+            stringResource(id = R.string.message_this_is_estimated_value),
+            fontSize = 11.sp,
+            color = Color.DarkGray
+        )
     }
 }
 
