@@ -156,9 +156,7 @@ fun TrainingFormScreen(
                             }
                             .clickable { onClickStartTime() }
                     )
-                }
-                Spacer(modifier = Modifier.size(10.dp))
-                Row {
+                    Spacer(modifier = Modifier.size(20.dp))
                     Text(text = stringResource(id = R.string.label_end_training_time))
                     Spacer(modifier = Modifier.size(10.dp))
                     Text(

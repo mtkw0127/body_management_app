@@ -24,6 +24,6 @@ fun BodyMeasure.toEntity() = BodyMeasureEntity(
     weight = weight,
     fat = fat,
     memo = memo,
-    photoUri = photoUri.toString(),
+    photoUri = photoUri?.path,
     tall = tall,
 )

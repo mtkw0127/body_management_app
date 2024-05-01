@@ -189,9 +189,9 @@ fun BodyMeasureFormScreen(
                                 LazyRow {
                                     items(uiState.photos) { photo ->
                                         CustomImage(
-                                            photo,
-                                            onClickPhotoDetail,
-                                            onClickDeletePhoto,
+                                            photo = photo,
+                                            onClickPhotoDetail = onClickPhotoDetail,
+                                            onClickDeletePhoto = onClickDeletePhoto,
                                         )
                                         Spacer(modifier = Modifier.size(5.dp))
                                     }
