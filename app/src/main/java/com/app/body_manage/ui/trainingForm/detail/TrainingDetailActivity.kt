@@ -50,6 +50,7 @@ class TrainingDetailActivity : AppCompatActivity() {
             TrainingFormScreen(
                 training = training,
                 registerTextResourceId = R.string.label_update_training,
+                updateMemo = viewModel::updateMemo,
                 onClickBackPress = ::finish,
                 onClickDeleteMenu = { menuIndex ->
                     viewModel.deleteMenu(menuIndex)

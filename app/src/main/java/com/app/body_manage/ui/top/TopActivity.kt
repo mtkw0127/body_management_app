@@ -27,7 +27,6 @@ import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.measure.list.MeasureListActivity
 import com.app.body_manage.ui.measure.list.MeasureListActivity.Companion.RESULT_CODE_ADD
 import com.app.body_manage.ui.photoList.PhotoListActivity
-import com.app.body_manage.ui.statistics.StatisticsActivity
 import com.app.body_manage.ui.top.UserPreferenceSettingDialog.Companion.REQUEST_KEY
 import com.app.body_manage.ui.trainingForm.form.TrainingFormActivity
 import com.app.body_manage.ui.trainingMenu.TrainingMenuListActivity
@@ -118,9 +117,6 @@ class TopActivity : AppCompatActivity() {
                 bottomSheetDataList = bottomSheetDataList,
                 onClickSeeTrainingMenu = {
                     launcher.launch(TrainingMenuListActivity.createIntent(this))
-                },
-                onClickStatistics = {
-                    launcher.launch(StatisticsActivity.createIntent(this))
                 },
                 onClickCalendar = {
                     launcher.launch(CalendarActivity.createIntent(this))
