@@ -60,7 +60,6 @@ fun TopScreen(
     todayMeasure: TodayMeasure,
     bottomSheetDataList: List<BottomSheetData>,
     onClickSeeTrainingMenu: () -> Unit = {},
-    onClickStatistics: () -> Unit = {},
     onClickCalendar: () -> Unit = {},
     onClickToday: () -> Unit = {},
     onClickAddMeasure: () -> Unit = {},
@@ -329,7 +328,6 @@ fun Statistics(
     bodyMeasure: BodyMeasure,
     userPreference: UserPreference,
 ) {
-
     Panel(content = {
         Column(
             modifier = Modifier.fillMaxWidth()
