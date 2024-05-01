@@ -183,6 +183,12 @@ class TrainingFormViewModel(
         }
     }
 
+    fun updateMemo(memo: String) {
+        _training.update {
+            it.copy(memo = memo)
+        }
+    }
+
     companion object {
         // 初期のセット数
         private const val DEFAULT_SET_NUMBER = 5
