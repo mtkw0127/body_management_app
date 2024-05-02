@@ -61,11 +61,7 @@ class TrainingFormActivity : AppCompatActivity() {
                 },
                 updateMemo = viewModel::updateMemo,
                 onClickRegister = {
-                    if (viewModel.training.value.menus.isNotEmpty()) {
-                        viewModel.registerTraining()
-                    } else {
-                        finish()
-                    }
+                    viewModel.registerTraining()
                 },
                 onClickBackPress = ::finish,
                 onClickFab = {

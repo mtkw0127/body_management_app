@@ -77,6 +77,7 @@ import com.app.body_manage.extension.toWeight
 import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
 import com.app.body_manage.ui.top.BottomButtons
+import com.app.body_manage.ui.top.HorizontalLine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -476,7 +477,7 @@ private fun TrainingItem(
     training: Training,
 ) {
     Column {
-        training.menus.forEach { trainingMenu ->
+        training.menus.forEachIndexed { index, trainingMenu ->
             Row {
                 Text(
                     text = "${trainingMenu.eventIndex + 1}種目目"
@@ -485,6 +486,13 @@ private fun TrainingItem(
                     text = trainingMenu.name
                 )
             }
+            if (index == training.menus.lastIndex && training.memo.isNotEmpty()) {
+                HorizontalLine(verticalPadding = 10.dp)
+            }
+        }
+        if (training.memo.isNotEmpty()) {
+            Text(text = stringResource(id = R.string.label_memo_area))
+            Text(text = training.memo)
         }
     }
 }

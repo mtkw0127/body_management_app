@@ -34,6 +34,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.body_manage.R
@@ -473,10 +474,12 @@ fun VerticalLine() {
 }
 
 @Composable
-fun HorizontalLine() {
+fun HorizontalLine(
+    verticalPadding: Dp = 20.dp
+) {
     Box(
         modifier = Modifier
-            .padding(vertical = 20.dp)
+            .padding(vertical = verticalPadding)
             .fillMaxWidth()
             .height(height = 1.dp)
             .background(color = Color.LightGray, shape = RoundedCornerShape(1.dp))

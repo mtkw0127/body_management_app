@@ -100,9 +100,7 @@ class TrainingRepository(
         deleteTraining(training)
 
         // 新しい記録を登録する
-        if (training.menus.isNotEmpty()) {
-            saveTraining(training.copy(id = Training.NEW_ID))
-        }
+        saveTraining(training.copy(id = Training.NEW_ID))
     }
 
     suspend fun saveMenu(menu: TrainingMenuEntity) {
