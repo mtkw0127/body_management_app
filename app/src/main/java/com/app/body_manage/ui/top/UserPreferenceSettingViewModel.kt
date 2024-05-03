@@ -62,7 +62,9 @@ data class UserPreferenceSettingViewModelState(
 
         return if (name == null ||
             setBirth.not() ||
-            birth.text.isEmpty() || weight.text.isEmpty()
+            birth.text.isEmpty() ||
+            weight.text.isEmpty() ||
+            tall.text.isEmpty()
         ) {
             UiState.NotYet(
                 name = name,
