@@ -118,10 +118,7 @@ class UserPreferenceSettingViewModel(
                             name = pref.name,
                             gender = pref.gender,
                             birth = TextFieldValue(
-                                SimpleDateFormat(
-                                    "yyyy-MM-dd",
-                                    Locale.getDefault()
-                                ).format(pref.birth)
+                                "${pref.birth.year}${pref.birth.monthValue}${pref.birth.dayOfMonth}"
                             ),
                         )
                     }
