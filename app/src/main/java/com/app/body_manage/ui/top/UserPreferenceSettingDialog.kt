@@ -27,6 +27,7 @@ class UserPreferenceSettingDialog : DialogFragment() {
         viewModel = UserPreferenceSettingViewModel(
             userPreferenceRepository = UserPreferenceRepository(requireContext())
         )
+        viewModel.load()
         lifecycleScope.launch {
             viewModel.saved.collectLatest {
                 if (it) {
