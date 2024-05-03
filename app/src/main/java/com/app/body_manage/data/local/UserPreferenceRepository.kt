@@ -89,13 +89,13 @@ class UserPreferenceRepository(
                 throw exception
             }
         }.map {
-            val name = it[KEY_NAME]
-            val gender = when (it[KEY_GENDER]) {
+            val name = checkNotNull(it[KEY_NAME])
+            val gender = when (checkNotNull(it[KEY_GENDER])) {
                 Gender.MALE.value -> Gender.MALE
                 Gender.FEMALE.value -> Gender.FEMALE
                 else -> null
             }
-            val birth = it[KEY_BIRTH]?.let { birth ->
+            val birth = checkNotNull(it[KEY_BIRTH]).let { birth ->
                 val split = birth.split("-")
                 LocalDate.of(
                     split[0].toInt(),
@@ -104,7 +104,7 @@ class UserPreferenceRepository(
                 )
             }
             UserPreference(
-                name = name.orEmpty(),
+                name = name,
                 gender = gender ?: Gender.MALE,
                 birth = birth ?: LocalDate.now(),
                 tall = it[KEY_TALL],

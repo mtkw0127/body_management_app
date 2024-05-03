@@ -22,7 +22,11 @@ data class UserPreference(
 ) {
     val bim: String
         get() {
-            return BMICalculator().calculate(tall, checkNotNull(weight))
+            return if (weight == null) {
+                "-"
+            } else {
+                BMICalculator().calculate(tall, weight)
+            }
         }
 
     val calcFat: String
@@ -68,8 +72,11 @@ data class UserPreference(
 
     val basicConsumeEnergy: String
         get() {
-            val height = checkNotNull(tall) * 100 / 100F
-            val weight = checkNotNull(weight) * 100 / 100F
+            if (tall == null || weight == null) {
+                return "-"
+            }
+            val height = tall * 100 / 100F
+            val weight = weight * 100 / 100F
             val age = birth.age()
             val consumedEnergy = (
                 when (gender) {
