@@ -9,6 +9,7 @@ import com.app.body_manage.data.local.UserPreferenceRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -62,7 +63,9 @@ data class UserPreferenceSettingViewModelState(
 
         return if (name == null ||
             setBirth.not() ||
-            birth.text.isEmpty() || weight.text.isEmpty()
+            birth.text.isEmpty() ||
+            weight.text.isEmpty() ||
+            tall.text.isEmpty()
         ) {
             UiState.NotYet(
                 name = name,
@@ -104,6 +107,26 @@ class UserPreferenceSettingViewModel(
 
     private val _saved = MutableStateFlow(false)
     val saved: StateFlow<Boolean> = _saved
+
+    // 体重未入力の状態で起動できてしまう問題があったため修正
+    fun load() {
+        viewModelScope.launch {
+            try {
+                userPreferenceRepository.userPref.firstOrNull()?.let { pref ->
+                    viewModelState.update {
+                        it.copy(
+                            name = pref.name,
+                            gender = pref.gender,
+                            birth = TextFieldValue(
+                                "${pref.birth.year}${pref.birth.monthValue}${pref.birth.dayOfMonth}"
+                            ),
+                        )
+                    }
+                }
+            } catch (_: Throwable) {
+            }
+        }
+    }
 
     fun setGender(gender: Gender) {
         viewModelState.update { it.copy(gender = gender) }

@@ -477,6 +477,7 @@ private fun TrainingItem(
     training: Training,
 ) {
     Column {
+        Text(text = stringResource(id = R.string.label_training))
         training.menus.forEachIndexed { index, trainingMenu ->
             Row {
                 Text(
@@ -487,7 +488,7 @@ private fun TrainingItem(
                 )
             }
             if (index == training.menus.lastIndex && training.memo.isNotEmpty()) {
-                HorizontalLine(verticalPadding = 10.dp)
+                HorizontalLine(verticalPadding = 7.dp)
             }
         }
         if (training.memo.isNotEmpty()) {
@@ -512,6 +513,8 @@ private fun MealItem(
                 text = stringResource(id = R.string.label_meals),
                 modifier = Modifier.width(100.dp)
             )
+        }
+        Row {
             Spacer(modifier = Modifier.size(10.dp))
             Column {
                 meal.foods.forEach {

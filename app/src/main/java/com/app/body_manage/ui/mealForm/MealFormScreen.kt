@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -50,6 +51,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineBreak
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.body_manage.R
@@ -120,7 +122,7 @@ fun MealFormScreen(
         ) {
             Column(modifier = Modifier.padding(it)) {
                 Column(
-                    Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
+                    Modifier.padding(horizontal = 10.dp, vertical = 10.dp)
                 ) {
                     SelectMealTiming(
                         mealFoods,
@@ -261,7 +263,7 @@ private fun EatenFoods(
             .fillMaxWidth()
             .padding(20.dp),
     ) {
-        Row {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = stringResource(id = R.string.label_all_kcal),
                 fontWeight = FontWeight.Light
@@ -274,7 +276,7 @@ private fun EatenFoods(
         Divider(
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp)
         )
-        foods.forEach { food ->
+        foods.forEachIndexed { index, food ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -289,35 +291,29 @@ private fun EatenFoods(
                 Text(
                     text = food.name,
                     style = TextStyle(lineBreak = LineBreak.Simple),
-                    modifier = Modifier.width(100.dp)
+                    modifier = Modifier.widthIn(min = 100.dp, max = 150.dp),
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 2,
                 )
                 Spacer(modifier = Modifier.weight(1F))
                 // 個
-                Column(
-                    modifier = Modifier
-                        .height(50.dp)
-                        .width(100.dp)
-                        .clickable {
-                            onUpdateMealNumber(food)
-                        },
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.End,
-                ) {
-                    TextWithUnderLine(text = food.number.toInt().toNumber())
-                }
+                TextWithUnderLine(
+                    text = food.number.toInt().toNumber(),
+                    modifier = Modifier.clickable {
+                        onUpdateMealNumber(food)
+                    }
+                )
+                Spacer(modifier = Modifier.width(20.dp))
                 // カロリー
-                Column(
-                    modifier = Modifier
-                        .height(50.dp)
-                        .width(100.dp)
-                        .clickable {
-                            onUpdateMealKcal(food)
-                        },
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.End,
-                ) {
-                    TextWithUnderLine(text = food.kcal.toKcal())
-                }
+                TextWithUnderLine(
+                    text = food.kcal.toKcal(),
+                    modifier = Modifier.clickable {
+                        onUpdateMealKcal(food)
+                    }
+                )
+            }
+            if (index != foods.lastIndex) {
+                Spacer(modifier = Modifier.height(5.dp))
             }
         }
     }
@@ -385,9 +381,12 @@ private fun TextWithCandidate(
                     } else {
                         candidate.name + " (${candidate.kcal.toKcal()})"
                     }
-                    Text(text = foodName)
-
-                    Spacer(modifier = Modifier.weight(1F))
+                    Text(
+                        text = foodName,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(0.9F),
+                    )
 
                     val textResource = if (candidate.id == NEW_ID) {
                         R.string.message_save_and_add
@@ -419,33 +418,35 @@ private fun TextWithCandidate(
                 Box(
                     modifier = Modifier
                         .border(0.5.dp, Color.LightGray)
-                        .padding(10.dp)
+                        .padding(10.dp),
                 ) {
                     if (searchText.isBlank()) {
-                        Row(
-                            horizontalArrangement = Arrangement.Start
-                        ) {
+                        Row {
                             Text(
                                 text = stringResource(id = R.string.message_search_and_add),
                                 color = Color.Gray,
                             )
                         }
                     }
-                    innerTextField()
-                    if (searchText.isNotBlank()) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Spacer(modifier = Modifier.weight(1F))
-                            Icon(
-                                imageVector = Icons.Sharp.Cancel,
-                                contentDescription = null,
-                                modifier = Modifier.clickable {
-                                    searchText = ""
-                                    onValueChange("")
-                                }
-                            )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start,
+                    ) {
+                        Box(modifier = Modifier.weight(0.8F)) {
+                            innerTextField()
+                        }
+                        if (searchText.isNotBlank()) {
+                            Row(modifier = Modifier.weight(0.2F)) {
+                                Spacer(modifier = Modifier.weight(1F))
+                                Icon(
+                                    imageVector = Icons.Sharp.Cancel,
+                                    contentDescription = null,
+                                    modifier = Modifier.clickable {
+                                        searchText = ""
+                                        onValueChange("")
+                                    }
+                                )
+                            }
                         }
                     }
                 }
