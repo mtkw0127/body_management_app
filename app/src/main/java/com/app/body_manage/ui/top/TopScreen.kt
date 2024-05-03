@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -34,6 +35,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -405,18 +407,26 @@ fun TextWithUnderLine(
     text: String,
     modifier: Modifier = Modifier,
 ) {
-    Text(
-        text = text,
-        modifier = modifier.drawBehind {
-            drawLine(
-                Color.Black,
-                Offset(-10F, size.height),
-                Offset(size.width + 10F, size.height),
-                strokeWidth = 1F
-            )
-        },
-        fontSize = 16.sp,
-    )
+    Box(
+        modifier = modifier
+            .heightIn(min = 30.dp)
+            .drawBehind {
+                drawLine(
+                    Color.Black,
+                    Offset(-10F, size.height),
+                    Offset(size.width + 10F, size.height),
+                    strokeWidth = 1F
+                )
+            },
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = text,
+            modifier = modifier,
+            fontSize = 16.sp,
+            textAlign = TextAlign.Center
+        )
+    }
 }
 
 @Composable

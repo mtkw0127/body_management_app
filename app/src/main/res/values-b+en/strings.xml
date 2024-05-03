@@ -75,6 +75,7 @@
     <string name="label_today_total_kcal">Calories Intake Today</string>
     <string name="label_today_min_weight">Minimum Weight Today</string>
     <string name="label_today_you">You Today</string>
+    <string name="label_training">Training Menu</string>
     <string name="label_did_training">You already did workout</string>
     <string name="label_weight_bmi_22">The weight for a BMI of 22</string>
     <string name="label_weight_bmi_18_25">Weight for BMI between 18.5 and 24.9</string>
