@@ -66,6 +66,10 @@ class TopViewModel(
         viewModelScope.launch {
             try {
                 _userPreference.value = userPreferenceRepository.userPref.first()
+                // 入力なしに登録したユーザのための処理
+                checkNotNull(_userPreference.value?.tall)
+                checkNotNull(_userPreference.value?.birth)
+                checkNotNull(_userPreference.value?.weight)
                 load()
             } catch (_: Throwable) {
                 _showUserPrefDialog.value = true
