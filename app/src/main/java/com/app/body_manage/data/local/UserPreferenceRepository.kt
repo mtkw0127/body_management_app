@@ -13,6 +13,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 import java.time.LocalDate
@@ -29,6 +30,7 @@ class UserPreferenceRepository(
         val KEY_WEIGHT = floatPreferencesKey("key_weight")
         val KEY_GOAL_WEIGHT = floatPreferencesKey("key_goal_weight")
         val KEY_GOAL_KCAL = longPreferencesKey("key_goal_kcal")
+        val kEY_REQUESTED_REVIEW = booleanPreferencesKey("key_requested_review")
         val KEY_FAT = floatPreferencesKey("key_fat")
         val KEY_ALARM = booleanPreferencesKey("key_alarm")
     }
@@ -80,6 +82,16 @@ class UserPreferenceRepository(
             preferences[KEY_GOAL_KCAL] = goalKcal
         }
     }
+
+    suspend fun setRequestedReview() {
+        context.dataStore.edit { preferences ->
+            preferences[kEY_REQUESTED_REVIEW] = true
+        }
+    }
+
+    suspend fun getRequestedReview(): Boolean = context.dataStore.data.map {
+        it[kEY_REQUESTED_REVIEW] ?: false
+    }.firstOrNull() ?: false
 
     val userPref: Flow<UserPreference> = context.dataStore.data
         .catch { exception ->

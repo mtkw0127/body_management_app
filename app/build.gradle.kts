@@ -89,6 +89,10 @@ dependencies {
     // lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
 
+    // In-App-Review
+    implementation("com.google.android.play:review:2.0.1")
+    implementation("com.google.android.play:review-ktx:2.0.1")
+
     // CameraX core library using the camera2 implementation
     val cameraxVersion = "1.4.0-alpha04"
     implementation("androidx.camera:camera-core:${cameraxVersion}")
