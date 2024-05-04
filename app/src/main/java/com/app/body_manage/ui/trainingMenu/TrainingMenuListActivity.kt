@@ -24,6 +24,8 @@ class TrainingMenuListActivity : AppCompatActivity() {
             val trainingMenuList = viewModel.trainingMenuList.collectAsState()
 
             TrainingMenuListScreen(
+                selectedPart = viewModel.selectedPart.collectAsState().value,
+                selectedType = viewModel.selectedType.collectAsState().value,
                 trainingMenus = trainingMenuList.value,
                 onClickBackPress = ::finish,
                 onSaveMenu = {
@@ -31,7 +33,13 @@ class TrainingMenuListActivity : AppCompatActivity() {
                 },
                 onEditMenu = {
                     viewModel.updateTrainingMenu(it)
-                }
+                },
+                onClickPart = {
+                    viewModel.updatePartFilter(it)
+                },
+                onClickType = {
+                    viewModel.updateTypeFilter(it)
+                },
             )
         }
 

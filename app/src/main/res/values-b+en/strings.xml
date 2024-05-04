@@ -175,6 +175,7 @@
     <string name="label_result_diagnosis_good">Within the healthy weight range.</string>
     <string name="label_result_diagnosis_too_weight">overweight</string>
 
+    <string name="label_all">All</string>
     <string name="label_type_chest">Chest</string>
     <string name="label_type_shoulder">Shoulder</string>
     <string name="label_type_back">Back</string>
@@ -183,6 +184,8 @@
     <string name="label_type_hip">Hip</string>
     <string name="label_type_leg">Leg</string>
     <string name="label_type_else">Else</string>
+    <string name="label_training_target_part_selected">Part：%1$s</string>
+    <string name="label_training_target_type_selected">Type：%1$s</string>
 
     <!-- 登録画面 -->
     <!-- 登録画面 -->
