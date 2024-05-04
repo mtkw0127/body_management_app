@@ -24,6 +24,9 @@ import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import com.app.body_manage.ui.trainingForm.detail.TrainingDetailActivity
 import com.app.body_manage.ui.trainingForm.form.TrainingFormActivity
+import com.google.android.play.core.review.ReviewManagerFactory
+import com.google.firebase.analytics.FirebaseAnalytics
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 
 class MeasureListActivity : AppCompatActivity() {
@@ -44,10 +47,15 @@ class MeasureListActivity : AppCompatActivity() {
         (application as TrainingApplication).trainingRepository
     }
 
+    private val userPreferenceRepository: UserPreferenceRepository by lazy {
+        UserPreferenceRepository(this)
+    }
+
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_CODE_ADD) {
                 Toast.makeText(this, getString(R.string.message_saved), Toast.LENGTH_LONG).show()
+                showReviewRequest()
             }
             if (it.resultCode == RESULT_CODE_EDIT) {
                 Toast.makeText(this, getString(R.string.message_edited), Toast.LENGTH_LONG).show()
@@ -58,19 +66,34 @@ class MeasureListActivity : AppCompatActivity() {
             viewModel.reload()
         }
 
-    private val measureFormLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            val message = when (it.resultCode) {
-                RESULT_CODE_ADD -> getString(R.string.message_saved)
-                RESULT_CODE_EDIT -> getString(R.string.message_edited)
-                RESULT_CODE_DELETE -> getString(R.string.message_deleted)
-                else -> null
-            }
-            message?.let {
-                Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-            }
-            viewModel.reload()
+    private fun showReviewRequest() {
+        // 登録系の処理が終わったタイミングでレビューを依頼する
+        // 3日以上登録している場合に依頼する
+        if (
+            runBlocking {
+                userPreferenceRepository.getRequestedReview().not()
+            } && runBlocking { bodyMeasureRepository.getEntityListAll().size >= 3 }
+        ) {
+            ReviewManagerFactory.create(this).requestReviewFlow()
+                .addOnSuccessListener {
+                    ReviewManagerFactory.create(this).launchReviewFlow(this, it)
+                }
+                .addOnCompleteListener {
+                    val instance = FirebaseAnalytics.getInstance(this)
+                    val bundle = Bundle()
+                    val key = "result"
+                    if (it.isSuccessful) {
+                        bundle.putString(key, "success")
+                    } else if (it.isCanceled) {
+                        bundle.putString(key, "canceled")
+                    } else if (it.isComplete) {
+                        bundle.putString(key, "complete")
+                    }
+                    instance.logEvent("review_request", bundle)
+                    runBlocking { userPreferenceRepository.setRequestedReview() }
+                }
         }
+    }
 
     private lateinit var viewModel: MeasureListViewModel
 
@@ -100,7 +123,7 @@ class MeasureListActivity : AppCompatActivity() {
                     viewModel.setDate(it)
                 },
                 clickBodyMeasureEdit = {
-                    measureFormLauncher.launch(
+                    launcher.launch(
                         MeasureFormActivity.createMeasureEditIntent(
                             context = this,
                             measureTime = it,
@@ -114,7 +137,7 @@ class MeasureListActivity : AppCompatActivity() {
                     viewModel.updateDate(it)
                 },
                 onClickAddMeasure = {
-                    measureFormLauncher.launch(
+                    launcher.launch(
                         MeasureFormActivity.createMeasureFormIntent(
                             context = this,
                             measureDate = viewModel.uiState.value.date
@@ -122,7 +145,7 @@ class MeasureListActivity : AppCompatActivity() {
                     )
                 },
                 onClickAddMeal = {
-                    measureFormLauncher.launch(
+                    launcher.launch(
                         MealFormActivity.createIntentAdd(
                             context = this,
                             localDate = viewModel.uiState.value.date,
