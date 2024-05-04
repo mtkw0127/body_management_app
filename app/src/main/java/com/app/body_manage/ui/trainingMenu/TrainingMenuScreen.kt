@@ -15,8 +15,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ChipDefaults
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FilterChip
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
@@ -27,9 +30,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,10 +55,14 @@ import com.app.body_manage.ui.top.TextWithUnderLine
 
 @Composable
 fun TrainingMenuListScreen(
+    selectedPart: TrainingMenu.Part? = null, // nullは全てと判定する
+    selectedType: TrainingMenu.Type? = null, // nullは全てと判定する
     trainingMenus: List<TrainingMenu>,
     onClickBackPress: () -> Unit = {},
     onEditMenu: (TrainingMenuEntity) -> Unit = {},
     onSaveMenu: (TrainingMenuEntity) -> Unit = {},
+    onClickPart: (TrainingMenu.Part?) -> Unit = {},
+    onClickType: (TrainingMenu.Type?) -> Unit = {},
 ) {
     val isEditDialogOpening = rememberSaveable { mutableStateOf(false) }
     val isOpenAddDialog = rememberSaveable { mutableStateOf(false) }
@@ -241,6 +250,14 @@ fun TrainingMenuListScreen(
                 .padding(10.dp)
         ) {
             LazyColumn {
+                item {
+                    Filters(
+                        selectedPart = selectedPart,
+                        selectedType = selectedType,
+                        onClickPart = onClickPart,
+                        onClickType = onClickType,
+                    )
+                }
                 items(trainingMenus) { menu ->
                     TrainingMenuItem(
                         trainingMenu = menu,
@@ -254,6 +271,132 @@ fun TrainingMenuListScreen(
                         }
                     )
                     Spacer(modifier = Modifier.size(10.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun Filters(
+    onClickPart: (TrainingMenu.Part?) -> Unit,
+    onClickType: (TrainingMenu.Type?) -> Unit,
+    selectedPart: TrainingMenu.Part?,
+    selectedType: TrainingMenu.Type?,
+) {
+    Row {
+        DropDownFilterChipForPart(
+            selectedPart = selectedPart,
+            onClickPart = onClickPart,
+        )
+
+        Spacer(modifier = Modifier.size(10.dp))
+
+        DropDownFilterChipForType(
+            selectedType = selectedType,
+            onClickType = onClickType,
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+private fun DropDownFilterChipForType(
+    selectedType: TrainingMenu.Type?,
+    onClickType: (TrainingMenu.Type?) -> Unit,
+) {
+    val allAddedMenus = listOf(null) + TrainingMenu.Type.entries
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    Box {
+        FilterChip(
+            enabled = true,
+            selected = true,
+            onClick = { expanded = true },
+            colors = ChipDefaults.filterChipColors(
+                selectedBackgroundColor = Colors.theme,
+            ),
+        ) {
+            Text(
+                text = stringResource(
+                    id = R.string.label_training_target_type_selected,
+                    if (selectedType != null) {
+                        stringResource(selectedType.nameStringRes)
+                    } else {
+                        stringResource(R.string.label_all)
+                    }
+                ),
+            )
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            allAddedMenus.forEach { menu ->
+                DropdownMenuItem(
+                    onClick = {
+                        expanded = false
+                        onClickType(menu)
+                    }
+                ) {
+                    Text(
+                        text = if (menu != null) {
+                            stringResource(menu.nameStringRes)
+                        } else {
+                            stringResource(R.string.label_all)
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+private fun DropDownFilterChipForPart(
+    selectedPart: TrainingMenu.Part?,
+    onClickPart: (TrainingMenu.Part?) -> Unit,
+) {
+    val allAddedMenus = listOf(null) + TrainingMenu.Part.entries
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    Box {
+        FilterChip(
+            enabled = true,
+            selected = true,
+            onClick = { expanded = true },
+            colors = ChipDefaults.filterChipColors(
+                selectedBackgroundColor = Colors.theme,
+            ),
+        ) {
+            Text(
+                text = stringResource(
+                    id = R.string.label_training_target_part_selected,
+                    if (selectedPart != null) {
+                        stringResource(selectedPart.nameStringResourceId)
+                    } else {
+                        stringResource(R.string.label_all)
+                    },
+                ),
+            )
+        }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            allAddedMenus.forEach { menu ->
+                DropdownMenuItem(
+                    onClick = {
+                        expanded = false
+                        onClickPart(menu)
+                    }
+                ) {
+                    Text(
+                        text = if (menu != null) {
+                            stringResource(menu.nameStringResourceId)
+                        } else {
+                            stringResource(R.string.label_all)
+                        },
+                    )
                 }
             }
         }
