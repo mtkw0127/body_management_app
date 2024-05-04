@@ -13,6 +13,12 @@ class SelectTrainingMenuViewModel(
     private val trainingRepository: TrainingRepository,
 ) : ViewModel() {
 
+    private val _selectedPart: MutableStateFlow<TrainingMenu.Part?> = MutableStateFlow(null)
+    val selectedPart: StateFlow<TrainingMenu.Part?> = _selectedPart
+
+    private val _selectedType: MutableStateFlow<TrainingMenu.Type?> = MutableStateFlow(null)
+    val selectedType: StateFlow<TrainingMenu.Type?> = _selectedType
+
     private val _trainingMenuList: MutableStateFlow<List<TrainingMenu>> =
         MutableStateFlow(emptyList())
     val trainingMenuList: StateFlow<List<TrainingMenu>> = _trainingMenuList
@@ -21,11 +27,30 @@ class SelectTrainingMenuViewModel(
         viewModelScope.launch {
             runCatching {
                 trainingRepository.getJustTrainingMenuList()
-            }.onSuccess {
-                _trainingMenuList.value = it
+            }.onSuccess { menus ->
+                _trainingMenuList.value = menus
+                if (_selectedPart.value != null) {
+                    _trainingMenuList.value =
+                        _trainingMenuList.value.filter { it.part == _selectedPart.value }
+                }
+
+                if (_selectedType.value != null) {
+                    _trainingMenuList.value =
+                        _trainingMenuList.value.filter { it.type == _selectedType.value }
+                }
             }.onFailure { error ->
                 Timber.e(error)
             }
         }
+    }
+
+    fun updatePartFilter(it: TrainingMenu.Part?) {
+        _selectedPart.value = it
+        loadMenu()
+    }
+
+    fun updateTypeFilter(it: TrainingMenu.Type?) {
+        _selectedType.value = it
+        loadMenu()
     }
 }

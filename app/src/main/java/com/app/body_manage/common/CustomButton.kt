@@ -21,6 +21,25 @@ fun CustomButton(
     fontSize: TextUnit = 12.sp,
     enable: Boolean = true,
 ) {
+    CustomButton(
+        onClick = onClick,
+        text = stringResource(id = valueResourceId),
+        modifier = modifier,
+        backgroundColor = backgroundColor,
+        fontSize = fontSize,
+        enable = enable
+    )
+}
+
+@Composable
+fun CustomButton(
+    onClick: () -> Unit,
+    text: String,
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = Color.White,
+    fontSize: TextUnit = 12.sp,
+    enable: Boolean = true,
+) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
@@ -30,7 +49,7 @@ fun CustomButton(
         enabled = enable,
     ) {
         Text(
-            text = stringResource(id = valueResourceId),
+            text = text,
             textAlign = TextAlign.Center,
             fontSize = fontSize
         )

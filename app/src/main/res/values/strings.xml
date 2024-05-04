@@ -176,6 +176,7 @@
 
     <!-- トレーニング登録 -->
     <!-- 部位 -->
+    <string name="label_all">すべて</string>
     <string name="label_type_chest">胸</string>
     <string name="label_type_shoulder">肩</string>
     <string name="label_type_back">背中</string>
@@ -217,5 +218,7 @@
     <string name="label_training_content">内容</string>
     <string name="label_see_training_history">成長を見る</string>
     <string name="label_edit">編集する</string>
+    <string name="label_training_target_part_selected">部位：%1$s</string>
+    <string name="label_training_target_type_selected">タイプ：%1$s</string>
 
 </resources>

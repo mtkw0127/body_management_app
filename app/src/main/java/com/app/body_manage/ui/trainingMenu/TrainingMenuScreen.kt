@@ -45,15 +45,20 @@ import com.app.body_manage.data.model.createSampleOwnWeightTrainingMenu
 import com.app.body_manage.data.model.createSampleTrainingMenu
 import com.app.body_manage.style.Colors
 import com.app.body_manage.ui.common.LabelAndContentRow
+import com.app.body_manage.ui.common.TrainingMenuFilter
 import com.app.body_manage.ui.common.TrainingMenuItem
 import com.app.body_manage.ui.top.TextWithUnderLine
 
 @Composable
 fun TrainingMenuListScreen(
+    selectedPart: TrainingMenu.Part? = null, // nullは全てと判定する
+    selectedType: TrainingMenu.Type? = null, // nullは全てと判定する
     trainingMenus: List<TrainingMenu>,
     onClickBackPress: () -> Unit = {},
     onEditMenu: (TrainingMenuEntity) -> Unit = {},
     onSaveMenu: (TrainingMenuEntity) -> Unit = {},
+    onClickPart: (TrainingMenu.Part?) -> Unit = {},
+    onClickType: (TrainingMenu.Type?) -> Unit = {},
 ) {
     val isEditDialogOpening = rememberSaveable { mutableStateOf(false) }
     val isOpenAddDialog = rememberSaveable { mutableStateOf(false) }
@@ -241,6 +246,14 @@ fun TrainingMenuListScreen(
                 .padding(10.dp)
         ) {
             LazyColumn {
+                item {
+                    TrainingMenuFilter(
+                        selectedPart = selectedPart,
+                        selectedType = selectedType,
+                        onClickPart = onClickPart,
+                        onClickType = onClickType,
+                    )
+                }
                 items(trainingMenus) { menu ->
                     TrainingMenuItem(
                         trainingMenu = menu,
