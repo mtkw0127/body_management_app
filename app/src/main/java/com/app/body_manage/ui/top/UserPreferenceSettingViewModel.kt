@@ -24,6 +24,7 @@ sealed interface UiState {
     val birth: TextFieldValue
     val tall: TextFieldValue
     val weight: TextFieldValue
+    val launchType: UserPreferenceSettingDialog.Companion.LaunchType?
 
     data class NotYet(
         override val name: String?,
@@ -31,6 +32,7 @@ sealed interface UiState {
         override val birth: TextFieldValue,
         override val tall: TextFieldValue,
         override val weight: TextFieldValue,
+        override val launchType: UserPreferenceSettingDialog.Companion.LaunchType?
     ) : UiState
 
     data class Done(
@@ -39,6 +41,7 @@ sealed interface UiState {
         override val birth: TextFieldValue,
         override val tall: TextFieldValue,
         override val weight: TextFieldValue,
+        override val launchType: UserPreferenceSettingDialog.Companion.LaunchType?
     ) : UiState
 }
 
@@ -48,6 +51,7 @@ data class UserPreferenceSettingViewModelState(
     val birth: TextFieldValue = TextFieldValue(),
     val tall: TextFieldValue = TextFieldValue(),
     val weight: TextFieldValue = TextFieldValue(),
+    val launchType: UserPreferenceSettingDialog.Companion.LaunchType? = null,
 ) {
     fun toUiState(): UiState {
         val setBirth = try {
@@ -61,35 +65,40 @@ data class UserPreferenceSettingViewModelState(
             false
         }
 
-        return if (name == null ||
-            setBirth.not() ||
-            birth.text.isEmpty() ||
-            weight.text.isEmpty() ||
-            tall.text.isEmpty()
-        ) {
+        val isNotYet =
+            when (launchType) {
+                UserPreferenceSettingDialog.Companion.LaunchType.INITIAL_SETTING ->
+                    name == null ||
+                        setBirth.not() ||
+                        birth.text.isEmpty() ||
+                        weight.text.isEmpty() ||
+                        tall.text.isEmpty()
+
+                UserPreferenceSettingDialog.Companion.LaunchType.EDIT_SETTING ->
+                    name == null ||
+                        setBirth.not() ||
+                        birth.text.isEmpty()
+
+                else -> false
+            }
+
+        return if (isNotYet) {
             UiState.NotYet(
-                name = name,
-                gender = gender,
-                birth = TextFieldValue(
-                    birth.text,
-                    TextRange(birth.text.length, birth.text.length)
-                ),
-                tall = tall,
-                weight = TextFieldValue(
-                    weight.text,
-                    TextRange(weight.text.length, weight.text.length)
-                ),
-            )
-        } else {
-            UiState.Done(
                 name = name,
                 gender = gender,
                 birth = birth,
                 tall = tall,
-                weight = TextFieldValue(
-                    weight.text,
-                    TextRange(weight.text.length, birth.text.length)
-                ),
+                weight = weight,
+                launchType = launchType,
+            )
+        } else {
+            UiState.Done(
+                name = name.orEmpty(),
+                gender = gender,
+                birth = birth,
+                tall = tall,
+                weight = weight,
+                launchType = launchType,
             )
         }
     }
@@ -105,6 +114,12 @@ class UserPreferenceSettingViewModel(
         UserPreferenceSettingViewModelState().toUiState()
     )
 
+    fun init(
+        launchType: UserPreferenceSettingDialog.Companion.LaunchType
+    ) {
+        viewModelState.update { it.copy(launchType = launchType) }
+    }
+
     private val _saved = MutableStateFlow(false)
     val saved: StateFlow<Boolean> = _saved
 
@@ -114,11 +129,14 @@ class UserPreferenceSettingViewModel(
             try {
                 userPreferenceRepository.userPref.firstOrNull()?.let { pref ->
                     viewModelState.update {
+                        val birth =
+                            "${pref.birth.year}${pref.birth.monthValue}${pref.birth.dayOfMonth}"
                         it.copy(
                             name = pref.name,
                             gender = pref.gender,
                             birth = TextFieldValue(
-                                "${pref.birth.year}${pref.birth.monthValue}${pref.birth.dayOfMonth}"
+                                text = birth,
+                                selection = TextRange(birth.length, birth.length),
                             ),
                         )
                     }
@@ -148,7 +166,7 @@ class UserPreferenceSettingViewModel(
                         TextFieldValue()
                     } else {
                         trimTall.toFloat()
-                        tall
+                        tall.copy(selection = TextRange(trimTall.length, trimTall.length))
                     }
                 } catch (_: Throwable) {
                     return
@@ -169,7 +187,7 @@ class UserPreferenceSettingViewModel(
                         TextFieldValue()
                     } else {
                         trimWeight.toFloat()
-                        weight
+                        weight.copy(selection = TextRange(trimWeight.length, trimWeight.length))
                     }
                 } catch (_: Throwable) {
                     return
@@ -193,7 +211,13 @@ class UserPreferenceSettingViewModel(
             // 数値以外はセットしない
             return
         }
-        var tempBirth = TextFieldValue(trimBirth)
+        var tempBirth = TextFieldValue(
+            text = trimBirth,
+            selection = TextRange(
+                start = trimBirth.length,
+                end = trimBirth.length
+            )
+        )
         val isAdd = (trimBirth.length - viewModelState.value.birth.text.length) > 0
         if (isAdd) {
             // 月を取得する
@@ -243,8 +267,10 @@ class UserPreferenceSettingViewModel(
                 userPreferenceRepository.setBirth(date)
                 userPreferenceRepository.setGender(gender)
                 userPreferenceRepository.setName(name.orEmpty())
-                userPreferenceRepository.putTall(tall.text.toFloat())
-                userPreferenceRepository.putWeight(weight.text.toFloat())
+                if (launchType == UserPreferenceSettingDialog.Companion.LaunchType.INITIAL_SETTING) {
+                    userPreferenceRepository.putTall(tall.text.toFloat())
+                    userPreferenceRepository.putWeight(weight.text.toFloat())
+                }
                 _saved.value = true
             }
         }

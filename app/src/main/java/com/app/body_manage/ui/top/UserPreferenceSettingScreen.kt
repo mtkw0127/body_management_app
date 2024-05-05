@@ -5,10 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -48,7 +48,7 @@ fun UserPreferenceSettingScreen(
         modifier = Modifier
             .background(Color.White, RoundedCornerShape(10.dp))
             .fillMaxWidth(0.95F)
-            .fillMaxHeight(0.7F)
+            .wrapContentHeight()
             .padding(30.dp)
     ) {
         item {
@@ -60,11 +60,14 @@ fun UserPreferenceSettingScreen(
         item {
             Birth(uiState.birth, onChangeBirth)
         }
-        item {
-            Weight(uiState.weight, onChangeWeight)
-        }
-        item {
-            Tall(uiState.tall, onChangeTall)
+        // 初期設定の場合のみ表示
+        if (uiState.launchType == UserPreferenceSettingDialog.Companion.LaunchType.INITIAL_SETTING) {
+            item {
+                Weight(uiState.weight, onChangeWeight)
+            }
+            item {
+                Tall(uiState.tall, onChangeTall)
+            }
         }
         item {
             Spacer(modifier = Modifier.size(10.dp))
