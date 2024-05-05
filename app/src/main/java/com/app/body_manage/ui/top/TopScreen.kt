@@ -26,6 +26,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.EmojiPeople
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -69,6 +70,7 @@ fun TopScreen(
     onClickAddMeal: () -> Unit = {},
     onClickAddTraining: () -> Unit = {},
     onClickSetGoat: () -> Unit = {},
+    onClickSetting: () -> Unit = {},
 ) {
     Scaffold(
         bottomBar = {
@@ -115,6 +117,14 @@ fun TopScreen(
                             color = Color.Gray,
                         )
                     }
+                    Spacer(modifier = Modifier.size(10.dp))
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = null,
+                        modifier = Modifier.clickable {
+                            onClickSetting()
+                        }
+                    )
                 }
                 Spacer(modifier = Modifier.size(10.dp))
             }

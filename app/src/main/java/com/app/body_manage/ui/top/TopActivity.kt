@@ -88,7 +88,9 @@ class TopActivity : AppCompatActivity() {
             viewModel.showUserPrefDialog.collectLatest { show ->
                 if (show) {
                     UserPreferenceSettingDialog
-                        .createInstance()
+                        .createInstance(
+                            launchType = UserPreferenceSettingDialog.Companion.LaunchType.INITIAL_SETTING,
+                        )
                         .show(supportFragmentManager, null)
                 }
             }
@@ -152,7 +154,14 @@ class TopActivity : AppCompatActivity() {
                     ) {
                         viewModel.setGoalWeight(it)
                     }.show(supportFragmentManager, null)
-                }
+                },
+                onClickSetting = {
+                    UserPreferenceSettingDialog
+                        .createInstance(
+                            launchType = UserPreferenceSettingDialog.Companion.LaunchType.EDIT_SETTING,
+                        )
+                        .show(supportFragmentManager, null)
+                },
             )
         }
     }
