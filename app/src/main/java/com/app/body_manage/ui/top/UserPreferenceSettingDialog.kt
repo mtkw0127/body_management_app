@@ -64,7 +64,7 @@ class UserPreferenceSettingDialog : DialogFragment() {
 
     companion object {
         const val REQUEST_KEY = "INITIAL_SETTING_DIALOG_KEY"
-        private val LAUNCH_TYPE = "LAUNCH_TYPE"
+        private const val LAUNCH_TYPE = "LAUNCH_TYPE"
 
         enum class LaunchType {
             INITIAL_SETTING,
