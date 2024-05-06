@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import com.app.body_manage.data.model.TrainingMenu
 import java.io.Serializable
 
-// ある一回のトレーニングの１セットを表すEntity
+// ある一回のトレーニング（筋トレ系）の１セットを表すEntity
 @Entity(tableName = "training_sets")
 data class TrainingSetEntity(
     @PrimaryKey(autoGenerate = true) val id: Long,
@@ -15,19 +15,21 @@ data class TrainingSetEntity(
     @ColumnInfo(name = "weight") val weight: Long, // 重量 自重は基本0、加重で将来拡張用
 ) : Serializable
 
-fun TrainingSetEntity.toModel(type: TrainingMenu.Type): TrainingMenu.Set {
+fun TrainingSetEntity.toModel(type: TrainingMenu.Type): TrainingMenu.TrainingInterface {
     return when (type) {
         TrainingMenu.Type.MACHINE, TrainingMenu.Type.FREE -> TrainingMenu.WeightSet(
-            id = TrainingMenu.Set.Id(this.id),
+            id = TrainingMenu.TrainingInterface.Id(this.id),
             setIndex = this.setIndex,
             number = this.rep,
             weight = this.weight,
         )
 
         TrainingMenu.Type.OWN_WEIGHT -> TrainingMenu.OwnWeightSet(
-            id = TrainingMenu.Set.Id(this.id),
+            id = TrainingMenu.TrainingInterface.Id(this.id),
             setIndex = this.setIndex,
             number = this.rep,
         )
+
+        else -> throw IllegalArgumentException("Invalid type: $type")
     }
 }

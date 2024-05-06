@@ -14,6 +14,7 @@ import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.model.Meal
 import com.app.body_manage.data.model.MealPhoto
+import com.app.body_manage.dialog.Digit
 import com.app.body_manage.dialog.IntNumberPickerDialog
 import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.camera.CameraActivity
@@ -76,8 +77,8 @@ class MealFormActivity : AppCompatActivity() {
                         label = getString(R.string.kcal),
                         number = food.kcal.toLong(),
                         unit = getString(R.string.unit_kcal),
-                        maxDigit = IntNumberPickerDialog.Digit.THOUSAND,
-                        initialDigit = IntNumberPickerDialog.Digit.HUNDRED,
+                        maxDigit = Digit.THOUSAND,
+                        initialDigit = Digit.HUNDRED,
                     ) { kcal ->
                         viewModel.updateFood(food, kcal)
                     }.show(supportFragmentManager, null)
@@ -87,8 +88,8 @@ class MealFormActivity : AppCompatActivity() {
                         label = getString(R.string.label_number),
                         number = food.number,
                         unit = getString(R.string.unit_number),
-                        maxDigit = IntNumberPickerDialog.Digit.ONES,
-                        initialDigit = IntNumberPickerDialog.Digit.ONES,
+                        maxDigit = Digit.ONES,
+                        initialDigit = Digit.ONES,
                     ) { number ->
                         viewModel.updateFoodNumber(food, number)
                     }.show(supportFragmentManager, null)

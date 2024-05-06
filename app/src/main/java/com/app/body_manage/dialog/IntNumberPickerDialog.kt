@@ -25,8 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -53,10 +51,6 @@ class IntNumberPickerDialog : DialogFragment() {
     private lateinit var tensPlace: String
     private lateinit var onesPlace: String
     private lateinit var maxDigit: Digit
-
-    enum class Digit(val number: Int) {
-        THOUSAND(1000), HUNDRED(100), TENS(10), ONES(1)
-    }
 
     private var currentFocus: Digit = Digit.HUNDRED
 
@@ -126,6 +120,8 @@ class IntNumberPickerDialog : DialogFragment() {
                             onesPlace = number.toString()
                             currentFocus = maxDigit
                         }
+
+                        else -> {}
                     }
                 }
 
@@ -179,79 +175,31 @@ class IntNumberPickerDialog : DialogFragment() {
                                     verticalAlignment = Alignment.Bottom,
                                 ) {
                                     if (Digit.THOUSAND.number <= maxDigit.number) {
-                                        Text(
+                                        PickerNumberText(
                                             text = thousandPlace,
-                                            fontSize = 18.sp,
-                                            modifier = Modifier.drawBehind {
-                                                if (currentFocus == Digit.THOUSAND) {
-                                                    drawLine(
-                                                        Color.Black,
-                                                        Offset(0F, this.size.height - 3),
-                                                        Offset(
-                                                            this.size.width,
-                                                            this.size.height - 3
-                                                        ),
-                                                        strokeWidth = 1F
-                                                    )
-                                                }
-                                            }
+                                            currentDigit = currentFocus,
+                                            thisDigit = Digit.THOUSAND,
                                         )
                                     }
                                     if (Digit.HUNDRED.number <= maxDigit.number) {
-                                        Text(
+                                        PickerNumberText(
                                             text = hundredsPlace,
-                                            fontSize = 18.sp,
-                                            modifier = Modifier.drawBehind {
-                                                if (currentFocus == Digit.HUNDRED) {
-                                                    drawLine(
-                                                        Color.Black,
-                                                        Offset(0F, this.size.height - 3),
-                                                        Offset(
-                                                            this.size.width,
-                                                            this.size.height - 3
-                                                        ),
-                                                        strokeWidth = 1F
-                                                    )
-                                                }
-                                            }
+                                            currentDigit = currentFocus,
+                                            thisDigit = Digit.HUNDRED,
                                         )
                                     }
                                     if (Digit.TENS.number <= maxDigit.number) {
-                                        Text(
+                                        PickerNumberText(
                                             text = tensPlace,
-                                            fontSize = 18.sp,
-                                            modifier = Modifier.drawBehind {
-                                                if (currentFocus == Digit.TENS) {
-                                                    drawLine(
-                                                        Color.Black,
-                                                        Offset(0F, this.size.height - 3),
-                                                        Offset(
-                                                            this.size.width,
-                                                            this.size.height - 3
-                                                        ),
-                                                        strokeWidth = 1F
-                                                    )
-                                                }
-                                            }
+                                            currentDigit = currentFocus,
+                                            thisDigit = Digit.TENS,
                                         )
                                     }
                                     if (Digit.ONES.number <= maxDigit.number) {
-                                        Text(
+                                        PickerNumberText(
                                             text = onesPlace,
-                                            fontSize = 18.sp,
-                                            modifier = Modifier.drawBehind {
-                                                if (currentFocus == Digit.ONES) {
-                                                    drawLine(
-                                                        Color.Black,
-                                                        Offset(0F, this.size.height - 3),
-                                                        Offset(
-                                                            this.size.width,
-                                                            this.size.height - 3
-                                                        ),
-                                                        strokeWidth = 1F
-                                                    )
-                                                }
-                                            }
+                                            currentDigit = currentFocus,
+                                            thisDigit = Digit.ONES,
                                         )
                                     }
                                 }

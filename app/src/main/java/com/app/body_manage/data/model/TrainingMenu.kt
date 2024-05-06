@@ -2,6 +2,7 @@ package com.app.body_manage.data.model
 
 import androidx.annotation.StringRes
 import com.app.body_manage.R
+import com.app.body_manage.data.entity.TrainingCardioEntity
 import com.app.body_manage.data.entity.TrainingMenuEntity
 import com.app.body_manage.data.entity.TrainingSetEntity
 import java.io.Serializable
@@ -12,7 +13,7 @@ data class TrainingMenu(
     val name: String,
     val part: Part,
     val memo: String,
-    val sets: List<Set>, // MEMO：最新のセット数。履歴管理する。
+    val sets: List<TrainingInterface>, // MEMO：最新のセット数。履歴管理する。
     val type: Type,
 ) : Serializable {
     data class Id(val value: Long) : Serializable
@@ -21,24 +22,27 @@ data class TrainingMenu(
         val ID_NEW = Id(0)
     }
 
-    sealed interface Set {
+    sealed interface TrainingInterface : Serializable {
         val id: Id
-        val setIndex: Long
-        val number: Long
 
         data class Id(val value: Long) : Serializable
 
         companion object {
             val ID_NEW = Id(0)
         }
+    }
 
+    // 自重・ウェイトトレイニング用のインターフェース
+    sealed interface Set : TrainingInterface {
+        val setIndex: Long
+        val number: Long
         fun toEntity(setIndex: Long): TrainingSetEntity
     }
 
     // MEMO: 例えば60kgを10回上げるような感じ
     // マシン・フリーウェイト用のSet
     data class WeightSet(
-        override val id: Set.Id,
+        override val id: TrainingInterface.Id,
         override val setIndex: Long,
         override val number: Long, // 実際の回数
         val weight: Long, // 実際の重量
@@ -57,7 +61,7 @@ data class TrainingMenu(
 
     // 自重用のSet
     data class OwnWeightSet(
-        override val id: Set.Id,
+        override val id: TrainingInterface.Id,
         override val setIndex: Long,
         override val number: Long, // 実際の回数
     ) : Set, Serializable {
@@ -69,6 +73,20 @@ data class TrainingMenu(
                 setIndex = setIndex, // 何セット目かを表す
                 rep = number,
                 weight = 0,
+            )
+        }
+    }
+
+    data class CardioSet(
+        override val id: TrainingInterface.Id,
+        val distance: Float,
+        val minutes: Long,
+    ) : TrainingInterface {
+        fun toEntity(): TrainingCardioEntity {
+            return TrainingCardioEntity(
+                id = ID_NEW.value,
+                distance = distance,
+                minutes = minutes,
             )
         }
     }
@@ -85,6 +103,10 @@ data class TrainingMenu(
         OWN_WEIGHT(
             3,
             R.string.label_own_weight
+        ),
+        Cardio(
+            4,
+            R.string.label_cardio
         )
     }
 
@@ -136,7 +158,7 @@ fun createSampleTrainingMenu(eventIndex: Long): TrainingMenu {
         memo = "メモメモ".repeat(4),
         sets = List(5) { index ->
             TrainingMenu.WeightSet(
-                id = TrainingMenu.Set.Id(0),
+                id = TrainingMenu.TrainingInterface.Id(0),
                 setIndex = index.toLong() + 1,
                 number = 10,
                 weight = 55,
@@ -155,7 +177,7 @@ fun createSampleOwnWeightTrainingMenu(eventIndex: Long): TrainingMenu {
         memo = "メモメモ".repeat(4),
         sets = List(5) { index ->
             TrainingMenu.OwnWeightSet(
-                id = TrainingMenu.Set.Id(0),
+                id = TrainingMenu.TrainingInterface.Id(0),
                 setIndex = index.toLong() + 1,
                 number = index.toLong() + 10,
             )
