@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import com.app.body_manage.data.entity.TrainingCardioEntity
 import com.app.body_manage.data.entity.TrainingEntity
 import com.app.body_manage.data.entity.TrainingMenuEntity
 import com.app.body_manage.data.entity.TrainingSetEntity
@@ -22,6 +23,9 @@ interface TrainingDao {
     @Insert
     suspend fun insertTrainingSet(trainingSet: TrainingSetEntity): Long
 
+    @Insert
+    suspend fun insertTrainingCardioSet(trainingSet: TrainingCardioEntity): Long
+
     @Query("SELECT * FROM trainings WHERE date = :date")
     suspend fun getTrainingsByDate(date: LocalDate): List<TrainingEntity>
 
@@ -31,6 +35,9 @@ interface TrainingDao {
     @Query("SELECT * FROM training_sets WHERE id IN (:ids)")
     suspend fun getTrainingSetByIds(ids: List<Long>): List<TrainingSetEntity>
 
+    @Query("SELECT * FROM training_cardio_sets WHERE id IN (:ids)")
+    suspend fun getTrainingCardioSetByIds(ids: List<Long>): List<TrainingCardioEntity>
+
     @Query("SELECT * FROM training_menus WHERE id = :trainingMenuId")
     suspend fun getTrainingMenu(trainingMenuId: Long): TrainingMenuEntity
 
@@ -39,6 +46,9 @@ interface TrainingDao {
 
     @Query("DELETE FROM training_training_menu_sets WHERE training_id = :trainingId")
     suspend fun deleteTrainingTrainingSet(trainingId: Long)
+
+    @Query("DELETE FROM training_cardio_sets WHERE id IN (:trainingSetIds)")
+    suspend fun deleteTrainingCardioSet(trainingSetIds: List<Long>)
 
     @Query("DELETE FROM training_sets WHERE id IN (:trainingSetIds)")
     suspend fun deleteTrainingSet(trainingSetIds: List<Long>)

@@ -11,6 +11,9 @@ import androidx.compose.runtime.getValue
 import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.model.Training
+import com.app.body_manage.data.model.TrainingMenu
+import com.app.body_manage.dialog.Digit
+import com.app.body_manage.dialog.FloatNumberPickerDialog
 import com.app.body_manage.dialog.IntNumberPickerDialog
 import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.measure.list.MeasureListActivity.Companion.RESULT_CODE_DELETE
@@ -62,7 +65,7 @@ class TrainingDetailActivity : AppCompatActivity() {
                     viewModel.deleteSet(menuIndex, setIndex)
                 },
                 onClickStartTime = {
-                    val time = training?.startTime ?: return@TrainingFormScreen
+                    val time = training.startTime
                     TimePickerDialog.createTimePickerDialog(
                         localTime = time,
                     ) { hour, minute ->
@@ -70,7 +73,7 @@ class TrainingDetailActivity : AppCompatActivity() {
                     }.show(supportFragmentManager, "start_time")
                 },
                 onClickEndTime = {
-                    val time = training?.endTime ?: return@TrainingFormScreen
+                    val time = training.endTime
                     TimePickerDialog.createTimePickerDialog(
                         localTime = time,
                     ) { hour, minute ->
@@ -78,32 +81,36 @@ class TrainingDetailActivity : AppCompatActivity() {
                     }.show(supportFragmentManager, "end_time")
                 },
                 onClickRep = { menuIndex, setIndex ->
-                    val menu = checkNotNull(viewModel.training.value?.menus?.get(menuIndex))
+                    val menu = viewModel.training.value.menus[menuIndex]
                     val set = menu.sets[setIndex]
-                    IntNumberPickerDialog.createDialog(
-                        label = getString(R.string.label_rep_num),
-                        number = set.number,
-                        unit = getString(R.string.label_count),
-                        maxDigit = IntNumberPickerDialog.Digit.TENS,
-                        initialDigit = IntNumberPickerDialog.Digit.TENS,
-                        callBack = { number ->
-                            viewModel.updateRep(menuIndex, setIndex, number)
-                        }
-                    ).show(supportFragmentManager, "rep")
+                    if (set is TrainingMenu.Set) {
+                        IntNumberPickerDialog.createDialog(
+                            label = getString(R.string.label_rep_num),
+                            number = set.number,
+                            unit = getString(R.string.label_count),
+                            maxDigit = Digit.TENS,
+                            initialDigit = Digit.TENS,
+                            callBack = { number ->
+                                viewModel.updateRep(menuIndex, setIndex, number)
+                            }
+                        ).show(supportFragmentManager, "rep")
+                    }
                 },
                 onClickWeight = { menuIndex, setIndex ->
-                    val menu = checkNotNull(viewModel.training.value?.menus?.get(menuIndex))
+                    val menu = viewModel.training.value.menus[menuIndex]
                     val set = menu.sets[setIndex]
-                    IntNumberPickerDialog.createDialog(
-                        label = getString(R.string.label_weight),
-                        number = set.number,
-                        unit = getString(R.string.label_weight_unit),
-                        maxDigit = IntNumberPickerDialog.Digit.TENS,
-                        initialDigit = IntNumberPickerDialog.Digit.TENS,
-                        callBack = { weight ->
-                            viewModel.updateWeight(menuIndex, setIndex, weight)
-                        }
-                    ).show(supportFragmentManager, "weight")
+                    if (set is TrainingMenu.Set) {
+                        IntNumberPickerDialog.createDialog(
+                            label = getString(R.string.label_weight),
+                            number = set.number,
+                            unit = getString(R.string.label_weight_unit),
+                            maxDigit = Digit.TENS,
+                            initialDigit = Digit.TENS,
+                            callBack = { weight ->
+                                viewModel.updateWeight(menuIndex, setIndex, weight)
+                            }
+                        ).show(supportFragmentManager, "weight")
+                    }
                 },
                 onClickRegister = {
                     viewModel.updateTraining()
@@ -114,6 +121,37 @@ class TrainingDetailActivity : AppCompatActivity() {
                     viewModel.deleteTraining()
                     setResult(RESULT_CODE_DELETE)
                     finish()
+                },
+                onClickCardioDistance = { menuIndex, index ->
+                    val menu = viewModel.training.value.menus[menuIndex]
+                    val set = menu.sets[index]
+                    if (set is TrainingMenu.CardioSet) {
+                        FloatNumberPickerDialog.createDialog(
+                            label = getString(R.string.label_distance),
+                            number = set.distance,
+                            unit = getString(R.string.label_distance_unit),
+                            initialDigit = Digit.ONES,
+                            callBack = { distance ->
+                                viewModel.updateCardioDistance(menuIndex, distance)
+                            }
+                        ).show(supportFragmentManager, "distance")
+                    }
+                },
+                onClickCardioMinutes = { menuIndex, index ->
+                    val menu = viewModel.training.value.menus[menuIndex]
+                    val set = menu.sets[index]
+                    if (set is TrainingMenu.CardioSet) {
+                        IntNumberPickerDialog.createDialog(
+                            label = getString(R.string.label_minutes),
+                            number = set.minutes,
+                            unit = getString(R.string.label_minute_unit),
+                            maxDigit = Digit.HUNDRED,
+                            initialDigit = Digit.TENS,
+                            callBack = { minutes ->
+                                viewModel.updateCardioMinutes(menuIndex, minutes)
+                            }
+                        ).show(supportFragmentManager, "minutes")
+                    }
                 }
             )
         }

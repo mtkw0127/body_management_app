@@ -20,6 +20,7 @@ import com.app.body_manage.data.entity.MealEntity
 import com.app.body_manage.data.entity.MealFoodCrossRef
 import com.app.body_manage.data.entity.MealPhotoEntity
 import com.app.body_manage.data.entity.PhotoEntity
+import com.app.body_manage.data.entity.TrainingCardioEntity
 import com.app.body_manage.data.entity.TrainingEntity
 import com.app.body_manage.data.entity.TrainingMenuEntity
 import com.app.body_manage.data.entity.TrainingSetEntity
@@ -38,8 +39,9 @@ import com.app.body_manage.data.entity.TrainingTrainingMenuSetEntity
         TrainingTrainingMenuSetEntity::class,
         TrainingMenuEntity::class,
         TrainingSetEntity::class,
+        TrainingCardioEntity::class,
     ],
-    version = 8,
+    version = 9,
     exportSchema = true
 )
 @TypeConverters(LocalDateConverter::class)
@@ -61,6 +63,7 @@ abstract class AppDatabase : RoomDatabase() {
                                 MIGRATION_5_6,
                                 MIGRATION_6_7,
                                 MIGRATION_7_8,
+                                MIGRATION_8_9,
                             )
                         }.addCallback(object : Callback() {
                             override fun onCreate(db: SupportSQLiteDatabase) {
@@ -118,6 +121,10 @@ abstract class AppDatabase : RoomDatabase() {
                                 )
                                 db.execSQL(
                                     "INSERT INTO training_menus (name, part, memo, type) VALUES ('自重スクワット', 70, '', 3)"
+                                )
+                                // 有酸素
+                                db.execSQL(
+                                    "INSERT INTO training_menus (name, part, memo, type) VALUES ('ウォーキング', 999, '', 4)"
                                 )
                             }
                         }).build()
@@ -219,6 +226,17 @@ val MIGRATION_7_8 = object : Migration(7, 8) {
         )
         db.execSQL(
             "CREATE TABLE IF NOT EXISTS `training_training_menu_sets`  (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `training_id` INTEGER NOT NULL, `event_index` INTEGER NOT NULL, `training_menu_id` INTEGER NOT NULL, `training_set_id` INTEGER NOT NULL)"
+        )
+    }
+}
+
+/**
+ * 有酸素運動用のテーブルを追加
+ */
+val MIGRATION_8_9 = object : Migration(8, 9) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `training_cardio_sets`  (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `distance` INTEGER NOT NULL, `minutes` REAL NOT NULL)"
         )
     }
 }

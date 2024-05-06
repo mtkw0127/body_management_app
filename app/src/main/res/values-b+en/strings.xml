@@ -199,11 +199,15 @@
     <string name="label_set">#%1$d</string>
     <string name="label_event">No%1$d</string>
     <string name="label_count">Number</string>
+    <string name="label_distance_unit">km</string>
+    <string name="label_minute_unit">min</string>
     <string name="label_weight_unit">kg</string>
     <string name="label_empty">-</string>
     <string name="label_object">Object</string>
     <string name="label_rep_num">Rep</string>
     <string name="label_weight">Weight</string>
+    <string name="label_distance">Distance</string>
+    <string name="label_minutes">Time</string>
 
     <!-- カレンダー -->
     <string name="label_has_training">Did training</string>
@@ -213,6 +217,7 @@
     <string name="label_machine">Machine</string>
     <string name="label_free">Free</string>
     <string name="label_own_weight">Own Weight</string>
+    <string name="label_cardio">Cardio</string>
 
     <!-- トレーニングメニュー一覧 -->
     <string name="label_menu_type_name">Name</string>
