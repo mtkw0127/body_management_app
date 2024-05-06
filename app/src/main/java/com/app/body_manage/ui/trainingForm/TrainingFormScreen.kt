@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -71,6 +72,8 @@ fun TrainingFormScreen(
     onClickDelete: (menuIndex: Int, setIndex: Int) -> Unit = { _, _ -> },
     onClickStartTime: () -> Unit = {},
     onClickEndTime: () -> Unit = {},
+    onClickCardioMinutes: (menuIndex: Int, setIndex: Int) -> Unit = { _, _ -> },
+    onClickCardioDistance: (menuIndex: Int, setIndex: Int) -> Unit = { _, _ -> },
 ) {
     Scaffold(
         topBar = {
@@ -187,9 +190,18 @@ fun TrainingFormScreen(
 
             Spacer(modifier = Modifier.size(5.dp))
 
+            // #1
             val setWeight = 0.1F
+
+            // 筋トレ用
             val repWeight = 0.4F
             val weightWeight = 0.4F
+
+            // 有酸素用
+            val minuteWeight = 0.4F
+            val distanceWeight = 0.4F
+
+            // 削除ボタン
             val deleteWeight = 0.1F
 
             training.menus.forEachIndexed { menuIndex, menu ->
@@ -218,25 +230,36 @@ fun TrainingFormScreen(
                     Column(modifier = Modifier.fillMaxWidth()) {
                         // ヘッダー
                         Row(modifier = Modifier.fillMaxWidth()) {
-                            // レップ数用
                             Text(
                                 text = "",
                                 modifier = Modifier.weight(setWeight),
                             )
-                            Text(
-                                text = stringResource(id = R.string.label_rep_num),
-                                modifier = Modifier.weight(repWeight),
-                                textAlign = TextAlign.Center,
-                            )
+                            if (menu.type == TrainingMenu.Type.MACHINE || menu.type == TrainingMenu.Type.FREE) {
+                                // レップ数用
+                                Text(
+                                    text = stringResource(id = R.string.label_rep_num),
+                                    modifier = Modifier.weight(repWeight),
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
+                            if (menu.type == TrainingMenu.Type.Cardio) {
+                                Text(
+                                    text = stringResource(id = R.string.label_minutes),
+                                    modifier = Modifier.weight(minuteWeight),
+                                    textAlign = TextAlign.Center,
+                                )
+                                Text(
+                                    text = stringResource(id = R.string.label_distance),
+                                    modifier = Modifier.weight(distanceWeight),
+                                    textAlign = TextAlign.Center,
+                                )
+                            }
                             if (menu.type == TrainingMenu.Type.MACHINE || menu.type == TrainingMenu.Type.FREE) {
                                 Text(
                                     text = stringResource(id = R.string.label_weight),
                                     modifier = Modifier.weight(weightWeight),
                                     textAlign = TextAlign.Center,
                                 )
-                            } else {
-                                // 幅調整のために空白を入れる
-                                Spacer(modifier = Modifier.weight(weightWeight))
                             }
                             // 削除アイコン用
                             Spacer(modifier = Modifier.weight(deleteWeight))
@@ -256,27 +279,29 @@ fun TrainingFormScreen(
                                     ),
                                     modifier = Modifier.weight(setWeight),
                                 )
-                                CountTextField(
-                                    modifier = Modifier.weight(repWeight),
-                                    count = set.number,
-                                    unitStringResource = R.string.label_count,
-                                    onClick = {
-                                        onClickRep(menuIndex, setIndex)
-                                    },
-                                )
-                                // 重りを扱う種目の場合は重量を入力する
-                                if (set is TrainingMenu.WeightSet) {
-                                    CountTextField(
-                                        modifier = Modifier.weight(weightWeight),
-                                        count = set.weight,
-                                        unitStringResource = R.string.label_weight_unit,
-                                        onClick = {
-                                            onClickWeight(menuIndex, setIndex)
+                                if (set is TrainingMenu.CardioSet) {
+                                    CardioSet(
+                                        set = set,
+                                        minuteWeight = minuteWeight,
+                                        distanceWeight = distanceWeight,
+                                        onClickCardioMinutes = {
+                                            onClickCardioMinutes(menuIndex, setIndex)
+                                        },
+                                        onClickCardioDistance = {
+                                            onClickCardioDistance(menuIndex, setIndex)
                                         },
                                     )
-                                } else {
-                                    // 幅調整のために空白を入れる
-                                    Spacer(modifier = Modifier.weight(weightWeight))
+                                }
+                                if (set is TrainingMenu.Set) {
+                                    MuscleSet(
+                                        set = set,
+                                        menuIndex = menuIndex,
+                                        setIndex = setIndex,
+                                        weightWeight = weightWeight,
+                                        repWeight = repWeight,
+                                        onClickRep = onClickRep,
+                                        onClickWeight = onClickWeight,
+                                    )
                                 }
                                 Icon(
                                     imageVector = Icons.Default.Delete,
@@ -293,6 +318,66 @@ fun TrainingFormScreen(
                 Spacer(modifier = Modifier.size(10.dp))
             }
         }
+    }
+}
+
+@Composable
+private fun RowScope.CardioSet(
+    set: TrainingMenu.CardioSet,
+    distanceWeight: Float,
+    minuteWeight: Float,
+    onClickCardioMinutes: () -> Unit,
+    onClickCardioDistance: () -> Unit,
+) {
+    CountTextField(
+        modifier = Modifier.weight(minuteWeight),
+        count = set.minutes,
+        unitStringResource = R.string.label_minute_unit,
+        onClick = {
+            onClickCardioMinutes()
+        },
+    )
+    CountTextField(
+        modifier = Modifier.weight(distanceWeight),
+        count = set.distance,
+        unitStringResource = R.string.label_distance_unit,
+        onClick = {
+            onClickCardioDistance()
+        },
+    )
+}
+
+@Composable
+private fun RowScope.MuscleSet(
+    set: TrainingMenu.Set,
+    menuIndex: Int, // 何番目の種目
+    setIndex: Int, // 何番目のセット
+    onClickRep: (menuIndex: Int, setIndex: Int) -> Unit,
+    onClickWeight: (menuIndex: Int, setIndex: Int) -> Unit,
+    weightWeight: Float,
+    repWeight: Float,
+) {
+    CountTextField(
+        modifier = Modifier.weight(repWeight),
+        count = set.number,
+        unitStringResource = R.string.label_count,
+        onClick = {
+            onClickRep(menuIndex, setIndex)
+        },
+    )
+    // 重りを扱う種目の場合は重量を入力する
+    if (set is TrainingMenu.WeightSet) {
+        CountTextField(
+            modifier = Modifier.weight(weightWeight),
+            count = set.weight,
+            unitStringResource = R.string.label_weight_unit,
+            onClick = {
+                onClickWeight(menuIndex, setIndex)
+            },
+        )
+    } else {
+        // 幅調整のために空白を入れる
+        Spacer(modifier = Modifier.weight(weightWeight))
     }
 }
 
@@ -352,7 +437,7 @@ private fun MemoTextField(
 @Composable
 private fun CountTextField(
     modifier: Modifier = Modifier,
-    count: Long,
+    count: Number,
     unitStringResource: Int,
     onClick: () -> Unit,
 ) {

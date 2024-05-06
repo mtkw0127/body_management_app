@@ -55,10 +55,6 @@ class FloatNumberPickerDialog : DialogFragment() {
     private var key: String? = null
     private var supportOneHundred = false
 
-    enum class Digit {
-        HUNDRED, TENS, ONES, FIRST_DECIMAL, SECOND_DECIMAL
-    }
-
     private lateinit var currentFocus: Digit
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +69,7 @@ class FloatNumberPickerDialog : DialogFragment() {
             currentFocus = if (supportOneHundred) {
                 Digit.HUNDRED
             } else {
-                Digit.TENS
+                arguments?.getSerializable(INITIAL_DIGIT) as Digit
             }
 
             // 60.55 -> 60 -> 060
@@ -102,6 +98,7 @@ class FloatNumberPickerDialog : DialogFragment() {
                 var onesPlace by remember { mutableStateOf(onesPlace) }
                 var firstDecimalPlace by remember { mutableStateOf(firstDecimalPlace) }
                 var secondDecimalPlace by remember { mutableStateOf(secondDecimalPlace) }
+                var currentFocus by remember { mutableStateOf(currentFocus) }
 
                 val clearNumber = {
                     hundredsPlace = "0"
@@ -112,12 +109,16 @@ class FloatNumberPickerDialog : DialogFragment() {
                     currentFocus = if (supportOneHundred) {
                         Digit.HUNDRED
                     } else {
-                        Digit.TENS
+                        arguments?.getSerializable(INITIAL_DIGIT) as Digit
                     }
                 }
 
                 val updateNumber: (Int) -> Unit = { number ->
                     when (currentFocus) {
+                        Digit.THOUSAND -> {
+                            currentFocus = Digit.HUNDRED
+                        }
+
                         Digit.HUNDRED -> {
                             hundredsPlace = number.toString()
                             currentFocus = Digit.TENS
@@ -188,36 +189,44 @@ class FloatNumberPickerDialog : DialogFragment() {
                                             Colors.backgroundDark,
                                             RoundedCornerShape(5.dp)
                                         )
+                                        .padding(5.dp)
                                         .width(100.dp),
                                     horizontalArrangement = Arrangement.End,
                                     verticalAlignment = Alignment.Bottom,
                                 ) {
                                     if (hundredsPlace != "0") {
-                                        Text(
+                                        PickerNumberText(
                                             text = hundredsPlace,
-                                            fontSize = 18.sp
+                                            currentDigit = currentFocus,
+                                            thisDigit = Digit.HUNDRED
                                         )
                                     }
-                                    Text(
-                                        text = tensPlace,
-                                        fontSize = 18.sp
+                                    PickerNumberText(
+                                        text = hundredsPlace,
+                                        currentDigit = currentFocus,
+                                        thisDigit = Digit.TENS
                                     )
-                                    Text(
+                                    PickerNumberText(
                                         text = onesPlace,
-                                        fontSize = 18.sp
+                                        currentDigit = currentFocus,
+                                        thisDigit = Digit.ONES
                                     )
                                     Text(
                                         text = stringResource(id = R.string.label_number_dot),
                                         fontSize = 18.sp
                                     )
                                     Spacer(modifier = Modifier.size(3.dp))
-                                    Text(
+                                    PickerNumberText(
                                         text = firstDecimalPlace,
-                                        fontSize = 16.sp
+                                        fontSize = 16.sp,
+                                        currentDigit = currentFocus,
+                                        thisDigit = Digit.FIRST_DECIMAL,
                                     )
-                                    Text(
+                                    PickerNumberText(
                                         text = secondDecimalPlace,
-                                        fontSize = 16.sp
+                                        fontSize = 16.sp,
+                                        currentDigit = currentFocus,
+                                        thisDigit = Digit.SECOND_DECIMAL,
                                     )
                                 }
                                 Spacer(modifier = Modifier.size(5.dp))
@@ -358,11 +367,13 @@ class FloatNumberPickerDialog : DialogFragment() {
         private const val UNIT = "UNIT"
         private const val KEY = "KEY"
         private const val SUPPORT_HUNDRED = "SUPPORT_HUNDRED"
+        private const val INITIAL_DIGIT = "INITIAL_DIGIT"
         fun createDialog(
             label: String,
             number: Float,
             unit: String,
             requestKey: String? = null,
+            initialDigit: Digit = Digit.TENS,
             supportOneHundred: Boolean = false,
             callBack: (weight: Float) -> Unit,
         ): FloatNumberPickerDialog {
@@ -372,6 +383,7 @@ class FloatNumberPickerDialog : DialogFragment() {
                 putFloat(NUMBER, number)
                 putString(UNIT, unit)
                 putString(KEY, requestKey)
+                putSerializable(INITIAL_DIGIT, initialDigit)
                 putBoolean(SUPPORT_HUNDRED, supportOneHundred)
             }
             numberPickerDialog.arguments = bundle

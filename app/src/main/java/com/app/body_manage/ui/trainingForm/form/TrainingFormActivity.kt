@@ -11,6 +11,9 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.lifecycleScope
 import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
+import com.app.body_manage.data.model.TrainingMenu
+import com.app.body_manage.dialog.Digit
+import com.app.body_manage.dialog.FloatNumberPickerDialog
 import com.app.body_manage.dialog.IntNumberPickerDialog
 import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.measure.list.MeasureListActivity
@@ -70,30 +73,34 @@ class TrainingFormActivity : AppCompatActivity() {
                 onClickRep = { menuIndex, setIndex ->
                     val menu = viewModel.training.value.menus[menuIndex]
                     val set = menu.sets[setIndex]
-                    IntNumberPickerDialog.createDialog(
-                        label = getString(R.string.label_rep_num),
-                        number = set.number,
-                        unit = getString(R.string.label_count),
-                        maxDigit = IntNumberPickerDialog.Digit.TENS,
-                        initialDigit = IntNumberPickerDialog.Digit.TENS,
-                        callBack = { number ->
-                            viewModel.updateRep(menuIndex, setIndex, number)
-                        }
-                    ).show(supportFragmentManager, "rep")
+                    if (set is TrainingMenu.Set) {
+                        IntNumberPickerDialog.createDialog(
+                            label = getString(R.string.label_rep_num),
+                            number = set.number,
+                            unit = getString(R.string.label_count),
+                            maxDigit = Digit.TENS,
+                            initialDigit = Digit.TENS,
+                            callBack = { number ->
+                                viewModel.updateRep(menuIndex, setIndex, number)
+                            }
+                        ).show(supportFragmentManager, "rep")
+                    }
                 },
                 onClickWeight = { menuIndex, setIndex ->
                     val menu = viewModel.training.value.menus[menuIndex]
                     val set = menu.sets[setIndex]
-                    IntNumberPickerDialog.createDialog(
-                        label = getString(R.string.label_weight),
-                        number = set.number,
-                        unit = getString(R.string.label_weight_unit),
-                        maxDigit = IntNumberPickerDialog.Digit.TENS,
-                        initialDigit = IntNumberPickerDialog.Digit.TENS,
-                        callBack = { weight ->
-                            viewModel.updateWeight(menuIndex, setIndex, weight)
-                        }
-                    ).show(supportFragmentManager, "weight")
+                    if (set is TrainingMenu.Set) {
+                        IntNumberPickerDialog.createDialog(
+                            label = getString(R.string.label_weight),
+                            number = set.number,
+                            unit = getString(R.string.label_weight_unit),
+                            maxDigit = Digit.TENS,
+                            initialDigit = Digit.TENS,
+                            callBack = { weight ->
+                                viewModel.updateWeight(menuIndex, setIndex, weight)
+                            }
+                        ).show(supportFragmentManager, "weight")
+                    }
                 },
                 onClickDelete = { menuIndex, setIndex ->
                     viewModel.deleteSet(menuIndex, setIndex)
@@ -112,7 +119,38 @@ class TrainingFormActivity : AppCompatActivity() {
                         viewModel.updateEndTime(LocalTime.of(hour, minute))
                     }.show(supportFragmentManager, "end_time")
                 },
-                onClickTrainingDelete = null, // 登録画面では削除できない
+                onClickTrainingDelete = null, // 登録画面では削除できない,
+                onClickCardioDistance = { menuIndex, index ->
+                    val menu = viewModel.training.value.menus[menuIndex]
+                    val set = menu.sets[index]
+                    if (set is TrainingMenu.CardioSet) {
+                        FloatNumberPickerDialog.createDialog(
+                            label = getString(R.string.label_distance),
+                            number = set.distance,
+                            unit = getString(R.string.label_distance_unit),
+                            initialDigit = Digit.ONES,
+                            callBack = { distance ->
+                                viewModel.updateCardioDistance(menuIndex, distance)
+                            }
+                        ).show(supportFragmentManager, "distance")
+                    }
+                },
+                onClickCardioMinutes = { menuIndex, index ->
+                    val menu = viewModel.training.value.menus[menuIndex]
+                    val set = menu.sets[index]
+                    if (set is TrainingMenu.CardioSet) {
+                        IntNumberPickerDialog.createDialog(
+                            label = getString(R.string.label_minutes),
+                            number = set.minutes,
+                            unit = getString(R.string.label_minute_unit),
+                            maxDigit = Digit.HUNDRED,
+                            initialDigit = Digit.TENS,
+                            callBack = { minutes ->
+                                viewModel.updateCardioMinutes(menuIndex, minutes)
+                            }
+                        ).show(supportFragmentManager, "minutes")
+                    }
+                }
             )
         }
     }

@@ -3,6 +3,7 @@ package com.app.body_manage.data.repository
 import androidx.room.Transaction
 import com.app.body_manage.data.dao.TrainingDao
 import com.app.body_manage.data.entity.TrainingMenuEntity
+import com.app.body_manage.data.entity.TrainingSetEntity
 import com.app.body_manage.data.entity.TrainingTrainingMenuSetEntity
 import com.app.body_manage.data.entity.toModel
 import com.app.body_manage.data.model.Training
@@ -28,9 +29,15 @@ class TrainingRepository(
         training.menus.forEach { trainingMenu ->
             trainingMenu.sets.forEach { trainingSet ->
                 // そのトレーニングの１セットを登録する
-                val trainingSetId =
-                    trainingDao.insertTrainingSet(trainingSet.toEntity(trainingMenu.eventIndex))
+                val trainingSetId = when (trainingSet) {
+                    is TrainingMenu.Set -> {
+                        trainingDao.insertTrainingSet(trainingSet.toEntity(trainingMenu.eventIndex))
+                    }
 
+                    is TrainingMenu.CardioSet -> {
+                        trainingDao.insertTrainingCardioSet(trainingSet.toEntity())
+                    }
+                }
                 // 中間テーブルを登録する
                 val middleTableEntity = TrainingTrainingMenuSetEntity(
                     id = 0,
@@ -59,19 +66,34 @@ class TrainingRepository(
                 .sortedBy { it.eventIndex }
                 .groupBy { it.eventIndex }
                 .map { middleTableList ->
-                    val trainingMenuSetEntities =
-                        trainingDao.getTrainingSetByIds(middleTableList.value.map { it.trainingSetId })
-
                     val trainingMenuEntity =
                         trainingDao.getTrainingMenu(middleTableList.value.first().trainingMenuId)
 
                     val type =
                         checkNotNull(TrainingMenu.Type.entries.find { type -> type.index == trainingMenuEntity.type })
 
-                    trainingMenuEntity.toModel(
-                        sets = trainingMenuSetEntities.map { it.toModel(type) }, // セット数
-                        eventIndex = middleTableList.key, // キーが何種目かを表すため
-                    )
+                    // 有酸素と筋トレのセットは別テーブルで管理しているため
+                    when (type) {
+                        TrainingMenu.Type.Cardio -> {
+                            val trainingCardioSetEntities =
+                                trainingDao.getTrainingCardioSetByIds(middleTableList.value.map { it.trainingSetId })
+
+                            trainingMenuEntity.toModel(
+                                sets = trainingCardioSetEntities.map { it.toModel() },
+                                eventIndex = middleTableList.key, // キーが何種目かを表すため
+                            )
+                        }
+
+                        else -> {
+                            val trainingMenuSetEntities: List<TrainingSetEntity> =
+                                trainingDao.getTrainingSetByIds(middleTableList.value.map { it.trainingSetId })
+
+                            trainingMenuEntity.toModel(
+                                sets = trainingMenuSetEntities.map { it.toModel(type) },
+                                eventIndex = middleTableList.key, // キーが何種目かを表すため
+                            )
+                        }
+                    }
                 }
 
             training.toModel(trainingMenus)
@@ -86,9 +108,16 @@ class TrainingRepository(
 
     suspend fun deleteTraining(training: Training) = withContext(ioDispatcher) {
         // 古い記録を削除する
-        val setIds = training.menus.flatMap { it.sets }.map { set -> set.id.value }
+        val cardioSetIds =
+            training.menus.filter { it.type == TrainingMenu.Type.Cardio }.flatMap { it.sets }
+                .map { set -> set.id.value }
+        val muscleSetIds =
+            training.menus.filter { it.type != TrainingMenu.Type.Cardio }.flatMap { it.sets }
+                .map { set -> set.id.value }
+
         // トレーニングセットレコード削除
-        trainingDao.deleteTrainingSet(setIds)
+        trainingDao.deleteTrainingCardioSet(cardioSetIds)
+        trainingDao.deleteTrainingSet(muscleSetIds)
         // 中間テーブル削除
         trainingDao.deleteTrainingTrainingSet(training.id.value)
         // トレーニングを削除

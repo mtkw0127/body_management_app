@@ -17,7 +17,7 @@ data class TrainingMenuEntity(
 ) : Serializable
 
 fun TrainingMenuEntity.toModel(
-    sets: List<TrainingMenu.Set>,
+    sets: List<TrainingMenu.TrainingInterface>,
     eventIndex: Long,
 ): TrainingMenu {
     return TrainingMenu(
