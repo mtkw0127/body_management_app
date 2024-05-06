@@ -236,7 +236,7 @@ val MIGRATION_7_8 = object : Migration(7, 8) {
 val MIGRATION_8_9 = object : Migration(8, 9) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL(
-            "CREATE TABLE IF NOT EXISTS `training_cardio_sets`  (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `distance` INTEGER NOT NULL, `minutes` REAL NOT NULL)"
+            "CREATE TABLE IF NOT EXISTS `training_cardio_sets`  (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `distance` REAL NOT NULL, `minutes` INTEGER NOT NULL)"
         )
     }
 }
