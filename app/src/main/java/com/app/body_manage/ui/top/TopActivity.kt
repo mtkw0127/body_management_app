@@ -146,10 +146,11 @@ class TopActivity : AppCompatActivity() {
                 onClickSetGoat = {
                     val weight = viewModel.lastMeasure.value?.weight ?: return@TopScreen
                     FloatNumberPickerDialog.createDialog(
-                        getString(R.string.weight),
-                        weight,
-                        getString(R.string.unit_kg),
-                        "GOAL",
+                        label = getString(R.string.weight),
+                        number = weight,
+                        unit = getString(R.string.unit_kg),
+                        requestKey = "GOAL",
+                        supportOneHundred = true,
                     ) {
                         viewModel.setGoalWeight(it)
                     }.show(supportFragmentManager, null)
