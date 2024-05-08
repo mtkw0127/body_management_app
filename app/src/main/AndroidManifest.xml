@@ -41,12 +41,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoBar" />
         <activity
-            android:name=".ui.statistics.StatisticsActivity"
-            android:exported="true"
-            android:launchMode="singleInstance"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoBar" />
-        <activity
             android:name=".ui.measure.list.MeasureListActivity"
             android:exported="true"
             android:launchMode="singleInstance"

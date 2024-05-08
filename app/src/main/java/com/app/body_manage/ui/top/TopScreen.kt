@@ -55,7 +55,7 @@ import com.app.body_manage.extension.toWeight
 import com.app.body_manage.extension.withPercent
 import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
-import com.app.body_manage.ui.statistics.ColumTextWithLabelAndIcon
+import com.app.body_manage.ui.common.ColumTextWithLabelAndIcon
 
 @Composable
 fun TopScreen(
@@ -89,9 +89,7 @@ fun TopScreen(
             item {
                 Row(verticalAlignment = Alignment.Bottom) {
                     Text(
-                        text = lastMeasure?.weight?.toString()
-                            ?: userPreference?.weight?.toString()
-                            ?: "-",
+                        text = lastMeasure?.weight?.toString() ?: "-",
                         fontSize = 32.sp,
                         color = Color.Black,
                     )
@@ -110,7 +108,7 @@ fun TopScreen(
                         )
                     }
                     Spacer(modifier = Modifier.weight(1F))
-                    (lastMeasure?.tall ?: userPreference?.tall)?.let { tall ->
+                    (lastMeasure?.tall)?.let { tall ->
                         Text(
                             text = tall.toCentiMeter(),
                             fontSize = 14.sp,
@@ -133,9 +131,14 @@ fun TopScreen(
                     RequireGoal(onClickSetGoat)
                     Spacer(modifier = Modifier.size(10.dp))
                 }
-            } else {
+            } else if (lastMeasure != null) {
                 item {
-                    Goal(userPreference, todayMeasure.meals, onClickSetGoat)
+                    Goal(
+                        bodyMeasure = lastMeasure,
+                        userPreference = userPreference,
+                        meal = todayMeasure.meals,
+                        onClickSetGoat
+                    )
                     Spacer(modifier = Modifier.size(10.dp))
                 }
             }
@@ -186,6 +189,7 @@ fun TopScreen(
 
 @Composable
 private fun Goal(
+    bodyMeasure: BodyMeasure,
     userPreference: UserPreference,
     meal: List<Meal>,
     onClickSetGoat: () -> Unit,
@@ -199,11 +203,11 @@ private fun Goal(
                 text = stringResource(id = R.string.label_target_weight) + " ${userPreference.goalWeight} kg"
             )
             Spacer(Modifier.weight(1F))
-            Text(text = userPreference.progressWeightText)
+            Text(text = userPreference.progressWeightText(bodyMeasure.weight))
         }
         Spacer(modifier = Modifier.size(10.dp))
         LinearProgressIndicator(
-            progress = userPreference.progressWeight,
+            progress = userPreference.progressWeight(bodyMeasure.weight),
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.size(15.dp))
@@ -357,7 +361,7 @@ fun Statistics(
                 )
                 ColumTextWithLabelAndIcon(
                     title = stringResource(id = R.string.tall),
-                    value = userPreference.tall?.toCentiMeter() ?: "-",
+                    value = bodyMeasure.tall.toCentiMeter(),
                 )
                 ColumTextWithLabelAndIcon(
                     title = stringResource(id = R.string.age),
@@ -371,15 +375,16 @@ fun Statistics(
             ) {
                 ColumTextWithLabelAndIcon(
                     title = stringResource(id = R.string.label_bmi),
-                    value = userPreference.bim,
+                    value = userPreference.bim(bodyMeasure.tall, bodyMeasure.weight),
                 )
                 ColumTextWithLabelAndIcon(
                     title = stringResource(id = R.string.label_kcal) + "※",
-                    value = userPreference.basicConsumeEnergy,
+                    value = userPreference.basicConsumeEnergy(bodyMeasure.tall, bodyMeasure.weight),
                 )
                 ColumTextWithLabelAndIcon(
                     title = stringResource(id = R.string.label_fat),
-                    value = userPreference.calcFat.withPercent(),
+                    value = userPreference.calcFat(bodyMeasure.tall, bodyMeasure.weight)
+                        .withPercent(),
                 )
             }
         }

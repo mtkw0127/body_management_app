@@ -73,7 +73,7 @@
     <string name="label_add_training">筋トレを記録</string>
     <string name="message_not_registered_today">本日の登録はまだありません</string>
     <string name="label_today_total_kcal">摂取カロリー</string>
-    <string name="label_today_min_weight">体重</string>
+    <string name="label_today_min_weight">最小体重</string>
     <string name="label_today_you">本日の記録</string>
     <string name="label_training">トレーニング</string>
     <string name="label_did_training">トレーニング済</string>

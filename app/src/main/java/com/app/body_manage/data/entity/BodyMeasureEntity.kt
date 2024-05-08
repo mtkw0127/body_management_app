@@ -29,5 +29,5 @@ fun BodyMeasureEntity.toModel(): BodyMeasure =
         fat = this.fat,
         memo = this.memo,
         photoUri = this.photoUri?.toUri(),
-        tall = this.tall,
+        tall = this.tall ?: 150F,
     )

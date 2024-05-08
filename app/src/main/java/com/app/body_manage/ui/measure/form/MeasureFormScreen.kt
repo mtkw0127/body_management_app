@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.AccessibilityNew
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Height
 import androidx.compose.material.icons.filled.Notes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -43,6 +44,7 @@ import com.app.body_manage.R
 import com.app.body_manage.common.CustomButton
 import com.app.body_manage.common.CustomImage
 import com.app.body_manage.data.model.Photo
+import com.app.body_manage.extension.toCentiMeter
 import com.app.body_manage.extension.toFat
 import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.extension.toMMDDEE
@@ -56,6 +58,7 @@ fun BodyMeasureFormScreen(
     onClickBackPress: () -> Unit = {},
     onClickTakePhoto: () -> Unit = {},
     onClickDelete: () -> Unit = {},
+    onClickTall: () -> Unit = {},
     onClickSave: () -> Unit = {},
     onClickNextDay: () -> Unit = {},
     onClickPreviousDay: () -> Unit = {},
@@ -139,6 +142,20 @@ fun BodyMeasureFormScreen(
                                     )
                                 },
                                 onClick = { onClickTime() }
+                            )
+                            Spacer(modifier = Modifier.size(10.dp))
+                        }
+                        item {
+                            CustomTextField(
+                                labelTextResourceId = R.string.tall,
+                                value = (uiState.model.tall ?: 0F).toCentiMeter(),
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.Height,
+                                        contentDescription = null
+                                    )
+                                },
+                                onClick = { onClickTall() }
                             )
                             Spacer(modifier = Modifier.size(10.dp))
                         }

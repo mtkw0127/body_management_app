@@ -40,8 +40,6 @@ fun UserPreferenceSettingScreen(
     onChangeName: (String) -> Unit,
     onChangeGender: (Gender) -> Unit,
     onChangeBirth: (TextFieldValue) -> Unit,
-    onChangeTall: (TextFieldValue) -> Unit,
-    onChangeWeight: (TextFieldValue) -> Unit,
     onClickSet: () -> Unit,
 ) {
     LazyColumn(
@@ -59,15 +57,6 @@ fun UserPreferenceSettingScreen(
         }
         item {
             Birth(uiState.birth, onChangeBirth)
-        }
-        // 初期設定の場合のみ表示
-        if (uiState.launchType == UserPreferenceSettingDialog.Companion.LaunchType.INITIAL_SETTING) {
-            item {
-                Weight(uiState.weight, onChangeWeight)
-            }
-            item {
-                Tall(uiState.tall, onChangeTall)
-            }
         }
         item {
             Spacer(modifier = Modifier.size(10.dp))
@@ -154,72 +143,6 @@ private fun Name(name: String, onChangeName: (String) -> Unit) {
         },
         visualTransformation = VisualTransformation.None,
         singleLine = true,
-    )
-}
-
-@Composable
-private fun Tall(value: TextFieldValue, onChangeTall: (TextFieldValue) -> Unit) {
-    Label(R.string.tall)
-    CustomTextField(
-        value = value,
-        onValueChange = onChangeTall,
-        placeholder = {
-            Text(text = stringResource(id = R.string.placeholder_tall))
-        },
-        singleLine = true,
-        visualTransformation = { text ->
-            val textWithUnit = if (text.text.isNotBlank()) {
-                text.text + "cm"
-            } else {
-                ""
-            }
-            TransformedText(
-                AnnotatedString(textWithUnit),
-                object : OffsetMapping {
-                    override fun originalToTransformed(offset: Int): Int {
-                        return textWithUnit.length
-                    }
-
-                    override fun transformedToOriginal(offset: Int): Int {
-                        val length = text.text.length
-                        return if (length == 0) 0 else length - 2
-                    }
-                }
-            )
-        }
-    )
-}
-
-@Composable
-private fun Weight(value: TextFieldValue, onChangeWeight: (TextFieldValue) -> Unit) {
-    Label(R.string.current_weight)
-    CustomTextField(
-        value = value,
-        onValueChange = onChangeWeight,
-        placeholder = {
-            Text(text = stringResource(id = R.string.placeholder_current_weight))
-        },
-        singleLine = true,
-        visualTransformation = { text ->
-            val textWithUnit = if (text.text.isNotBlank()) {
-                text.text + "kg"
-            } else {
-                ""
-            }
-            TransformedText(
-                AnnotatedString(textWithUnit),
-                object : OffsetMapping {
-                    override fun originalToTransformed(offset: Int): Int {
-                        return textWithUnit.length
-                    }
-
-                    override fun transformedToOriginal(offset: Int): Int {
-                        val length = text.text.length
-                        return if (length == 0) 0 else length - 2
-                    }
-                }
-            )
-        }
     )
 }
 
