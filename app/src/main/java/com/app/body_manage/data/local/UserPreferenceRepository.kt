@@ -93,6 +93,10 @@ class UserPreferenceRepository(
         it[kEY_REQUESTED_REVIEW] ?: false
     }.firstOrNull() ?: false
 
+    val tall: Flow<Float?> = context.dataStore.data.map {
+        it[KEY_TALL]
+    }
+
     val userPref: Flow<UserPreference> = context.dataStore.data
         .catch { exception ->
             if (exception is IOException) {
@@ -119,11 +123,8 @@ class UserPreferenceRepository(
                 name = name,
                 gender = gender ?: Gender.MALE,
                 birth = birth ?: LocalDate.now(),
-                tall = it[KEY_TALL],
-                weight = it[KEY_WEIGHT],
                 goalWeight = it[KEY_GOAL_WEIGHT],
                 goalKcal = it[KEY_GOAL_KCAL],
-                fat = it[KEY_FAT],
                 alarm = it[KEY_ALARM] ?: false,
             )
         }

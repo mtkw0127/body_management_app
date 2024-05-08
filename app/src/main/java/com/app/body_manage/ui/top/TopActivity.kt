@@ -89,9 +89,7 @@ class TopActivity : AppCompatActivity() {
             viewModel.showUserPrefDialog.collectLatest { show ->
                 if (show) {
                     UserPreferenceSettingDialog
-                        .createInstance(
-                            launchType = UserPreferenceSettingDialog.Companion.LaunchType.INITIAL_SETTING,
-                        )
+                        .createInstance()
                         .show(supportFragmentManager, null)
                 }
             }
@@ -146,7 +144,7 @@ class TopActivity : AppCompatActivity() {
                     )
                 },
                 onClickSetGoat = {
-                    val weight = userPreference?.weight ?: return@TopScreen
+                    val weight = viewModel.lastMeasure.value?.weight ?: return@TopScreen
                     FloatNumberPickerDialog.createDialog(
                         getString(R.string.weight),
                         weight,
@@ -158,9 +156,7 @@ class TopActivity : AppCompatActivity() {
                 },
                 onClickSetting = {
                     UserPreferenceSettingDialog
-                        .createInstance(
-                            launchType = UserPreferenceSettingDialog.Companion.LaunchType.EDIT_SETTING,
-                        )
+                        .createInstance()
                         .show(supportFragmentManager, null)
                 },
             )
