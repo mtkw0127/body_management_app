@@ -93,6 +93,10 @@ class UserPreferenceRepository(
         it[kEY_REQUESTED_REVIEW] ?: false
     }.firstOrNull() ?: false
 
+    val tall: Flow<Float?> = context.dataStore.data.map {
+        it[KEY_TALL]
+    }
+
     val userPref: Flow<UserPreference> = context.dataStore.data
         .catch { exception ->
             if (exception is IOException) {

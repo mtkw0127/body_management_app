@@ -129,8 +129,11 @@ class UserPreferenceSettingViewModel(
             try {
                 userPreferenceRepository.userPref.firstOrNull()?.let { pref ->
                     viewModelState.update {
-                        val birth =
+                        val birth = if (pref.birth.monthValue < 10) {
+                            "${pref.birth.year}0${pref.birth.monthValue}${pref.birth.dayOfMonth}"
+                        } else {
                             "${pref.birth.year}${pref.birth.monthValue}${pref.birth.dayOfMonth}"
+                        }
                         it.copy(
                             name = pref.name,
                             gender = pref.gender,
@@ -226,7 +229,13 @@ class UserPreferenceSettingViewModel(
                 val month = trimBirth.substring(4, 5).toInt()
                 val year = trimBirth.substring(0, 4)
                 if (month in 2..9) {
-                    tempBirth = TextFieldValue("${year}0$month")
+                    tempBirth = TextFieldValue(
+                        text = "${year}0$month",
+                        selection = TextRange(
+                            start = "${year}0$month".length,
+                            end = "${year}0$month".length,
+                        )
+                    )
                 }
             }
             if (trimBirth.length == 6) {
