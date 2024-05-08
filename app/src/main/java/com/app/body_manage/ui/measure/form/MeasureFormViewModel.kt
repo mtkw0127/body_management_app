@@ -14,7 +14,7 @@ import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.PhotoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -106,8 +106,8 @@ class BodyMeasureEditFormViewModel(
         viewModelScope.launch {
             val bodyMeasureModel = userPreferenceRepository
                 .userPref
-                .first()
-                .toBodyMeasureForAdd(measureDate)
+                .firstOrNull()
+                ?.toBodyMeasureForAdd(measureDate)
             viewModelState.update {
                 it.copy(model = bodyMeasureModel)
             }
