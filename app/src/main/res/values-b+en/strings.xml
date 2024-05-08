@@ -48,6 +48,7 @@
     <string name="gender_female">Female</string>
 
     <!-- Home Screen -->
+    <string name="label_reserve">Please record at first</string>
     <string name="label_registered_date">Registration Date</string>
     <string name="label_target_weight">Target Weight</string>
     <string name="label_target_kcal">Target calorie</string>

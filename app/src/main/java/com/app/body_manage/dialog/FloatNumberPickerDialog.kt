@@ -194,15 +194,13 @@ class FloatNumberPickerDialog : DialogFragment() {
                                     horizontalArrangement = Arrangement.End,
                                     verticalAlignment = Alignment.Bottom,
                                 ) {
-                                    if (hundredsPlace != "0") {
-                                        PickerNumberText(
-                                            text = hundredsPlace,
-                                            currentDigit = currentFocus,
-                                            thisDigit = Digit.HUNDRED
-                                        )
-                                    }
                                     PickerNumberText(
                                         text = hundredsPlace,
+                                        currentDigit = currentFocus,
+                                        thisDigit = Digit.HUNDRED
+                                    )
+                                    PickerNumberText(
+                                        text = tensPlace,
                                         currentDigit = currentFocus,
                                         thisDigit = Digit.TENS
                                     )

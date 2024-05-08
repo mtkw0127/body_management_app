@@ -22,26 +22,17 @@ sealed interface UiState {
     val name: String?
     val gender: Gender
     val birth: TextFieldValue
-    val tall: TextFieldValue
-    val weight: TextFieldValue
-    val launchType: UserPreferenceSettingDialog.Companion.LaunchType?
 
     data class NotYet(
         override val name: String?,
         override val gender: Gender,
         override val birth: TextFieldValue,
-        override val tall: TextFieldValue,
-        override val weight: TextFieldValue,
-        override val launchType: UserPreferenceSettingDialog.Companion.LaunchType?
     ) : UiState
 
     data class Done(
         override val name: String,
         override val gender: Gender,
         override val birth: TextFieldValue,
-        override val tall: TextFieldValue,
-        override val weight: TextFieldValue,
-        override val launchType: UserPreferenceSettingDialog.Companion.LaunchType?
     ) : UiState
 }
 
@@ -49,9 +40,6 @@ data class UserPreferenceSettingViewModelState(
     val name: String? = null,
     val gender: Gender = Gender.MALE,
     val birth: TextFieldValue = TextFieldValue(),
-    val tall: TextFieldValue = TextFieldValue(),
-    val weight: TextFieldValue = TextFieldValue(),
-    val launchType: UserPreferenceSettingDialog.Companion.LaunchType? = null,
 ) {
     fun toUiState(): UiState {
         val setBirth = try {
@@ -65,40 +53,21 @@ data class UserPreferenceSettingViewModelState(
             false
         }
 
-        val isNotYet =
-            when (launchType) {
-                UserPreferenceSettingDialog.Companion.LaunchType.INITIAL_SETTING ->
-                    name == null ||
-                        setBirth.not() ||
-                        birth.text.isEmpty() ||
-                        weight.text.isEmpty() ||
-                        tall.text.isEmpty()
-
-                UserPreferenceSettingDialog.Companion.LaunchType.EDIT_SETTING ->
-                    name == null ||
-                        setBirth.not() ||
-                        birth.text.isEmpty()
-
-                else -> false
-            }
+        val isNotYet = name.isNullOrBlank() ||
+            setBirth.not() ||
+            birth.text.isEmpty()
 
         return if (isNotYet) {
             UiState.NotYet(
                 name = name,
                 gender = gender,
                 birth = birth,
-                tall = tall,
-                weight = weight,
-                launchType = launchType,
             )
         } else {
             UiState.Done(
                 name = name.orEmpty(),
                 gender = gender,
                 birth = birth,
-                tall = tall,
-                weight = weight,
-                launchType = launchType,
             )
         }
     }
@@ -113,12 +82,6 @@ class UserPreferenceSettingViewModel(
         SharingStarted.Eagerly,
         UserPreferenceSettingViewModelState().toUiState()
     )
-
-    fun init(
-        launchType: UserPreferenceSettingDialog.Companion.LaunchType
-    ) {
-        viewModelState.update { it.copy(launchType = launchType) }
-    }
 
     private val _saved = MutableStateFlow(false)
     val saved: StateFlow<Boolean> = _saved
@@ -155,48 +118,6 @@ class UserPreferenceSettingViewModel(
 
     fun setName(name: String) {
         viewModelState.update { it.copy(name = name) }
-    }
-
-    fun setTall(tall: TextFieldValue) {
-        val trimTall = tall.text.trim()
-        if (trimTall.startsWith("0")) {
-            return
-        }
-        viewModelState.update {
-            it.copy(
-                tall = try {
-                    if (trimTall.isEmpty()) {
-                        TextFieldValue()
-                    } else {
-                        trimTall.toFloat()
-                        tall.copy(selection = TextRange(trimTall.length, trimTall.length))
-                    }
-                } catch (_: Throwable) {
-                    return
-                }
-            )
-        }
-    }
-
-    fun setWeight(weight: TextFieldValue) {
-        val trimWeight = weight.text.trim()
-        if (trimWeight.startsWith("0")) {
-            return
-        }
-        viewModelState.update {
-            it.copy(
-                weight = try {
-                    if (trimWeight.isEmpty()) {
-                        TextFieldValue()
-                    } else {
-                        trimWeight.toFloat()
-                        weight.copy(selection = TextRange(trimWeight.length, trimWeight.length))
-                    }
-                } catch (_: Throwable) {
-                    return
-                }
-            )
-        }
     }
 
     fun setBirth(birth: TextFieldValue) {
@@ -276,10 +197,6 @@ class UserPreferenceSettingViewModel(
                 userPreferenceRepository.setBirth(date)
                 userPreferenceRepository.setGender(gender)
                 userPreferenceRepository.setName(name.orEmpty())
-                if (launchType == UserPreferenceSettingDialog.Companion.LaunchType.INITIAL_SETTING) {
-                    userPreferenceRepository.putTall(tall.text.toFloat())
-                    userPreferenceRepository.putWeight(weight.text.toFloat())
-                }
                 _saved.value = true
             }
         }

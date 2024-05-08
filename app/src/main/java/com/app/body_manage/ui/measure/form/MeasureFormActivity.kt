@@ -62,6 +62,18 @@ class MeasureFormActivity : AppCompatActivity() {
                 onClickPreviousDay = {
                     viewModel.setPreviousDay()
                 },
+                onClickTall = {
+                    val tall =
+                        (uiState as FormState.HasData).model.tall ?: return@BodyMeasureFormScreen
+                    FloatNumberPickerDialog.createDialog(
+                        label = getString(R.string.tall),
+                        number = tall,
+                        unit = getString(R.string.unit_cm),
+                        supportOneHundred = true,
+                    ) {
+                        viewModel.setTall(it)
+                    }.show(supportFragmentManager, null)
+                },
                 onClickDelete = {
                     viewModel.deleteBodyMeasure()
                     setResult(RESULT_CODE_DELETE)
@@ -142,7 +154,7 @@ class MeasureFormActivity : AppCompatActivity() {
                 val measureDate =
                     checkNotNull(intent.getSerializableExtra(KEY_CAPTURE_TIME) as? LocalDate)
                 viewModel.setMeasureDate(measureDate)
-                viewModel.loadFromUserPref()
+                viewModel.loadLatestMeasure()
             }
 
             FormType.EDIT -> {

@@ -48,6 +48,7 @@
     <string name="gender_female">女性</string>
 
     <!-- トップ画面 -->
+    <string name="label_reserve">まずは体型を登録しましょう</string>
     <string name="label_registered_date">登録日</string>
     <string name="label_target_weight">目標体重</string>
     <string name="label_target_kcal">目標カロリー</string>
@@ -70,10 +71,10 @@
     <string name="message_this_is_estimated_value">※ 18歳から79歳の方に妥当性が認められた推定値です</string>
     <string name="label_add_meal">食事を登録</string>
     <string name="label_add_measure">体型を登録</string>
-    <string name="label_add_training">筋トレを記録</string>
+    <string name="label_add_training">トレ記録</string>
     <string name="message_not_registered_today">本日の登録はまだありません</string>
     <string name="label_today_total_kcal">摂取カロリー</string>
-    <string name="label_today_min_weight">体重</string>
+    <string name="label_today_min_weight">最小体重</string>
     <string name="label_today_you">本日の記録</string>
     <string name="label_training">トレーニング</string>
     <string name="label_did_training">トレーニング済</string>

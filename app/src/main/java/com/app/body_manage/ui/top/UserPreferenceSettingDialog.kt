@@ -27,7 +27,6 @@ class UserPreferenceSettingDialog : DialogFragment() {
         viewModel = UserPreferenceSettingViewModel(
             userPreferenceRepository = UserPreferenceRepository(requireContext())
         )
-        viewModel.init(arguments?.getSerializable(LAUNCH_TYPE) as LaunchType)
         viewModel.load()
         lifecycleScope.launch {
             viewModel.saved.collectLatest {
@@ -50,8 +49,6 @@ class UserPreferenceSettingDialog : DialogFragment() {
                         onChangeName = viewModel::setName,
                         onChangeGender = viewModel::setGender,
                         onChangeBirth = viewModel::setBirth,
-                        onChangeTall = viewModel::setTall,
-                        onChangeWeight = viewModel::setWeight,
                         onClickSet = {
                             viewModel.save()
                         },
@@ -64,19 +61,9 @@ class UserPreferenceSettingDialog : DialogFragment() {
 
     companion object {
         const val REQUEST_KEY = "INITIAL_SETTING_DIALOG_KEY"
-        private const val LAUNCH_TYPE = "LAUNCH_TYPE"
 
-        enum class LaunchType {
-            INITIAL_SETTING,
-            EDIT_SETTING,
-        }
-
-        fun createInstance(
-            launchType: LaunchType
-        ): UserPreferenceSettingDialog {
-            return UserPreferenceSettingDialog().apply {
-                arguments = bundleOf(LAUNCH_TYPE to launchType)
-            }
+        fun createInstance(): UserPreferenceSettingDialog {
+            return UserPreferenceSettingDialog()
         }
     }
 }

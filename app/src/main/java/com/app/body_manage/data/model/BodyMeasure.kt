@@ -11,10 +11,22 @@ data class BodyMeasure(
     val fat: Float,
     val memo: String,
     val photoUri: Uri?,
-    val tall: Float?,
+    val tall: Float,
 ) : Measure {
     @JvmInline
     value class Id(val value: Int)
+
+    companion object {
+        val INITIAL = BodyMeasure(
+            id = Id(0),
+            time = LocalDateTime.now(), // その日付の現在時刻
+            weight = 50F,
+            fat = 20F,
+            photoUri = null,
+            tall = 150F,
+            memo = "",
+        )
+    }
 }
 
 fun BodyMeasure.toEntity() = BodyMeasureEntity(
