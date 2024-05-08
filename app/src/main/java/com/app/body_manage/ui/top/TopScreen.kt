@@ -88,21 +88,31 @@ fun TopScreen(
         ) {
             item {
                 Row(verticalAlignment = Alignment.Bottom) {
-                    Text(
-                        text = lastMeasure?.weight?.toString() ?: "-",
-                        fontSize = 32.sp,
-                        color = Color.Black,
-                    )
-                    Spacer(modifier = Modifier.size(10.dp))
-                    Text(
-                        text = stringResource(id = R.string.unit_kg),
-                        fontSize = 18.sp,
-                        color = Color.Gray,
-                    )
+                    if (lastMeasure?.weight != null) {
+                        Text(
+                            text = lastMeasure.weight.toString(),
+                            fontSize = 32.sp,
+                            color = Color.Black,
+                        )
+                        Spacer(modifier = Modifier.size(10.dp))
+                        Text(
+                            text = stringResource(id = R.string.unit_kg),
+                            fontSize = 18.sp,
+                            color = Color.Gray,
+                        )
+                    } else {
+                        Text(
+                            text = stringResource(id = R.string.label_reserve),
+                            fontSize = 18.sp,
+                            color = Color.Black,
+                        )
+                        Spacer(modifier = Modifier.size(10.dp))
+                    }
                     Spacer(modifier = Modifier.size(10.dp))
                     lastMeasure?.time?.toLocalDate()?.toMMDDEE()?.let { mmdd ->
+                        val label = stringResource(id = R.string.label_registered_date)
                         Text(
-                            text = "登録日: $mmdd",
+                            text = "$label: $mmdd",
                             fontSize = 14.sp,
                             color = Color.Gray,
                         )
@@ -126,12 +136,12 @@ fun TopScreen(
                 }
                 Spacer(modifier = Modifier.size(10.dp))
             }
-            if (userPreference?.goalWeight == null) {
+            if (userPreference?.goalWeight == null && lastMeasure != null) {
                 item {
                     RequireGoal(onClickSetGoat)
                     Spacer(modifier = Modifier.size(10.dp))
                 }
-            } else if (lastMeasure != null) {
+            } else if (lastMeasure != null && userPreference != null) {
                 item {
                     Goal(
                         bodyMeasure = lastMeasure,
