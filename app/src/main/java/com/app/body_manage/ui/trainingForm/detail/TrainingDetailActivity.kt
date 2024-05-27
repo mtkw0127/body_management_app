@@ -133,7 +133,8 @@ class TrainingDetailActivity : AppCompatActivity() {
                             initialDigit = Digit.ONES,
                             callBack = { distance ->
                                 viewModel.updateCardioDistance(menuIndex, distance)
-                            }
+                            },
+                            supportOneHundred = true,
                         ).show(supportFragmentManager, "distance")
                     }
                 },
