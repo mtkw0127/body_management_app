@@ -54,10 +54,12 @@ data class FormViewModelState(
 
     fun toState(): FormState {
         if (type == null || model == null || measureDate == null) return FormState.Init
+        val setDateModel =
+            model.copy(time = LocalDateTime.of(measureDate, model.time.toLocalTime()))
         return when (type) {
             Type.Add -> {
                 FormState.HasData.Add(
-                    model = model,
+                    model = setDateModel,
                     photos = photos,
                     measureDate = measureDate,
                 )
@@ -65,7 +67,7 @@ data class FormViewModelState(
 
             Type.Edit -> {
                 FormState.HasData.Edit(
-                    model = model,
+                    model = setDateModel,
                     photos = photos,
                     measureDate = measureDate,
                 )
@@ -106,7 +108,14 @@ class BodyMeasureEditFormViewModel(
                     ?.copy(id = BodyMeasure.Id(0), time = LocalDateTime.now())
                     ?: BodyMeasure.INITIAL
             viewModelState.update {
-                it.copy(model = bodyMeasureModel)
+                it.copy(
+                    model = bodyMeasureModel.copy(
+                        time = LocalDateTime.of(
+                            checkNotNull(it.measureDate),
+                            bodyMeasureModel.time.toLocalTime()
+                        )
+                    )
+                )
             }
         }
     }
