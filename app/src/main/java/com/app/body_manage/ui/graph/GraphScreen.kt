@@ -59,9 +59,11 @@ fun GraphScreen(
 ) {
     Scaffold(
         bottomBar = {
-            BottomSheet(bottomSheetDataList)
+            Column {
+                BottomSheet(bottomSheetDataList)
+            }
         },
-    ) { it ->
+    ) {
         Box(
             modifier = Modifier
                 .padding(it)
