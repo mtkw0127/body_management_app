@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.EmojiPeople
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -40,6 +41,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import com.app.body_manage.BuildConfig
 import com.app.body_manage.R
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
@@ -56,6 +59,10 @@ import com.app.body_manage.extension.withPercent
 import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
 import com.app.body_manage.ui.common.ColumTextWithLabelAndIcon
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize.FULL_BANNER
+import com.google.android.gms.ads.AdView
+import kotlinx.coroutines.launch
 
 @Composable
 fun TopScreen(
@@ -72,9 +79,22 @@ fun TopScreen(
     onClickSetGoat: () -> Unit = {},
     onClickSetting: () -> Unit = {},
 ) {
+    val scope = rememberCoroutineScope()
     Scaffold(
         bottomBar = {
             Column {
+                AndroidView(factory = { context ->
+                    val adView = AdView(context).apply {
+                        if (BuildConfig.DEBUG) {
+                            adUnitId = "ca-app-pub-3940256099942544/9214589741"
+                        }
+                        setAdSize(FULL_BANNER)
+                    }
+                    scope.launch {
+                        AdRequest.Builder().build().let { adView.loadAd(it) }
+                    }
+                    adView
+                })
                 BottomSheet(bottomSheetDataList)
             }
         }

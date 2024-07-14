@@ -15,6 +15,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,12 +24,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
+import com.app.body_manage.BuildConfig
 import com.app.body_manage.R
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.style.Colors.Companion.disable
 import com.app.body_manage.style.Colors.Companion.secondPrimary
 import com.app.body_manage.style.Colors.Companion.theme
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize.FULL_BANNER
+import com.google.android.gms.ads.AdView
 import com.patrykandpatrick.vico.compose.axis.axisLineComponent
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberTopAxis
@@ -47,6 +53,7 @@ import com.patrykandpatrick.vico.core.component.text.TextComponent
 import com.patrykandpatrick.vico.core.entry.FloatEntry
 import com.patrykandpatrick.vico.core.entry.entryModelOf
 import com.patrykandpatrick.vico.core.marker.MarkerLabelFormatter
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -57,11 +64,26 @@ fun GraphScreen(
     onClickDataType: (DataType) -> Unit,
     onClickDuration: (Duration) -> Unit,
 ) {
+    val scope = rememberCoroutineScope()
     Scaffold(
         bottomBar = {
-            BottomSheet(bottomSheetDataList)
+            Column {
+                AndroidView(factory = { context ->
+                    val adView = AdView(context).apply {
+                        if (BuildConfig.DEBUG) {
+                            adUnitId = "ca-app-pub-3940256099942544/9214589741"
+                        }
+                        setAdSize(FULL_BANNER)
+                    }
+                    scope.launch {
+                        AdRequest.Builder().build().let { adView.loadAd(it) }
+                    }
+                    adView
+                })
+                BottomSheet(bottomSheetDataList)
+            }
         },
-    ) { it ->
+    ) {
         Box(
             modifier = Modifier
                 .padding(it)
