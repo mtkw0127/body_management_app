@@ -25,8 +25,8 @@ android {
         applicationId = "com.app.calendar"
         minSdk = 26
         targetSdk = 34
-        versionCode = 40
-        versionName = "1.33.2"
+        versionCode = 41
+        versionName = "1.33.3"
         applicationId = "com.app.body_manage"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -81,6 +81,9 @@ dependencies {
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
+    // admob
+    implementation("com.google.android.gms:play-services-ads:23.2.0")
 
     // flipper
     implementation("com.facebook.flipper:flipper:0.250.0")
