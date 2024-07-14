@@ -87,6 +87,8 @@ fun TopScreen(
                     val adView = AdView(context).apply {
                         if (BuildConfig.DEBUG) {
                             adUnitId = "ca-app-pub-3940256099942544/9214589741"
+                        } else {
+                            adUnitId = "ca-app-pub-2002859886618281/8063298908"
                         }
                         setAdSize(FULL_BANNER)
                     }

@@ -25,7 +25,7 @@ android {
         applicationId = "com.app.calendar"
         minSdk = 26
         targetSdk = 34
-        versionCode = 41
+        versionCode = 42
         versionName = "1.33.3"
         applicationId = "com.app.body_manage"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
