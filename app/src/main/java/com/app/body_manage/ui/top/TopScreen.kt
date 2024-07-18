@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -81,6 +82,7 @@ fun TopScreen(
 ) {
     val scope = rememberCoroutineScope()
     Scaffold(
+        modifier = Modifier.safeDrawingPadding(),
         bottomBar = {
             Column {
                 AndroidView(factory = { context ->

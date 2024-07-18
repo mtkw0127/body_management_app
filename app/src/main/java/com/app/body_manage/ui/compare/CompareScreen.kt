@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -90,6 +91,7 @@ fun CompareScreen(
     val scope = rememberCoroutineScope()
     val coroutineScope = rememberCoroutineScope()
     Scaffold(
+        modifier = Modifier.safeDrawingPadding(),
         floatingActionButton = {
             if (pagerState.currentPage == 0 &&
                 uiState is CompareState.CompareItemsHasSet &&
@@ -136,7 +138,7 @@ fun CompareScreen(
                                 verticalArrangement = Arrangement.Top,
                                 horizontalAlignment = Alignment.CenterHorizontally,
 
-                            ) {
+                                ) {
                                 CompareItem(
                                     stringResource(R.string.before),
                                     uiState.before,
