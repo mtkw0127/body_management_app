@@ -7,6 +7,7 @@ plugins {
     id("com.google.firebase.crashlytics")
     id("com.github.triplet.play")
     id("io.gitlab.arturbosch.detekt") version "1.23.3"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
 }
 
 android {
@@ -54,11 +55,14 @@ android {
     }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.3"
+        buildConfig = true
     }
     namespace = "com.app.body_manage"
+}
+
+composeCompiler {
+    enableStrongSkippingMode = true
+    reportsDestination = layout.buildDirectory.dir("compose_compiler")
 }
 
 detekt {
@@ -74,13 +78,13 @@ play {
 }
 
 dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.3")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.6")
 
-    implementation("androidx.core:core-ktx:1.13.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.11.0")
+    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 
     // admob
     implementation("com.google.android.gms:play-services-ads:23.2.0")
@@ -90,14 +94,14 @@ dependencies {
     implementation("com.facebook.soloader:soloader:0.11.0")
 
     // lifecycle
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
 
     // In-App-Review
     implementation("com.google.android.play:review:2.0.1")
     implementation("com.google.android.play:review-ktx:2.0.1")
 
     // CameraX core library using the camera2 implementation
-    val cameraxVersion = "1.4.0-alpha05"
+    val cameraxVersion = "1.4.0-beta02"
     implementation("androidx.camera:camera-core:${cameraxVersion}")
     implementation("androidx.camera:camera-camera2:${cameraxVersion}")
     implementation("androidx.camera:camera-lifecycle:${cameraxVersion}")
@@ -110,9 +114,9 @@ dependencies {
     ksp("androidx.room:room-compiler:$roomVersion")
 
     // Kotlin components
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
 
     // 画像加工
     implementation("com.makeramen:roundedimageview:2.3.0")
@@ -121,24 +125,24 @@ dependencies {
     implementation("com.jakewharton.timber:timber:5.0.1")
 
     // Compose
-    implementation("androidx.compose.ui:ui:1.6.6")
+    implementation("androidx.compose.ui:ui:1.6.8")
     // Tooling support (Previews, etc.)
-    implementation("androidx.compose.ui:ui-tooling:1.6.6")
+    implementation("androidx.compose.ui:ui-tooling:1.6.8")
     // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
-    implementation("androidx.compose.foundation:foundation:1.6.6")
+    implementation("androidx.compose.foundation:foundation:1.6.8")
     // Material Design
-    implementation("androidx.compose.material:material:1.6.6")
+    implementation("androidx.compose.material:material:1.6.8")
     // Material design icons
-    implementation("androidx.compose.material:material-icons-core:1.6.6")
-    implementation("androidx.compose.material:material-icons-extended:1.6.6")
+    implementation("androidx.compose.material:material-icons-core:1.6.8")
+    implementation("androidx.compose.material:material-icons-extended:1.6.8")
     // Integration with activities
     implementation("androidx.activity:activity-compose:1.9.0")
     // Integration with ViewModels
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
     // Integration with observables
-    implementation("androidx.compose.runtime:runtime-livedata:1.6.6")
-    implementation("com.google.accompanist:accompanist-pager:0.25.0")
-    implementation("com.google.accompanist:accompanist-pager-indicators:0.24.11-rc")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.8")
+    implementation("com.google.accompanist:accompanist-pager:0.27.1")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.27.1")
     implementation("androidx.coordinatorlayout:coordinatorlayout:1.2.0")
 
     // Junit5
@@ -157,11 +161,11 @@ dependencies {
     implementation("com.patrykandpatrick.vico:compose:1.13.1")
 
     // Preferences DataStore
-    implementation("androidx.datastore:datastore-preferences:1.1.0")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
     // Proto DataStore
-    implementation("androidx.datastore:datastore-core:1.1.0")
+    implementation("androidx.datastore:datastore-core:1.1.1")
 
-    implementation(platform("com.google.firebase:firebase-bom:32.8.1"))
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-crashlytics-ktx")
 
