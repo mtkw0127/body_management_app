@@ -24,7 +24,7 @@ android {
     compileSdkPreview = "UpsideDownCakePrivacySandbox"
     defaultConfig {
         applicationId = "com.app.calendar"
-        minSdk = 26
+        minSdk = 27
         targetSdk = 35
         versionCode = 43
         versionName = "1.33.3"

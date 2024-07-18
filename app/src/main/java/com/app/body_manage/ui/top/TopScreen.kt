@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
@@ -37,6 +38,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -82,9 +84,12 @@ fun TopScreen(
 ) {
     val scope = rememberCoroutineScope()
     Scaffold(
-        modifier = Modifier.safeDrawingPadding(),
         bottomBar = {
-            Column {
+            Column(
+                modifier = Modifier
+                    .background(colorResource(id = R.color.app_theme))
+                    .navigationBarsPadding()
+            ) {
                 AndroidView(factory = { context ->
                     val adView = AdView(context).apply {
                         if (BuildConfig.DEBUG) {
@@ -105,10 +110,10 @@ fun TopScreen(
     ) {
         LazyColumn(
             modifier = Modifier
-                .background(background)
                 .padding(it)
-                .padding(10.dp)
+                .background(background)
                 .fillMaxHeight()
+                .safeDrawingPadding()
         ) {
             item {
                 Row(verticalAlignment = Alignment.Bottom) {
