@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -27,6 +28,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.Tab
 import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults
@@ -45,7 +47,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.draw
@@ -123,22 +124,24 @@ fun CompareScreen(
         }
     ) {
         Column(
-            modifier = Modifier.padding(it)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
         ) {
             when (uiState) {
                 is CompareState.CompareItemsHasSet -> {
                     val tabRowItems = listOf(
-                        TabRowItem(stringResource(id = R.string.compare)) {
+                        TabRowItem(
+                            stringResource(id = R.string.compare)
+                        ) {
                             Column(
                                 modifier = Modifier
-                                    .padding(top = 5.dp)
                                     .background(background)
-                                    .fillMaxWidth()
+                                    .fillMaxSize()
                                     .verticalScroll(rememberScrollState()),
                                 verticalArrangement = Arrangement.Top,
                                 horizontalAlignment = Alignment.CenterHorizontally,
-
-                                ) {
+                            ) {
                                 CompareItem(
                                     stringResource(R.string.before),
                                     uiState.before,
@@ -151,7 +154,9 @@ fun CompareScreen(
                                 )
                             }
                         },
-                        TabRowItem(stringResource(id = R.string.history)) {
+                        TabRowItem(
+                            stringResource(id = R.string.history)
+                        ) {
                             if (uiState.compareHistory.isNotEmpty()) {
                                 Column(
                                     modifier = Modifier
@@ -263,91 +268,94 @@ private fun HistoryList(
     LazyColumn {
         items(compareHistory) {
             val picture = remember { Picture() }
-            Column(
-                Modifier
-                    .shadow(3.dp)
-                    .fillMaxWidth(0.95F)
-                    .height(400.dp)
+            Surface(
+                modifier = Modifier
                     .padding(5.dp)
+                    .wrapContentHeight()
+                    .fillMaxWidth()
                     .background(
                         color = Color.White,
                         shape = RoundedCornerShape(5.dp)
-                    )
-                    .border(1.dp, Color.Transparent, RoundedCornerShape(5.dp))
-                    .drawWithCache {
-                        val width = this.size.width.toInt()
-                        val height = this.size.height.toInt()
-                        onDrawWithContent {
-                            val pictureCanvas = Canvas(
-                                picture.beginRecording(width, height)
-                            )
-                            draw(this, this.layoutDirection, pictureCanvas, this.size) {
-                                this@onDrawWithContent.drawContent()
-                            }
-                            picture.endRecording()
-                            drawIntoCanvas { canvas -> canvas.nativeCanvas.drawPicture(picture) }
-                        }
-                    },
+                    ),
+                elevation = 1.dp
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp)
-                ) {
-                    CompareImage(
-                        modifier = Modifier.weight(0.5F),
-                        label = stringResource(id = R.string.before),
-                        photoId = it.beforePhotoId,
-                        photoUri = it.beforePhotoUri,
-                        onClickPhoto = onClickPhoto,
-                    )
-                    CompareImage(
-                        modifier = Modifier.weight(0.5F),
-                        label = stringResource(id = R.string.after),
-                        photoId = it.afterPhotoId,
-                        photoUri = it.afterPhotoUri,
-                        onClickPhoto = onClickPhoto,
-                    )
-                }
-                TableData(compareHistory = it)
-                Row(
-                    modifier = Modifier
-                        .padding(top = 5.dp, bottom = 10.dp, end = 5.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Absolute.Right
-                ) {
-                    Icon(
-                        Icons.Rounded.Share,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier
-                            .background(
-                                color = Color.Gray,
-                                shape = CircleShape
-                            )
-                            .padding(5.dp)
-                            .size(26.dp)
-                            .clickable {
-                                onClickShare(picture)
+                Column(
+                    Modifier
+                        .drawWithCache {
+                            val width = this.size.width.toInt()
+                            val height = this.size.height.toInt()
+                            onDrawWithContent {
+                                val pictureCanvas = Canvas(
+                                    picture.beginRecording(width, height)
+                                )
+                                draw(this, this.layoutDirection, pictureCanvas, this.size) {
+                                    this@onDrawWithContent.drawContent()
+                                }
+                                picture.endRecording()
+                                drawIntoCanvas { canvas -> canvas.nativeCanvas.drawPicture(picture) }
                             }
-                    )
-                    Spacer(modifier = Modifier.size(10.dp))
-                    Icon(
-                        Icons.Rounded.Delete,
-                        contentDescription = null,
-                        tint = Color.White,
+                        },
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceEvenly,
                         modifier = Modifier
-                            .background(
-                                color = Color.Gray,
-                                shape = CircleShape
-                            )
-                            .padding(5.dp)
-                            .size(26.dp)
-                            .clickable {
-                                onClickDelete.invoke(it)
-                            }
-                    )
+                            .fillMaxWidth()
+                            .padding(top = 10.dp)
+                    ) {
+                        CompareImage(
+                            modifier = Modifier.weight(0.5F),
+                            label = stringResource(id = R.string.before),
+                            photoId = it.beforePhotoId,
+                            photoUri = it.beforePhotoUri,
+                            onClickPhoto = onClickPhoto,
+                        )
+                        CompareImage(
+                            modifier = Modifier.weight(0.5F),
+                            label = stringResource(id = R.string.after),
+                            photoId = it.afterPhotoId,
+                            photoUri = it.afterPhotoUri,
+                            onClickPhoto = onClickPhoto,
+                        )
+                    }
+                    TableData(compareHistory = it)
+                    Row(
+                        modifier = Modifier
+                            .padding(top = 5.dp, bottom = 10.dp, end = 5.dp)
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Absolute.Right
+                    ) {
+                        Icon(
+                            Icons.Rounded.Share,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier
+                                .background(
+                                    color = Color.Gray,
+                                    shape = CircleShape
+                                )
+                                .padding(5.dp)
+                                .size(26.dp)
+                                .clickable {
+                                    onClickShare(picture)
+                                }
+                        )
+                        Spacer(modifier = Modifier.size(10.dp))
+                        Icon(
+                            Icons.Rounded.Delete,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier
+                                .background(
+                                    color = Color.Gray,
+                                    shape = CircleShape
+                                )
+                                .padding(5.dp)
+                                .size(26.dp)
+                                .clickable {
+                                    onClickDelete.invoke(it)
+                                }
+                        )
+                    }
                 }
             }
         }
@@ -499,16 +507,16 @@ private fun CompareItem(label: String, item: CompareItemStruct?, onEditClick: ()
         date = DateUtil.localDateConvertMonthDay(item.date)
         weight = "${item.weight}kg"
     }
-    Box(
+    Surface(
         modifier = Modifier
-            .shadow(3.dp)
             .fillMaxWidth(0.95F)
             .height(400.dp)
             .padding(5.dp)
             .background(
                 color = Color.White,
                 shape = RoundedCornerShape(5.dp)
-            )
+            ),
+        elevation = 1.dp
     ) {
         Row {
             Column(
