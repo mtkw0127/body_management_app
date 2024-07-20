@@ -1,15 +1,20 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
-    <style name="Theme.CalendarApp" parent="Theme.Material3.Light">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+    <style name="Theme.CalendarApp" parent="Theme.MaterialComponents.NoActionBar">
+        <!-- システムバーの色を半透明にする -->
+        <item name="android:navigationBarColor">#FFFCF8F8</item>
+        <item name="android:statusBarColor">#FFFCF8F8</item>
+        <!-- システムバー上の要素の色をグレーにする -->
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
+
+    <style name="Theme.CalendarAppTheme" parent="Theme.MaterialComponents.NoActionBar">
+        <!-- システムバーの色を半透明にする -->
+        <item name="android:navigationBarColor">@color/app_theme</item>
+        <item name="android:statusBarColor">@color/app_theme</item>
+        <!-- システムバー上の要素の色をグレーにする -->
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
     </style>
 </resources>

@@ -20,12 +20,12 @@ android {
         }
     }
 
-    compileSdk = 34
+    compileSdk = 35
     compileSdkPreview = "UpsideDownCakePrivacySandbox"
     defaultConfig {
         applicationId = "com.app.calendar"
-        minSdk = 26
-        targetSdk = 34
+        minSdk = 27
+        targetSdk = 35
         versionCode = 43
         versionName = "1.33.3"
         applicationId = "com.app.body_manage"

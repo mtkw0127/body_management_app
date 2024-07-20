@@ -1,8 +1,14 @@
 package com.app.body_manage.ui.choosePhoto
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -42,6 +48,11 @@ fun ChoosePhotoScreen(
     Scaffold(
         topBar = {
             TopAppBar(
+                modifier = Modifier
+                    .background(colorResource(id = R.color.app_theme))
+                    .windowInsetsPadding(
+                        WindowInsets.safeDrawing.only(WindowInsetsSides.Top)
+                    ),
                 title = {
                     Text(
                         text = stringResource(id = R.string.screen_name_choose_compare_photo),
@@ -52,7 +63,8 @@ fun ChoosePhotoScreen(
                         Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = null)
                     }
                 },
-                backgroundColor = colorResource(id = R.color.app_theme)
+                backgroundColor = colorResource(id = R.color.app_theme),
+                elevation = 0.dp
             )
         }
     ) {
