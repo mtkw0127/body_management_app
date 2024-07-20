@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -25,97 +26,101 @@ fun PhotoDetailScreen(
     state: PhotoDetailState,
     onClickBackPress: () -> Unit
 ) {
-    when (state) {
-        is PhotoDetailState.ShowPhotoDetailWithDetail -> {
-            Box(
-                modifier = Modifier
-                    .background(Color.Black)
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                AsyncImage(
-                    model = state.photoModel.uri,
-                    contentDescription = "写真詳細",
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .padding(10.dp)
-                    .padding(top = 15.dp)
-            ) {
-                Icon(
-                    Icons.Filled.ArrowBack,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.clickable {
-                        onClickBackPress()
-                    }
-                )
-            }
-            if (state.bodyMeasureModel != null) {
-                Column(
+    Box(
+        modifier = Modifier.safeDrawingPadding(),
+    ) {
+        when (state) {
+            is PhotoDetailState.ShowPhotoDetailWithDetail -> {
+                Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(30.dp),
-                    verticalArrangement = Arrangement.Bottom,
-                    horizontalAlignment = Alignment.Start
+                        .background(Color.Black)
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "撮影日時：${DateUtil.localDateTimeToJapanese(state.bodyMeasureModel.time)}",
-                        color = Color.White,
-                        modifier = Modifier.padding(bottom = 5.dp)
+                    AsyncImage(
+                        model = state.photoModel.uri,
+                        contentDescription = "写真詳細",
                     )
-                    Text(
-                        text = "体重：${state.bodyMeasureModel.weight}kg",
-                        color = Color.White,
-                        modifier = Modifier.padding(bottom = 5.dp)
+                }
+                Box(
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .padding(top = 15.dp)
+                ) {
+                    Icon(
+                        Icons.Filled.ArrowBack,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.clickable {
+                            onClickBackPress()
+                        }
                     )
-                    Text(
-                        text = "体脂肪率：${state.bodyMeasureModel.fat}%",
-                        color = Color.White,
-                        modifier = Modifier.padding(bottom = 5.dp)
+                }
+                if (state.bodyMeasureModel != null) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(30.dp),
+                        verticalArrangement = Arrangement.Bottom,
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(
+                            text = "撮影日時：${DateUtil.localDateTimeToJapanese(state.bodyMeasureModel.time)}",
+                            color = Color.White,
+                            modifier = Modifier.padding(bottom = 5.dp)
+                        )
+                        Text(
+                            text = "体重：${state.bodyMeasureModel.weight}kg",
+                            color = Color.White,
+                            modifier = Modifier.padding(bottom = 5.dp)
+                        )
+                        Text(
+                            text = "体脂肪率：${state.bodyMeasureModel.fat}%",
+                            color = Color.White,
+                            modifier = Modifier.padding(bottom = 5.dp)
+                        )
+                        Text(
+                            text = "BMI：${
+                                BMICalculator().calculate(
+                                    state.bodyMeasureModel.tall,
+                                    state.bodyMeasureModel.weight
+                                )
+                            }",
+                            color = Color.White,
+                        )
+                    }
+                }
+            }
+
+            is PhotoDetailState.ShowPhotoDetailFromUri -> {
+                Box(
+                    modifier = Modifier
+                        .background(Color.Black)
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    AsyncImage(
+                        model = state.uri,
+                        contentDescription = "写真詳細",
                     )
-                    Text(
-                        text = "BMI：${
-                            BMICalculator().calculate(
-                                state.bodyMeasureModel.tall,
-                                state.bodyMeasureModel.weight
-                            )
-                        }",
-                        color = Color.White,
+                }
+                Box(
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .padding(top = 15.dp)
+                ) {
+                    Icon(
+                        Icons.Filled.ArrowBack,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.clickable {
+                            onClickBackPress()
+                        }
                     )
                 }
             }
-        }
 
-        is PhotoDetailState.ShowPhotoDetailFromUri -> {
-            Box(
-                modifier = Modifier
-                    .background(Color.Black)
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                AsyncImage(
-                    model = state.uri,
-                    contentDescription = "写真詳細",
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .padding(10.dp)
-                    .padding(top = 15.dp)
-            ) {
-                Icon(
-                    Icons.Filled.ArrowBack,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.clickable {
-                        onClickBackPress()
-                    }
-                )
-            }
+            else -> {}
         }
-
-        else -> {}
     }
 }

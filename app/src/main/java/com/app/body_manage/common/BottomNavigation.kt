@@ -23,10 +23,10 @@ import com.app.body_manage.R
 @Composable
 fun BottomSheet(bottomSheetDataList: List<BottomSheetData>) {
     BottomNavigation(
+        elevation = 0.dp,
         backgroundColor = colorResource(id = R.color.app_theme),
         modifier = Modifier
             .height(60.dp)
-            .padding(0.dp)
     ) {
         bottomSheetDataList.forEach { item ->
             BottomNavigationItem(
