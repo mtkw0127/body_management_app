@@ -13,15 +13,9 @@ import com.app.body_manage.R
 class PhotoListAdapter(private val dataSet: List<Uri>, private val deletePhoto: (Int) -> Unit) :
     RecyclerView.Adapter<PhotoListAdapter.ViewHolder>() {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val imageView: ImageView
-        private val countText: TextView
-        private val deleteButton: Button
-
-        init {
-            imageView = view.findViewById(R.id.photo_item)
-            countText = view.findViewById(R.id.counter)
-            deleteButton = view.findViewById(R.id.delete_photo)
-        }
+        private val imageView: ImageView = view.findViewById(R.id.photo_item)
+        private val countText: TextView = view.findViewById(R.id.counter)
+        private val deleteButton: Button = view.findViewById(R.id.delete_photo)
 
         fun setImage(uri: Uri) {
             imageView.setImageURI(uri)

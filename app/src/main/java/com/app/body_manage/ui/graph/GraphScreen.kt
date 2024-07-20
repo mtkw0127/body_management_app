@@ -1,12 +1,15 @@
 package com.app.body_manage.ui.graph
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
@@ -18,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -59,13 +63,18 @@ fun GraphScreen(
 ) {
     Scaffold(
         bottomBar = {
-            Column {
+            Column(
+                modifier = Modifier
+                    .background(colorResource(id = R.color.app_theme))
+                    .navigationBarsPadding()
+            ) {
                 BottomSheet(bottomSheetDataList)
             }
         },
     ) {
         Box(
             modifier = Modifier
+                .safeDrawingPadding()
                 .padding(it)
                 .fillMaxSize(),
         ) {
