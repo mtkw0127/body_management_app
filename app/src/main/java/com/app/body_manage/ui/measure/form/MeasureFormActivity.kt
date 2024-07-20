@@ -55,7 +55,7 @@ class MeasureFormActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         enableEdgeToEdge()
-        
+
         setUp()
         setContent {
             val uiState by viewModel.uiState.collectAsState()

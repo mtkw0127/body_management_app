@@ -102,7 +102,7 @@ class MeasureListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         enableEdgeToEdge()
-        
+
         initViewModel()
 
         setContent {
