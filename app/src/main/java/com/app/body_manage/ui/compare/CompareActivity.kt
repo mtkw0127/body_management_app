@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
@@ -87,6 +88,8 @@ class CompareActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         val bottomSheetDataList = createBottomDataList(
             context = this,
             topAction = { simpleLauncher.launch(TopActivity.createIntent(this)) },
@@ -108,11 +111,19 @@ class CompareActivity : AppCompatActivity() {
             viewModel.uiState.collect {
                 if (it is CompareState.CompareItemsHasSet) {
                     if (it.saveFail) {
-                        Toast.makeText(this@CompareActivity, "保存に失敗しました", Toast.LENGTH_LONG)
+                        Toast.makeText(
+                            this@CompareActivity,
+                            "保存に失敗しました",
+                            Toast.LENGTH_LONG
+                        )
                             .show()
                     }
                     if (it.saveSuccess) {
-                        Toast.makeText(this@CompareActivity, "保存に成功しました", Toast.LENGTH_LONG)
+                        Toast.makeText(
+                            this@CompareActivity,
+                            "保存に成功しました",
+                            Toast.LENGTH_LONG
+                        )
                             .show()
                     }
                 }

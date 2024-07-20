@@ -8,4 +8,13 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar">true</item>
     </style>
+
+    <style name="Theme.CalendarAppTheme" parent="Theme.MaterialComponents.NoActionBar">
+        <!-- システムバーの色を半透明にする -->
+        <item name="android:navigationBarColor">@color/app_theme</item>
+        <item name="android:statusBarColor">@color/app_theme</item>
+        <!-- システムバー上の要素の色をグレーにする -->
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+    </style>
 </resources>

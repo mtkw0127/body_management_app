@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.core.view.WindowCompat
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.ui.measure.list.MeasureListActivity
 
@@ -21,7 +22,8 @@ class CalendarActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        
         viewModel = CalendarListViewModel(
             (application as TrainingApplication).bodyMeasureRepository,
             (application as TrainingApplication).mealFoodsRepository,

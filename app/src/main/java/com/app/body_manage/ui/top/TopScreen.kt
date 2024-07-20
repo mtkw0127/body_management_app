@@ -112,8 +112,8 @@ fun TopScreen(
             modifier = Modifier
                 .padding(it)
                 .background(background)
-                .fillMaxHeight()
                 .safeDrawingPadding()
+                .fillMaxHeight()
         ) {
             item {
                 Row(verticalAlignment = Alignment.Bottom) {
@@ -502,7 +502,6 @@ fun BottomButtons(
 ) {
     Row(
         modifier = Modifier
-            .shadow(2.dp)
             .height(50.dp)
             .fillMaxWidth()
             .background(Color.White),

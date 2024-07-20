@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.core.view.WindowCompat
 import com.app.body_manage.common.createBottomDataList
 import com.app.body_manage.data.model.Photo
 import com.app.body_manage.ui.compare.CompareActivity
@@ -30,6 +31,7 @@ class PhotoListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         val vm = PhotoListViewModel(application = application)
         vm.load()
         setContent {

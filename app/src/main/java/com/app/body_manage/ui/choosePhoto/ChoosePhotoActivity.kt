@@ -8,6 +8,7 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.core.view.WindowCompat
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import java.time.LocalDate
@@ -20,6 +21,7 @@ class ChoosePhotoActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         val vm = ChoosePhotoViewModel(bodyMeasurePhotoRepository)
         vm.loadCurrentMonthHavePhotosDateList()
         vm.setLocalDate(LocalDate.now())

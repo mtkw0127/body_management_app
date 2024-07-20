@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.core.view.WindowCompat
 import com.app.body_manage.common.createBottomDataList
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.photoList.PhotoListActivity
@@ -22,6 +23,7 @@ class GraphActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         viewModel = GraphViewModel(application = application)
         viewModel.loadBodyMeasure()
 

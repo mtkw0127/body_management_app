@@ -1,11 +1,15 @@
 package com.app.body_manage.ui.selectTrainingMenu
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -35,10 +39,13 @@ fun SelectTrainingMenuScreen(
     onClickType: (TrainingMenu.Type?) -> Unit = {},
 ) {
     Scaffold(
-        modifier = Modifier.safeDrawingPadding(),
         topBar = {
             // TODO: TopAppBarを共通化
-            TopAppBar(backgroundColor = Colors.theme) {
+            TopAppBar(
+                modifier = Modifier.background(Colors.theme),
+                windowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Top),
+                backgroundColor = Colors.theme,
+            ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Spacer(modifier = Modifier.size(10.dp))
                     Icon(
@@ -54,7 +61,7 @@ fun SelectTrainingMenuScreen(
         LazyColumn(
             modifier = Modifier
                 .padding(it)
-                .padding(10.dp)
+                .padding(horizontal = 10.dp)
                 .fillMaxSize()
         ) {
             item {
