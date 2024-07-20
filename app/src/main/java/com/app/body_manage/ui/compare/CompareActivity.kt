@@ -12,6 +12,7 @@ import android.provider.MediaStore
 import android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 import android.widget.Toast
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
@@ -89,7 +90,7 @@ class CompareActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
+        enableEdgeToEdge()
         val bottomSheetDataList = createBottomDataList(
             context = this,
             topAction = { simpleLauncher.launch(TopActivity.createIntent(this)) },
