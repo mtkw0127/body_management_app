@@ -13,6 +13,8 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.app.body_manage.data.local.UserPreferenceRepository
+import com.app.body_manage.data.repository.LogRepository
+import com.app.body_manage.data.repository.LogRepository.Companion.KEY_INITIAL_DIALOG
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -50,6 +52,17 @@ class UserPreferenceSettingDialog : DialogFragment() {
                         onChangeGender = viewModel::setGender,
                         onChangeBirth = viewModel::setBirth,
                         onClickSet = {
+                            activity?.let {
+                                LogRepository().sendLog(
+                                    it,
+                                    KEY_INITIAL_DIALOG,
+                                    Bundle().apply {
+                                        putString("name", uiState.name)
+                                        putString("gender", uiState.gender.name)
+                                        putString("birth", uiState.birth.toString())
+                                    }
+                                )
+                            }
                             viewModel.save()
                         },
                     )
