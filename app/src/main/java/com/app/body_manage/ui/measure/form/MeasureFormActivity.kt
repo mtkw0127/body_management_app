@@ -14,6 +14,7 @@ import androidx.core.view.WindowCompat
 import com.app.body_manage.R
 import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.model.BodyPhoto
+import com.app.body_manage.data.repository.LogRepository
 import com.app.body_manage.dialog.FloatNumberPickerDialog
 import com.app.body_manage.dialog.TimePickerDialog
 import com.app.body_manage.ui.camera.CameraActivity
@@ -86,6 +87,10 @@ class MeasureFormActivity : AppCompatActivity() {
                 },
                 onClickBackPress = { finish() },
                 onClickTakePhoto = {
+                    LogRepository().sendLog(
+                        context = this,
+                        key = LogRepository.KEY_OPEN_MEASURE_CAMERA,
+                    )
                     cameraActivityLauncher.launch(CameraActivity.createCameraActivityIntent(this))
                 },
                 onClickSave = {
@@ -93,10 +98,18 @@ class MeasureFormActivity : AppCompatActivity() {
                     when (formType) {
                         FormType.ADD -> {
                             setResult(RESULT_CODE_ADD)
+                            LogRepository().sendLog(
+                                context = this,
+                                key = LogRepository.KEY_MEASURE_ADD,
+                            )
                         }
 
                         FormType.EDIT -> {
                             setResult(RESULT_CODE_EDIT)
+                            LogRepository().sendLog(
+                                context = this,
+                                key = LogRepository.KEY_MEASURE_EDIT,
+                            )
                         }
                     }
                     finish()

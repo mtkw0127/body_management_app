@@ -79,7 +79,7 @@ fun TopScreen(
     onClickAddMeasure: () -> Unit = {},
     onClickAddMeal: () -> Unit = {},
     onClickAddTraining: () -> Unit = {},
-    onClickSetGoat: () -> Unit = {},
+    onClickSetGoal: () -> Unit = {},
     onClickSetting: () -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
@@ -167,7 +167,7 @@ fun TopScreen(
             }
             if (userPreference?.goalWeight == null && lastMeasure != null) {
                 item {
-                    RequireGoal(onClickSetGoat)
+                    RequireGoal(onClickSetGoal)
                     Spacer(modifier = Modifier.size(10.dp))
                 }
             } else if (lastMeasure != null && userPreference != null) {
@@ -176,7 +176,7 @@ fun TopScreen(
                         bodyMeasure = lastMeasure,
                         userPreference = userPreference,
                         meal = todayMeasure.meals,
-                        onClickSetGoat
+                        onClickSetGoal
                     )
                     Spacer(modifier = Modifier.size(10.dp))
                 }

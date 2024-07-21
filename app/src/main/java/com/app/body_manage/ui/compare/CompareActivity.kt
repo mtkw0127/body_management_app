@@ -41,6 +41,8 @@ import com.app.body_manage.data.dao.ComparePhotoHistoryDao
 import com.app.body_manage.data.model.Photo
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.CompareHistoryRepository
+import com.app.body_manage.data.repository.LogRepository
+import com.app.body_manage.data.repository.LogRepository.Companion.KEY_SAVE_HISTORY
 import com.app.body_manage.ui.choosePhoto.ChoosePhotoActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
@@ -150,6 +152,7 @@ class CompareActivity : AppCompatActivity() {
                     )
                 },
                 saveHistory = {
+                    LogRepository().sendLog(this, KEY_SAVE_HISTORY)
                     viewModel.saveHistory()
                 },
                 loadHistory = {

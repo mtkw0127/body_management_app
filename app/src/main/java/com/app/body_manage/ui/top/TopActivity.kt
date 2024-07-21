@@ -18,6 +18,9 @@ import com.app.body_manage.TrainingApplication
 import com.app.body_manage.common.createBottomDataList
 import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
+import com.app.body_manage.data.repository.LogRepository
+import com.app.body_manage.data.repository.LogRepository.Companion.KEY_OPEN_OBJECT_KCAL
+import com.app.body_manage.data.repository.LogRepository.Companion.KEY_OPEN_OBJECT_WEIGHT
 import com.app.body_manage.data.repository.MealRepository
 import com.app.body_manage.dialog.Digit
 import com.app.body_manage.dialog.FloatNumberPickerDialog
@@ -108,6 +111,9 @@ class TopActivity : AppCompatActivity() {
                 initialDigit = Digit.THOUSAND,
             ) {
                 viewModel.setGoalKcal(it)
+                LogRepository().sendLog(this, KEY_OPEN_OBJECT_KCAL, Bundle().apply {
+                    putInt("kcal", it.toInt())
+                })
             }.show(supportFragmentManager, null)
         }
 
@@ -147,7 +153,7 @@ class TopActivity : AppCompatActivity() {
                         TrainingFormActivity.createInstance(this, LocalDate.now())
                     )
                 },
-                onClickSetGoat = {
+                onClickSetGoal = {
                     val weight = viewModel.lastMeasure.value?.weight ?: return@TopScreen
                     FloatNumberPickerDialog.createDialog(
                         label = getString(R.string.weight),
@@ -157,6 +163,9 @@ class TopActivity : AppCompatActivity() {
                         supportOneHundred = true,
                     ) {
                         viewModel.setGoalWeight(it)
+                        LogRepository().sendLog(this, KEY_OPEN_OBJECT_WEIGHT, Bundle().apply {
+                            putFloat("weight", it)
+                        })
                     }.show(supportFragmentManager, null)
                 },
                 onClickSetting = {

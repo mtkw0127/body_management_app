@@ -16,6 +16,10 @@ import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.data.model.Meal
 import com.app.body_manage.data.model.MealPhoto
+import com.app.body_manage.data.repository.LogRepository
+import com.app.body_manage.data.repository.LogRepository.Companion.KEY_ADD_MEAL
+import com.app.body_manage.data.repository.LogRepository.Companion.KEY_OPEN_MEAL_CAMERA
+import com.app.body_manage.data.repository.LogRepository.Companion.KEY_SAVE_MEAL
 import com.app.body_manage.dialog.Digit
 import com.app.body_manage.dialog.IntNumberPickerDialog
 import com.app.body_manage.dialog.TimePickerDialog
@@ -68,18 +72,27 @@ class MealFormActivity : AppCompatActivity() {
                 },
                 onClickMealTiming = viewModel::updateTiming,
                 onSearchTextChange = viewModel::searchFood,
-                onClickSave = viewModel::save,
-                onClickSearchedFood = viewModel::addFood,
+                onClickSave = {
+                    LogRepository().sendLog(this, KEY_SAVE_MEAL)
+                    viewModel.save()
+                },
+                onClickSearchedFood = {
+                    LogRepository().sendLog(this, KEY_ADD_MEAL, Bundle().apply {
+                        putString("food_name", it.name)
+                    })
+                    viewModel.addFood(it)
+                },
                 onClickDeleteFood = viewModel::removeFood,
                 onClickBackPress = this@MealFormActivity::finish,
                 onClickTakePhoto = {
+                    LogRepository().sendLog(this, KEY_OPEN_MEAL_CAMERA)
                     cameraLauncher.launch(CameraActivity.createCameraActivityIntent(this))
                 },
                 onClickDeleteForm = viewModel::deleteForm,
                 onUpdateMealKcal = { food ->
                     IntNumberPickerDialog.createDialog(
                         label = getString(R.string.kcal),
-                        number = food.kcal.toLong(),
+                        number = food.kcal,
                         unit = getString(R.string.unit_kcal),
                         maxDigit = Digit.THOUSAND,
                         initialDigit = Digit.HUNDRED,
