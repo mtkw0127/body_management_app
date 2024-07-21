@@ -56,9 +56,6 @@ class CompareActivity : AppCompatActivity() {
         (application as TrainingApplication).compareBodyMeasureHistoryRepository
     }
 
-    private val simpleLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
-
     private val beforeSearchLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK && it.data != null) {

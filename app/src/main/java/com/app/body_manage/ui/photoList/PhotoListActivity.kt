@@ -20,9 +20,6 @@ class PhotoListActivity : AppCompatActivity() {
         fun createIntent(context: Context) = Intent(context, PhotoListActivity::class.java)
     }
 
-    private val launcher =
-        registerForActivityResult(StartActivityForResult()) {}
-
     private val photoDetailLauncher =
         registerForActivityResult(StartActivityForResult()) {}
 

@@ -76,8 +76,6 @@ class TopActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback {}
         supportFragmentManager.setFragmentResultListener(REQUEST_KEY, this) { _, _ ->
             viewModel.load()
-            // 初期設定後は兎に角測定画面へ
-            launcher.launch(MeasureFormActivity.createMeasureFormIntent(this, LocalDate.now()))
         }
         val bottomSheetDataList = createBottomDataList(
             context = this,
@@ -100,6 +98,16 @@ class TopActivity : AppCompatActivity() {
                         .createInstance()
                         .show(supportFragmentManager, null)
                 }
+            }
+        }
+        lifecycleScope.launch {
+            viewModel.openMeasureForm.collectLatest {
+                launcher.launch(
+                    MeasureFormActivity.createMeasureFormIntent(
+                        this@TopActivity,
+                        LocalDate.now()
+                    )
+                )
             }
         }
         // 目標体重設定後に１日の目標カロリー設定
