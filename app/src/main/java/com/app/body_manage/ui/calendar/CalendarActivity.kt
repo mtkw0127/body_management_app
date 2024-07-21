@@ -24,7 +24,6 @@ class CalendarActivity : AppCompatActivity() {
 
     private val launcher =
         registerForActivityResult(StartActivityForResult()) {
-
         }
 
     lateinit var viewModel: CalendarListViewModel

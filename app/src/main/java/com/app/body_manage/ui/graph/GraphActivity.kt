@@ -12,7 +12,6 @@ import androidx.compose.runtime.getValue
 import androidx.core.view.WindowCompat
 import com.app.body_manage.common.createBottomDataList
 import com.app.body_manage.ui.calendar.CalendarActivity
-import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.top.TopActivity
 
 class GraphActivity : AppCompatActivity() {
