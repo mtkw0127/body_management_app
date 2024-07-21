@@ -111,9 +111,13 @@ class TopActivity : AppCompatActivity() {
                 initialDigit = Digit.THOUSAND,
             ) {
                 viewModel.setGoalKcal(it)
-                LogRepository().sendLog(this, KEY_OPEN_OBJECT_KCAL, Bundle().apply {
-                    putInt("kcal", it.toInt())
-                })
+                LogRepository().sendLog(
+                    this,
+                    KEY_OPEN_OBJECT_KCAL,
+                    Bundle().apply {
+                        putInt("kcal", it.toInt())
+                    }
+                )
             }.show(supportFragmentManager, null)
         }
 
@@ -163,9 +167,13 @@ class TopActivity : AppCompatActivity() {
                         supportOneHundred = true,
                     ) {
                         viewModel.setGoalWeight(it)
-                        LogRepository().sendLog(this, KEY_OPEN_OBJECT_WEIGHT, Bundle().apply {
-                            putFloat("weight", it)
-                        })
+                        LogRepository().sendLog(
+                            this,
+                            KEY_OPEN_OBJECT_WEIGHT,
+                            Bundle().apply {
+                                putFloat("weight", it)
+                            }
+                        )
                     }.show(supportFragmentManager, null)
                 },
                 onClickSetting = {

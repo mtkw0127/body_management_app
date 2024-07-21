@@ -77,9 +77,12 @@ class MealFormActivity : AppCompatActivity() {
                     viewModel.save()
                 },
                 onClickSearchedFood = {
-                    LogRepository().sendLog(this, KEY_ADD_MEAL, Bundle().apply {
-                        putString("food_name", it.name)
-                    })
+                    LogRepository().sendLog(
+                        this, KEY_ADD_MEAL,
+                        Bundle().apply {
+                            putString("food_name", it.name)
+                        }
+                    )
                     viewModel.addFood(it)
                 },
                 onClickDeleteFood = viewModel::removeFood,

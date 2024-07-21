@@ -53,11 +53,14 @@ class UserPreferenceSettingDialog : DialogFragment() {
                         onChangeBirth = viewModel::setBirth,
                         onClickSet = {
                             activity?.let {
-                                LogRepository().sendLog(it, KEY_INITIAL_DIALOG, Bundle().apply {
-                                    putString("name", uiState.name)
-                                    putString("gender", uiState.gender.name)
-                                    putString("birth", uiState.birth.toString())
-                                })
+                                LogRepository().sendLog(
+                                    it, KEY_INITIAL_DIALOG,
+                                    Bundle().apply {
+                                        putString("name", uiState.name)
+                                        putString("gender", uiState.gender.name)
+                                        putString("birth", uiState.birth.toString())
+                                    }
+                                )
                             }
                             viewModel.save()
                         },
