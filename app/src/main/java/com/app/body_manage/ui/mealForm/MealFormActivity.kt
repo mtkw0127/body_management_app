@@ -78,7 +78,8 @@ class MealFormActivity : AppCompatActivity() {
                 },
                 onClickSearchedFood = {
                     LogRepository().sendLog(
-                        this, KEY_ADD_MEAL,
+                        this,
+                        KEY_ADD_MEAL,
                         Bundle().apply {
                             putString("food_name", it.name)
                         }

@@ -54,7 +54,8 @@ class UserPreferenceSettingDialog : DialogFragment() {
                         onClickSet = {
                             activity?.let {
                                 LogRepository().sendLog(
-                                    it, KEY_INITIAL_DIALOG,
+                                    it,
+                                    KEY_INITIAL_DIALOG,
                                     Bundle().apply {
                                         putString("name", uiState.name)
                                         putString("gender", uiState.gender.name)
