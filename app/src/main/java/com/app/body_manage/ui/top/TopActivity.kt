@@ -76,13 +76,14 @@ class TopActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback {}
         supportFragmentManager.setFragmentResultListener(REQUEST_KEY, this) { _, _ ->
             viewModel.load()
+            // 初期設定後は兎に角測定画面へ
+            launcher.launch(MeasureFormActivity.createMeasureFormIntent(this, LocalDate.now()))
         }
         val bottomSheetDataList = createBottomDataList(
             context = this,
             topAction = { },
-            compareAction = { launcher.launch(CompareActivity.createIntent(this)) },
+            openCalendar = { launcher.launch(CalendarActivity.createIntent(this)) },
             graphAction = { launcher.launch(GraphActivity.createIntent(this)) },
-            photoListAction = { launcher.launch(PhotoListActivity.createIntent(this)) },
             isTop = true,
         )
         viewModel = TopViewModel(
@@ -133,8 +134,11 @@ class TopActivity : AppCompatActivity() {
                 onClickSeeTrainingMenu = {
                     launcher.launch(TrainingMenuListActivity.createIntent(this))
                 },
-                onClickCalendar = {
-                    launcher.launch(CalendarActivity.createIntent(this))
+                onClickCompare = {
+                    launcher.launch(CompareActivity.createIntent(this))
+                },
+                onClickPhotos = {
+                    launcher.launch(PhotoListActivity.createIntent(this))
                 },
                 onClickToday = {
                     launcher.launch(MeasureListActivity.createIntent(this, LocalDate.now()))

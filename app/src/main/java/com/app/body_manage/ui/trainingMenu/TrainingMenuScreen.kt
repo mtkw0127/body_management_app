@@ -52,6 +52,7 @@ import com.app.body_manage.style.Colors
 import com.app.body_manage.ui.common.LabelAndContentRow
 import com.app.body_manage.ui.common.TrainingMenuFilter
 import com.app.body_manage.ui.common.TrainingMenuItem
+import com.app.body_manage.ui.photoList.BottomBar
 import com.app.body_manage.ui.top.TextWithUnderLine
 
 @Composable
@@ -218,28 +219,10 @@ fun TrainingMenuListScreen(
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                backgroundColor = Colors.theme,
-                modifier = Modifier
-                    .background(Colors.theme)
-                    .windowInsetsPadding(
-                        WindowInsets.safeDrawing.only(
-                            WindowInsetsSides.Top
-                        )
-                    ),
-                elevation = 0.dp
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Spacer(modifier = Modifier.size(10.dp))
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = null,
-                        modifier = Modifier.clickable { onClickBackPress() },
-                        tint = Color.Black
-                    )
-                }
-            }
+        bottomBar = {
+            BottomBar(
+                onClickBack = onClickBackPress
+            )
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -257,8 +240,11 @@ fun TrainingMenuListScreen(
     ) { padding ->
         Column(
             modifier = Modifier
+                .windowInsetsPadding(
+                    WindowInsets.safeDrawing.only(WindowInsetsSides.Top)
+                )
                 .padding(padding)
-                .padding(10.dp)
+                .padding(horizontal = 10.dp)
         ) {
             LazyColumn {
                 item {

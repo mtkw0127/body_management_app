@@ -11,8 +11,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.view.WindowCompat
 import com.app.body_manage.common.createBottomDataList
+import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.compare.CompareActivity
-import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.ui.top.TopActivity
 
 class GraphActivity : AppCompatActivity() {
@@ -35,9 +35,8 @@ class GraphActivity : AppCompatActivity() {
             val bottomSheetDataList = createBottomDataList(
                 context = this,
                 topAction = { launcher.launch(TopActivity.createIntent(this)) },
-                compareAction = { launcher.launch(CompareActivity.createIntent(this)) },
+                openCalendar = { launcher.launch(CalendarActivity.createIntent(this)) },
                 graphAction = { },
-                photoListAction = { launcher.launch(PhotoListActivity.createIntent(this)) },
                 isGraph = true
             )
             GraphScreen(
