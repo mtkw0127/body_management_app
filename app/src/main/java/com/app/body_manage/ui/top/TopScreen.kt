@@ -113,7 +113,8 @@ fun TopScreen(
         LazyColumn(
             modifier = Modifier
                 .padding(it)
-                .padding(10.dp)
+                .padding(horizontal = 10.dp)
+                .padding(top = 10.dp)
                 .background(background)
                 .safeDrawingPadding()
                 .fillMaxHeight()
