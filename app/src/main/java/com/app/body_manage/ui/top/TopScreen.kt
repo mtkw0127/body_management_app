@@ -26,8 +26,9 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForwardIos
-import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Compare
 import androidx.compose.material.icons.filled.EmojiPeople
+import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -74,7 +75,8 @@ fun TopScreen(
     todayMeasure: TodayMeasure,
     bottomSheetDataList: List<BottomSheetData>,
     onClickSeeTrainingMenu: () -> Unit = {},
-    onClickCalendar: () -> Unit = {},
+    onClickCompare: () -> Unit = {},
+    onClickPhotos: () -> Unit = {},
     onClickToday: () -> Unit = {},
     onClickAddMeasure: () -> Unit = {},
     onClickAddMeal: () -> Unit = {},
@@ -111,6 +113,8 @@ fun TopScreen(
         LazyColumn(
             modifier = Modifier
                 .padding(it)
+                .padding(horizontal = 10.dp)
+                .padding(top = 10.dp)
                 .background(background)
                 .safeDrawingPadding()
                 .fillMaxHeight()
@@ -203,10 +207,21 @@ fun TopScreen(
             item {
                 PanelColumn {
                     IconAndText(
-                        icon = Icons.Default.CalendarMonth,
+                        icon = Icons.Default.Compare,
                         modifier = Modifier.padding(vertical = 5.dp),
-                        onClick = { onClickCalendar() },
-                        text = stringResource(id = R.string.label_see_by_calendar),
+                        onClick = { onClickCompare() },
+                        text = stringResource(id = R.string.label_compare),
+                    )
+                }
+                Spacer(modifier = Modifier.size(10.dp))
+            }
+            item {
+                PanelColumn {
+                    IconAndText(
+                        icon = Icons.Default.Photo,
+                        modifier = Modifier.padding(vertical = 5.dp),
+                        onClick = { onClickPhotos() },
+                        text = stringResource(id = R.string.label_photos),
                     )
                 }
                 Spacer(modifier = Modifier.size(10.dp))
@@ -509,13 +524,13 @@ fun BottomButtons(
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         CustomButton(
-            onClick = onClickAddMeal,
-            valueResourceId = R.string.label_add_meal,
+            onClick = onClickAddMeasure,
+            valueResourceId = R.string.label_add_measure,
             backgroundColor = theme,
         )
         CustomButton(
-            onClick = onClickAddMeasure,
-            valueResourceId = R.string.label_add_measure,
+            onClick = onClickAddMeal,
+            valueResourceId = R.string.label_add_meal,
             backgroundColor = theme,
         )
         CustomButton(

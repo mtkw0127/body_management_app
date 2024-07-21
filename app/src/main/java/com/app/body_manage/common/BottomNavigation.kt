@@ -9,8 +9,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.CompareArrows
-import androidx.compose.material.icons.filled.PhotoLibrary
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -59,12 +58,10 @@ data class BottomSheetData(
 fun createBottomDataList(
     context: Context,
     topAction: () -> Unit,
-    compareAction: () -> Unit,
-    photoListAction: () -> Unit,
+    openCalendar: () -> Unit,
     graphAction: () -> Unit,
     isTop: Boolean = false,
-    isCompare: Boolean = false,
-    isPhotos: Boolean = false,
+    isCalendar: Boolean = false,
     isGraph: Boolean = false,
 ): List<BottomSheetData> {
     return listOf(
@@ -82,30 +79,17 @@ fun createBottomDataList(
             isTop,
         ),
         BottomSheetData(
-            context.getString(R.string.label_compare),
+            context.getString(R.string.label_calendar),
             {
                 Icon(
-                    imageVector = Icons.Default.CompareArrows,
+                    imageVector = Icons.Default.CalendarMonth,
                     contentDescription = null,
                     modifier = Modifier.padding(bottom = 5.dp),
                     tint = Color.Black.copy(alpha = 0.7f)
                 )
             },
-            compareAction,
-            isCompare,
-        ),
-        BottomSheetData(
-            context.getString(R.string.label_photos),
-            {
-                Icon(
-                    imageVector = Icons.Default.PhotoLibrary,
-                    contentDescription = null,
-                    modifier = Modifier.padding(bottom = 5.dp),
-                    tint = Color.Black.copy(alpha = 0.7f)
-                )
-            },
-            photoListAction,
-            isPhotos
+            openCalendar,
+            isCalendar,
         ),
         BottomSheetData(
             context.getString(R.string.label_graph),

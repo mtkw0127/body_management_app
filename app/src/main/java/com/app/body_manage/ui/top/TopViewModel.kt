@@ -12,8 +12,10 @@ import com.app.body_manage.data.repository.MealRepository
 import com.app.body_manage.data.repository.TrainingRepository
 import com.app.body_manage.extension.toWeight
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
@@ -62,6 +64,9 @@ class TopViewModel(
         )
     )
 
+    private val _openMeasureForm = MutableSharedFlow<Unit>()
+    val openMeasureForm = _openMeasureForm.asSharedFlow()
+
     fun checkSetUpUserPref() {
         viewModelScope.launch {
             try {
@@ -91,6 +96,9 @@ class TopViewModel(
                     bodyMeasures = bodyMeasures,
                     didTraining = training.isNotEmpty()
                 )
+                if (_lastMeasure.value == null) {
+                    _openMeasureForm.emit(Unit)
+                }
             }.onFailure {
                 // データがない可能性があるため再設定
                 checkSetUpUserPref()

@@ -59,7 +59,8 @@
     <string name="label_bmi">BMI</string>
     <string name="label_kcal">基礎代謝</string>
     <string name="label_fat">体脂肪率</string>
-    <string name="label_see_by_calendar">カレンダーで見る</string>
+    <string name="label_compare">体型写真を比較してみる</string>
+    <string name="label_photos">体型写真をみる</string>
     <string name="label_see_by_statistics">統計を見る</string>
     <string name="label_see_by_training_menu">トレーニングメニューを見る</string>
     <string name="label_see_by_today">今日の記録へ</string>
@@ -164,8 +165,7 @@
 
     <!-- ボトムナビゲーション -->
     <string name="label_home">ホーム</string>
-    <string name="label_compare">比較</string>
-    <string name="label_photos">写真</string>
+    <string name="label_calendar">カレンダー</string>
     <string name="label_graph">グラフ</string>
 
     <!-- 統計 -->

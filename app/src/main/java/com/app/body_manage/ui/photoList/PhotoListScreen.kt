@@ -6,13 +6,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -34,9 +40,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -44,11 +50,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.app.body_manage.R
-import com.app.body_manage.common.BottomSheet
-import com.app.body_manage.common.BottomSheetData
+import com.app.body_manage.common.CustomButton
 import com.app.body_manage.extension.toMMDD
 import com.app.body_manage.extension.toWeight
 import com.app.body_manage.style.Colors.Companion.accentColor
+import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.disable
 import com.app.body_manage.ui.photoList.PhotoListState.HasPhoto
 import com.app.body_manage.ui.photoList.PhotoListState.NoPhoto
@@ -62,7 +68,7 @@ fun PhotoListScreen(
     state: PhotoListState,
     photoDetailAction: (Int) -> Unit,
     onClickSortType: (SortType) -> Unit,
-    bottomSheetDataList: List<BottomSheetData>,
+    onClickBack: () -> Unit,
 ) {
     val modalSheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
@@ -136,13 +142,7 @@ fun PhotoListScreen(
     ) {
         Scaffold(
             bottomBar = {
-                Column(
-                    modifier = Modifier
-                        .background(colorResource(id = R.color.app_theme))
-                        .navigationBarsPadding()
-                ) {
-                    BottomSheet(bottomSheetDataList)
-                }
+                BottomBar(onClickBack = onClickBack)
             },
             content = {
                 Box(
@@ -183,6 +183,35 @@ fun PhotoListScreen(
                 }
             }
         )
+    }
+}
+
+@Composable
+fun BottomBar(
+    onClickBack: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom))
+            .fillMaxWidth()
+            .height(50.dp)
+            .background(background)
+            .shadow(0.5.dp, clip = true),
+        contentAlignment = Alignment.Center,
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start,
+        ) {
+            CustomButton(
+                onClickBack,
+                R.string.back,
+                enable = true
+            )
+        }
     }
 }
 

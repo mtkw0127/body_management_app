@@ -36,7 +36,6 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
-import com.app.body_manage.common.createBottomDataList
 import com.app.body_manage.data.dao.ComparePhotoHistoryDao
 import com.app.body_manage.data.model.Photo
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
@@ -44,10 +43,7 @@ import com.app.body_manage.data.repository.CompareHistoryRepository
 import com.app.body_manage.data.repository.LogRepository
 import com.app.body_manage.data.repository.LogRepository.Companion.KEY_SAVE_HISTORY
 import com.app.body_manage.ui.choosePhoto.ChoosePhotoActivity
-import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
-import com.app.body_manage.ui.photoList.PhotoListActivity
-import com.app.body_manage.ui.top.TopActivity
 import kotlinx.coroutines.launch
 
 class CompareActivity : AppCompatActivity() {
@@ -59,9 +55,6 @@ class CompareActivity : AppCompatActivity() {
     private val compareBodyMeasureHistoryRepository: CompareHistoryRepository by lazy {
         (application as TrainingApplication).compareBodyMeasureHistoryRepository
     }
-
-    private val simpleLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {}
 
     private val beforeSearchLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -93,14 +86,6 @@ class CompareActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
         enableEdgeToEdge()
-        val bottomSheetDataList = createBottomDataList(
-            context = this,
-            topAction = { simpleLauncher.launch(TopActivity.createIntent(this)) },
-            compareAction = { simpleLauncher.launch(createIntent(this)) },
-            photoListAction = { simpleLauncher.launch(PhotoListActivity.createIntent(this)) },
-            graphAction = { simpleLauncher.launch(GraphActivity.createIntent(this)) },
-            isCompare = true
-        )
 
         viewModel =
             CompareViewModel(
@@ -158,7 +143,6 @@ class CompareActivity : AppCompatActivity() {
                 loadHistory = {
                     viewModel.loadHistory()
                 },
-                bottomSheetDataList = bottomSheetDataList,
                 onClickDelete = {
                     showDeleteConfirmDialog = true
                     deleteTarget = it
@@ -196,7 +180,8 @@ class CompareActivity : AppCompatActivity() {
                             "比較写真の共有"
                         )
                     )
-                }
+                },
+                onClickBack = ::finish
             )
             if (showDeleteConfirmDialog) {
                 AlertDialog(

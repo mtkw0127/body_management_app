@@ -80,9 +80,8 @@ class TopActivity : AppCompatActivity() {
         val bottomSheetDataList = createBottomDataList(
             context = this,
             topAction = { },
-            compareAction = { launcher.launch(CompareActivity.createIntent(this)) },
+            openCalendar = { launcher.launch(CalendarActivity.createIntent(this)) },
             graphAction = { launcher.launch(GraphActivity.createIntent(this)) },
-            photoListAction = { launcher.launch(PhotoListActivity.createIntent(this)) },
             isTop = true,
         )
         viewModel = TopViewModel(
@@ -99,6 +98,16 @@ class TopActivity : AppCompatActivity() {
                         .createInstance()
                         .show(supportFragmentManager, null)
                 }
+            }
+        }
+        lifecycleScope.launch {
+            viewModel.openMeasureForm.collectLatest {
+                launcher.launch(
+                    MeasureFormActivity.createMeasureFormIntent(
+                        this@TopActivity,
+                        LocalDate.now()
+                    )
+                )
             }
         }
         // 目標体重設定後に１日の目標カロリー設定
@@ -133,8 +142,11 @@ class TopActivity : AppCompatActivity() {
                 onClickSeeTrainingMenu = {
                     launcher.launch(TrainingMenuListActivity.createIntent(this))
                 },
-                onClickCalendar = {
-                    launcher.launch(CalendarActivity.createIntent(this))
+                onClickCompare = {
+                    launcher.launch(CompareActivity.createIntent(this))
+                },
+                onClickPhotos = {
+                    launcher.launch(PhotoListActivity.createIntent(this))
                 },
                 onClickToday = {
                     launcher.launch(MeasureListActivity.createIntent(this, LocalDate.now()))
