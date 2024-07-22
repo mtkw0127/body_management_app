@@ -37,12 +37,12 @@
 
     <!-- ユーザ設定 -->
     <string name="label_user_name">▪️ユーザ名</string>
-    <string name="placeholder_user_name">▪️名前</string>
+    <string name="placeholder_user_name">名前</string>
     <string name="placeholder_birth">例：1999年01月1日</string>
     <string name="placeholder_tall">例：168.5 cm</string>
     <string name="placeholder_current_weight">例：50.5 kg</string>
     <string name="birth">️️▪️誕生日</string>
-    <string name="current_weight">現在の体重</string>
+    <string name="current_weight">現在体重</string>
     <string name="gender">️️▪️性別</string>
     <string name="gender_male">男性</string>
     <string name="gender_female">女性</string>
@@ -51,14 +51,18 @@
     <string name="label_training_feature">トレーニング記録</string>
 
     <!-- トップ画面 -->
+    <string name="label_object_weight">体重の目標</string>
     <string name="label_reserve">まずは体型を登録しましょう</string>
     <string name="label_registered_date">登録日</string>
     <string name="label_target_weight">目標体重</string>
+    <string name="label_start_weight">開始体重</string>
     <string name="label_target_kcal">目標カロリー</string>
     <string name="title_set_object">目標を設定</string>
     <string name="message_set_object">目標を設定すると、モチベーションの維持に役立ちます</string>
     <string name="label_set_object">目標を設定</string>
     <string name="label_update_object">目標を更新</string>
+    <string name="label_from_start">開始体重から</string>
+    <string name="label_until_object">目標体重まで</string>
     <string name="label_bmi">BMI</string>
     <string name="label_kcal">基礎代謝</string>
     <string name="label_fat">体脂肪率</string>

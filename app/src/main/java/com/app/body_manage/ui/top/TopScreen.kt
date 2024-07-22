@@ -2,6 +2,7 @@ package com.app.body_manage.ui.top
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,22 +15,26 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Compare
 import androidx.compose.material.icons.filled.EmojiPeople
 import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Today
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -39,6 +44,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -51,7 +57,6 @@ import com.app.body_manage.R
 import com.app.body_manage.common.BottomSheet
 import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.common.CustomButton
-import com.app.body_manage.common.toKcal
 import com.app.body_manage.data.local.UserPreference
 import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.data.model.Meal
@@ -67,11 +72,13 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize.FULL_BANNER
 import com.google.android.gms.ads.AdView
 import kotlinx.coroutines.launch
+import kotlin.math.absoluteValue
 
 @Composable
 fun TopScreen(
     userPreference: UserPreference?,
     lastMeasure: BodyMeasure?,
+    initialMeasure: BodyMeasure?,
     todayMeasure: TodayMeasure,
     bottomSheetDataList: List<BottomSheetData>,
     onClickSeeTrainingMenu: () -> Unit = {},
@@ -79,13 +86,19 @@ fun TopScreen(
     onClickPhotos: () -> Unit = {},
     onClickToday: () -> Unit = {},
     onClickAddMeasure: () -> Unit = {},
-    onClickAddMeal: () -> Unit = {},
-    onClickAddTraining: () -> Unit = {},
     onClickSetGoal: () -> Unit = {},
     onClickSetting: () -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
     Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(onClick = onClickAddMeasure) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = null,
+                )
+            }
+        },
         bottomBar = {
             Column(
                 modifier = Modifier
@@ -94,10 +107,10 @@ fun TopScreen(
             ) {
                 AndroidView(factory = { context ->
                     val adView = AdView(context).apply {
-                        if (BuildConfig.DEBUG) {
-                            adUnitId = "ca-app-pub-3940256099942544/9214589741"
+                        adUnitId = if (BuildConfig.DEBUG) {
+                            "ca-app-pub-3940256099942544/9214589741"
                         } else {
-                            adUnitId = "ca-app-pub-2002859886618281/9421408761"
+                            "ca-app-pub-2002859886618281/9421408761"
                         }
                         setAdSize(FULL_BANNER)
                     }
@@ -133,13 +146,6 @@ fun TopScreen(
                             fontSize = 18.sp,
                             color = Color.Gray,
                         )
-                    } else {
-                        Text(
-                            text = stringResource(id = R.string.label_reserve),
-                            fontSize = 18.sp,
-                            color = Color.Black,
-                        )
-                        Spacer(modifier = Modifier.size(10.dp))
                     }
                     Spacer(modifier = Modifier.size(10.dp))
                     lastMeasure?.time?.toLocalDate()?.toMMDDEE()?.let { mmdd ->
@@ -177,24 +183,14 @@ fun TopScreen(
             } else if (lastMeasure != null && userPreference != null) {
                 item {
                     Goal(
-                        bodyMeasure = lastMeasure,
+                        initialMeasure = initialMeasure,
+                        lastMeasure = lastMeasure,
                         userPreference = userPreference,
                         meal = todayMeasure.meals,
                         onClickSetGoal
                     )
                     Spacer(modifier = Modifier.size(10.dp))
                 }
-            }
-            item {
-                TodaySummary(
-                    userPreference = userPreference,
-                    todayMeasure = todayMeasure,
-                    onClickToday = onClickToday,
-                    onClickAddMeal = onClickAddMeal,
-                    onClickAddMeasure = onClickAddMeasure,
-                    onClickAddTraining = onClickAddTraining,
-                )
-                Spacer(modifier = Modifier.size(10.dp))
             }
             if (lastMeasure != null && userPreference != null) {
                 item {
@@ -204,6 +200,17 @@ fun TopScreen(
                     )
                     Spacer(modifier = Modifier.size(10.dp))
                 }
+            }
+            item {
+                PanelColumn(modifier = Modifier) {
+                    IconAndText(
+                        icon = Icons.Default.Today,
+                        modifier = Modifier.padding(vertical = 5.dp),
+                        onClick = { onClickToday() },
+                        text = stringResource(id = R.string.label_see_by_today),
+                    )
+                }
+                Spacer(modifier = Modifier.size(10.dp))
             }
             item {
                 PanelColumn {
@@ -246,29 +253,105 @@ fun TopScreen(
 
 @Composable
 private fun Goal(
-    bodyMeasure: BodyMeasure,
+    initialMeasure: BodyMeasure?,
+    lastMeasure: BodyMeasure,
     userPreference: UserPreference,
     meal: List<Meal>,
     onClickSetGoat: () -> Unit,
 ) {
-    PanelColumn {
+    val startWeight = userPreference.startWeight ?: initialMeasure?.weight
+    val goalWeight = checkNotNull(userPreference.goalWeight)
+    PanelColumn(
+        horizontalAlignment = Alignment.Start,
+    ) {
+        Text(text = stringResource(id = R.string.label_object_weight))
+        Spacer(modifier = Modifier.size(10.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
-                text = stringResource(id = R.string.label_target_weight) + " ${userPreference.goalWeight} kg"
-            )
-            Spacer(Modifier.weight(1F))
-            Text(text = userPreference.progressWeightText(bodyMeasure.weight))
+            Column {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(0.5.dp, Color.Black),
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .weight(1F)
+                            .border(0.5.dp, Color.Black),
+                        text = stringResource(id = R.string.label_start_weight),
+                        textAlign = TextAlign.Center,
+                    )
+                    Text(
+                        modifier = Modifier
+                            .weight(1F)
+                            .border(0.5.dp, Color.Black),
+                        text = stringResource(id = R.string.current_weight),
+                        textAlign = TextAlign.Center,
+                    )
+                    Text(
+                        modifier = Modifier
+                            .weight(1F)
+                            .border(0.5.dp, Color.Black),
+                        text = stringResource(id = R.string.label_target_weight),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(0.5.dp, Color.Black),
+                ) {
+                    val displayStartWeight = if (startWeight != null) {
+                        "$startWeight kg"
+                    } else {
+                        "未設定"
+                    }
+                    Text(
+                        modifier = Modifier
+                            .weight(1F)
+                            .border(0.5.dp, Color.Black),
+                        text = displayStartWeight,
+                        textAlign = TextAlign.Center,
+                    )
+                    Text(
+                        modifier = Modifier
+                            .weight(1F)
+                            .border(0.5.dp, Color.Black),
+                        text = "${lastMeasure.weight} kg",
+                        textAlign = TextAlign.Center,
+                    )
+                    Text(
+                        modifier = Modifier
+                            .weight(1F)
+                            .border(0.5.dp, Color.Black),
+                        text = "$goalWeight kg",
+                        textAlign = TextAlign.Center,
+                    )
+                }
+            }
         }
-        Spacer(modifier = Modifier.size(10.dp))
-        LinearProgressIndicator(
-            progress = userPreference.progressWeight(bodyMeasure.weight),
-            modifier = Modifier.fillMaxWidth()
-        )
-        if (userPreference.optionFeature.meal) {
-            Spacer(modifier = Modifier.size(15.dp))
+        startWeight?.let {
+            Spacer(modifier = Modifier.size(10.dp))
+            Diff(
+                label = stringResource(id = R.string.label_from_start),
+                standard = lastMeasure.weight,
+                current = it,
+                isFromStart = true,
+            )
+            Spacer(modifier = Modifier.size(10.dp))
+            Diff(
+                label = stringResource(id = R.string.label_until_object),
+                standard = goalWeight,
+                current = lastMeasure.weight,
+                isFromStart = false,
+            )
+        }
+
+        if (userPreference.optionFeature.meal && userPreference.goalKcal != null) {
+            Spacer(modifier = Modifier.size(10.dp))
+            HorizontalLine()
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -296,6 +379,85 @@ private fun Goal(
                 onClick = { onClickSetGoat() },
                 valueResourceId = R.string.label_update_object,
                 backgroundColor = theme
+            )
+        }
+    }
+}
+
+@Composable
+fun Dp.toPx(): Float {
+    val metrics = LocalContext.current.resources.displayMetrics
+    return this.value * (metrics.densityDpi / 160f)
+}
+
+@Composable
+private fun Diff(
+    label: String,
+    standard: Float,
+    current: Float,
+    isFromStart: Boolean,
+) {
+    val diff = ((standard - current) * 100).toInt() / 100F
+    val color = if (diff.toInt() == 0) {
+        Color.Black
+    } else if (diff > 0) {
+        Color.Red
+    } else {
+        Color.Blue
+    }
+
+    val plusMinus = if (diff.toInt() == 0) {
+        "±"
+    } else if (diff > 0) {
+        "+"
+    } else {
+        "-"
+    }
+    val yOffsetDp = 2.dp
+    val yOffsetPx = yOffsetDp.toPx()
+
+    Row(
+        verticalAlignment = Alignment.Bottom,
+        horizontalArrangement = Arrangement.Start,
+    ) {
+        Text(
+            text = label,
+            modifier = Modifier
+                .offset(y = yOffsetDp),
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Text(
+            text = plusMinus,
+            color = color,
+        )
+        Spacer(modifier = Modifier.width(3.dp))
+        Text(
+            text = "${diff.absoluteValue} kg",
+            color = color,
+            fontSize = 16.sp,
+            modifier = Modifier.drawBehind {
+                drawLine(
+                    color = color,
+                    start = Offset(-30F, size.height + yOffsetPx),
+                    end = Offset(size.width + 10F, size.height + yOffsetPx),
+                    strokeWidth = 2F
+                )
+            }
+        )
+        if (isFromStart) {
+            Spacer(modifier = Modifier.size(10.dp))
+            val text = if (diff.toInt() == 0) {
+                ""
+            } else if (diff > 0) {
+                "増加"
+            } else {
+                "減少"
+            }
+            Text(
+                text = text,
+                color = color,
+                fontSize = 12.sp,
+                modifier = Modifier.offset(y = yOffsetDp),
             )
         }
     }
@@ -336,73 +498,6 @@ private fun RequireGoal(
             valueResourceId = R.string.label_set_object,
             backgroundColor = theme
         )
-    }
-}
-
-@Composable
-private fun TodaySummary(
-    userPreference: UserPreference?,
-    todayMeasure: TodayMeasure,
-    onClickToday: () -> Unit,
-    onClickAddMeal: () -> Unit,
-    onClickAddMeasure: () -> Unit,
-    onClickAddTraining: () -> Unit,
-) {
-    PanelColumn(
-        modifier = Modifier.clickable { onClickToday() }
-    ) {
-        TextWithUnderLine(R.string.label_today_you)
-        Spacer(modifier = Modifier.size(12.dp))
-        if (todayMeasure.bodyMeasures.isEmpty() && todayMeasure.meals.isEmpty() && todayMeasure.didTraining.not()) {
-            Text(text = stringResource(id = R.string.message_not_registered_today))
-        }
-        if (todayMeasure.bodyMeasures.isNotEmpty()) {
-            LabelAndText(
-                stringResource(id = R.string.label_today_min_weight),
-                todayMeasure.minWeight
-            )
-            Spacer(modifier = Modifier.size(12.dp))
-        }
-        if (todayMeasure.meals.isNotEmpty() && userPreference?.optionFeature?.meal == true) {
-            LabelAndText(
-                stringResource(id = R.string.label_today_total_kcal),
-                todayMeasure.meals.sumOf { it.totalKcal }.toKcal()
-            )
-            Spacer(modifier = Modifier.size(12.dp))
-        }
-        if (todayMeasure.didTraining && userPreference?.optionFeature?.training == true) {
-            Text(text = stringResource(id = R.string.label_did_training))
-            Spacer(modifier = Modifier.size(12.dp))
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start,
-        ) {
-            CustomButton(
-                backgroundColor = theme,
-                onClick = { onClickAddMeasure() },
-                valueResourceId = R.string.label_add_measure,
-                fontSize = 11.sp,
-            )
-            if (userPreference?.optionFeature?.meal == true) {
-                Spacer(modifier = Modifier.width(10.dp))
-                CustomButton(
-                    backgroundColor = theme,
-                    onClick = { onClickAddMeal() },
-                    valueResourceId = R.string.label_add_meal,
-                    fontSize = 11.sp,
-                )
-            }
-            if (userPreference?.optionFeature?.training == true) {
-                Spacer(modifier = Modifier.width(10.dp))
-                CustomButton(
-                    backgroundColor = theme,
-                    onClick = { onClickAddTraining() },
-                    valueResourceId = R.string.label_add_training,
-                    fontSize = 11.sp,
-                )
-            }
-        }
     }
 }
 
@@ -511,54 +606,6 @@ fun TextWithUnderLine(
 }
 
 @Composable
-private fun LabelAndText(
-    label: String,
-    text: String
-) {
-    Row {
-        Text(text = label, modifier = Modifier.width(130.dp))
-        Text(text = text)
-    }
-}
-
-@Composable
-fun BottomButtons(
-    userPreference: UserPreference?,
-    onClickAddMeasure: () -> Unit,
-    onClickAddMeal: () -> Unit,
-    onClickAddTraining: () -> Unit,
-) {
-    Row(
-        modifier = Modifier
-            .height(50.dp)
-            .fillMaxWidth()
-            .background(Color.White),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
-    ) {
-        CustomButton(
-            onClick = onClickAddMeasure,
-            valueResourceId = R.string.label_add_measure,
-            backgroundColor = theme,
-        )
-        if (userPreference?.optionFeature?.meal == true) {
-            CustomButton(
-                onClick = onClickAddMeal,
-                valueResourceId = R.string.label_add_meal,
-                backgroundColor = theme,
-            )
-        }
-        if (userPreference?.optionFeature?.training == true) {
-            CustomButton(
-                onClick = onClickAddTraining,
-                valueResourceId = R.string.label_add_training,
-                backgroundColor = theme,
-            )
-        }
-    }
-}
-
-@Composable
 fun HorizontalLine(
     verticalPadding: Dp = 20.dp
 ) {
@@ -583,7 +630,9 @@ fun IconAndText(
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.clickable { onClick() }
+        modifier = modifier
+            .fillMaxSize()
+            .clickable { onClick() },
     ) {
         Icon(
             imageVector = icon,
@@ -622,6 +671,7 @@ fun IconAndText(
 @Composable
 fun PanelColumn(
     modifier: Modifier = Modifier,
+    horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
     content: @Composable () -> Unit,
 ) {
     Column(
@@ -633,6 +683,7 @@ fun PanelColumn(
             )
             .fillMaxWidth()
             .padding(20.dp),
+        horizontalAlignment = horizontalAlignment
     ) {
         content()
     }

@@ -31,7 +31,6 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.AccessibilityNew
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Height
 import androidx.compose.material.icons.filled.Notes
@@ -96,12 +95,6 @@ fun BodyMeasureFormScreen(
                     val isEdit = uiState is FormState.HasData.Edit
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Spacer(modifier = Modifier.size(10.dp))
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = null,
-                            modifier = Modifier.clickable { onClickBackPress() },
-                            tint = Color.Black
-                        )
                         Text(
                             text = uiState.measureDate.toMMDDEE(),
                             modifier = Modifier.offset(x = 10.dp),
@@ -109,7 +102,7 @@ fun BodyMeasureFormScreen(
                             fontWeight = FontWeight.Bold,
                             color = Color.Black
                         )
-                        Spacer(modifier = Modifier.size(40.dp))
+                        Spacer(modifier = Modifier.weight(1F))
                         if (isAdd) {
                             CustomButton(
                                 onClick = { onClickPreviousDay() },
@@ -248,9 +241,18 @@ fun BodyMeasureFormScreen(
                                 .fillMaxWidth()
                                 .padding(horizontal = 20.dp),
                             verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
                         ) {
+                            CustomButton(
+                                onClick = onClickBackPress,
+                                text = stringResource(id = R.string.label_back)
+                            )
                             Spacer(modifier = Modifier.weight(1F))
-                            CustomButton(onClickSave, R.string.save, backgroundColor = theme)
+                            CustomButton(
+                                onClick = onClickSave,
+                                text = stringResource(id = R.string.save),
+                                backgroundColor = theme
+                            )
                             Spacer(modifier = Modifier.size(20.dp))
                             Icon(
                                 imageVector = Icons.Filled.CameraAlt,

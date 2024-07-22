@@ -29,6 +29,10 @@ class BodyMeasureRepository(
         return trainingDao.getLast()
     }
 
+    suspend fun getFirst(): BodyMeasureEntity? {
+        return trainingDao.getFirst()
+    }
+
     suspend fun getBetween(from: LocalDate, to: LocalDate): List<BodyMeasure> =
         withContext(ioDispatcher) {
             return@withContext trainingDao.getTrainingEntityListBetween(from, to)
