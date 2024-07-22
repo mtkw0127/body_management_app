@@ -22,17 +22,23 @@ sealed interface UiState {
     val name: String?
     val gender: Gender
     val birth: TextFieldValue
+    val hasMealFeature: Boolean
+    val hasTrainingFeature: Boolean
 
     data class NotYet(
         override val name: String?,
         override val gender: Gender,
         override val birth: TextFieldValue,
+        override val hasMealFeature: Boolean,
+        override val hasTrainingFeature: Boolean,
     ) : UiState
 
     data class Done(
         override val name: String,
         override val gender: Gender,
         override val birth: TextFieldValue,
+        override val hasMealFeature: Boolean,
+        override val hasTrainingFeature: Boolean,
     ) : UiState
 }
 
@@ -40,6 +46,8 @@ data class UserPreferenceSettingViewModelState(
     val name: String? = null,
     val gender: Gender = Gender.MALE,
     val birth: TextFieldValue = TextFieldValue(),
+    val hasMealFeature: Boolean = false,
+    val hasTrainingFeature: Boolean = false,
 ) {
     fun toUiState(): UiState {
         val setBirth = try {
@@ -62,12 +70,16 @@ data class UserPreferenceSettingViewModelState(
                 name = name,
                 gender = gender,
                 birth = birth,
+                hasMealFeature = hasMealFeature,
+                hasTrainingFeature = hasTrainingFeature,
             )
         } else {
             UiState.Done(
                 name = name.orEmpty(),
                 gender = gender,
                 birth = birth,
+                hasMealFeature = hasMealFeature,
+                hasTrainingFeature = hasTrainingFeature,
             )
         }
     }
@@ -104,6 +116,8 @@ class UserPreferenceSettingViewModel(
                                 text = birth,
                                 selection = TextRange(birth.length, birth.length),
                             ),
+                            hasMealFeature = pref.optionFeature.meal,
+                            hasTrainingFeature = pref.optionFeature.training,
                         )
                     }
                 }
@@ -197,8 +211,18 @@ class UserPreferenceSettingViewModel(
                 userPreferenceRepository.setBirth(date)
                 userPreferenceRepository.setGender(gender)
                 userPreferenceRepository.setName(name.orEmpty())
+                userPreferenceRepository.setOptionMeal(hasMealFeature)
+                userPreferenceRepository.setOptionTraining(hasTrainingFeature)
                 _saved.value = true
             }
         }
+    }
+
+    fun updateMealFeature(hasMealFeature: Boolean) {
+        viewModelState.update { it.copy(hasMealFeature = hasMealFeature) }
+    }
+
+    fun updateTrainingFeature(hasTrainingFeature: Boolean) {
+        viewModelState.update { it.copy(hasTrainingFeature = hasTrainingFeature) }
     }
 }

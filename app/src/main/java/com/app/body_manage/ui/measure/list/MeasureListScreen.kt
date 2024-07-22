@@ -63,6 +63,7 @@ import com.app.body_manage.common.CustomButton
 import com.app.body_manage.common.CustomImage
 import com.app.body_manage.common.toKcal
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
+import com.app.body_manage.data.local.UserPreference
 import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.data.model.Meal
 import com.app.body_manage.data.model.Measure
@@ -87,6 +88,7 @@ import java.time.YearMonth
 @Composable
 fun MeasureListScreen(
     uiState: MeasureListState.BodyMeasureListState,
+    userPreference: UserPreference?,
     resetSnackBarMessage: () -> Unit,
     setLocalDate: (LocalDate) -> Unit,
     clickBodyMeasureEdit: (LocalDateTime) -> Unit,
@@ -115,6 +117,7 @@ fun MeasureListScreen(
                 ),
             ) {
                 BottomButtons(
+                    userPreference,
                     onClickAddMeasure,
                     onClickAddMeal,
                     onClickAddTraining,
@@ -217,10 +220,14 @@ fun MeasureListScreen(
                         }
                     }
                     if (uiState.list.isNotEmpty()) {
-                        if (uiState.list.filterIsInstance(Meal::class.java).isNotEmpty()) {
+                        if (
+                            uiState.list.filterIsInstance<Meal>().isNotEmpty() &&
+                            userPreference?.optionFeature?.meal == true
+                        ) {
                             Summary(uiState.list)
                         }
                         MeasureList(
+                            userPreference = userPreference,
                             list = uiState.list,
                             clickBodyMeasureEdit = clickBodyMeasureEdit,
                             onClickMeal = onClickMeal,
@@ -325,6 +332,7 @@ private fun MeasureList(
     clickBodyMeasureEdit: (LocalDateTime) -> Unit,
     onClickMeal: (Meal) -> Unit,
     onClickTraining: (Training) -> Unit,
+    userPreference: UserPreference?,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -332,6 +340,12 @@ private fun MeasureList(
             .padding(horizontal = 12.dp),
         content = {
             items(list) { item ->
+                if (
+                    (item is Meal && userPreference?.optionFeature?.meal == false) ||
+                    (item is Training && userPreference?.optionFeature?.training == false)
+                ) {
+                    return@items
+                }
                 ResultItem(
                     time = item.time,
                     onClick = {

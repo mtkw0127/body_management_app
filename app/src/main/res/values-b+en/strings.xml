@@ -46,6 +46,9 @@
     <string name="gender">Gender</string>
     <string name="gender_male">Male</string>
     <string name="gender_female">Female</string>
+    <string name="label_option">Option</string>
+    <string name="label_meal_feature">Meal record</string>
+    <string name="label_training_feature">Training record</string>
 
     <!-- Home Screen -->
     <string name="label_reserve">Please record at first</string>
