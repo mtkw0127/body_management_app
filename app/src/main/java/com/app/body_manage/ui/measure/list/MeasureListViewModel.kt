@@ -3,6 +3,7 @@ package com.app.body_manage.ui.measure.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.body_manage.data.dao.BodyMeasurePhotoDao
+import com.app.body_manage.data.local.UserPreference
 import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.model.BodyMeasure
 import com.app.body_manage.data.model.Meal
@@ -15,6 +16,7 @@ import com.app.body_manage.data.repository.TrainingRepository
 import com.app.body_manage.ui.measure.list.MeasureListState.BodyMeasureListState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -92,6 +94,9 @@ class MeasureListViewModel(
             viewModelState.value.toUiState()
         )
 
+    private val _userPreference = MutableStateFlow<UserPreference?>(null)
+    val userPreference = _userPreference.asStateFlow()
+
     fun setDate(localDate: LocalDate) {
         viewModelState.update {
             it.copy(
@@ -121,6 +126,15 @@ class MeasureListViewModel(
         loadRegisteredDayList()
         loadMeals()
         loadTraining()
+        loadUserPreference()
+    }
+
+    private fun loadUserPreference() {
+        viewModelScope.launch {
+            userPreferenceRepository.userPref.collect { userPreference ->
+                _userPreference.value = userPreference
+            }
+        }
     }
 
     private fun loadTraining() {
@@ -204,7 +218,7 @@ class MeasureListViewModel(
         }
     }
 
-    fun setTall(tall: String) {
+    private fun setTall(tall: String) {
         runCatching {
             tall.toFloat()
         }.onSuccess {

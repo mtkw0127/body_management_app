@@ -33,6 +33,20 @@ class UserPreferenceRepository(
         val kEY_REQUESTED_REVIEW = booleanPreferencesKey("key_requested_review")
         val KEY_FAT = floatPreferencesKey("key_fat")
         val KEY_ALARM = booleanPreferencesKey("key_alarm")
+        val KEY_OPTION_MEAL = booleanPreferencesKey("key_option_meal")
+        val KEY_OPTION_TRAINING = booleanPreferencesKey("key_option_training")
+    }
+
+    suspend fun setOptionMeal(option: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[KEY_OPTION_MEAL] = option
+        }
+    }
+
+    suspend fun setOptionTraining(option: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[KEY_OPTION_TRAINING] = option
+        }
     }
 
     suspend fun setName(name: String) {
@@ -125,6 +139,10 @@ class UserPreferenceRepository(
                 birth = birth ?: LocalDate.now(),
                 goalWeight = it[KEY_GOAL_WEIGHT],
                 goalKcal = it[KEY_GOAL_KCAL],
+                optionFeature = UserPreference.OptionFeature(
+                    meal = it[KEY_OPTION_MEAL] ?: false,
+                    training = it[KEY_OPTION_TRAINING] ?: false,
+                ),
                 alarm = it[KEY_ALARM] ?: false,
             )
         }

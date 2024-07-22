@@ -65,6 +65,8 @@ class UserPreferenceSettingDialog : DialogFragment() {
                             }
                             viewModel.save()
                         },
+                        onClickMealOption = viewModel::updateMealFeature,
+                        onClickTrainingOption = viewModel::updateTrainingFeature,
                     )
                 }
             }

@@ -187,6 +187,7 @@ fun TopScreen(
             }
             item {
                 TodaySummary(
+                    userPreference = userPreference,
                     todayMeasure = todayMeasure,
                     onClickToday = onClickToday,
                     onClickAddMeal = onClickAddMeal,
@@ -226,16 +227,18 @@ fun TopScreen(
                 }
                 Spacer(modifier = Modifier.size(10.dp))
             }
-            item {
-                PanelColumn {
-                    IconAndText(
-                        icon = Icons.Default.EmojiPeople,
-                        modifier = Modifier.padding(vertical = 5.dp),
-                        onClick = { onClickSeeTrainingMenu() },
-                        text = stringResource(id = R.string.label_see_by_training_menu),
-                    )
+            if (userPreference?.optionFeature?.training == true) {
+                item {
+                    PanelColumn {
+                        IconAndText(
+                            icon = Icons.Default.EmojiPeople,
+                            modifier = Modifier.padding(vertical = 5.dp),
+                            onClick = { onClickSeeTrainingMenu() },
+                            text = stringResource(id = R.string.label_see_by_training_menu),
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(10.dp))
                 }
-                Spacer(modifier = Modifier.size(10.dp))
             }
         }
     }
@@ -264,22 +267,24 @@ private fun Goal(
             progress = userPreference.progressWeight(bodyMeasure.weight),
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.size(15.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = stringResource(id = R.string.label_target_kcal) + " ${userPreference.goalKcal} kcal"
+        if (userPreference.optionFeature.meal) {
+            Spacer(modifier = Modifier.size(15.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(id = R.string.label_target_kcal) + " ${userPreference.goalKcal} kcal"
+                )
+                Spacer(Modifier.weight(1F))
+                Text(text = userPreference.progressKcalText(meal.sumOf { it.totalKcal }))
+            }
+            Spacer(modifier = Modifier.size(10.dp))
+            LinearProgressIndicator(
+                progress = userPreference.progressKcal(meal.sumOf { it.totalKcal }),
+                modifier = Modifier.fillMaxWidth()
             )
-            Spacer(Modifier.weight(1F))
-            Text(text = userPreference.progressKcalText(meal.sumOf { it.totalKcal }))
         }
-        Spacer(modifier = Modifier.size(10.dp))
-        LinearProgressIndicator(
-            progress = userPreference.progressKcal(meal.sumOf { it.totalKcal }),
-            modifier = Modifier.fillMaxWidth()
-        )
         Spacer(modifier = Modifier.size(15.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -336,6 +341,7 @@ private fun RequireGoal(
 
 @Composable
 private fun TodaySummary(
+    userPreference: UserPreference?,
     todayMeasure: TodayMeasure,
     onClickToday: () -> Unit,
     onClickAddMeal: () -> Unit,
@@ -350,13 +356,6 @@ private fun TodaySummary(
         if (todayMeasure.bodyMeasures.isEmpty() && todayMeasure.meals.isEmpty() && todayMeasure.didTraining.not()) {
             Text(text = stringResource(id = R.string.message_not_registered_today))
         }
-        if (todayMeasure.meals.isNotEmpty()) {
-            LabelAndText(
-                stringResource(id = R.string.label_today_total_kcal),
-                todayMeasure.meals.sumOf { it.totalKcal }.toKcal()
-            )
-            Spacer(modifier = Modifier.size(12.dp))
-        }
         if (todayMeasure.bodyMeasures.isNotEmpty()) {
             LabelAndText(
                 stringResource(id = R.string.label_today_min_weight),
@@ -364,13 +363,20 @@ private fun TodaySummary(
             )
             Spacer(modifier = Modifier.size(12.dp))
         }
-        if (todayMeasure.didTraining) {
+        if (todayMeasure.meals.isNotEmpty() && userPreference?.optionFeature?.meal == true) {
+            LabelAndText(
+                stringResource(id = R.string.label_today_total_kcal),
+                todayMeasure.meals.sumOf { it.totalKcal }.toKcal()
+            )
+            Spacer(modifier = Modifier.size(12.dp))
+        }
+        if (todayMeasure.didTraining && userPreference?.optionFeature?.training == true) {
             Text(text = stringResource(id = R.string.label_did_training))
             Spacer(modifier = Modifier.size(12.dp))
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
+            horizontalArrangement = Arrangement.Start,
         ) {
             CustomButton(
                 backgroundColor = theme,
@@ -378,18 +384,24 @@ private fun TodaySummary(
                 valueResourceId = R.string.label_add_measure,
                 fontSize = 11.sp,
             )
-            CustomButton(
-                backgroundColor = theme,
-                onClick = { onClickAddMeal() },
-                valueResourceId = R.string.label_add_meal,
-                fontSize = 11.sp,
-            )
-            CustomButton(
-                backgroundColor = theme,
-                onClick = { onClickAddTraining() },
-                valueResourceId = R.string.label_add_training,
-                fontSize = 11.sp,
-            )
+            if (userPreference?.optionFeature?.meal == true) {
+                Spacer(modifier = Modifier.width(10.dp))
+                CustomButton(
+                    backgroundColor = theme,
+                    onClick = { onClickAddMeal() },
+                    valueResourceId = R.string.label_add_meal,
+                    fontSize = 11.sp,
+                )
+            }
+            if (userPreference?.optionFeature?.training == true) {
+                Spacer(modifier = Modifier.width(10.dp))
+                CustomButton(
+                    backgroundColor = theme,
+                    onClick = { onClickAddTraining() },
+                    valueResourceId = R.string.label_add_training,
+                    fontSize = 11.sp,
+                )
+            }
         }
     }
 }
@@ -511,6 +523,7 @@ private fun LabelAndText(
 
 @Composable
 fun BottomButtons(
+    userPreference: UserPreference?,
     onClickAddMeasure: () -> Unit,
     onClickAddMeal: () -> Unit,
     onClickAddTraining: () -> Unit,
@@ -521,34 +534,28 @@ fun BottomButtons(
             .fillMaxWidth()
             .background(Color.White),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceEvenly,
+        horizontalArrangement = Arrangement.Center,
     ) {
         CustomButton(
             onClick = onClickAddMeasure,
             valueResourceId = R.string.label_add_measure,
             backgroundColor = theme,
         )
-        CustomButton(
-            onClick = onClickAddMeal,
-            valueResourceId = R.string.label_add_meal,
-            backgroundColor = theme,
-        )
-        CustomButton(
-            onClick = onClickAddTraining,
-            valueResourceId = R.string.label_add_training,
-            backgroundColor = theme,
-        )
+        if (userPreference?.optionFeature?.meal == true) {
+            CustomButton(
+                onClick = onClickAddMeal,
+                valueResourceId = R.string.label_add_meal,
+                backgroundColor = theme,
+            )
+        }
+        if (userPreference?.optionFeature?.training == true) {
+            CustomButton(
+                onClick = onClickAddTraining,
+                valueResourceId = R.string.label_add_training,
+                backgroundColor = theme,
+            )
+        }
     }
-}
-
-@Composable
-fun VerticalLine() {
-    Box(
-        modifier = Modifier
-            .width(width = 1.dp)
-            .height(height = 50.dp)
-            .background(color = Color.LightGray, shape = RoundedCornerShape(1.dp))
-    )
 }
 
 @Composable

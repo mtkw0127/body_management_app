@@ -112,22 +112,24 @@ class TopActivity : AppCompatActivity() {
         }
         // 目標体重設定後に１日の目標カロリー設定
         supportFragmentManager.setFragmentResultListener("GOAL", this) { key, bundle ->
-            IntNumberPickerDialog.createDialog(
-                label = getString(R.string.kcal_per_day),
-                number = viewModel.userPreference.value?.goalKcal ?: 2000,
-                unit = getString(R.string.unit_kcal),
-                maxDigit = Digit.THOUSAND,
-                initialDigit = Digit.THOUSAND,
-            ) {
-                viewModel.setGoalKcal(it)
-                LogRepository().sendLog(
-                    this,
-                    KEY_OPEN_OBJECT_KCAL,
-                    Bundle().apply {
-                        putInt("kcal", it.toInt())
-                    }
-                )
-            }.show(supportFragmentManager, null)
+            if (viewModel.userPreference.value?.optionFeature?.meal == true) {
+                IntNumberPickerDialog.createDialog(
+                    label = getString(R.string.kcal_per_day),
+                    number = viewModel.userPreference.value?.goalKcal ?: 2000,
+                    unit = getString(R.string.unit_kcal),
+                    maxDigit = Digit.THOUSAND,
+                    initialDigit = Digit.THOUSAND,
+                ) {
+                    viewModel.setGoalKcal(it)
+                    LogRepository().sendLog(
+                        this,
+                        KEY_OPEN_OBJECT_KCAL,
+                        Bundle().apply {
+                            putInt("kcal", it.toInt())
+                        }
+                    )
+                }.show(supportFragmentManager, null)
+            }
         }
 
         setContent {

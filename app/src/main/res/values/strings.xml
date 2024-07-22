@@ -36,16 +36,19 @@
     <string name="saturday">土</string>
 
     <!-- ユーザ設定 -->
-    <string name="label_user_name">ユーザ名</string>
-    <string name="placeholder_user_name">名前</string>
+    <string name="label_user_name">▪️ユーザ名</string>
+    <string name="placeholder_user_name">▪️名前</string>
     <string name="placeholder_birth">例：1999年01月1日</string>
     <string name="placeholder_tall">例：168.5 cm</string>
     <string name="placeholder_current_weight">例：50.5 kg</string>
-    <string name="birth">誕生日</string>
+    <string name="birth">️️▪️誕生日</string>
     <string name="current_weight">現在の体重</string>
-    <string name="gender">性別</string>
+    <string name="gender">️️▪️性別</string>
     <string name="gender_male">男性</string>
     <string name="gender_female">女性</string>
+    <string name="label_option">▪️オプション機能</string>
+    <string name="label_meal_feature">食事記録</string>
+    <string name="label_training_feature">トレーニング記録</string>
 
     <!-- トップ画面 -->
     <string name="label_reserve">まずは体型を登録しましょう</string>

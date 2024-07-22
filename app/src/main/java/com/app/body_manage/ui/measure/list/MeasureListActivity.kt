@@ -102,12 +102,14 @@ class MeasureListActivity : AppCompatActivity() {
 
         setContent {
             val state: MeasureListState.BodyMeasureListState by viewModel.uiState.collectAsState()
+            val userPreference by viewModel.userPreference.collectAsState()
 
             MeasureListScreen(
                 uiState = state,
                 setLocalDate = {
                     viewModel.setDate(it)
                 },
+                userPreference = userPreference,
                 clickBodyMeasureEdit = {
                     launcher.launch(
                         MeasureFormActivity.createMeasureEditIntent(
