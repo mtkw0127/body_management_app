@@ -118,6 +118,7 @@ class TopActivity : AppCompatActivity() {
                 unit = getString(R.string.unit_kg),
                 requestKey = "GOAL",
                 supportOneHundred = true,
+                buttonTextResource = R.string.settings,
             ) {
                 viewModel.setGoalWeight(it)
                 LogRepository().sendLog(
@@ -191,6 +192,7 @@ class TopActivity : AppCompatActivity() {
                         number = weight,
                         unit = getString(R.string.unit_kg),
                         requestKey = "START_WEIGHT",
+                        buttonTextResource = R.string.settings,
                         supportOneHundred = true,
                     ) {
                         viewModel.setStartWeight(it)
