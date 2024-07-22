@@ -30,6 +30,7 @@ class UserPreferenceRepository(
         val KEY_WEIGHT = floatPreferencesKey("key_weight")
         val KEY_GOAL_WEIGHT = floatPreferencesKey("key_goal_weight")
         val KEY_GOAL_KCAL = longPreferencesKey("key_goal_kcal")
+        val KEY_START_WEIGHT = floatPreferencesKey("key_start_weight")
         val kEY_REQUESTED_REVIEW = booleanPreferencesKey("key_requested_review")
         val KEY_FAT = floatPreferencesKey("key_fat")
         val KEY_ALARM = booleanPreferencesKey("key_alarm")
@@ -137,6 +138,7 @@ class UserPreferenceRepository(
                 name = name,
                 gender = gender ?: Gender.MALE,
                 birth = birth ?: LocalDate.now(),
+                startWeight = it[KEY_START_WEIGHT],
                 goalWeight = it[KEY_GOAL_WEIGHT],
                 goalKcal = it[KEY_GOAL_KCAL],
                 optionFeature = UserPreference.OptionFeature(

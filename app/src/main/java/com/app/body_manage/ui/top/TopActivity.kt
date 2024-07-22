@@ -28,13 +28,11 @@ import com.app.body_manage.dialog.IntNumberPickerDialog
 import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
-import com.app.body_manage.ui.mealForm.MealFormActivity
 import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.measure.list.MeasureListActivity
 import com.app.body_manage.ui.measure.list.MeasureListActivity.Companion.RESULT_CODE_ADD
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.ui.top.UserPreferenceSettingDialog.Companion.REQUEST_KEY
-import com.app.body_manage.ui.trainingForm.form.TrainingFormActivity
 import com.app.body_manage.ui.trainingMenu.TrainingMenuListActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -135,10 +133,12 @@ class TopActivity : AppCompatActivity() {
         setContent {
             val userPreference by viewModel.userPreference.collectAsState()
             val lastMeasure by viewModel.lastMeasure.collectAsState()
+            val initialMeasure by viewModel.initialMeasure.collectAsState()
             val todayMeasure by viewModel.todayMeasure.collectAsState()
             TopScreen(
                 userPreference = userPreference,
                 lastMeasure = lastMeasure,
+                initialMeasure = initialMeasure,
                 todayMeasure = todayMeasure,
                 bottomSheetDataList = bottomSheetDataList,
                 onClickSeeTrainingMenu = {
@@ -153,22 +153,12 @@ class TopActivity : AppCompatActivity() {
                 onClickToday = {
                     launcher.launch(MeasureListActivity.createIntent(this, LocalDate.now()))
                 },
-                onClickAddMeal = {
-                    launcher.launch(
-                        MealFormActivity.createIntentAdd(this, LocalDate.now())
-                    )
-                },
                 onClickAddMeasure = {
                     launcher.launch(
                         MeasureFormActivity.createMeasureFormIntent(
                             this,
                             LocalDate.now()
                         )
-                    )
-                },
-                onClickAddTraining = {
-                    launcher.launch(
-                        TrainingFormActivity.createInstance(this, LocalDate.now())
                     )
                 },
                 onClickSetGoal = {

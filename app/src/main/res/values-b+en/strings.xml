@@ -58,7 +58,7 @@
     <string name="title_set_object">Set Goal</string>
     <string name="message_set_object">Setting a goal can help maintain motivation.</string>
     <string name="label_set_object">Set Goal</string>
-    <string name="label_update_object">Update Goal</string>
+    <string name="label_update_object">Delete Goal</string>
     <string name="label_bmi">BMI</string>
     <string name="label_kcal">Basal Metabolic Rate</string>
     <string name="label_fat">Body Fat Percentage</string>

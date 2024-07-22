@@ -84,4 +84,7 @@ interface BodyMeasureDao {
 
     @Query("SELECT * FROM bodyMeasures ORDER BY capture_time DESC")
     suspend fun getLast(): BodyMeasureEntity?
+
+    @Query("SELECT * FROM bodyMeasures ORDER BY capture_time ASC")
+    suspend fun getFirst(): BodyMeasureEntity?
 }

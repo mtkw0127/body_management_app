@@ -46,6 +46,9 @@ class TopViewModel(
     private val _lastMeasure: MutableStateFlow<BodyMeasure?> = MutableStateFlow(null)
     val lastMeasure = _lastMeasure.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    private val _initialMeasure: MutableStateFlow<BodyMeasure?> = MutableStateFlow(null)
+    val initialMeasure = _initialMeasure.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
     // 当日の測定
     private val _todayMeasure: MutableStateFlow<TodayMeasure> = MutableStateFlow(
         TodayMeasure(
@@ -85,6 +88,7 @@ class TopViewModel(
             runCatching {
                 _userPreference.value = userPreferenceRepository.userPref.firstOrNull()
                 _lastMeasure.value = bodyMeasureRepository.getLast()?.toModel()
+                _initialMeasure.value = bodyMeasureRepository.getFirst()?.toModel()
 
                 // 今日の記録を取得
                 val now = LocalDate.now()

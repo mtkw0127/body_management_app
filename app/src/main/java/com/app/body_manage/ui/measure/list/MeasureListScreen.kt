@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.only
@@ -76,7 +78,6 @@ import com.app.body_manage.extension.toMMDDEE
 import com.app.body_manage.extension.toWeight
 import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
-import com.app.body_manage.ui.top.BottomButtons
 import com.app.body_manage.ui.top.HorizontalLine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -115,6 +116,7 @@ fun MeasureListScreen(
                 modifier = Modifier.windowInsetsPadding(
                     WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom)
                 ),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 BottomButtons(
                     userPreference,
@@ -252,6 +254,46 @@ fun MeasureListScreen(
             }
         },
     )
+}
+
+@Composable
+private fun BottomButtons(
+    userPreference: UserPreference?,
+    onClickAddMeasure: () -> Unit,
+    onClickAddMeal: () -> Unit,
+    onClickAddTraining: () -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .height(50.dp)
+            .fillMaxWidth()
+            .background(Color.White),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceAround,
+    ) {
+        CustomButton(
+            onClick = onClickAddMeasure,
+            valueResourceId = R.string.label_add_measure,
+            backgroundColor = theme,
+            modifier = Modifier,
+        )
+        if (userPreference?.optionFeature?.meal == true) {
+            CustomButton(
+                onClick = onClickAddMeal,
+                valueResourceId = R.string.label_add_meal,
+                backgroundColor = theme,
+                modifier = Modifier,
+            )
+        }
+        if (userPreference?.optionFeature?.training == true) {
+            CustomButton(
+                onClick = onClickAddTraining,
+                valueResourceId = R.string.label_add_training,
+                backgroundColor = theme,
+                modifier = Modifier,
+            )
+        }
+    }
 }
 
 @Composable
