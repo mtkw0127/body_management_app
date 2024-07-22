@@ -66,11 +66,13 @@ class FloatNumberPickerDialog : DialogFragment() {
             unit = extras.getString(UNIT, "")
             key = extras.getString(KEY)
             supportOneHundred = extras.getBoolean(SUPPORT_HUNDRED, false)
-            currentFocus = if (supportOneHundred) {
-                Digit.HUNDRED
-            } else {
-                arguments?.getSerializable(INITIAL_DIGIT) as Digit
-            }
+            val initialDigit = arguments?.getSerializable(INITIAL_DIGIT) as? Digit
+            currentFocus = initialDigit
+                ?: if (supportOneHundred) {
+                    Digit.HUNDRED
+                } else {
+                    Digit.TENS
+                }
 
             // 60.55 -> 60 -> 060
             val integerPart = String.format("%03d", number.toInt())
@@ -366,6 +368,7 @@ class FloatNumberPickerDialog : DialogFragment() {
         private const val KEY = "KEY"
         private const val SUPPORT_HUNDRED = "SUPPORT_HUNDRED"
         private const val INITIAL_DIGIT = "INITIAL_DIGIT"
+        private const val BUTTON_TEXT = ""
         fun createDialog(
             label: String,
             number: Float,
@@ -374,6 +377,7 @@ class FloatNumberPickerDialog : DialogFragment() {
             initialDigit: Digit = Digit.TENS,
             supportOneHundred: Boolean = false,
             callBack: (weight: Float) -> Unit,
+            buttonTextResource: Int,
         ): FloatNumberPickerDialog {
             val numberPickerDialog = FloatNumberPickerDialog()
             val bundle = Bundle().apply {
@@ -383,6 +387,7 @@ class FloatNumberPickerDialog : DialogFragment() {
                 putString(KEY, requestKey)
                 putSerializable(INITIAL_DIGIT, initialDigit)
                 putBoolean(SUPPORT_HUNDRED, supportOneHundred)
+                putInt()
             }
             numberPickerDialog.arguments = bundle
             numberPickerDialog.callBack = callBack

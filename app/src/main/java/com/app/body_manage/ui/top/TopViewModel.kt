@@ -117,6 +117,13 @@ class TopViewModel(
         }
     }
 
+    fun setStartWeight(weight: Float) {
+        viewModelScope.launch {
+            userPreferenceRepository.setStartWeight(weight)
+            load()
+        }
+    }
+
     fun setGoalKcal(goal: Long) {
         viewModelScope.launch {
             userPreferenceRepository.setGoatKcal(goal)
