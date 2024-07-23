@@ -34,6 +34,8 @@
     <string name="thursday">木</string>
     <string name="friday">金</string>
     <string name="saturday">土</string>
+    <string name="increase">増加</string>
+    <string name="decrease">減少</string>
 
     <!-- ユーザ設定 -->
     <string name="label_user_name">▪️ユーザ名</string>
