@@ -31,6 +31,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.app.body_manage.R
 import com.app.body_manage.common.CustomButton
 import com.app.body_manage.data.local.Gender
@@ -66,6 +67,11 @@ fun UserPreferenceSettingScreen(
         item {
             Column {
                 Label(R.string.label_option)
+                Text(
+                    text = stringResource(id = R.string.label_option_describe),
+                    fontSize = 11.sp,
+                    modifier = Modifier.padding(start = 20.dp)
+                )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start,

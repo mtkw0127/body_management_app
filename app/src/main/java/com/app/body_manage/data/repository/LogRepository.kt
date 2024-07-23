@@ -18,6 +18,7 @@ class LogRepository {
         const val KEY_OPEN_OBJECT_WEIGHT = "open_object_weight"
         const val KEY_OPEN_OBJECT_KCAL = "open_object_kcal"
         const val KEY_INITIAL_DIALOG = "open_initial_dialog"
+        const val KEY_USER_SETTINGS = "set_user_settings"
     }
 
     fun sendLog(
