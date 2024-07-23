@@ -12,8 +12,10 @@ import com.app.body_manage.data.repository.MealRepository
 import com.app.body_manage.data.repository.TrainingRepository
 import com.app.body_manage.extension.toWeight
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
@@ -44,6 +46,9 @@ class TopViewModel(
     private val _lastMeasure: MutableStateFlow<BodyMeasure?> = MutableStateFlow(null)
     val lastMeasure = _lastMeasure.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    private val _initialMeasure: MutableStateFlow<BodyMeasure?> = MutableStateFlow(null)
+    val initialMeasure = _initialMeasure.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
     // 当日の測定
     private val _todayMeasure: MutableStateFlow<TodayMeasure> = MutableStateFlow(
         TodayMeasure(
@@ -61,6 +66,9 @@ class TopViewModel(
             false
         )
     )
+
+    private val _openMeasureForm = MutableSharedFlow<Unit>()
+    val openMeasureForm = _openMeasureForm.asSharedFlow()
 
     fun checkSetUpUserPref() {
         viewModelScope.launch {
@@ -80,6 +88,7 @@ class TopViewModel(
             runCatching {
                 _userPreference.value = userPreferenceRepository.userPref.firstOrNull()
                 _lastMeasure.value = bodyMeasureRepository.getLast()?.toModel()
+                _initialMeasure.value = bodyMeasureRepository.getFirst()?.toModel()
 
                 // 今日の記録を取得
                 val now = LocalDate.now()
@@ -91,6 +100,9 @@ class TopViewModel(
                     bodyMeasures = bodyMeasures,
                     didTraining = training.isNotEmpty()
                 )
+                if (_lastMeasure.value == null) {
+                    _openMeasureForm.emit(Unit)
+                }
             }.onFailure {
                 // データがない可能性があるため再設定
                 checkSetUpUserPref()
@@ -101,6 +113,13 @@ class TopViewModel(
     fun setGoalWeight(goal: Float) {
         viewModelScope.launch {
             userPreferenceRepository.setGoatWeight(goal)
+            load()
+        }
+    }
+
+    fun setStartWeight(weight: Float) {
+        viewModelScope.launch {
+            userPreferenceRepository.setStartWeight(weight)
             load()
         }
     }

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -43,12 +44,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.body_manage.R
+import com.app.body_manage.common.BottomSheet
+import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.data.calendar.Day
 import com.app.body_manage.data.calendar.Month
 import com.app.body_manage.data.calendar.Week
@@ -66,6 +70,7 @@ fun CalendarScreen(
     moveToNext: () -> Unit,
     onClickBackPress: () -> Unit = {},
     onClickDate: (Day) -> Unit = {},
+    bottomSheetDataList: List<BottomSheetData>,
 ) {
     val state = rememberLazyListState()
     var changingFocus by remember { mutableStateOf(false) }
@@ -96,6 +101,15 @@ fun CalendarScreen(
     }
 
     Scaffold(
+        bottomBar = {
+            Column(
+                modifier = Modifier
+                    .background(colorResource(id = R.color.app_theme))
+                    .navigationBarsPadding()
+            ) {
+                BottomSheet(bottomSheetDataList)
+            }
+        },
         topBar = {
             TopAppBar(
                 modifier = Modifier.background(Colors.theme),

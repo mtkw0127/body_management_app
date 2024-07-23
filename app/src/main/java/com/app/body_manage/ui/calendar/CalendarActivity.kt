@@ -11,13 +11,20 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.core.view.WindowCompat
 import com.app.body_manage.TrainingApplication
+import com.app.body_manage.common.createBottomDataList
+import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.measure.list.MeasureListActivity
+import com.app.body_manage.ui.top.TopActivity
 
 class CalendarActivity : AppCompatActivity() {
 
     private val measureListLauncher = registerForActivityResult(StartActivityForResult()) {
         viewModel.updateCurrentMonth()
     }
+
+    private val launcher =
+        registerForActivityResult(StartActivityForResult()) {
+        }
 
     lateinit var viewModel: CalendarListViewModel
 
@@ -31,12 +38,21 @@ class CalendarActivity : AppCompatActivity() {
             (application as TrainingApplication).trainingRepository,
         )
 
+        val bottomSheetDataList = createBottomDataList(
+            context = this,
+            topAction = { launcher.launch(TopActivity.createIntent(this)) },
+            openCalendar = { },
+            graphAction = { launcher.launch(GraphActivity.createIntent(this)) },
+            isCalendar = true,
+        )
+
         setContent {
             val months by viewModel.months.collectAsState()
             val focusedMonth by viewModel.focusedMonth.collectAsState()
             CalendarScreen(
                 months = months,
                 focusedMonth = focusedMonth,
+                bottomSheetDataList = bottomSheetDataList,
                 moveToPrev = viewModel::moveToPrev,
                 moveToNext = viewModel::moveToNext,
                 onClickBackPress = ::finish,

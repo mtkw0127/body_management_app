@@ -18,6 +18,9 @@ import com.app.body_manage.TrainingApplication
 import com.app.body_manage.common.createBottomDataList
 import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
+import com.app.body_manage.data.repository.LogRepository
+import com.app.body_manage.data.repository.LogRepository.Companion.KEY_OPEN_OBJECT_KCAL
+import com.app.body_manage.data.repository.LogRepository.Companion.KEY_OPEN_OBJECT_WEIGHT
 import com.app.body_manage.data.repository.MealRepository
 import com.app.body_manage.dialog.Digit
 import com.app.body_manage.dialog.FloatNumberPickerDialog
@@ -25,13 +28,11 @@ import com.app.body_manage.dialog.IntNumberPickerDialog
 import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
-import com.app.body_manage.ui.mealForm.MealFormActivity
 import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.measure.list.MeasureListActivity
 import com.app.body_manage.ui.measure.list.MeasureListActivity.Companion.RESULT_CODE_ADD
 import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.ui.top.UserPreferenceSettingDialog.Companion.REQUEST_KEY
-import com.app.body_manage.ui.trainingForm.form.TrainingFormActivity
 import com.app.body_manage.ui.trainingMenu.TrainingMenuListActivity
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -77,9 +78,8 @@ class TopActivity : AppCompatActivity() {
         val bottomSheetDataList = createBottomDataList(
             context = this,
             topAction = { },
-            compareAction = { launcher.launch(CompareActivity.createIntent(this)) },
+            openCalendar = { launcher.launch(CalendarActivity.createIntent(this)) },
             graphAction = { launcher.launch(GraphActivity.createIntent(this)) },
-            photoListAction = { launcher.launch(PhotoListActivity.createIntent(this)) },
             isTop = true,
         )
         viewModel = TopViewModel(
@@ -98,41 +98,90 @@ class TopActivity : AppCompatActivity() {
                 }
             }
         }
+        lifecycleScope.launch {
+            viewModel.openMeasureForm.collectLatest {
+                Toast.makeText(
+                    this@TopActivity,
+                    getString(R.string.label_first_save_your_body),
+                    Toast.LENGTH_LONG
+                ).show()
+                launcher.launch(
+                    MeasureFormActivity.createMeasureFormIntent(
+                        this@TopActivity,
+                        LocalDate.now()
+                    )
+                )
+            }
+        }
+        // 開始体重設定後に目標体重を設定
+        supportFragmentManager.setFragmentResultListener("START_WEIGHT", this) { key, bundle ->
+            val weight =
+                viewModel.userPreference.value?.goalWeight
+                    ?: viewModel.lastMeasure.value?.weight
+                    ?: return@setFragmentResultListener
+            FloatNumberPickerDialog.createDialog(
+                label = getString(R.string.label_target_weight),
+                number = weight,
+                unit = getString(R.string.unit_kg),
+                requestKey = "GOAL",
+                supportOneHundred = true,
+                buttonTextResource = R.string.settings,
+            ) {
+                viewModel.setGoalWeight(it)
+                LogRepository().sendLog(
+                    this,
+                    KEY_OPEN_OBJECT_WEIGHT,
+                    Bundle().apply {
+                        putFloat("weight", it)
+                    }
+                )
+            }.show(supportFragmentManager, null)
+        }
+
         // 目標体重設定後に１日の目標カロリー設定
         supportFragmentManager.setFragmentResultListener("GOAL", this) { key, bundle ->
-            IntNumberPickerDialog.createDialog(
-                label = getString(R.string.kcal_per_day),
-                number = viewModel.userPreference.value?.goalKcal ?: 2000,
-                unit = getString(R.string.unit_kcal),
-                maxDigit = Digit.THOUSAND,
-                initialDigit = Digit.THOUSAND,
-            ) {
-                viewModel.setGoalKcal(it)
-            }.show(supportFragmentManager, null)
+            if (viewModel.userPreference.value?.optionFeature?.meal == true) {
+                IntNumberPickerDialog.createDialog(
+                    label = getString(R.string.kcal_per_day),
+                    number = viewModel.userPreference.value?.goalKcal ?: 2000,
+                    unit = getString(R.string.unit_kcal),
+                    maxDigit = Digit.THOUSAND,
+                    initialDigit = Digit.THOUSAND,
+                ) {
+                    viewModel.setGoalKcal(it)
+                    LogRepository().sendLog(
+                        this,
+                        KEY_OPEN_OBJECT_KCAL,
+                        Bundle().apply {
+                            putInt("kcal", it.toInt())
+                        }
+                    )
+                }.show(supportFragmentManager, null)
+            }
         }
 
         setContent {
             val userPreference by viewModel.userPreference.collectAsState()
             val lastMeasure by viewModel.lastMeasure.collectAsState()
+            val initialMeasure by viewModel.initialMeasure.collectAsState()
             val todayMeasure by viewModel.todayMeasure.collectAsState()
             TopScreen(
                 userPreference = userPreference,
                 lastMeasure = lastMeasure,
+                initialMeasure = initialMeasure,
                 todayMeasure = todayMeasure,
                 bottomSheetDataList = bottomSheetDataList,
                 onClickSeeTrainingMenu = {
                     launcher.launch(TrainingMenuListActivity.createIntent(this))
                 },
-                onClickCalendar = {
-                    launcher.launch(CalendarActivity.createIntent(this))
+                onClickCompare = {
+                    launcher.launch(CompareActivity.createIntent(this))
+                },
+                onClickPhotos = {
+                    launcher.launch(PhotoListActivity.createIntent(this))
                 },
                 onClickToday = {
                     launcher.launch(MeasureListActivity.createIntent(this, LocalDate.now()))
-                },
-                onClickAddMeal = {
-                    launcher.launch(
-                        MealFormActivity.createIntentAdd(this, LocalDate.now())
-                    )
                 },
                 onClickAddMeasure = {
                     launcher.launch(
@@ -142,21 +191,25 @@ class TopActivity : AppCompatActivity() {
                         )
                     )
                 },
-                onClickAddTraining = {
-                    launcher.launch(
-                        TrainingFormActivity.createInstance(this, LocalDate.now())
-                    )
-                },
-                onClickSetGoat = {
-                    val weight = viewModel.lastMeasure.value?.weight ?: return@TopScreen
+                onClickSetGoal = {
+                    val weight = viewModel.userPreference.value?.startWeight
+                        ?: viewModel.lastMeasure.value?.weight ?: return@TopScreen
                     FloatNumberPickerDialog.createDialog(
-                        label = getString(R.string.weight),
+                        label = getString(R.string.label_start_weight),
                         number = weight,
                         unit = getString(R.string.unit_kg),
-                        requestKey = "GOAL",
+                        requestKey = "START_WEIGHT",
+                        buttonTextResource = R.string.settings,
                         supportOneHundred = true,
                     ) {
-                        viewModel.setGoalWeight(it)
+                        viewModel.setStartWeight(it)
+                        LogRepository().sendLog(
+                            this,
+                            KEY_OPEN_OBJECT_WEIGHT,
+                            Bundle().apply {
+                                putFloat("start_weight", it)
+                            }
+                        )
                     }.show(supportFragmentManager, null)
                 },
                 onClickSetting = {

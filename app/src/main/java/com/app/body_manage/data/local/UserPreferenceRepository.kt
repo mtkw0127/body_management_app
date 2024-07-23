@@ -30,9 +30,24 @@ class UserPreferenceRepository(
         val KEY_WEIGHT = floatPreferencesKey("key_weight")
         val KEY_GOAL_WEIGHT = floatPreferencesKey("key_goal_weight")
         val KEY_GOAL_KCAL = longPreferencesKey("key_goal_kcal")
+        val KEY_START_WEIGHT = floatPreferencesKey("key_start_weight")
         val kEY_REQUESTED_REVIEW = booleanPreferencesKey("key_requested_review")
         val KEY_FAT = floatPreferencesKey("key_fat")
         val KEY_ALARM = booleanPreferencesKey("key_alarm")
+        val KEY_OPTION_MEAL = booleanPreferencesKey("key_option_meal")
+        val KEY_OPTION_TRAINING = booleanPreferencesKey("key_option_training")
+    }
+
+    suspend fun setOptionMeal(option: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[KEY_OPTION_MEAL] = option
+        }
+    }
+
+    suspend fun setOptionTraining(option: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[KEY_OPTION_TRAINING] = option
+        }
     }
 
     suspend fun setName(name: String) {
@@ -93,6 +108,12 @@ class UserPreferenceRepository(
         it[kEY_REQUESTED_REVIEW] ?: false
     }.firstOrNull() ?: false
 
+    suspend fun setStartWeight(weight: Float) {
+        context.dataStore.edit { preferences ->
+            preferences[KEY_START_WEIGHT] = weight
+        }
+    }
+
     val tall: Flow<Float?> = context.dataStore.data.map {
         it[KEY_TALL]
     }
@@ -123,8 +144,13 @@ class UserPreferenceRepository(
                 name = name,
                 gender = gender ?: Gender.MALE,
                 birth = birth ?: LocalDate.now(),
+                startWeight = it[KEY_START_WEIGHT],
                 goalWeight = it[KEY_GOAL_WEIGHT],
                 goalKcal = it[KEY_GOAL_KCAL],
+                optionFeature = UserPreference.OptionFeature(
+                    meal = it[KEY_OPTION_MEAL] ?: false,
+                    training = it[KEY_OPTION_TRAINING] ?: false,
+                ),
                 alarm = it[KEY_ALARM] ?: false,
             )
         }

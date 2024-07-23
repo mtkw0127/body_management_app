@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -27,10 +26,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -48,10 +45,10 @@ import com.app.body_manage.data.entity.TrainingMenuEntity
 import com.app.body_manage.data.model.TrainingMenu
 import com.app.body_manage.data.model.createSampleOwnWeightTrainingMenu
 import com.app.body_manage.data.model.createSampleTrainingMenu
-import com.app.body_manage.style.Colors
 import com.app.body_manage.ui.common.LabelAndContentRow
 import com.app.body_manage.ui.common.TrainingMenuFilter
 import com.app.body_manage.ui.common.TrainingMenuItem
+import com.app.body_manage.ui.photoList.BottomBar
 import com.app.body_manage.ui.top.TextWithUnderLine
 
 @Composable
@@ -218,28 +215,10 @@ fun TrainingMenuListScreen(
     }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                backgroundColor = Colors.theme,
-                modifier = Modifier
-                    .background(Colors.theme)
-                    .windowInsetsPadding(
-                        WindowInsets.safeDrawing.only(
-                            WindowInsetsSides.Top
-                        )
-                    ),
-                elevation = 0.dp
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Spacer(modifier = Modifier.size(10.dp))
-                    Icon(
-                        imageVector = Icons.Default.ArrowBack,
-                        contentDescription = null,
-                        modifier = Modifier.clickable { onClickBackPress() },
-                        tint = Color.Black
-                    )
-                }
-            }
+        bottomBar = {
+            BottomBar(
+                onClickBack = onClickBackPress
+            )
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -257,8 +236,11 @@ fun TrainingMenuListScreen(
     ) { padding ->
         Column(
             modifier = Modifier
+                .windowInsetsPadding(
+                    WindowInsets.safeDrawing.only(WindowInsetsSides.Top)
+                )
                 .padding(padding)
-                .padding(10.dp)
+                .padding(horizontal = 10.dp)
         ) {
             LazyColumn {
                 item {

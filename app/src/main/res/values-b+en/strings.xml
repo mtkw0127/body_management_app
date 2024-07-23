@@ -34,6 +34,8 @@
     <string name="thursday">T</string>
     <string name="friday">F</string>
     <string name="saturday">S</string>
+    <string name="increase">increase</string>
+    <string name="decrease">decrease</string>
 
     <!-- User Settings -->
     <string name="label_user_name">User Name</string>
@@ -46,20 +48,28 @@
     <string name="gender">Gender</string>
     <string name="gender_male">Male</string>
     <string name="gender_female">Female</string>
+    <string name="label_option">Option</string>
+    <string name="label_meal_feature">Meal record</string>
+    <string name="label_training_feature">Training record</string>
 
     <!-- Home Screen -->
+    <string name="label_object_weight">Weight of your goal</string>
     <string name="label_reserve">Please record at first</string>
     <string name="label_registered_date">Registration Date</string>
     <string name="label_target_weight">Target Weight</string>
+    <string name="label_start_weight">Beginning</string>
     <string name="label_target_kcal">Target calorie</string>
     <string name="title_set_object">Set Goal</string>
     <string name="message_set_object">Setting a goal can help maintain motivation.</string>
     <string name="label_set_object">Set Goal</string>
-    <string name="label_update_object">Update Goal</string>
+    <string name="label_update_object">Delete Goal</string>
+    <string name="label_from_start">Diff between start and now</string>
+    <string name="label_until_object">Diff between now and goal</string>
     <string name="label_bmi">BMI</string>
     <string name="label_kcal">Basal Metabolic Rate</string>
     <string name="label_fat">Body Fat Percentage</string>
-    <string name="label_see_by_calendar">View by Calendar</string>
+    <string name="label_compare">Compare between your body photos</string>
+    <string name="label_photos">See your body photos</string>
     <string name="label_see_by_statistics">View by Statistics</string>
     <string name="label_see_by_training_menu">See training menu</string>
     <string name="label_see_by_today">View Today\'s Records</string>
@@ -80,6 +90,7 @@
     <string name="label_did_training">You already did workout</string>
     <string name="label_weight_bmi_22">The weight for a BMI of 22</string>
     <string name="label_weight_bmi_18_25">Weight for BMI between 18.5 and 24.9</string>
+    <string name="label_first_save_your_body">First please save your body weight</string>
 
     <!-- Measurement List -->
     <string name="message_saved">Saved</string>
@@ -165,8 +176,7 @@
 
     <!-- ボトムナビゲーション -->
     <string name="label_home">Home</string>
-    <string name="label_compare">Compare</string>
-    <string name="label_photos">Photos</string>
+    <string name="label_calendar">Calendar</string>
     <string name="label_graph">Graph</string>
 
     <!-- 統計 -->

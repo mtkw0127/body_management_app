@@ -1,8 +1,10 @@
 package com.app.body_manage.ui.top
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Checkbox
 import androidx.compose.material.RadioButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -41,6 +44,8 @@ fun UserPreferenceSettingScreen(
     onChangeGender: (Gender) -> Unit,
     onChangeBirth: (TextFieldValue) -> Unit,
     onClickSet: () -> Unit,
+    onClickMealOption: (Boolean) -> Unit,
+    onClickTrainingOption: (Boolean) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -53,10 +58,41 @@ fun UserPreferenceSettingScreen(
             Name(uiState.name.orEmpty(), onChangeName)
         }
         item {
+            Birth(uiState.birth, onChangeBirth)
+        }
+        item {
             Gender(uiState.gender, onChangeGender)
         }
         item {
-            Birth(uiState.birth, onChangeBirth)
+            Column {
+                Label(R.string.label_option)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start,
+                    modifier = Modifier.clickable {
+                        onClickMealOption(!uiState.hasMealFeature)
+                    }
+                ) {
+                    Checkbox(
+                        checked = uiState.hasMealFeature,
+                        onCheckedChange = onClickMealOption,
+                    )
+                    Text(text = stringResource(id = R.string.label_meal_feature))
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start,
+                    modifier = Modifier.clickable {
+                        onClickTrainingOption(!uiState.hasTrainingFeature)
+                    }
+                ) {
+                    Checkbox(
+                        checked = uiState.hasTrainingFeature,
+                        onCheckedChange = onClickTrainingOption,
+                    )
+                    Text(text = stringResource(id = R.string.label_training_feature))
+                }
+            }
         }
         item {
             Spacer(modifier = Modifier.size(10.dp))

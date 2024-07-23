@@ -11,10 +11,17 @@ data class UserPreference(
     val name: String,
     val gender: Gender,
     val birth: LocalDate,
+    val startWeight: Float?,
     val goalWeight: Float?,
     val goalKcal: Long?,
     val alarm: Boolean?,
+    val optionFeature: OptionFeature
 ) {
+    data class OptionFeature(
+        val meal: Boolean,
+        val training: Boolean
+    )
+
     fun bim(tall: Float, weight: Float): String = BMICalculator().calculate(tall, weight)
 
     fun calcFat(tall: Float, weight: Float): String = FatCalculator().calculate(

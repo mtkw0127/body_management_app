@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -30,7 +29,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
-import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -40,7 +38,6 @@ import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircleOutline
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Share
@@ -52,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.draw
@@ -66,10 +64,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.app.body_manage.R
-import com.app.body_manage.common.BottomSheet
-import com.app.body_manage.common.BottomSheetData
+import com.app.body_manage.common.CustomButton
 import com.app.body_manage.data.dao.ComparePhotoHistoryDao
-import com.app.body_manage.style.Colors.Companion.accentColor
 import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.secondPrimary
 import com.app.body_manage.style.Colors.Companion.theme
@@ -83,7 +79,6 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun CompareScreen(
-    bottomSheetDataList: List<BottomSheetData>,
     uiState: CompareState,
     saveHistory: () -> Unit,
     loadHistory: () -> Unit,
@@ -92,45 +87,30 @@ fun CompareScreen(
     beforeSearchLauncher: () -> Unit,
     afterSearchLauncher: () -> Unit,
     onClickShare: (Picture) -> Unit,
+    onClickBack: () -> Unit,
 ) {
     val pagerState = rememberPagerState()
     val scope = rememberCoroutineScope()
     val coroutineScope = rememberCoroutineScope()
     Scaffold(
-        floatingActionButton = {
-            if (pagerState.currentPage == 0 &&
-                uiState is CompareState.CompareItemsHasSet &&
-                uiState.before != null &&
-                uiState.after != null
-            ) {
-                FloatingActionButton(
-                    onClick = {
-                        saveHistory.invoke()
-                        // Move to History
+        bottomBar = {
+            val hasState = uiState as? CompareState.CompareItemsHasSet
+            SaveForm(
+                onClickSave = {
+                    saveHistory()
+                    scope.launch {
                         scope.launch {
                             pagerState.animateScrollToPage(
                                 page = 1,
                                 pageOffset = 0F
                             )
                         }
-                    },
-                    backgroundColor = accentColor
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Check,
-                        contentDescription = null
-                    )
-                }
-            }
-        },
-        bottomBar = {
-            Column(
-                modifier = Modifier
-                    .background(colorResource(id = R.color.app_theme))
-                    .navigationBarsPadding()
-            ) {
-                BottomSheet(bottomSheetDataList = bottomSheetDataList)
-            }
+                    }
+                },
+                onClickBack = onClickBack,
+                enable = hasState?.before != null && hasState.after != null,
+                showCompareButton = hasState != null
+            )
         }
     ) {
         Column(
@@ -145,23 +125,26 @@ fun CompareScreen(
                         TabRowItem(
                             stringResource(id = R.string.compare)
                         ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .verticalScroll(rememberScrollState()),
-                                verticalArrangement = Arrangement.Top,
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                            ) {
-                                CompareItem(
-                                    stringResource(R.string.before),
-                                    uiState.before,
-                                    beforeSearchLauncher
-                                )
-                                CompareItem(
-                                    stringResource(R.string.after),
-                                    uiState.after,
-                                    afterSearchLauncher
-                                )
+                            Column {
+                                Column(
+                                    modifier = Modifier
+                                        .weight(1F)
+                                        .fillMaxSize()
+                                        .verticalScroll(rememberScrollState()),
+                                    verticalArrangement = Arrangement.Top,
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                ) {
+                                    CompareItem(
+                                        stringResource(R.string.before),
+                                        uiState.before,
+                                        beforeSearchLauncher
+                                    )
+                                    CompareItem(
+                                        stringResource(R.string.after),
+                                        uiState.after,
+                                        afterSearchLauncher
+                                    )
+                                }
                             }
                         },
                         TabRowItem(
@@ -252,6 +235,46 @@ fun CompareScreen(
                 is CompareState.NoPhotos -> {
                     NoPhotos()
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SaveForm(
+    onClickSave: () -> Unit,
+    onClickBack: () -> Unit,
+    enable: Boolean = false,
+    showCompareButton: Boolean = false,
+) {
+    Box(
+        modifier = Modifier
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom))
+            .fillMaxWidth()
+            .height(50.dp)
+            .background(background)
+            .shadow(0.5.dp, clip = true),
+        contentAlignment = Alignment.Center,
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            CustomButton(
+                onClickBack,
+                R.string.back,
+                enable = true
+            )
+            Spacer(modifier = Modifier.weight(1F))
+            if (showCompareButton) {
+                CustomButton(
+                    onClickSave,
+                    R.string.compare,
+                    backgroundColor = theme,
+                    enable = enable
+                )
             }
         }
     }

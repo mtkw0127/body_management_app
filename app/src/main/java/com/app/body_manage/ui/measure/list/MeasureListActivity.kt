@@ -18,6 +18,8 @@ import com.app.body_manage.data.local.UserPreferenceRepository
 import com.app.body_manage.data.model.Photo
 import com.app.body_manage.data.repository.BodyMeasurePhotoRepository
 import com.app.body_manage.data.repository.BodyMeasureRepository
+import com.app.body_manage.data.repository.LogRepository
+import com.app.body_manage.data.repository.LogRepository.Companion.KEY_REVIEW_REQUEST
 import com.app.body_manage.data.repository.MealRepository
 import com.app.body_manage.data.repository.TrainingRepository
 import com.app.body_manage.ui.mealForm.MealFormActivity
@@ -26,7 +28,6 @@ import com.app.body_manage.ui.photoDetail.PhotoDetailActivity
 import com.app.body_manage.ui.trainingForm.detail.TrainingDetailActivity
 import com.app.body_manage.ui.trainingForm.form.TrainingFormActivity
 import com.google.android.play.core.review.ReviewManagerFactory
-import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 
@@ -80,17 +81,11 @@ class MeasureListActivity : AppCompatActivity() {
                     ReviewManagerFactory.create(this).launchReviewFlow(this, it)
                 }
                 .addOnCompleteListener {
-                    val instance = FirebaseAnalytics.getInstance(this)
-                    val bundle = Bundle()
-                    val key = "result"
-                    if (it.isSuccessful) {
-                        bundle.putString(key, "success")
-                    } else if (it.isCanceled) {
-                        bundle.putString(key, "canceled")
-                    } else if (it.isComplete) {
-                        bundle.putString(key, "complete")
-                    }
-                    instance.logEvent("review_request", bundle)
+                    LogRepository().sendLog(
+                        context = this,
+                        key = KEY_REVIEW_REQUEST,
+                        bundle = Bundle(),
+                    )
                     runBlocking { userPreferenceRepository.setRequestedReview() }
                 }
         }
@@ -107,12 +102,14 @@ class MeasureListActivity : AppCompatActivity() {
 
         setContent {
             val state: MeasureListState.BodyMeasureListState by viewModel.uiState.collectAsState()
+            val userPreference by viewModel.userPreference.collectAsState()
 
             MeasureListScreen(
                 uiState = state,
                 setLocalDate = {
                     viewModel.setDate(it)
                 },
+                userPreference = userPreference,
                 clickBodyMeasureEdit = {
                     launcher.launch(
                         MeasureFormActivity.createMeasureEditIntent(

@@ -54,6 +54,7 @@ class FloatNumberPickerDialog : DialogFragment() {
     private var secondDecimalPlace: String = ""
     private var key: String? = null
     private var supportOneHundred = false
+    private var buttonTextResource = R.string.label_record
 
     private lateinit var currentFocus: Digit
 
@@ -66,10 +67,16 @@ class FloatNumberPickerDialog : DialogFragment() {
             unit = extras.getString(UNIT, "")
             key = extras.getString(KEY)
             supportOneHundred = extras.getBoolean(SUPPORT_HUNDRED, false)
-            currentFocus = if (supportOneHundred) {
-                Digit.HUNDRED
-            } else {
-                arguments?.getSerializable(INITIAL_DIGIT) as Digit
+            val initialDigit = arguments?.getSerializable(INITIAL_DIGIT) as? Digit
+            currentFocus = initialDigit
+                ?: if (supportOneHundred) {
+                    Digit.HUNDRED
+                } else {
+                    Digit.TENS
+                }
+
+            if (extras.getInt(BUTTON_TEXT) != 0) {
+                buttonTextResource = extras.getInt(BUTTON_TEXT)
             }
 
             // 60.55 -> 60 -> 060
@@ -350,7 +357,7 @@ class FloatNumberPickerDialog : DialogFragment() {
                                 dismiss()
                             },
                             backgroundColor = Colors.theme,
-                            valueResourceId = R.string.label_record,
+                            valueResourceId = buttonTextResource,
                             modifier = Modifier.width(150.dp)
                         )
                     }
@@ -366,6 +373,7 @@ class FloatNumberPickerDialog : DialogFragment() {
         private const val KEY = "KEY"
         private const val SUPPORT_HUNDRED = "SUPPORT_HUNDRED"
         private const val INITIAL_DIGIT = "INITIAL_DIGIT"
+        private const val BUTTON_TEXT = "BUTTON_TEXT"
         fun createDialog(
             label: String,
             number: Float,
@@ -373,6 +381,7 @@ class FloatNumberPickerDialog : DialogFragment() {
             requestKey: String? = null,
             initialDigit: Digit = Digit.TENS,
             supportOneHundred: Boolean = false,
+            buttonTextResource: Int = R.string.label_record,
             callBack: (weight: Float) -> Unit,
         ): FloatNumberPickerDialog {
             val numberPickerDialog = FloatNumberPickerDialog()
@@ -383,6 +392,7 @@ class FloatNumberPickerDialog : DialogFragment() {
                 putString(KEY, requestKey)
                 putSerializable(INITIAL_DIGIT, initialDigit)
                 putBoolean(SUPPORT_HUNDRED, supportOneHundred)
+                putInt(BUTTON_TEXT, buttonTextResource)
             }
             numberPickerDialog.arguments = bundle
             numberPickerDialog.callBack = callBack
