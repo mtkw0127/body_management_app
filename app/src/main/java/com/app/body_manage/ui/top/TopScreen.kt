@@ -343,8 +343,8 @@ private fun Goal(
             Spacer(modifier = Modifier.size(10.dp))
             Diff(
                 label = stringResource(id = R.string.label_until_object),
-                standard = goalWeight,
-                current = lastMeasure.weight,
+                standard = lastMeasure.weight,
+                current = goalWeight,
                 isFromStart = false,
             )
         }
@@ -398,7 +398,7 @@ private fun Diff(
     isFromStart: Boolean,
 ) {
     val diff = ((standard - current) * 100).toInt() / 100F
-    val color = if (diff.toInt() == 0) {
+    val color = if (diff == 0F) {
         Color.Black
     } else if (diff > 0) {
         Color.Red
@@ -406,7 +406,7 @@ private fun Diff(
         Color.Blue
     }
 
-    val plusMinus = if (diff.toInt() == 0) {
+    val plusMinus = if (diff == 0F) {
         "±"
     } else if (diff > 0) {
         "+"

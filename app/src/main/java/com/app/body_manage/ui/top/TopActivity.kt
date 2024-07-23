@@ -108,6 +108,29 @@ class TopActivity : AppCompatActivity() {
                 )
             }
         }
+        // 開始体重設定後に目標体重を設定
+        supportFragmentManager.setFragmentResultListener("START_WEIGHT", this) { key, bundle ->
+            val weight =
+                viewModel.userPreference.value?.goalWeight ?: return@setFragmentResultListener
+            FloatNumberPickerDialog.createDialog(
+                label = getString(R.string.label_target_weight),
+                number = weight,
+                unit = getString(R.string.unit_kg),
+                requestKey = "GOAL",
+                supportOneHundred = true,
+                buttonTextResource = R.string.settings,
+            ) {
+                viewModel.setGoalWeight(it)
+                LogRepository().sendLog(
+                    this,
+                    KEY_OPEN_OBJECT_WEIGHT,
+                    Bundle().apply {
+                        putFloat("weight", it)
+                    }
+                )
+            }.show(supportFragmentManager, null)
+        }
+
         // 目標体重設定後に１日の目標カロリー設定
         supportFragmentManager.setFragmentResultListener("GOAL", this) { key, bundle ->
             if (viewModel.userPreference.value?.optionFeature?.meal == true) {
@@ -162,20 +185,22 @@ class TopActivity : AppCompatActivity() {
                     )
                 },
                 onClickSetGoal = {
-                    val weight = viewModel.lastMeasure.value?.weight ?: return@TopScreen
+                    val weight = viewModel.userPreference.value?.startWeight
+                        ?: viewModel.lastMeasure.value?.weight ?: return@TopScreen
                     FloatNumberPickerDialog.createDialog(
-                        label = getString(R.string.weight),
+                        label = getString(R.string.label_start_weight),
                         number = weight,
                         unit = getString(R.string.unit_kg),
-                        requestKey = "GOAL",
+                        requestKey = "START_WEIGHT",
+                        buttonTextResource = R.string.settings,
                         supportOneHundred = true,
                     ) {
-                        viewModel.setGoalWeight(it)
+                        viewModel.setStartWeight(it)
                         LogRepository().sendLog(
                             this,
                             KEY_OPEN_OBJECT_WEIGHT,
                             Bundle().apply {
-                                putFloat("weight", it)
+                                putFloat("start_weight", it)
                             }
                         )
                     }.show(supportFragmentManager, null)

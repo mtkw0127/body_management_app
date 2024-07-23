@@ -108,6 +108,12 @@ class UserPreferenceRepository(
         it[kEY_REQUESTED_REVIEW] ?: false
     }.firstOrNull() ?: false
 
+    suspend fun setStartWeight(weight: Float) {
+        context.dataStore.edit { preferences ->
+            preferences[KEY_START_WEIGHT] = weight
+        }
+    }
+
     val tall: Flow<Float?> = context.dataStore.data.map {
         it[KEY_TALL]
     }
