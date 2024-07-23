@@ -449,9 +449,9 @@ private fun Diff(
             val text = if (diff.toInt() == 0) {
                 ""
             } else if (diff > 0) {
-                "増加"
+                stringResource(id = R.string.increase)
             } else {
-                "減少"
+                stringResource(id = R.string.decrease)
             }
             Text(
                 text = text,
@@ -459,6 +459,10 @@ private fun Diff(
                 fontSize = 12.sp,
                 modifier = Modifier.offset(y = yOffsetDp),
             )
+        }
+        if (isFromStart.not() && diff <= 0F) {
+            Spacer(modifier = Modifier.size(10.dp))
+            Text(text = "\uD83C\uDF89")
         }
     }
 }
