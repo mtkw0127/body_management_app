@@ -49,6 +49,7 @@
     <string name="gender_male">男性</string>
     <string name="gender_female">女性</string>
     <string name="label_option">▪️オプション機能</string>
+    <string name="label_option_describe">不要な機能を隠すことができます</string>
     <string name="label_meal_feature">食事記録</string>
     <string name="label_training_feature">トレーニング記録</string>
 

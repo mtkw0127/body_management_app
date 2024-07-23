@@ -82,7 +82,7 @@ class TopViewModel(
                     checkNotNull(_userPreference.value).optionFeature.training == null
                 ) {
                     // オプション機能をユーザにまだ見せていないのでダイアログを表示
-//                    _showUserPrefDialog.value = true
+                    _showUserPrefDialog.value = true
                 }
             } catch (_: Throwable) {
                 _showUserPrefDialog.value = true
