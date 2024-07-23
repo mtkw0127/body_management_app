@@ -90,6 +90,7 @@
     <string name="label_did_training">トレーニング済</string>
     <string name="label_weight_bmi_22">BMIが22の場合の体重</string>
     <string name="label_weight_bmi_18_25">BMIが18.5から24.9の体重</string>
+    <string name="label_first_save_your_body">まずは体重を登録しましょう！</string>
 
     <!-- 測定一覧-->
     <string name="message_saved">登録しました</string>

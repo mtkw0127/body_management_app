@@ -100,6 +100,11 @@ class TopActivity : AppCompatActivity() {
         }
         lifecycleScope.launch {
             viewModel.openMeasureForm.collectLatest {
+                Toast.makeText(
+                    this@TopActivity,
+                    getString(R.string.label_first_save_your_body),
+                    Toast.LENGTH_LONG
+                ).show()
                 launcher.launch(
                     MeasureFormActivity.createMeasureFormIntent(
                         this@TopActivity,
@@ -111,7 +116,9 @@ class TopActivity : AppCompatActivity() {
         // 開始体重設定後に目標体重を設定
         supportFragmentManager.setFragmentResultListener("START_WEIGHT", this) { key, bundle ->
             val weight =
-                viewModel.userPreference.value?.goalWeight ?: return@setFragmentResultListener
+                viewModel.userPreference.value?.goalWeight
+                    ?: viewModel.lastMeasure.value?.weight
+                    ?: return@setFragmentResultListener
             FloatNumberPickerDialog.createDialog(
                 label = getString(R.string.label_target_weight),
                 number = weight,
