@@ -77,6 +77,13 @@ class TopViewModel(
                 // 入力なしに登録したユーザのための処理
                 checkNotNull(_userPreference.value?.birth)
                 load()
+                if (
+                    checkNotNull(_userPreference.value).optionFeature.meal == null ||
+                    checkNotNull(_userPreference.value).optionFeature.training == null
+                ) {
+                    // オプション機能をユーザにまだ見せていないのでダイアログを表示
+//                    _showUserPrefDialog.value = true
+                }
             } catch (_: Throwable) {
                 _showUserPrefDialog.value = true
             }

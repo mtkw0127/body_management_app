@@ -18,8 +18,8 @@ data class UserPreference(
     val optionFeature: OptionFeature
 ) {
     data class OptionFeature(
-        val meal: Boolean,
-        val training: Boolean
+        val meal: Boolean?,
+        val training: Boolean?,
     )
 
     fun bim(tall: Float, weight: Float): String = BMICalculator().calculate(tall, weight)
@@ -61,16 +61,16 @@ data class UserPreference(
         val weight = inputWeight * 100 / 100F
         val age = birth.age()
         val consumedEnergy = (
-            when (gender) {
-                Gender.MALE -> {
-                    (0.0481 * weight + 0.0234 * height - 0.0138 * age - 0.4235) * 1000 / 4.186
-                }
+                when (gender) {
+                    Gender.MALE -> {
+                        (0.0481 * weight + 0.0234 * height - 0.0138 * age - 0.4235) * 1000 / 4.186
+                    }
 
-                Gender.FEMALE -> {
-                    (0.0481 * weight + 0.0234 * height - 0.0138 * age - 0.9708) * 1000 / 4.186
-                }
-            } * 100
-            ).toInt() / 100F
+                    Gender.FEMALE -> {
+                        (0.0481 * weight + 0.0234 * height - 0.0138 * age - 0.9708) * 1000 / 4.186
+                    }
+                } * 100
+                ).toInt() / 100F
 
         return consumedEnergy.toKcal()
     }

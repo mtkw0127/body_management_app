@@ -148,8 +148,8 @@ class UserPreferenceRepository(
                 goalWeight = it[KEY_GOAL_WEIGHT],
                 goalKcal = it[KEY_GOAL_KCAL],
                 optionFeature = UserPreference.OptionFeature(
-                    meal = it[KEY_OPTION_MEAL] ?: false,
-                    training = it[KEY_OPTION_TRAINING] ?: false,
+                    meal = it[KEY_OPTION_MEAL],
+                    training = it[KEY_OPTION_TRAINING],
                 ),
                 alarm = it[KEY_ALARM] ?: false,
             )

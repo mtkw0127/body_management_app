@@ -349,7 +349,7 @@ private fun Goal(
             )
         }
 
-        if (userPreference.optionFeature.meal && userPreference.goalKcal != null) {
+        if (userPreference.optionFeature.meal == true && userPreference.goalKcal != null) {
             Spacer(modifier = Modifier.size(10.dp))
             HorizontalLine()
             Row(
