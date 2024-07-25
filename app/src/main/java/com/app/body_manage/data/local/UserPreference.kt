@@ -18,8 +18,8 @@ data class UserPreference(
     val optionFeature: OptionFeature
 ) {
     data class OptionFeature(
-        val meal: Boolean,
-        val training: Boolean
+        val meal: Boolean?,
+        val training: Boolean?,
     )
 
     fun bim(tall: Float, weight: Float): String = BMICalculator().calculate(tall, weight)

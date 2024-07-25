@@ -59,7 +59,7 @@ class UserPreferenceSettingDialog : DialogFragment() {
                                     Bundle().apply {
                                         putString("name", uiState.name)
                                         putString("gender", uiState.gender.name)
-                                        putString("birth", uiState.birth.toString())
+                                        putString("birth", uiState.birth.text)
                                     }
                                 )
                             }

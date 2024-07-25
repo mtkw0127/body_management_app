@@ -116,8 +116,8 @@ class UserPreferenceSettingViewModel(
                                 text = birth,
                                 selection = TextRange(birth.length, birth.length),
                             ),
-                            hasMealFeature = pref.optionFeature.meal,
-                            hasTrainingFeature = pref.optionFeature.training,
+                            hasMealFeature = pref.optionFeature.meal == true,
+                            hasTrainingFeature = pref.optionFeature.training == true,
                         )
                     }
                 }

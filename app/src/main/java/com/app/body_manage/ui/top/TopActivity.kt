@@ -21,6 +21,7 @@ import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.LogRepository
 import com.app.body_manage.data.repository.LogRepository.Companion.KEY_OPEN_OBJECT_KCAL
 import com.app.body_manage.data.repository.LogRepository.Companion.KEY_OPEN_OBJECT_WEIGHT
+import com.app.body_manage.data.repository.LogRepository.Companion.KEY_USER_SETTINGS
 import com.app.body_manage.data.repository.MealRepository
 import com.app.body_manage.dialog.Digit
 import com.app.body_manage.dialog.FloatNumberPickerDialog
@@ -73,6 +74,18 @@ class TopActivity : AppCompatActivity() {
         enableEdgeToEdge()
         onBackPressedDispatcher.addCallback {}
         supportFragmentManager.setFragmentResultListener(REQUEST_KEY, this) { _, _ ->
+            LogRepository().sendLog(
+                this,
+                KEY_USER_SETTINGS,
+                Bundle().apply {
+                    putString("name", viewModel.userPreference.value?.name)
+                    putBoolean("meal", viewModel.userPreference.value?.optionFeature?.meal == true)
+                    putBoolean(
+                        "training",
+                        viewModel.userPreference.value?.optionFeature?.training == true
+                    )
+                }
+            )
             viewModel.load()
         }
         val bottomSheetDataList = createBottomDataList(
