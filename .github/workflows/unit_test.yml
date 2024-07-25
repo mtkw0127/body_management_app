@@ -1,6 +1,7 @@
 name: Android CI
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "develop" ]
   pull_request:
@@ -17,5 +18,4 @@ jobs:
           java-version: '17'
       - name: Unit Test
         run: |
-          echo ${{ secrets.KEY_ALIAS }}
           ./gradlew :app:testDebugUnitTest
