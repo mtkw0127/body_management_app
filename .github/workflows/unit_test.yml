@@ -1,6 +1,7 @@
 name: Android CI
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "develop" ]
   pull_request:
@@ -16,4 +17,5 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
       - name: Unit Test
-        run: ./gradlew :app:testDebugUnitTest
+        run: |
+          ./gradlew :app:testDebugUnitTest
