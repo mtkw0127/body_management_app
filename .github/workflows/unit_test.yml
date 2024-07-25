@@ -17,6 +17,8 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
       - name: Unit Test
+        env:
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         run: |
-          echo ${{ secrets.KEY_ALIAS }}
+          echo $KEY_ALIAS
           ./gradlew :app:testDebugUnitTest
