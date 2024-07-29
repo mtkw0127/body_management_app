@@ -1,6 +1,9 @@
 package com.app.body_manage.ui.top
 
 import androidx.annotation.StringRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -30,13 +33,18 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowForwardIos
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Compare
 import androidx.compose.material.icons.filled.EmojiPeople
 import androidx.compose.material.icons.filled.Photo
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Today
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -86,17 +94,73 @@ fun TopScreen(
     onClickPhotos: () -> Unit = {},
     onClickToday: () -> Unit = {},
     onClickAddMeasure: () -> Unit = {},
+    onClickAddMeal: () -> Unit = {},
+    onClickAddTraining: () -> Unit = {},
     onClickSetGoal: () -> Unit = {},
     onClickSetting: () -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
+    var openMultiFb by remember {
+        mutableStateOf(false)
+    }
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = onClickAddMeasure) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null,
-                )
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.Bottom,
+                modifier = Modifier.size(300.dp)
+            ) {
+                AnimatedVisibility(
+                    visible = openMultiFb,
+                    enter = slideInVertically(),
+                    exit = slideOutVertically(),
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        if (userPreference?.optionFeature?.training == true) {
+                            FabItem(textRes = R.string.label_add_training) {
+                                onClickAddTraining()
+                                openMultiFb = openMultiFb.not()
+                            }
+                            Spacer(modifier = Modifier.height(20.dp))
+                        }
+                        if (userPreference?.optionFeature?.meal == true) {
+                            FabItem(textRes = R.string.label_add_meal) {
+                                onClickAddMeal()
+                                openMultiFb = openMultiFb.not()
+                            }
+                            Spacer(modifier = Modifier.height(20.dp))
+                        }
+                        FabItem(textRes = R.string.label_add_measure) {
+                            onClickAddMeasure()
+                            openMultiFb = openMultiFb.not()
+                        }
+                        Spacer(modifier = Modifier.height(20.dp))
+                    }
+                }
+                FloatingActionButton(
+                    onClick = {
+                        // オプション機能を全て切っている場合は直接体型登録を開く
+                        if (
+                            userPreference?.optionFeature?.meal != true &&
+                            userPreference?.optionFeature?.training != true
+                        ) {
+                            onClickAddMeasure()
+                        } else {
+                            openMultiFb = openMultiFb.not()
+                        }
+                    }
+                ) {
+                    Icon(
+                        imageVector = if (openMultiFb.not()) {
+                            Icons.Default.Add
+                        } else {
+                            Icons.Default.Clear
+                        },
+                        contentDescription = null,
+                    )
+                }
             }
         },
         bottomBar = {
@@ -249,6 +313,20 @@ fun TopScreen(
             }
         }
     }
+}
+
+@Composable
+private fun FabItem(
+    @StringRes textRes: Int,
+    onClick: () -> Unit
+) {
+    Text(
+        text = stringResource(id = textRes),
+        modifier = Modifier
+            .background(theme, RoundedCornerShape(15.dp))
+            .padding(10.dp)
+            .clickable { onClick() }
+    )
 }
 
 @Composable
