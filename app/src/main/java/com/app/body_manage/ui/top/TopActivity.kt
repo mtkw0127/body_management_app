@@ -2,6 +2,7 @@ package com.app.body_manage.ui.top
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.addCallback
@@ -247,9 +248,21 @@ class TopActivity : AppCompatActivity() {
                             LocalDate.now()
                         )
                     )
+                },
+                onClickStore = {
+                    openPlayStore()
                 }
             )
         }
+    }
+
+    private fun openPlayStore() {
+        startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("market://details?id=$packageName")
+            )
+        )
     }
 
     companion object {

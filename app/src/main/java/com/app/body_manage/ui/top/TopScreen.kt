@@ -54,6 +54,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -98,6 +99,7 @@ fun TopScreen(
     onClickAddTraining: () -> Unit = {},
     onClickSetGoal: () -> Unit = {},
     onClickSetting: () -> Unit = {},
+    onClickStore: () -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
     var openMultiFb by remember {
@@ -216,7 +218,7 @@ fun TopScreen(
                         val label = stringResource(id = R.string.label_registered_date)
                         Text(
                             text = "$label: $mmdd",
-                            fontSize = 14.sp,
+                            fontSize = 12.sp,
                             color = Color.Gray,
                         )
                     }
@@ -224,17 +226,30 @@ fun TopScreen(
                     (lastMeasure?.tall)?.let { tall ->
                         Text(
                             text = tall.toCentiMeter(),
-                            fontSize = 14.sp,
+                            fontSize = 12.sp,
                             color = Color.Gray,
                         )
                     }
                     Spacer(modifier = Modifier.size(10.dp))
                     Icon(
+                        painter = painterResource(id = R.drawable.icons8_google_play_store),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .clickable {
+                                onClickStore()
+                            }
+                            .size(20.dp),
+                        tint = Color.Unspecified
+                    )
+                    Spacer(modifier = Modifier.size(5.dp))
+                    Icon(
                         imageVector = Icons.Default.Settings,
                         contentDescription = null,
-                        modifier = Modifier.clickable {
-                            onClickSetting()
-                        }
+                        modifier = Modifier
+                            .clickable {
+                                onClickSetting()
+                            }
+                            .size(20.dp)
                     )
                 }
                 Spacer(modifier = Modifier.size(10.dp))
