@@ -38,6 +38,7 @@ import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.ui.top.UserPreferenceSettingDialog.Companion.REQUEST_KEY
 import com.app.body_manage.ui.trainingForm.form.TrainingFormActivity
 import com.app.body_manage.ui.trainingMenu.TrainingMenuListActivity
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -176,16 +177,26 @@ class TopActivity : AppCompatActivity() {
             }
         }
 
+        val appUpdateManager = AppUpdateManagerFactory.create(this)
+
+        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
+        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
+            viewModel.setStoreLatestVersion(appUpdateInfo.availableVersionCode())
+        }
+
         setContent {
             val userPreference by viewModel.userPreference.collectAsState()
             val lastMeasure by viewModel.lastMeasure.collectAsState()
             val initialMeasure by viewModel.initialMeasure.collectAsState()
             val todayMeasure by viewModel.todayMeasure.collectAsState()
+            val enableUpdate by viewModel.enableUpdate.collectAsState(false)
+
             TopScreen(
                 userPreference = userPreference,
                 lastMeasure = lastMeasure,
                 initialMeasure = initialMeasure,
                 todayMeasure = todayMeasure,
+                enableUpdate = enableUpdate,
                 bottomSheetDataList = bottomSheetDataList,
                 onClickSeeTrainingMenu = {
                     launcher.launch(TrainingMenuListActivity.createIntent(this))

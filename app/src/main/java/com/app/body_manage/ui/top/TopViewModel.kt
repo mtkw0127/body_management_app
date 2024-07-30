@@ -2,6 +2,7 @@ package com.app.body_manage.ui.top
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.app.body_manage.BuildConfig
 import com.app.body_manage.data.entity.toModel
 import com.app.body_manage.data.local.UserPreference
 import com.app.body_manage.data.local.UserPreferenceRepository
@@ -48,6 +49,9 @@ class TopViewModel(
 
     private val _initialMeasure: MutableStateFlow<BodyMeasure?> = MutableStateFlow(null)
     val initialMeasure = _initialMeasure.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    private val _enableUpdate: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val enableUpdate = _enableUpdate.asSharedFlow()
 
     // 当日の測定
     private val _todayMeasure: MutableStateFlow<TodayMeasure> = MutableStateFlow(
@@ -136,5 +140,9 @@ class TopViewModel(
             userPreferenceRepository.setGoatKcal(goal)
             load()
         }
+    }
+
+    fun setStoreLatestVersion(availableVersionCode: Int) {
+        _enableUpdate.value = availableVersionCode > BuildConfig.VERSION_CODE
     }
 }

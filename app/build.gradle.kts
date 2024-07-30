@@ -26,14 +26,14 @@ android {
         applicationId = "com.app.calendar"
         minSdk = 27
         targetSdk = 35
-        versionCode = 47
+        versionCode = 1
         versionName = "2.0.0"
         applicationId = "com.app.body_manage"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         named("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             setProguardFiles(
                 listOf(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -79,6 +79,9 @@ play {
 
 dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.6")
+
+    implementation("com.google.android.play:app-update:2.1.0")
+    implementation("com.google.android.play:app-update-ktx:2.1.0")
 
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
