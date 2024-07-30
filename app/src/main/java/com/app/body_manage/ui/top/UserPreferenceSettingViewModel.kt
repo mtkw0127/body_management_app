@@ -46,8 +46,8 @@ data class UserPreferenceSettingViewModelState(
     val name: String? = null,
     val gender: Gender = Gender.MALE,
     val birth: TextFieldValue = TextFieldValue(),
-    val hasMealFeature: Boolean = false,
-    val hasTrainingFeature: Boolean = false,
+    val hasMealFeature: Boolean = true,
+    val hasTrainingFeature: Boolean = true,
 ) {
     fun toUiState(): UiState {
         val setBirth = try {

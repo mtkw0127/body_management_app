@@ -2,6 +2,7 @@ package com.app.body_manage.ui.top
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.addCallback
@@ -180,11 +181,14 @@ class TopActivity : AppCompatActivity() {
             val lastMeasure by viewModel.lastMeasure.collectAsState()
             val initialMeasure by viewModel.initialMeasure.collectAsState()
             val todayMeasure by viewModel.todayMeasure.collectAsState()
+            val enableUpdate by viewModel.enableUpdate.collectAsState(false)
+
             TopScreen(
                 userPreference = userPreference,
                 lastMeasure = lastMeasure,
                 initialMeasure = initialMeasure,
                 todayMeasure = todayMeasure,
+                enableUpdate = enableUpdate,
                 bottomSheetDataList = bottomSheetDataList,
                 onClickSeeTrainingMenu = {
                     launcher.launch(TrainingMenuListActivity.createIntent(this))
@@ -247,9 +251,21 @@ class TopActivity : AppCompatActivity() {
                             LocalDate.now()
                         )
                     )
+                },
+                onClickStore = {
+                    openPlayStore()
                 }
             )
         }
+    }
+
+    private fun openPlayStore() {
+        startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("market://details?id=$packageName")
+            )
+        )
     }
 
     companion object {

@@ -44,7 +44,7 @@ class FloatNumberPickerDialog : DialogFragment() {
     private var number: Float = 50F
     private var unit: String = ""
     private var label: String = ""
-    private lateinit var callBack: (weight: Float) -> Unit
+    private var callBack: (weight: Float) -> Unit = { _ -> }
 
     // 初期値
     private var hundredsPlace: String = ""

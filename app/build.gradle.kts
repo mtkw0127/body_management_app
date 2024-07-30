@@ -26,14 +26,14 @@ android {
         applicationId = "com.app.calendar"
         minSdk = 27
         targetSdk = 35
-        versionCode = 47
+        versionCode = 48
         versionName = "2.0.0"
         applicationId = "com.app.body_manage"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         named("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             setProguardFiles(
                 listOf(
                     getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -94,7 +94,7 @@ dependencies {
     implementation("com.facebook.soloader:soloader:0.11.0")
 
     // lifecycle
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.3")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.4")
 
     // In-App-Review
     implementation("com.google.android.play:review:2.0.1")
