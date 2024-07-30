@@ -62,8 +62,8 @@ data class UserPreferenceSettingViewModelState(
         }
 
         val isNotYet = name.isNullOrBlank() ||
-                setBirth.not() ||
-                birth.text.isEmpty()
+            setBirth.not() ||
+            birth.text.isEmpty()
 
         return if (isNotYet) {
             UiState.NotYet(
