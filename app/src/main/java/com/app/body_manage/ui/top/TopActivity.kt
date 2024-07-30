@@ -22,6 +22,7 @@ import com.app.body_manage.data.repository.BodyMeasureRepository
 import com.app.body_manage.data.repository.LogRepository
 import com.app.body_manage.data.repository.LogRepository.Companion.KEY_OPEN_OBJECT_KCAL
 import com.app.body_manage.data.repository.LogRepository.Companion.KEY_OPEN_OBJECT_WEIGHT
+import com.app.body_manage.data.repository.LogRepository.Companion.KEY_REVIEW_REQUEST
 import com.app.body_manage.data.repository.LogRepository.Companion.KEY_USER_SETTINGS
 import com.app.body_manage.data.repository.MealRepository
 import com.app.body_manage.dialog.Digit
@@ -38,8 +39,10 @@ import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.ui.top.UserPreferenceSettingDialog.Companion.REQUEST_KEY
 import com.app.body_manage.ui.trainingForm.form.TrainingFormActivity
 import com.app.body_manage.ui.trainingMenu.TrainingMenuListActivity
+import com.google.android.play.core.review.ReviewManagerFactory
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 
 class TopActivity : AppCompatActivity() {
@@ -54,11 +57,41 @@ class TopActivity : AppCompatActivity() {
                         LocalDate.now()
                     )
                 )
+                showReviewRequest()
             }
         }
 
+    private fun showReviewRequest() {
+        // 登録系の処理が終わったタイミングでレビューを依頼する
+        // 5回毎に表示
+        val bodyMeasureNum = runBlocking { bodyMeasureRepository.getBodyMeasureList() }
+        val mealNum = runBlocking { mealRepository.getMealCount() }
+        val trainingNum = runBlocking { trainingRepository.getTrainingCount() }
+        val total = bodyMeasureNum + mealNum + trainingNum
+        if (
+            runBlocking { total % 10 == 0 || total == 1 }
+        ) {
+            LogRepository().sendLog(
+                context = this,
+                key = KEY_REVIEW_REQUEST,
+                bundle = Bundle(),
+            )
+            ReviewManagerFactory.create(this).requestReviewFlow()
+                .addOnSuccessListener { reviewInfo ->
+                    ReviewManagerFactory.create(this).launchReviewFlow(this, reviewInfo)
+                        .addOnSuccessListener {
+                        }.addOnFailureListener {
+                        }
+                }
+        }
+    }
+
     private val bodyMeasureRepository: BodyMeasureRepository by lazy {
         (application as TrainingApplication).bodyMeasureRepository
+    }
+
+    private val userPreferenceRepository: UserPreferenceRepository by lazy {
+        UserPreferenceRepository(this)
     }
 
     private val mealRepository: MealRepository by lazy {

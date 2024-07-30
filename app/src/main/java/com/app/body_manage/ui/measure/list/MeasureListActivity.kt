@@ -70,23 +70,25 @@ class MeasureListActivity : AppCompatActivity() {
 
     private fun showReviewRequest() {
         // 登録系の処理が終わったタイミングでレビューを依頼する
-        // 3日以上登録している場合に依頼する
+        // 5回毎に表示
+        val bodyMeasureNum = runBlocking { bodyMeasureRepository.getBodyMeasureList() }
+        val mealNum = runBlocking { mealRepository.getMealCount() }
+        val trainingNum = runBlocking { trainingRepository.getTrainingCount() }
+        val total = bodyMeasureNum + mealNum + trainingNum
         if (
-            runBlocking {
-                userPreferenceRepository.getRequestedReview().not()
-            } && runBlocking { bodyMeasureRepository.getEntityListAll().size >= 3 }
+            runBlocking { total % 5 == 0 || total == 1 }
         ) {
+            LogRepository().sendLog(
+                context = this,
+                key = KEY_REVIEW_REQUEST,
+                bundle = Bundle(),
+            )
             ReviewManagerFactory.create(this).requestReviewFlow()
-                .addOnSuccessListener {
-                    ReviewManagerFactory.create(this).launchReviewFlow(this, it)
-                }
-                .addOnCompleteListener {
-                    LogRepository().sendLog(
-                        context = this,
-                        key = KEY_REVIEW_REQUEST,
-                        bundle = Bundle(),
-                    )
-                    runBlocking { userPreferenceRepository.setRequestedReview() }
+                .addOnSuccessListener { reviewInfo ->
+                    ReviewManagerFactory.create(this).launchReviewFlow(this, reviewInfo)
+                        .addOnSuccessListener {
+                        }.addOnFailureListener {
+                        }
                 }
         }
     }

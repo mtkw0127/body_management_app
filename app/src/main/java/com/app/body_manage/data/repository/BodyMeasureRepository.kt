@@ -25,6 +25,10 @@ class BodyMeasureRepository(
         return trainingDao.getTrainingEntityListAll().map { it.toModel() }
     }
 
+    suspend fun getBodyMeasureList(): Int {
+        return trainingDao.getBodyMeasureList()
+    }
+
     suspend fun getLast(): BodyMeasureEntity? {
         return trainingDao.getLast()
     }
