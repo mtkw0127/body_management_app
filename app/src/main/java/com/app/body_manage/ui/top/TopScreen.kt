@@ -242,7 +242,7 @@ fun TopScreen(
                         enableUpdate = enableUpdate,
                         onClickStore = onClickStore,
                     )
-                    Spacer(modifier = Modifier.size(5.dp))
+                    Spacer(modifier = Modifier.size(10.dp))
                     Icon(
                         imageVector = Icons.Default.Settings,
                         contentDescription = null,
@@ -383,9 +383,9 @@ private fun FabItem(
     Text(
         text = stringResource(id = textRes),
         modifier = Modifier
-            .background(theme, RoundedCornerShape(15.dp))
-            .padding(10.dp)
             .clickable { onClick() }
+            .background(theme, RoundedCornerShape(15.dp))
+            .padding(15.dp)
     )
 }
 
