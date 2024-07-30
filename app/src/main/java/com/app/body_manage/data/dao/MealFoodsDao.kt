@@ -67,4 +67,7 @@ interface MealFoodsDao {
 
     @Query("SELECT * FROM mealAndFood WHERE mealId = :mealId")
     suspend fun getMealFoodCrossRef(mealId: Long): List<MealFoodCrossRef>
+
+    @Query("SELECT COUNT(*) FROM MEALS")
+    suspend fun getMealCount(): Int
 }

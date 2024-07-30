@@ -61,4 +61,7 @@ interface TrainingDao {
 
     @Update
     suspend fun updateTrainingMenu(trainingMenu: TrainingMenuEntity)
+
+    @Query("SELECT COUNT(*) FROM trainings")
+    suspend fun getCount(): Int
 }
