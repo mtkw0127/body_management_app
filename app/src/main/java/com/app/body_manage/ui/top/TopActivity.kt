@@ -90,10 +90,6 @@ class TopActivity : AppCompatActivity() {
         (application as TrainingApplication).bodyMeasureRepository
     }
 
-    private val userPreferenceRepository: UserPreferenceRepository by lazy {
-        UserPreferenceRepository(this)
-    }
-
     private val mealRepository: MealRepository by lazy {
         (application as TrainingApplication).mealFoodsRepository
     }
