@@ -38,7 +38,6 @@ import com.app.body_manage.ui.photoList.PhotoListActivity
 import com.app.body_manage.ui.top.UserPreferenceSettingDialog.Companion.REQUEST_KEY
 import com.app.body_manage.ui.trainingForm.form.TrainingFormActivity
 import com.app.body_manage.ui.trainingMenu.TrainingMenuListActivity
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -175,13 +174,6 @@ class TopActivity : AppCompatActivity() {
                     )
                 }.show(supportFragmentManager, null)
             }
-        }
-
-        val appUpdateManager = AppUpdateManagerFactory.create(this)
-
-        val appUpdateInfoTask = appUpdateManager.appUpdateInfo
-        appUpdateInfoTask.addOnSuccessListener { appUpdateInfo ->
-            viewModel.setStoreLatestVersion(appUpdateInfo.availableVersionCode())
         }
 
         setContent {

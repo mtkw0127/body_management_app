@@ -2,7 +2,6 @@ package com.app.body_manage.ui.top
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.body_manage.BuildConfig
 import com.app.body_manage.data.entity.toModel
 import com.app.body_manage.data.local.UserPreference
 import com.app.body_manage.data.local.UserPreferenceRepository
@@ -140,9 +139,5 @@ class TopViewModel(
             userPreferenceRepository.setGoatKcal(goal)
             load()
         }
-    }
-
-    fun setStoreLatestVersion(availableVersionCode: Int) {
-        _enableUpdate.value = availableVersionCode > BuildConfig.VERSION_CODE
     }
 }
