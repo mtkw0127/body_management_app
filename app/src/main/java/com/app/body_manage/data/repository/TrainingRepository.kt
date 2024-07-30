@@ -139,4 +139,8 @@ class TrainingRepository(
     suspend fun updateMenu(menu: TrainingMenuEntity) {
         trainingDao.updateTrainingMenu(menu)
     }
+
+    suspend fun getTrainingCount(): Int {
+        return trainingDao.getCount()
+    }
 }

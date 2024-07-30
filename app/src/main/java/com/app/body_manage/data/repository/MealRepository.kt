@@ -32,6 +32,9 @@ class MealRepository(
         return mealFoodsDao.getMeal(id.value.toLong())?.toModel(photos, mealFoodCrossRefs)
     }
 
+    suspend fun getMealCount() = mealFoodsDao.getMealCount()
+
+
     suspend fun getFoods(text: String): List<Food> {
         return mealFoodsDao.getFoods(text).map { it.toModel(foodNumber = 1) }
     }
