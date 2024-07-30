@@ -56,6 +56,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -74,6 +75,7 @@ import com.app.body_manage.extension.toCentiMeter
 import com.app.body_manage.extension.toMMDDEE
 import com.app.body_manage.extension.toWeight
 import com.app.body_manage.extension.withPercent
+import com.app.body_manage.style.Colors.Companion.accentColor
 import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
 import com.app.body_manage.ui.common.ColumTextWithLabelAndIcon
@@ -89,6 +91,7 @@ fun TopScreen(
     lastMeasure: BodyMeasure?,
     initialMeasure: BodyMeasure?,
     todayMeasure: TodayMeasure,
+    enableUpdate: Boolean,
     bottomSheetDataList: List<BottomSheetData>,
     onClickSeeTrainingMenu: () -> Unit = {},
     onClickCompare: () -> Unit = {},
@@ -199,7 +202,10 @@ fun TopScreen(
                 .fillMaxHeight()
         ) {
             item {
-                Row(verticalAlignment = Alignment.Bottom) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start,
+                ) {
                     if (lastMeasure?.weight != null) {
                         Text(
                             text = lastMeasure.weight.toString(),
@@ -214,32 +220,27 @@ fun TopScreen(
                         )
                     }
                     Spacer(modifier = Modifier.size(10.dp))
-                    lastMeasure?.time?.toLocalDate()?.toMMDDEE()?.let { mmdd ->
-                        val label = stringResource(id = R.string.label_registered_date)
-                        Text(
-                            text = "$label: $mmdd",
-                            fontSize = 12.sp,
-                            color = Color.Gray,
-                        )
+                    Column {
+                        (lastMeasure?.tall)?.let { tall ->
+                            Text(
+                                text = tall.toCentiMeter(),
+                                fontSize = 11.sp,
+                                color = Color.Gray,
+                            )
+                        }
+                        lastMeasure?.time?.toLocalDate()?.toMMDDEE()?.let { mmdd ->
+                            val label = stringResource(id = R.string.label_registered_date)
+                            Text(
+                                text = "$label: $mmdd",
+                                fontSize = 11.sp,
+                                color = Color.Gray,
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.weight(1F))
-                    (lastMeasure?.tall)?.let { tall ->
-                        Text(
-                            text = tall.toCentiMeter(),
-                            fontSize = 12.sp,
-                            color = Color.Gray,
-                        )
-                    }
-                    Spacer(modifier = Modifier.size(10.dp))
-                    Icon(
-                        painter = painterResource(id = R.drawable.icons8_google_play_store),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .clickable {
-                                onClickStore()
-                            }
-                            .size(20.dp),
-                        tint = Color.Unspecified
+                    UpdateIcon(
+                        enableUpdate = enableUpdate,
+                        onClickStore = onClickStore,
                     )
                     Spacer(modifier = Modifier.size(5.dp))
                     Icon(
@@ -327,6 +328,50 @@ fun TopScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun UpdateIcon(
+    enableUpdate: Boolean,
+    onClickStore: () -> Unit,
+) {
+    if (enableUpdate) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .clickable {
+                    onClickStore()
+                }
+                .background(accentColor, RoundedCornerShape(5.dp))
+                .border(1.dp, Color.Blue, RoundedCornerShape(5.dp))
+                .padding(vertical = 3.dp, horizontal = 6.dp),
+        ) {
+            Text(
+                text = stringResource(id = R.string.enable_update),
+                fontSize = 11.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+            )
+            Spacer(modifier = Modifier.size(3.dp))
+            Icon(
+                painter = painterResource(id = R.drawable.icons8_google_play_store),
+                contentDescription = null,
+                modifier = Modifier.size(20.dp),
+                tint = Color.Unspecified
+            )
+        }
+    } else {
+        Icon(
+            painter = painterResource(id = R.drawable.icons8_google_play_store),
+            contentDescription = null,
+            modifier = Modifier
+                .clickable {
+                    onClickStore()
+                }
+                .size(20.dp),
+            tint = Color.Unspecified
+        )
     }
 }
 

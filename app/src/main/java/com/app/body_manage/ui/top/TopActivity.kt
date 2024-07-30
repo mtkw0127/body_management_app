@@ -181,11 +181,14 @@ class TopActivity : AppCompatActivity() {
             val lastMeasure by viewModel.lastMeasure.collectAsState()
             val initialMeasure by viewModel.initialMeasure.collectAsState()
             val todayMeasure by viewModel.todayMeasure.collectAsState()
+            val enableUpdate by viewModel.enableUpdate.collectAsState(false)
+
             TopScreen(
                 userPreference = userPreference,
                 lastMeasure = lastMeasure,
                 initialMeasure = initialMeasure,
                 todayMeasure = todayMeasure,
+                enableUpdate = enableUpdate,
                 bottomSheetDataList = bottomSheetDataList,
                 onClickSeeTrainingMenu = {
                     launcher.launch(TrainingMenuListActivity.createIntent(this))

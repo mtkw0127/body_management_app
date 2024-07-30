@@ -49,6 +49,9 @@ class TopViewModel(
     private val _initialMeasure: MutableStateFlow<BodyMeasure?> = MutableStateFlow(null)
     val initialMeasure = _initialMeasure.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    private val _enableUpdate: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val enableUpdate = _enableUpdate.asSharedFlow()
+
     // 当日の測定
     private val _todayMeasure: MutableStateFlow<TodayMeasure> = MutableStateFlow(
         TodayMeasure(

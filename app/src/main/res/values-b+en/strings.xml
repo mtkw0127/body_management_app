@@ -36,6 +36,7 @@
     <string name="saturday">S</string>
     <string name="increase">increase</string>
     <string name="decrease">decrease</string>
+    <string name="enable_update">Update</string>
 
     <!-- User Settings -->
     <string name="label_user_name">User Name</string>
