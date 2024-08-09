@@ -90,7 +90,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-ads:23.2.0")
 
     // flipper
-    implementation("com.facebook.flipper:flipper:0.250.0")
+    implementation("com.facebook.flipper:flipper:0.261.0")
     implementation("com.facebook.soloader:soloader:0.11.0")
 
     // lifecycle
@@ -101,7 +101,7 @@ dependencies {
     implementation("com.google.android.play:review-ktx:2.0.1")
 
     // CameraX core library using the camera2 implementation
-    val cameraxVersion = "1.4.0-beta02"
+    val cameraxVersion = "1.4.0-rc01"
     implementation("androidx.camera:camera-core:${cameraxVersion}")
     implementation("androidx.camera:camera-camera2:${cameraxVersion}")
     implementation("androidx.camera:camera-lifecycle:${cameraxVersion}")
@@ -136,9 +136,9 @@ dependencies {
     implementation("androidx.compose.material:material-icons-core:1.6.8")
     implementation("androidx.compose.material:material-icons-extended:1.6.8")
     // Integration with activities
-    implementation("androidx.activity:activity-compose:1.9.0")
+    implementation("androidx.activity:activity-compose:1.9.1")
     // Integration with ViewModels
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.3")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
     // Integration with observables
     implementation("androidx.compose.runtime:runtime-livedata:1.6.8")
     implementation("com.google.accompanist:accompanist-pager:0.27.1")
@@ -151,11 +151,11 @@ dependencies {
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     testImplementation("io.mockk:mockk:1.13.10")
     // 画像
-    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("io.coil-kt:coil-compose:2.7.0")
 
     // Text feature
-    implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.0")
-    implementation("com.google.mlkit:text-recognition-japanese:16.0.0")
+    implementation("com.google.android.gms:play-services-mlkit-text-recognition:19.0.1")
+    implementation("com.google.mlkit:text-recognition-japanese:16.0.1")
 
     // graph
     implementation("com.patrykandpatrick.vico:compose:1.13.1")
