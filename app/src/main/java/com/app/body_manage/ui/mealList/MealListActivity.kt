@@ -51,6 +51,9 @@ class MealListActivity : AppCompatActivity() {
         setContent {
             val foods by viewModel.foods.collectAsState()
             Scaffold(
+                modifier = Modifier.windowInsetsPadding(
+                    WindowInsets.safeDrawing.only(WindowInsetsSides.Top)
+                ),
                 bottomBar = {
                     BottomBar(
                         onClickBack = ::finish
@@ -63,9 +66,6 @@ class MealListActivity : AppCompatActivity() {
                             .fillMaxSize()
                             .padding(it)
                             .padding(horizontal = 10.dp)
-                            .windowInsetsPadding(
-                                WindowInsets.safeDrawing.only(WindowInsetsSides.Top)
-                            )
                     ) {
                         items(foods) { food ->
                             val cornerShape = RoundedCornerShape(10.dp)
