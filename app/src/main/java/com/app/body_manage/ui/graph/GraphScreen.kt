@@ -56,7 +56,6 @@ import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
-import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarkerValueFormatter
 import com.patrykandpatrick.vico.core.common.component.ShapeComponent
 import com.patrykandpatrick.vico.core.common.component.TextComponent
 import com.patrykandpatrick.vico.core.common.shape.Shape.Companion.rounded
@@ -197,19 +196,17 @@ private fun Graph(state: GraphState.HasData) {
                     ),
                     lineCount = 2,
                 ),
-                valueFormatter = remember {
-                    CartesianMarkerValueFormatter { _, targets ->
-                        SpannableStringBuilder().apply {
-                            targets.forEachIndexed { index, target ->
-                                dataSet[target.x.toInt()].let { data ->
-                                    data.first.format(dateTimeFormatter).let {
-                                        append(it)
-                                        append("\n")
-                                        append("${data.second} kg")
-                                    }
+                valueFormatter = { _, targets ->
+                    SpannableStringBuilder().apply {
+                        targets.forEachIndexed { index, target ->
+                            dataSet.getOrNull(target.x.toInt())?.let { data ->
+                                data.first.format(dateTimeFormatter).let {
+                                    append(it)
+                                    append("\n")
+                                    append("${data.second} kg")
                                 }
-                                if (index != targets.lastIndex) append(", ")
                             }
+                            if (index != targets.lastIndex) append(", ")
                         }
                     }
                 },
