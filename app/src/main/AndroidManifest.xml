@@ -133,6 +133,13 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.CalendarApp"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.mealList.MealListActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.CalendarApp"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

@@ -38,6 +38,10 @@ class MealRepository(
         return mealFoodsDao.getFoods(text).map { it.toModel(foodNumber = 1) }
     }
 
+    suspend fun getAllFoods(): List<Food> {
+        return mealFoodsDao.getAllFoods().map { it.toModel(foodNumber = 1) }
+    }
+
     @Transaction
     suspend fun saveMeal(meal: Meal) {
         val mealId = mealFoodsDao.saveMeal(meal.toEntity())

@@ -32,6 +32,7 @@ import com.app.body_manage.ui.calendar.CalendarActivity
 import com.app.body_manage.ui.compare.CompareActivity
 import com.app.body_manage.ui.graph.GraphActivity
 import com.app.body_manage.ui.mealForm.MealFormActivity
+import com.app.body_manage.ui.mealList.MealListActivity
 import com.app.body_manage.ui.measure.form.MeasureFormActivity
 import com.app.body_manage.ui.measure.list.MeasureListActivity
 import com.app.body_manage.ui.measure.list.MeasureListActivity.Companion.RESULT_CODE_ADD
@@ -221,6 +222,9 @@ class TopActivity : AppCompatActivity() {
                 bottomSheetDataList = bottomSheetDataList,
                 onClickSeeTrainingMenu = {
                     launcher.launch(TrainingMenuListActivity.createIntent(this))
+                },
+                onClickMeal = {
+                    launcher.launch(MealListActivity.createIntent(this))
                 },
                 onClickCompare = {
                     launcher.launch(CompareActivity.createIntent(this))
