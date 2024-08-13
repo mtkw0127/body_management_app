@@ -53,6 +53,11 @@ interface MealFoodsDao {
     )
     suspend fun getFoods(name: String): List<FoodEntity>
 
+    @Query(
+        "SELECT * FROM foods"
+    )
+    suspend fun getAllFoods(): List<FoodEntity>
+
     @Update
     suspend fun updateFoods(foods: List<FoodEntity>)
 

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -20,7 +19,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -37,6 +35,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Compare
 import androidx.compose.material.icons.filled.EmojiPeople
 import androidx.compose.material.icons.filled.Photo
+import androidx.compose.material.icons.filled.SetMeal
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Today
 import androidx.compose.runtime.Composable
@@ -94,6 +93,7 @@ fun TopScreen(
     enableUpdate: Boolean,
     bottomSheetDataList: List<BottomSheetData>,
     onClickSeeTrainingMenu: () -> Unit = {},
+    onClickMeal: () -> Unit = {},
     onClickCompare: () -> Unit = {},
     onClickPhotos: () -> Unit = {},
     onClickToday: () -> Unit = {},
@@ -194,12 +194,11 @@ fun TopScreen(
     ) {
         LazyColumn(
             modifier = Modifier
+                .fillMaxSize()
+                .background(background)
                 .padding(it)
                 .padding(horizontal = 10.dp)
                 .padding(top = 10.dp)
-                .background(background)
-                .safeDrawingPadding()
-                .fillMaxHeight()
         ) {
             item {
                 Row(
@@ -322,6 +321,19 @@ fun TopScreen(
                             modifier = Modifier.padding(vertical = 5.dp),
                             onClick = { onClickSeeTrainingMenu() },
                             text = stringResource(id = R.string.label_see_by_training_menu),
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(10.dp))
+                }
+            }
+            if (userPreference?.optionFeature?.meal == true) {
+                item {
+                    PanelColumn {
+                        IconAndText(
+                            icon = Icons.Default.SetMeal,
+                            modifier = Modifier.padding(vertical = 5.dp),
+                            onClick = { onClickMeal() },
+                            text = stringResource(id = R.string.label_see_meal),
                         )
                     }
                     Spacer(modifier = Modifier.size(10.dp))
