@@ -29,16 +29,16 @@ enum class DataType {
     WEIGHT, FAT,
 }
 
-enum class Duration(val value: Long) {
-    ONE_MONTH(1),
-    THREE_MONTH(3),
-    HALF_YEAR(6),
-    ONE_YEAR(12),
-    ALL(-1)
+enum class Duration(val value: Long, val duration: Double) {
+    ONE_MONTH(1, 1.0),
+    THREE_MONTH(3, 2.0),
+    HALF_YEAR(6, 7.0),
+    ONE_YEAR(12, 30.0),
+    ALL(-1, 30.0)
 }
 
 data class GraphViewModelState(
-    val duration: Duration = Duration.THREE_MONTH,
+    val duration: Duration = Duration.ONE_MONTH,
     val timelineWeight: List<Pair<LocalDate, Float>>? = null,
     val timelineFat: List<Pair<LocalDate, Float>>? = null,
     val dataType: DataType = DataType.WEIGHT

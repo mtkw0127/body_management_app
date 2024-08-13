@@ -53,6 +53,7 @@ import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
 import com.patrykandpatrick.vico.compose.common.fill
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
 import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarkerValueFormatter
@@ -132,18 +133,31 @@ private fun Graph(state: GraphState.HasData) {
     val y = dataSet.map { it.second }
 
     val modelProducer = remember { CartesianChartModelProducer() }
-    LaunchedEffect(state.currentType) {
-        withContext(Dispatchers.Default) {
-            modelProducer.runTransaction {
-                /* Learn more:
-                https://patrykandpatrick.com/vico/wiki/cartesian-charts/layers/line-layer#data. */
-                lineSeries {
-                    series(
-                        x,
-                        y,
-                    )
-                }
+
+    suspend fun createModel() = withContext(Dispatchers.Default) {
+        modelProducer.runTransaction {
+            lineSeries {
+                series(
+                    x,
+                    y,
+                )
             }
+        }
+    }
+
+    LaunchedEffect(state.currentType) {
+        createModel()
+    }
+
+    LaunchedEffect(state.duration) {
+        createModel()
+    }
+
+    val bottomFormatter = CartesianValueFormatter { value, chartValues, verticalAxisPosition ->
+        value.toInt().let { index ->
+            state.timelineForWeight.getOrNull(index)?.first?.format(
+                dateTimeFormatter
+            ) ?: "error"
         }
     }
 
@@ -155,7 +169,7 @@ private fun Graph(state: GraphState.HasData) {
                     rememberLine(remember { LineCartesianLayer.LineFill.single(fill(Color(0xffa485e0))) })
                 )
             ),
-            getXStep = { 1.0 },
+            getXStep = { state.duration.duration },
             startAxis = rememberStartAxis(
                 title = when (state.currentType) {
                     DataType.WEIGHT -> {
@@ -172,13 +186,7 @@ private fun Graph(state: GraphState.HasData) {
                 label = rememberTextComponent(
                     lineCount = 2,
                 ),
-                valueFormatter = remember {
-                    { value, _, _ ->
-                        value.toInt().let { index ->
-                            x[index].let { dataSet[it].first.format(dateTimeFormatter) }
-                        }
-                    }
-                }
+                valueFormatter = bottomFormatter
             ),
             marker = rememberDefaultCartesianMarker(
                 label = rememberTextComponent(
@@ -283,6 +291,7 @@ private fun FilteringChips(
         }
     }
     FlowRow {
+        Spacer(modifier = Modifier.width(30.dp))
         FilterChip(
             selected = false,
             onClick = { onClickDataType(DataType.WEIGHT) },
@@ -312,7 +321,7 @@ private fun FilterChipsContainer(
     onClickDuration: (Duration) -> Unit,
     onClickDataType: (DataType) -> Unit,
 ) {
-    var isOpen by remember { mutableStateOf(false) }
+    var isOpen by remember { mutableStateOf(true) }
     Row {
         if (isOpen) {
             Column {
