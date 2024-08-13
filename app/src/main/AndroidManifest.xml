@@ -61,7 +61,7 @@
             android:name=".ui.graph.GraphActivity"
             android:exported="true"
             android:launchMode="singleInstance"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.CalendarApp" />
         <activity
             android:name=".ui.camera.CameraActivity"

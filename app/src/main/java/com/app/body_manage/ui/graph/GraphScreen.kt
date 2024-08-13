@@ -1,77 +1,76 @@
 package com.app.body_manage.ui.graph
 
-import androidx.compose.foundation.background
+import android.text.SpannableStringBuilder
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FilterChip
+import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.body_manage.R
-import com.app.body_manage.common.BottomSheet
-import com.app.body_manage.common.BottomSheetData
 import com.app.body_manage.style.Colors.Companion.disable
-import com.app.body_manage.style.Colors.Companion.secondPrimary
 import com.app.body_manage.style.Colors.Companion.theme
-import com.patrykandpatrick.vico.compose.axis.axisLineComponent
-import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
-import com.patrykandpatrick.vico.compose.axis.horizontal.rememberTopAxis
-import com.patrykandpatrick.vico.compose.axis.vertical.rememberEndAxis
-import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
-import com.patrykandpatrick.vico.compose.chart.Chart
-import com.patrykandpatrick.vico.compose.chart.line.lineChart
-import com.patrykandpatrick.vico.compose.chart.line.lineSpec
-import com.patrykandpatrick.vico.compose.component.lineComponent
-import com.patrykandpatrick.vico.core.axis.AxisItemPlacer
-import com.patrykandpatrick.vico.core.chart.values.AxisValuesOverrider
-import com.patrykandpatrick.vico.core.component.marker.MarkerComponent
-import com.patrykandpatrick.vico.core.component.shape.ShapeComponent
-import com.patrykandpatrick.vico.core.component.shape.Shapes.pillShape
-import com.patrykandpatrick.vico.core.component.text.TextComponent
-import com.patrykandpatrick.vico.core.entry.FloatEntry
-import com.patrykandpatrick.vico.core.entry.entryModelOf
-import com.patrykandpatrick.vico.core.marker.MarkerLabelFormatter
-import java.time.LocalDate
+import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisGuidelineComponent
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottomAxis
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStartAxis
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLine
+import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
+import com.patrykandpatrick.vico.compose.cartesian.marker.rememberDefaultCartesianMarker
+import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
+import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
+import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
+import com.patrykandpatrick.vico.compose.common.fill
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
+import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
+import com.patrykandpatrick.vico.core.cartesian.layer.LineCartesianLayer
+import com.patrykandpatrick.vico.core.common.component.ShapeComponent
+import com.patrykandpatrick.vico.core.common.component.TextComponent
+import com.patrykandpatrick.vico.core.common.shape.Shape.Companion.rounded
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun GraphScreen(
     state: GraphState,
-    bottomSheetDataList: List<BottomSheetData>,
     onClickDataType: (DataType) -> Unit,
     onClickDuration: (Duration) -> Unit,
+    onClickBack: () -> Unit,
 ) {
-    Scaffold(
-        bottomBar = {
-            Column(
-                modifier = Modifier
-                    .background(colorResource(id = R.color.app_theme))
-                    .navigationBarsPadding()
-            ) {
-                BottomSheet(bottomSheetDataList)
-            }
-        },
-    ) {
+    Scaffold {
         Box(
             modifier = Modifier
                 .safeDrawingPadding()
@@ -81,13 +80,12 @@ fun GraphScreen(
             Column(modifier = Modifier.padding(start = 5.dp)) {
                 when (state) {
                     is GraphState.HasData -> {
-                        FilteringChips(
+                        FilterChipsContainer(
                             onClickDuration = onClickDuration,
                             onClickDataType = onClickDataType,
                             state = state,
+                            onClickBack = onClickBack,
                         )
-
-                        Text(text = stringResource(id = R.string.message_recent_data_is_shown))
 
                         Graph(state)
                     }
@@ -130,122 +128,115 @@ private fun Graph(state: GraphState.HasData) {
         DataType.FAT -> state.timelineForFat
     }
 
-    // Min/MaxY
-    val minY = dataSet.minBy { it.second }.second
-    val maxY = dataSet.maxBy { it.second }.second
+    val x = List(dataSet.size) { index -> index }
+    val y = dataSet.map { it.second }
 
-    // 横軸を原点からデータをスタートするためにminXで引く
-    val model = entryModelOf(
-        dataSet.mapIndexed { _, pair ->
-            FloatEntry(pair.first.toEpochDay().toFloat(), pair.second)
-        }.sortedBy { it.x }
-    )
-    Chart(
+    val modelProducer = remember { CartesianChartModelProducer() }
+
+    suspend fun createModel() = withContext(Dispatchers.Default) {
+        modelProducer.runTransaction {
+            lineSeries {
+                series(
+                    x,
+                    y,
+                )
+            }
+        }
+    }
+
+    LaunchedEffect(state.currentType) {
+        createModel()
+    }
+
+    LaunchedEffect(state.duration) {
+        createModel()
+    }
+
+    val bottomFormatter = CartesianValueFormatter { value, chartValues, verticalAxisPosition ->
+        value.toInt().let { index ->
+            state.timelineForWeight.getOrNull(index)?.first?.format(
+                dateTimeFormatter
+            ) ?: "error"
+        }
+    }
+
+    CartesianChartHost(
         modifier = Modifier.fillMaxSize(),
-        chart = lineChart(
-            lines = listOf(
-                lineSpec(
-                    lineColor = secondPrimary,
-                    point = ShapeComponent(shape = pillShape),
-                    pointSize = 5.dp,
-                    dataLabel = TextComponent.Builder().build() // 各点の側に値を表示する
+        chart = rememberCartesianChart(
+            rememberLineCartesianLayer(
+                LineCartesianLayer.LineProvider.series(
+                    rememberLine(remember { LineCartesianLayer.LineFill.single(fill(Color(0xffa485e0))) })
                 )
             ),
-            // 縦軸の最大・最小は例えば最低・最低体重の±3kgとする
-            axisValuesOverrider = AxisValuesOverrider.fixed(
-                minY = minY - 3,
-                maxY = maxY + 3,
-            )
-        ),
-        marker = MarkerComponent(
-            label = TextComponent.Builder().build(),
-            indicator = ShapeComponent(),
-            guideline = lineComponent(
-                color = theme,
-                thickness = 2.dp,
-            )
-        ).apply {
-            // グラフタップ時に出るガイドの値を横軸（日付）に変更する
-            labelFormatter =
-                MarkerLabelFormatter { markedEntries, _ ->
-                    return@MarkerLabelFormatter LocalDate.ofEpochDay(
-                        markedEntries.first().entry.x.toLong()
-                    ).toString()
-                }
-        },
-        model = model,
-        startAxis = rememberStartAxis(
-            axis = axisLineComponent(
-                strokeWidth = 1.dp,
-                strokeColor = Color.Black
-            ), // 縦軸をはっきりさせる
-            title = when (state.currentType) {
-                DataType.WEIGHT -> {
-                    stringResource(id = R.string.weight_unit)
-                }
+            getXStep = { state.duration.duration },
+            startAxis = rememberStartAxis(
+                title = when (state.currentType) {
+                    DataType.WEIGHT -> {
+                        "体重 [kg]"
+                    }
 
-                DataType.FAT -> {
-                    stringResource(id = R.string.fat_unit)
-                }
-            },
-            titleComponent = TextComponent.Builder().build(),
-            itemPlacer = remember { AxisItemPlacer.Vertical.default(maxItemCount = 4) },
+                    DataType.FAT -> {
+                        "体脂肪率 [%]"
+                    }
+                },
+                titleComponent = TextComponent()
+            ),
+            bottomAxis = rememberBottomAxis(
+                label = rememberTextComponent(
+                    lineCount = 2,
+                ),
+                valueFormatter = bottomFormatter
+            ),
+            marker = rememberDefaultCartesianMarker(
+                label = rememberTextComponent(
+                    color = Color.Black,
+                    background = ShapeComponent(
+                        color = android.graphics.Color.WHITE,
+                        shape = rounded(allDp = 3F)
+                    ),
+                    lineCount = 2,
+                ),
+                valueFormatter = { _, targets ->
+                    SpannableStringBuilder().apply {
+                        targets.forEachIndexed { index, target ->
+                            dataSet.getOrNull(target.x.toInt())?.let { data ->
+                                data.first.format(dateTimeFormatter).let {
+                                    append(it)
+                                    append("\n")
+                                    append("${data.second} kg")
+                                }
+                            }
+                            if (index != targets.lastIndex) append(", ")
+                        }
+                    }
+                },
+                guideline = rememberAxisGuidelineComponent(),
+            ),
+            persistentMarkers = null,
         ),
-        topAxis = rememberTopAxis(
-            axis = axisLineComponent(
-                strokeWidth = 1.dp,
-                strokeColor = Color.Black
-            ), // 縦軸をはっきりさせる
-            valueFormatter = { _, _ -> "" },
-            guideline = null,
-        ),
-        endAxis = rememberEndAxis(
-            axis = axisLineComponent(
-                strokeWidth = 1.dp,
-                strokeColor = Color.Black
-            ), // 縦軸をはっきりさせる
-            valueFormatter = { _, _ -> "" },
-            guideline = null,
-        ),
-        bottomAxis = rememberBottomAxis(
-            axis = axisLineComponent(
-                strokeWidth = 1.dp,
-                strokeColor = Color.Black
-            ), // 縦軸をはっきりさせる
-            valueFormatter = { value, _ ->
-                (LocalDate.ofEpochDay(value.toLong())).format(
-                    dateTimeFormatter
-                )
-            },
-        ),
-        getXStep = {
-            when (state.duration) {
-                Duration.ALL,
-                Duration.ONE_YEAR,
-                Duration.HALF_YEAR -> {
-                    30F // 30日単位で表示
-                }
-
-                Duration.THREE_MONTH -> {
-                    10F // 10日単位で表示
-                }
-
-                Duration.ONE_MONTH -> {
-                    3F // 3日単位で表示
-                }
-            }
-        } // 横軸の直近のデータ
+        modelProducer = modelProducer,
+        zoomState = rememberVicoZoomState(zoomEnabled = true),
     )
 }
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
 @Composable
-fun FilteringChips(
+private fun FilteringChips(
+    onClickBack: () -> Unit,
     onClickDuration: (Duration) -> Unit,
     onClickDataType: (DataType) -> Unit,
     state: GraphState.HasData,
 ) {
-    FlowRow {
+    Row(
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = null,
+            modifier = Modifier.clickable { onClickBack() }
+        )
+        Spacer(modifier = Modifier.width(5.dp))
         FilterChip(
             selected = false,
             onClick = { onClickDuration(Duration.ONE_MONTH) },
@@ -297,6 +288,7 @@ fun FilteringChips(
         }
     }
     FlowRow {
+        Spacer(modifier = Modifier.width(30.dp))
         FilterChip(
             selected = false,
             onClick = { onClickDataType(DataType.WEIGHT) },
@@ -316,5 +308,42 @@ fun FilteringChips(
         ) {
             Text(text = stringResource(id = R.string.fat))
         }
+    }
+}
+
+@Composable
+private fun FilterChipsContainer(
+    state: GraphState.HasData,
+    onClickBack: () -> Unit,
+    onClickDuration: (Duration) -> Unit,
+    onClickDataType: (DataType) -> Unit,
+) {
+    var isOpen by remember { mutableStateOf(true) }
+    Row {
+        if (isOpen) {
+            Column {
+                FilteringChips(
+                    onClickDuration = onClickDuration,
+                    onClickDataType = onClickDataType,
+                    state = state,
+                    onClickBack = onClickBack,
+                )
+                Text(text = stringResource(id = R.string.message_recent_data_is_shown))
+            }
+        }
+        Spacer(modifier = Modifier.weight(1F))
+        Icon(
+            imageVector = if (isOpen) {
+                Icons.Default.KeyboardArrowUp
+            } else {
+                Icons.Default.KeyboardArrowDown
+            },
+            contentDescription = null,
+            modifier = Modifier
+                .clickable {
+                    isOpen = isOpen.not()
+                }
+                .padding(10.dp)
+        )
     }
 }
