@@ -158,7 +158,8 @@ dependencies {
     implementation("com.google.mlkit:text-recognition-japanese:16.0.1")
 
     // graph
-    implementation("com.patrykandpatrick.vico:compose:1.13.1")
+    implementation("com.patrykandpatrick.vico:compose:2.0.0-alpha.27")
+    implementation("com.patrykandpatrick.vico:core:2.0.0-alpha.27")
 
     // Preferences DataStore
     implementation("androidx.datastore:datastore-preferences:1.1.1")

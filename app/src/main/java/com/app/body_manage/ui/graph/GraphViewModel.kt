@@ -38,7 +38,7 @@ enum class Duration(val value: Long) {
 }
 
 data class GraphViewModelState(
-    val duration: Duration = Duration.ONE_MONTH,
+    val duration: Duration = Duration.THREE_MONTH,
     val timelineWeight: List<Pair<LocalDate, Float>>? = null,
     val timelineFat: List<Pair<LocalDate, Float>>? = null,
     val dataType: DataType = DataType.WEIGHT
