@@ -61,7 +61,7 @@
             android:name=".ui.graph.GraphActivity"
             android:exported="true"
             android:launchMode="singleInstance"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.CalendarApp" />
         <activity
             android:name=".ui.camera.CameraActivity"
@@ -128,6 +128,13 @@
 
         <activity
             android:name=".ui.trainingForm.detail.TrainingDetailActivity"
+            android:exported="true"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.CalendarApp"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ui.mealList.MealListActivity"
             android:exported="true"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"

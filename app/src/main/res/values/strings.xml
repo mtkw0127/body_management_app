@@ -74,6 +74,7 @@
     <string name="label_photos">体型写真をみる</string>
     <string name="label_see_by_statistics">統計を見る</string>
     <string name="label_see_by_training_menu">トレーニングメニューを見る</string>
+    <string name="label_see_meal">食事を見る</string>
     <string name="label_see_by_today">今日の記録へ</string>
     <string name="label_see_statistic">統計</string>
     <string name="label_start_point">開始点</string>

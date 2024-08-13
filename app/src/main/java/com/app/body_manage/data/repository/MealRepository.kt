@@ -34,9 +34,12 @@ class MealRepository(
 
     suspend fun getMealCount() = mealFoodsDao.getMealCount()
 
-
     suspend fun getFoods(text: String): List<Food> {
         return mealFoodsDao.getFoods(text).map { it.toModel(foodNumber = 1) }
+    }
+
+    suspend fun getAllFoods(): List<Food> {
+        return mealFoodsDao.getAllFoods().map { it.toModel(foodNumber = 1) }
     }
 
     @Transaction

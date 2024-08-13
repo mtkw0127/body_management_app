@@ -12,9 +12,9 @@ import java.time.LocalDateTime
 interface BodyMeasureDao {
     @Query(
         "SELECT * " +
-                "FROM bodyMeasures " +
-                "WHERE calendar_date = :calendarDate " +
-                "ORDER BY capture_time ASC"
+            "FROM bodyMeasures " +
+            "WHERE calendar_date = :calendarDate " +
+            "ORDER BY capture_time ASC"
     )
     suspend fun getTrainingEntityListByDate(
         calendarDate: LocalDate
@@ -22,16 +22,16 @@ interface BodyMeasureDao {
 
     @Query(
         "SELECT ui, " +
-                "calendar_date, " +
-                "capture_time, " +
-                "AVG(weight) as weight, " +
-                "AVG(fat) as fat," +
-                "memo " +
-                "FROM bodyMeasures " +
-                "WHERE calendar_date " +
-                "BETWEEN :from AND :to " +
-                "GROUP BY bodyMeasures.calendar_date " +
-                "ORDER BY capture_time ASC"
+            "calendar_date, " +
+            "capture_time, " +
+            "AVG(weight) as weight, " +
+            "AVG(fat) as fat," +
+            "memo " +
+            "FROM bodyMeasures " +
+            "WHERE calendar_date " +
+            "BETWEEN :from AND :to " +
+            "GROUP BY bodyMeasures.calendar_date " +
+            "ORDER BY capture_time ASC"
     )
     suspend fun getTrainingEntityListBetweenGroupByDate(
         from: LocalDate,
@@ -40,10 +40,10 @@ interface BodyMeasureDao {
 
     @Query(
         "SELECT * " +
-                "FROM bodyMeasures " +
-                "WHERE calendar_date " +
-                "BETWEEN :from AND :to " +
-                "ORDER BY capture_time ASC"
+            "FROM bodyMeasures " +
+            "WHERE calendar_date " +
+            "BETWEEN :from AND :to " +
+            "ORDER BY capture_time ASC"
     )
     suspend fun getTrainingEntityListBetween(
         from: LocalDate,
@@ -52,15 +52,15 @@ interface BodyMeasureDao {
 
     @Query(
         "SELECT " +
-                "ui, " +
-                "calendar_date, " +
-                "capture_time, " +
-                "AVG(weight) as weight, " +
-                "AVG(fat) as fat, " +
-                "memo, " +
-                "photo_uri, " +
-                "tall " +
-                "FROM bodyMeasures GROUP BY bodyMeasures.calendar_date"
+            "ui, " +
+            "calendar_date, " +
+            "capture_time, " +
+            "AVG(weight) as weight, " +
+            "AVG(fat) as fat, " +
+            "memo, " +
+            "photo_uri, " +
+            "tall " +
+            "FROM bodyMeasures GROUP BY bodyMeasures.calendar_date"
     )
     suspend fun getTrainingEntityListAll(): List<BodyMeasureEntity>
 
