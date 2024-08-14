@@ -52,6 +52,7 @@ import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
 import com.patrykandpatrick.vico.compose.common.fill
+import com.patrykandpatrick.vico.core.cartesian.data.AxisValueOverrider
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
@@ -164,9 +165,12 @@ private fun Graph(state: GraphState.HasData) {
         modifier = Modifier.fillMaxSize(),
         chart = rememberCartesianChart(
             rememberLineCartesianLayer(
-                LineCartesianLayer.LineProvider.series(
+                lineProvider = LineCartesianLayer.LineProvider.series(
                     rememberLine(remember { LineCartesianLayer.LineFill.single(fill(Color(0xffa485e0))) })
-                )
+                ),
+                axisValueOverrider = remember {
+                    AxisValueOverrider.adaptiveYValues(1.0F)
+                }
             ),
             getXStep = { state.duration.duration },
             startAxis = rememberStartAxis(
