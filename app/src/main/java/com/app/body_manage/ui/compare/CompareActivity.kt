@@ -190,7 +190,7 @@ class CompareActivity : AppCompatActivity() {
                     },
                     title = {
                         Text(
-                            text = "履歴を削除しますがよろしいですか？",
+                            text = stringResource(id = R.string.message_confirm_delete_history),
                             lineHeight = 24.sp,
                             fontSize = 16.sp
                         )
