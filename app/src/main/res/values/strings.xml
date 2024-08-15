@@ -137,8 +137,8 @@
     <string name="label_six_month">6ヶ月</string>
     <string name="label_one_year">12ヶ月</string>
     <string name="label_all_duration">全期間</string>
-    <string name="label_weight_y_weight">"体重 [kg]"</string>
-    <string name="label_weight_y_fat">"体脂肪率 [%]"</string>
+    <string name="label_weight_y_weight">体重 [kg]</string>
+    <string name="label_weight_y_fat">体脂肪率 [%]</string>
 
     <!-- カメラ画面 -->
     <string name="label_back">戻る</string>

@@ -63,6 +63,7 @@ import com.patrykandpatrick.vico.core.common.shape.Shape.Companion.rounded
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun GraphScreen(
@@ -122,7 +123,11 @@ private fun NoGraph() {
 private fun Graph(state: GraphState.HasData) {
     // 横軸の日付フォーマット
     val dateTimeFormatter: DateTimeFormatter =
-        DateTimeFormatter.ofPattern("MM月dd日")
+        if (Locale.getDefault().language == "ja") {
+            DateTimeFormatter.ofPattern("MM月dd日")
+        } else {
+            DateTimeFormatter.ofPattern("MMMM dd", Locale.ENGLISH)
+        }
 
     val dataSet = when (state.currentType) {
         DataType.WEIGHT -> state.timelineForWeight

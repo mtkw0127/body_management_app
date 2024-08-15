@@ -75,7 +75,7 @@
     <string name="label_see_by_statistics">View by Statistics</string>
     <string name="label_see_by_training_menu">See training menu</string>
     <string name="label_see_meal">See your meals</string>
-    <string name="label_see_by_today">View Today\'s Records</string>
+    <string name="label_see_by_today">See Today\'s Records</string>
     <string name="label_see_statistic">Statistics</string>
     <string name="label_start_point">Starting Point</string>
     <string name="label_good_weight">Optimal Weight</string>
@@ -138,6 +138,8 @@
     <string name="label_six_month">6 Months</string>
     <string name="label_one_year">12 Months</string>
     <string name="label_all_duration">All Periods</string>
+    <string name="label_weight_y_weight">Weight [kg]</string>
+    <string name="label_weight_y_fat">Fat [%]</string>
 
     <!-- Camera Screen -->
     <string name="label_back">Back</string>
