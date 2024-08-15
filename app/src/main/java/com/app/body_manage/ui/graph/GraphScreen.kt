@@ -132,6 +132,9 @@ private fun Graph(state: GraphState.HasData) {
     val x = List(dataSet.size) { index -> index }
     val y = dataSet.map { it.second }
 
+    val maxY = y.max().toDouble()
+    val minY = y.min().toDouble()
+
     val modelProducer = remember { CartesianChartModelProducer() }
 
     suspend fun createModel() = withContext(Dispatchers.Default) {
@@ -154,10 +157,15 @@ private fun Graph(state: GraphState.HasData) {
     }
 
     val bottomFormatter = CartesianValueFormatter { value, chartValues, verticalAxisPosition ->
-        value.toInt().let { index ->
-            state.timelineForWeight.getOrNull(index)?.first?.format(
-                dateTimeFormatter
-            ) ?: "error"
+        try {
+            value.toInt().let { index ->
+                state.timelineForWeight.getOrNull(index)?.first?.format(
+                    dateTimeFormatter
+                ) ?: "error"
+            }
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            "error"
         }
     }
 
@@ -168,9 +176,10 @@ private fun Graph(state: GraphState.HasData) {
                 lineProvider = LineCartesianLayer.LineProvider.series(
                     rememberLine(remember { LineCartesianLayer.LineFill.single(fill(Color(0xffa485e0))) })
                 ),
-                axisValueOverrider = remember {
-                    AxisValueOverrider.adaptiveYValues(1.0F)
-                }
+                axisValueOverrider = AxisValueOverrider.fixed(
+                    minY = minY - 1.0,
+                    maxY = maxY + 1.0,
+                ),
             ),
             getXStep = { state.duration.duration },
             startAxis = rememberStartAxis(
@@ -207,7 +216,16 @@ private fun Graph(state: GraphState.HasData) {
                                 data.first.format(dateTimeFormatter).let {
                                     append(it)
                                     append("\n")
-                                    append("${data.second} kg")
+                                    append("${data.second}")
+                                    when (state.currentType) {
+                                        DataType.WEIGHT -> {
+                                            append("kg")
+                                        }
+
+                                        DataType.FAT -> {
+                                            append("%")
+                                        }
+                                    }
                                 }
                             }
                             if (index != targets.lastIndex) append(", ")
