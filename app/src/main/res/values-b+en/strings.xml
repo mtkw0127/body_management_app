@@ -106,6 +106,7 @@
     <string name="label_this_day_photos">Photos taken on this day</string>
     <string name="label_tall_with_unit">Height [cm]</string>
     <string name="label_total_kcal_per_day">Daily Caloric Intake</string>
+    <string name="kcal_today">Today Caloric Intake</string>
 
     <!-- Settings -->
     <string name="label_notify_at_seven">Notify at 7 AM daily</string>

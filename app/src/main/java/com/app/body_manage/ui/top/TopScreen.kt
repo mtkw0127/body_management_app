@@ -55,6 +55,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -422,7 +423,6 @@ private fun Goal(
     PanelColumn(
         horizontalAlignment = Alignment.Start,
     ) {
-        Text(text = stringResource(id = R.string.label_object_weight))
         Spacer(modifier = Modifier.size(10.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -510,20 +510,22 @@ private fun Goal(
         if (userPreference.optionFeature.meal == true && userPreference.goalKcal != null) {
             Spacer(modifier = Modifier.size(10.dp))
             HorizontalLine()
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = stringResource(id = R.string.label_target_kcal) + " ${userPreference.goalKcal} kcal"
-                )
-                Spacer(Modifier.weight(1F))
-                Text(text = userPreference.progressKcalText(meal.sumOf { it.totalKcal }))
-            }
-            Spacer(modifier = Modifier.size(10.dp))
+            val totalKcal = meal.sumOf { it.totalKcal }
+
+            Text(
+                text = stringResource(id = R.string.kcal_today) + " $totalKcal / ${userPreference.goalKcal} kcal",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.size(12.dp))
             LinearProgressIndicator(
                 progress = userPreference.progressKcal(meal.sumOf { it.totalKcal }),
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(10.dp),
+                color = Color(0xFF00CC00),
+                backgroundColor = Color.LightGray,
+                strokeCap = StrokeCap.Round
             )
         }
         Spacer(modifier = Modifier.size(15.dp))
