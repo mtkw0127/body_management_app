@@ -32,7 +32,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.app.body_manage.R
 import com.app.body_manage.TrainingApplication
 import com.app.body_manage.common.toKcal
 import com.app.body_manage.ui.photoList.BottomBar
@@ -80,14 +82,14 @@ class MealListActivity : AppCompatActivity() {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                    Text(text = "名前：")
+                                    Text(text = stringResource(id = R.string.label_food_name))
                                     Spacer(modifier = Modifier.width(5.dp))
                                     Text(text = food.name)
                                 }
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                    Text(text = "熱量：")
+                                    Text(text = stringResource(id = R.string.label_food_kcal))
                                     Spacer(modifier = Modifier.width(5.dp))
                                     Text(text = food.kcal.toKcal())
                                 }
@@ -101,7 +103,7 @@ class MealListActivity : AppCompatActivity() {
                             .fillMaxSize(),
                         contentAlignment = Alignment.Center,
                     ) {
-                        Text(text = "食べ物が登録されていません")
+                        Text(text = stringResource(id = R.string.label_empty_food))
                     }
                 }
             }

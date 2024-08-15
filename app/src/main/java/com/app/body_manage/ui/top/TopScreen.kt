@@ -52,6 +52,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -82,6 +83,7 @@ import com.app.body_manage.extension.toWeight
 import com.app.body_manage.extension.withPercent
 import com.app.body_manage.style.Colors.Companion.accentColor
 import com.app.body_manage.style.Colors.Companion.background
+import com.app.body_manage.style.Colors.Companion.disable
 import com.app.body_manage.style.Colors.Companion.theme
 import com.app.body_manage.ui.common.ColumTextWithLabelAndIcon
 import com.google.android.gms.ads.AdRequest
@@ -115,6 +117,7 @@ fun TopScreen(
         mutableStateOf(false)
     }
     Scaffold(
+        modifier = Modifier.background(if (openMultiFb) disable else background),
         floatingActionButton = {
             Column(
                 horizontalAlignment = Alignment.End,
@@ -200,8 +203,16 @@ fun TopScreen(
     ) {
         LazyColumn(
             modifier = Modifier
+                .drawWithContent {
+                    drawContent()
+                    if (openMultiFb) {
+                        drawRect(
+                            color = Color.Black.copy(alpha = 0.2F),
+                            topLeft = Offset(0F, 0F),
+                        )
+                    }
+                }
                 .fillMaxSize()
-                .background(background)
                 .padding(it)
                 .padding(horizontal = 10.dp)
                 .padding(top = 10.dp)
@@ -290,33 +301,37 @@ fun TopScreen(
                 }
             }
             item {
-                PanelColumn(modifier = Modifier) {
+                PanelColumn(
+                    modifier = Modifier,
+                    onClick = if (openMultiFb.not()) onClickToday else null,
+                ) {
                     IconAndText(
                         icon = Icons.Default.Today,
                         modifier = Modifier.padding(vertical = 5.dp),
-                        onClick = { onClickToday() },
                         text = stringResource(id = R.string.label_see_by_today),
                     )
                 }
                 Spacer(modifier = Modifier.size(10.dp))
             }
             item {
-                PanelColumn {
+                PanelColumn(
+                    onClick = if (openMultiFb.not()) onClickCompare else null,
+                ) {
                     IconAndText(
                         icon = Icons.Default.Compare,
                         modifier = Modifier.padding(vertical = 5.dp),
-                        onClick = { onClickCompare() },
                         text = stringResource(id = R.string.label_compare),
                     )
                 }
                 Spacer(modifier = Modifier.size(10.dp))
             }
             item {
-                PanelColumn {
+                PanelColumn(
+                    onClick = if (openMultiFb.not()) onClickPhotos else null,
+                ) {
                     IconAndText(
                         icon = Icons.Default.Photo,
                         modifier = Modifier.padding(vertical = 5.dp),
-                        onClick = { onClickPhotos() },
                         text = stringResource(id = R.string.label_photos),
                     )
                 }
@@ -324,11 +339,12 @@ fun TopScreen(
             }
             if (userPreference?.optionFeature?.training == true) {
                 item {
-                    PanelColumn {
+                    PanelColumn(
+                        onClick = if (openMultiFb.not()) onClickSeeTrainingMenu else null
+                    ) {
                         IconAndText(
                             icon = Icons.Default.EmojiPeople,
                             modifier = Modifier.padding(vertical = 5.dp),
-                            onClick = { onClickSeeTrainingMenu() },
                             text = stringResource(id = R.string.label_see_by_training_menu),
                         )
                     }
@@ -337,11 +353,12 @@ fun TopScreen(
             }
             if (userPreference?.optionFeature?.meal == true) {
                 item {
-                    PanelColumn {
+                    PanelColumn(
+                        onClick = if (openMultiFb.not()) onClickMeal else null
+                    ) {
                         IconAndText(
                             icon = Icons.Default.SetMeal,
                             modifier = Modifier.padding(vertical = 5.dp),
-                            onClick = { onClickMeal() },
                             text = stringResource(id = R.string.label_see_meal),
                         )
                     }
@@ -787,7 +804,6 @@ fun IconAndText(
     text: String,
     icon: ImageVector,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {},
     withArrow: Boolean = true,
     message: String? = null,
     subTitle: String? = null,
@@ -796,7 +812,6 @@ fun IconAndText(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxSize()
-            .clickable { onClick() },
     ) {
         Icon(
             imageVector = icon,
@@ -836,10 +851,12 @@ fun IconAndText(
 fun PanelColumn(
     modifier: Modifier = Modifier,
     horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
+    onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
     Column(
         modifier = modifier
+            .clickable { onClick?.invoke() }
             .shadow(2.dp, RoundedCornerShape(5.dp))
             .background(
                 Color.White,
