@@ -54,8 +54,8 @@ import com.app.body_manage.data.model.Training
 import com.app.body_manage.data.model.TrainingMenu
 import com.app.body_manage.data.model.createSampleOwnWeightTrainingMenu
 import com.app.body_manage.data.model.createSampleTrainingMenu
-import com.app.body_manage.extension.toTimeText
 import com.app.body_manage.extension.toMMDDEE
+import com.app.body_manage.extension.toTimeText
 import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
 import com.app.body_manage.ui.top.PanelColumn
