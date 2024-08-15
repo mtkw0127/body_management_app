@@ -52,6 +52,7 @@ import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoZoomState
 import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
 import com.patrykandpatrick.vico.compose.common.fill
+import com.patrykandpatrick.vico.core.cartesian.data.AxisValueOverrider
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianValueFormatter
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
@@ -131,6 +132,9 @@ private fun Graph(state: GraphState.HasData) {
     val x = List(dataSet.size) { index -> index }
     val y = dataSet.map { it.second }
 
+    val maxY = y.max().toDouble()
+    val minY = y.min().toDouble()
+
     val modelProducer = remember { CartesianChartModelProducer() }
 
     suspend fun createModel() = withContext(Dispatchers.Default) {
@@ -153,10 +157,15 @@ private fun Graph(state: GraphState.HasData) {
     }
 
     val bottomFormatter = CartesianValueFormatter { value, chartValues, verticalAxisPosition ->
-        value.toInt().let { index ->
-            state.timelineForWeight.getOrNull(index)?.first?.format(
-                dateTimeFormatter
-            ) ?: "error"
+        try {
+            value.toInt().let { index ->
+                state.timelineForWeight.getOrNull(index)?.first?.format(
+                    dateTimeFormatter
+                ) ?: "error"
+            }
+        } catch (e: Throwable) {
+            e.printStackTrace()
+            "error"
         }
     }
 
@@ -164,9 +173,13 @@ private fun Graph(state: GraphState.HasData) {
         modifier = Modifier.fillMaxSize(),
         chart = rememberCartesianChart(
             rememberLineCartesianLayer(
-                LineCartesianLayer.LineProvider.series(
+                lineProvider = LineCartesianLayer.LineProvider.series(
                     rememberLine(remember { LineCartesianLayer.LineFill.single(fill(Color(0xffa485e0))) })
-                )
+                ),
+                axisValueOverrider = AxisValueOverrider.fixed(
+                    minY = minY - 1.0,
+                    maxY = maxY + 1.0,
+                ),
             ),
             getXStep = { state.duration.duration },
             startAxis = rememberStartAxis(
@@ -203,7 +216,16 @@ private fun Graph(state: GraphState.HasData) {
                                 data.first.format(dateTimeFormatter).let {
                                     append(it)
                                     append("\n")
-                                    append("${data.second} kg")
+                                    append("${data.second}")
+                                    when (state.currentType) {
+                                        DataType.WEIGHT -> {
+                                            append("kg")
+                                        }
+
+                                        DataType.FAT -> {
+                                            append("%")
+                                        }
+                                    }
                                 }
                             }
                             if (index != targets.lastIndex) append(", ")

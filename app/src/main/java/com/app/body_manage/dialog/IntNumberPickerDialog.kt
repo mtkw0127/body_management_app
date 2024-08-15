@@ -43,7 +43,7 @@ class IntNumberPickerDialog : DialogFragment() {
     private var number: Long = 50
     private var unit: String = ""
     private var label: String = ""
-    private lateinit var callBack: (weight: Long) -> Unit
+    private var callBack: (weight: Long) -> Unit = {}
 
     // 初期値
     private lateinit var thousandPlace: String

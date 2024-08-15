@@ -29,6 +29,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
@@ -50,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -226,7 +228,10 @@ fun MeasureListScreen(
                             uiState.list.filterIsInstance<Meal>().isNotEmpty() &&
                             userPreference?.optionFeature?.meal == true
                         ) {
-                            Summary(uiState.list)
+                            Summary(
+                                list = uiState.list,
+                                userPreference = userPreference
+                            )
                         }
                         MeasureList(
                             userPreference = userPreference,
@@ -297,21 +302,31 @@ private fun BottomButtons(
 }
 
 @Composable
-private fun Summary(list: List<Measure>) {
+private fun Summary(
+    list: List<Measure>,
+    userPreference: UserPreference
+) {
     Column(
         Modifier
             .padding(horizontal = 12.dp, vertical = 12.dp)
             .fillMaxWidth(),
     ) {
-        // トータルカロリー
-        list.filterIsInstance<Meal>().let { meals ->
-            val totalKcal = meals.sumOf { it.totalKcal }
-            LabelAndText(
-                label = stringResource(id = R.string.label_total_kcal_per_day),
-                text = totalKcal.toKcal(),
-                labelWidth = 130.dp
-            )
-        }
+        val totalKcal = list.filterIsInstance<Meal>().sumOf { it.totalKcal }
+        Text(
+            text = stringResource(id = R.string.label_total_kcal_per_day) + "：$totalKcal / ${userPreference.goalKcal} kcal",
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.size(10.dp))
+        LinearProgressIndicator(
+            progress = userPreference.progressKcal(totalKcal),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(10.dp),
+            color = Color(0xFF00CC00),
+            backgroundColor = Color.LightGray,
+            strokeCap = StrokeCap.Round
+        )
     }
 }
 

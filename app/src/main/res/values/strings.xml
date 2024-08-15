@@ -15,6 +15,7 @@
     <string name="fat">体脂肪</string>
     <string name="kcal">カロリー</string>
     <string name="kcal_per_day">目標\n摂取カロリー</string>
+    <string name="kcal_today">今日の摂取カロリー：</string>
     <string name="weight_unit">体重 [kg]</string>
     <string name="fat_unit">体脂肪率 [%]</string>
     <string name="dot">.</string>
@@ -55,16 +56,15 @@
     <string name="label_training_feature">トレーニング記録</string>
 
     <!-- トップ画面 -->
-    <string name="label_object_weight">体重の目標</string>
     <string name="label_reserve">まずは体型を登録しましょう</string>
     <string name="label_registered_date">登録日</string>
     <string name="label_target_weight">目標体重</string>
     <string name="label_start_weight">開始体重</string>
-    <string name="label_target_kcal">目標カロリー</string>
+    <string name="label_target_kcal">摂取カロリー</string>
     <string name="title_set_object">目標を設定</string>
     <string name="message_set_object">目標を設定すると、モチベーションの維持に役立ちます</string>
     <string name="label_set_object">目標を設定</string>
-    <string name="label_update_object">目標を更新</string>
+    <string name="label_update_object">更新</string>
     <string name="label_from_start">開始体重から</string>
     <string name="label_until_object">目標体重まで</string>
     <string name="label_bmi">BMI</string>
@@ -105,7 +105,7 @@
     <string name="message_empty_photo">写真が未登録です</string>
     <string name="label_this_day_photos">この日撮影した写真</string>
     <string name="label_tall_with_unit">身長[cm]</string>
-    <string name="label_total_kcal_per_day">１日の摂取カロリー</string>
+    <string name="label_total_kcal_per_day">摂取カロリー</string>
     <!-- 設定 -->
     <string name="label_notify_at_seven">毎朝7時に通知</string>
 
