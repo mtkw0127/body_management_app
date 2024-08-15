@@ -38,6 +38,7 @@
     <string name="increase">増加</string>
     <string name="decrease">減少</string>
     <string name="enable_update">アップデート可能</string>
+    <string name="label_photo">写真</string>
 
     <!-- ユーザ設定 -->
     <string name="label_user_name">▪️ユーザ名</string>
@@ -123,6 +124,7 @@
     <string name="after">After</string>
     <string name="compare">比較</string>
     <string name="history">履歴</string>
+    <string name="message_confirm_delete_history">履歴を削除しますがよろしいですか？</string>
     <string name="message_please_set_photo_for_compare">比較する写真を設定してください</string>
     <string name="message_not_yet_saved_history">比較がまだ保存されていません</string>
     <string name="message_not_yet_taken_measure_with_photo">写真付きの登録がまだありません\nまずは写真付きの体型を記録しましょう</string>
@@ -135,6 +137,8 @@
     <string name="label_six_month">6ヶ月</string>
     <string name="label_one_year">12ヶ月</string>
     <string name="label_all_duration">全期間</string>
+    <string name="label_weight_y_weight">"体重 [kg]"</string>
+    <string name="label_weight_y_fat">"体脂肪率 [%]"</string>
 
     <!-- カメラ画面 -->
     <string name="label_back">戻る</string>
@@ -239,5 +243,16 @@
     <string name="label_edit">編集する</string>
     <string name="label_training_target_part_selected">部位：%1$s</string>
     <string name="label_training_target_type_selected">タイプ：%1$s</string>
+
+    <!-- 食べ物一覧 -->
+    <string name="label_food_name">名前：</string>
+    <string name="label_food_kcal">熱量：</string>
+    <string name="label_empty_food">食べ物が登録されていません</string>
+
+    <!-- 写真詳細 -->
+    <string name="label_photo_detail_photo_date">撮影日時：%s</string>
+    <string name="label_photo_detail_weight">体重：%skg</string>
+    <string name="label_photo_detail_fat">体脂肪率：%1$s%%</string>
+    <string name="label_photo_detail_bmi">BMI：%1$s%%</string>
 
 </resources>

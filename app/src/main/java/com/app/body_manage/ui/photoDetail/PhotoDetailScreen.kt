@@ -16,8 +16,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.app.body_manage.R
 import com.app.body_manage.domain.BMICalculator
 import com.app.body_manage.util.DateUtil
 
@@ -65,27 +67,35 @@ fun PhotoDetailScreen(
                         horizontalAlignment = Alignment.Start
                     ) {
                         Text(
-                            text = "撮影日時：${DateUtil.localDateTimeToJapanese(state.bodyMeasureModel.time)}",
+                            text = stringResource(
+                                id = R.string.label_photo_detail_photo_date,
+                                DateUtil.localDateTimeToJapanese(state.bodyMeasureModel.time)
+                            ),
                             color = Color.White,
                             modifier = Modifier.padding(bottom = 5.dp)
                         )
                         Text(
-                            text = "体重：${state.bodyMeasureModel.weight}kg",
+                            text = stringResource(
+                                id = R.string.label_photo_detail_weight,
+                                state.bodyMeasureModel.weight
+                            ),
                             color = Color.White,
                             modifier = Modifier.padding(bottom = 5.dp)
                         )
                         Text(
-                            text = "体脂肪率：${state.bodyMeasureModel.fat}%",
+                            text = stringResource(
+                                id = R.string.label_photo_detail_fat,
+                                state.bodyMeasureModel.fat
+                            ),
                             color = Color.White,
                             modifier = Modifier.padding(bottom = 5.dp)
                         )
+                        val bmi = BMICalculator().calculate(
+                            state.bodyMeasureModel.tall,
+                            state.bodyMeasureModel.weight
+                        )
                         Text(
-                            text = "BMI：${
-                                BMICalculator().calculate(
-                                    state.bodyMeasureModel.tall,
-                                    state.bodyMeasureModel.weight
-                                )
-                            }",
+                            text = stringResource(id = R.string.label_photo_detail_bmi, bmi),
                             color = Color.White,
                         )
                     }
@@ -101,7 +111,7 @@ fun PhotoDetailScreen(
                 ) {
                     AsyncImage(
                         model = state.uri,
-                        contentDescription = "写真詳細",
+                        contentDescription = null,
                     )
                 }
                 Box(

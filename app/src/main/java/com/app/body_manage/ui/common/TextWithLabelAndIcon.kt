@@ -9,6 +9,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -22,7 +23,10 @@ fun RowScope.ColumTextWithLabelAndIcon(
         verticalArrangement = Arrangement.Center,
         modifier = modifier.weight(1F)
     ) {
-        Text(text = title)
+        Text(
+            text = title,
+            textAlign = TextAlign.Center
+        )
         Spacer(modifier = Modifier.size(5.dp))
         Text(text = value)
     }

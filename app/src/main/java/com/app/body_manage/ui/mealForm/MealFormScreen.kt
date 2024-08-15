@@ -201,7 +201,7 @@ private fun Photos(
                 .padding(10.dp)
                 .fillMaxWidth()
         ) {
-            Text(text = "写真")
+            Text(text = stringResource(id = R.string.label_photo))
             Spacer(modifier = Modifier.size(5.dp))
             LazyRow {
                 itemsIndexed(photos) { _, photo ->

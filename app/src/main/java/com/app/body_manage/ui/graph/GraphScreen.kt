@@ -185,11 +185,11 @@ private fun Graph(state: GraphState.HasData) {
             startAxis = rememberStartAxis(
                 title = when (state.currentType) {
                     DataType.WEIGHT -> {
-                        "体重 [kg]"
+                        stringResource(id = R.string.label_weight_y_weight)
                     }
 
                     DataType.FAT -> {
-                        "体脂肪率 [%]"
+                        stringResource(id = R.string.label_weight_y_fat)
                     }
                 },
                 titleComponent = TextComponent()

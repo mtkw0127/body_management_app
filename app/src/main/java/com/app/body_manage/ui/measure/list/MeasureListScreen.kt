@@ -477,7 +477,7 @@ private fun TrainingItem(
         training.menus.forEachIndexed { index, trainingMenu ->
             Row {
                 Text(
-                    text = "${trainingMenu.eventIndex + 1}種目目"
+                    text = stringResource(id = R.string.label_event, trainingMenu.eventIndex + 1)
                 )
                 Text(
                     text = trainingMenu.name

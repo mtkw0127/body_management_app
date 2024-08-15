@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Body Management</string>
     <string name="not_yet_measure_message">No records yet.</string>
-    <string name="prev_day">Previous Day</string>
-    <string name="next_day">Next Day</string>
+    <string name="prev_day">Prev</string>
+    <string name="next_day">Next</string>
     <string name="prev_month">Previous Month</string>
     <string name="next_month">Next Month</string>
     <string name="settings">Settings</string>
@@ -37,6 +37,7 @@
     <string name="increase">increase</string>
     <string name="decrease">decrease</string>
     <string name="enable_update">Update</string>
+    <string name="label_photo">Photo</string>
 
     <!-- User Settings -->
     <string name="label_user_name">User Name</string>
@@ -55,7 +56,6 @@
     <string name="label_training_feature">Training record</string>
 
     <!-- Home Screen -->
-    <string name="label_object_weight">Weight of your goal</string>
     <string name="label_reserve">Please record at first</string>
     <string name="label_registered_date">Registration Date</string>
     <string name="label_target_weight">Target Weight</string>
@@ -64,7 +64,7 @@
     <string name="title_set_object">Set Goal</string>
     <string name="message_set_object">Setting a goal can help maintain motivation.</string>
     <string name="label_set_object">Set Goal</string>
-    <string name="label_update_object">Delete Goal</string>
+    <string name="label_update_object">Update Goal</string>
     <string name="label_from_start">Diff between start and now</string>
     <string name="label_until_object">Diff between now and goal</string>
     <string name="label_bmi">BMI</string>
@@ -125,6 +125,7 @@
     <string name="after">After</string>
     <string name="compare">Compare</string>
     <string name="history">History</string>
+    <string name="message_confirm_delete_history">Are you sure you want to delete the history?</string>
     <string name="message_please_set_photo_for_compare">Please set a photo for comparison</string>
     <string name="message_not_yet_saved_history">Comparison not yet saved</string>
     <string name="message_not_yet_taken_measure_with_photo">No recorded measurements with photos yet\nStart by recording measurements with photos</string>
@@ -240,4 +241,15 @@
     <string name="label_training_content">Contents</string>
     <string name="label_see_training_history">See history</string>
     <string name="label_edit">Edit</string>
+
+    <!-- Food List -->
+    <string name="label_food_name">Name:</string>
+    <string name="label_food_kcal">Calories:</string>
+    <string name="label_empty_food">No food registered</string>
+
+    <!-- Photo Details -->
+    <string name="label_photo_detail_photo_date">Photo Date: %s</string>
+    <string name="label_photo_detail_weight">Weight: %s kg</string>
+    <string name="label_photo_detail_fat">Body Fat: %1$s%%</string>
+    <string name="label_photo_detail_bmi">BMI: %1$s%%</string>
 </resources>
