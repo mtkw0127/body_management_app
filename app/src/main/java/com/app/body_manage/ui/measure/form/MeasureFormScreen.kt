@@ -51,8 +51,8 @@ import com.app.body_manage.common.CustomImage
 import com.app.body_manage.data.model.Photo
 import com.app.body_manage.extension.toCentiMeter
 import com.app.body_manage.extension.toFat
-import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.extension.toMMDDEE
+import com.app.body_manage.extension.toTimeText
 import com.app.body_manage.extension.toWeight
 import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
@@ -146,7 +146,7 @@ fun BodyMeasureFormScreen(
                         item {
                             CustomTextField(
                                 labelTextResourceId = R.string.hint_time,
-                                value = uiState.model.time.toJapaneseTime(),
+                                value = uiState.model.time.toTimeText(),
                                 leadingIcon = {
                                     Icon(
                                         imageVector = Icons.Default.AccessTime,

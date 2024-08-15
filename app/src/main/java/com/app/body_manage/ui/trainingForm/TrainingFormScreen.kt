@@ -54,7 +54,7 @@ import com.app.body_manage.data.model.Training
 import com.app.body_manage.data.model.TrainingMenu
 import com.app.body_manage.data.model.createSampleOwnWeightTrainingMenu
 import com.app.body_manage.data.model.createSampleTrainingMenu
-import com.app.body_manage.extension.toJapaneseTime
+import com.app.body_manage.extension.toTimeText
 import com.app.body_manage.extension.toMMDDEE
 import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
@@ -82,9 +82,11 @@ fun TrainingFormScreen(
     onClickCardioDistance: (menuIndex: Int, setIndex: Int) -> Unit = { _, _ -> },
 ) {
     Scaffold(
-        modifier = Modifier.background(theme).windowInsetsPadding(
-            WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom)
-        ),
+        modifier = Modifier
+            .background(theme)
+            .windowInsetsPadding(
+                WindowInsets.safeDrawing.only(WindowInsetsSides.Bottom)
+            ),
         topBar = {
             TopAppBar(
                 elevation = 0.dp,
@@ -164,7 +166,7 @@ fun TrainingFormScreen(
                     Text(text = stringResource(id = R.string.label_start_training_time))
                     Spacer(modifier = Modifier.size(10.dp))
                     Text(
-                        text = training.startTime.toJapaneseTime(),
+                        text = training.startTime.toTimeText(),
                         modifier = Modifier
                             .drawBehind {
                                 drawLine(
@@ -180,7 +182,7 @@ fun TrainingFormScreen(
                     Text(text = stringResource(id = R.string.label_end_training_time))
                     Spacer(modifier = Modifier.size(10.dp))
                     Text(
-                        text = training.endTime.toJapaneseTime(),
+                        text = training.endTime.toTimeText(),
                         modifier = Modifier
                             .drawBehind {
                                 drawLine(

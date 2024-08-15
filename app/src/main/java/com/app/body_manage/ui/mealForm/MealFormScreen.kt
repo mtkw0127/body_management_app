@@ -69,8 +69,8 @@ import com.app.body_manage.data.model.Food
 import com.app.body_manage.data.model.Food.Companion.NEW_ID
 import com.app.body_manage.data.model.Meal
 import com.app.body_manage.data.model.Photo
-import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.extension.toMMDDEE
+import com.app.body_manage.extension.toTimeText
 import com.app.body_manage.style.Colors
 import com.app.body_manage.ui.top.TextWithUnderLine
 
@@ -258,7 +258,7 @@ private fun SelectMealTiming(
             }
         }
         TextWithUnderLine(
-            text = meal.time.toJapaneseTime(),
+            text = meal.time.toTimeText(),
             modifier = Modifier.clickable { onClickTime() },
         )
     }

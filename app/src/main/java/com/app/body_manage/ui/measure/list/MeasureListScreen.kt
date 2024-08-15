@@ -75,8 +75,8 @@ import com.app.body_manage.data.model.Photo
 import com.app.body_manage.data.model.Training
 import com.app.body_manage.domain.BMICalculator
 import com.app.body_manage.extension.toFat
-import com.app.body_manage.extension.toJapaneseTime
 import com.app.body_manage.extension.toMMDDEE
+import com.app.body_manage.extension.toTimeText
 import com.app.body_manage.extension.toWeight
 import com.app.body_manage.style.Colors.Companion.background
 import com.app.body_manage.style.Colors.Companion.theme
@@ -280,14 +280,18 @@ private fun BottomButtons(
             onClick = onClickAddMeasure,
             valueResourceId = R.string.label_add_measure,
             backgroundColor = theme,
-            modifier = Modifier,
+            modifier = Modifier
+                .weight(1F)
+                .padding(3.dp),
         )
         if (userPreference?.optionFeature?.meal == true) {
             CustomButton(
                 onClick = onClickAddMeal,
                 valueResourceId = R.string.label_add_meal,
                 backgroundColor = theme,
-                modifier = Modifier,
+                modifier = Modifier
+                    .weight(1F)
+                    .padding(3.dp),
             )
         }
         if (userPreference?.optionFeature?.training == true) {
@@ -295,7 +299,9 @@ private fun BottomButtons(
                 onClick = onClickAddTraining,
                 valueResourceId = R.string.label_add_training,
                 backgroundColor = theme,
-                modifier = Modifier,
+                modifier = Modifier
+                    .weight(1F)
+                    .padding(3.dp),
             )
         }
     }
@@ -443,10 +449,12 @@ private fun BodyItem(
                 label = stringResource(id = R.string.weight),
                 text = measure.weight.toWeight(),
             )
+            Spacer(modifier = Modifier.height(2.dp))
             LabelAndText(
                 label = stringResource(id = R.string.label_fat),
                 text = measure.fat.toFat(),
             )
+            Spacer(modifier = Modifier.height(2.dp))
             LabelAndText(
                 label = stringResource(id = R.string.label_bmi),
                 text = BMICalculator().calculate(measure.tall, measure.weight),
@@ -500,16 +508,19 @@ private fun MealItem(
 ) {
     Column {
         Text(text = stringResource(meal.timing.textResourceId))
+        Spacer(modifier = Modifier.height(2.dp))
         LabelAndText(
             label = stringResource(id = R.string.label_total_kcal),
             text = meal.totalKcal.toKcal()
         )
+        Spacer(modifier = Modifier.height(2.dp))
         Row {
             Text(
                 text = stringResource(id = R.string.label_meals),
                 modifier = Modifier.width(100.dp)
             )
         }
+        Spacer(modifier = Modifier.height(2.dp))
         Row {
             Spacer(modifier = Modifier.size(10.dp))
             Column {
@@ -552,7 +563,7 @@ fun ResultItem(
             .padding(vertical = 10.dp)
     ) {
         Text(
-            text = time.toJapaneseTime(),
+            text = time.toTimeText(),
         )
         Spacer(modifier = Modifier.size(15.dp))
         Row(verticalAlignment = Alignment.CenterVertically) {
